@@ -72,7 +72,7 @@ export default {
 
         async fetchExistingSessionFromServer({ getters, commit }) {
             console.log("fetchExistingSessionFromServer(): entered action")
-            return new Promise((resolve) => {
+            return new Promise((resolve, reject) => {
                 let sessionId = getters['getSessionId'];
 
                 if (sessionId) {
@@ -85,15 +85,18 @@ export default {
                         console.log('fetchExistingSessionFromServer():' + JSON.stringify(resp))
 
                         if (resp && resp.sessionId) {
-                            commit('SET_SESSION_ID', resp.sessionId)
+                            commit('SET_SESSION_ID', resp.sessionId);
+                            resolve(resp);
                         } else {
                             console.log("fetchExistingSessionFromServer(): skipping update Session ID since the response does not contain a session ID. resp=", JSON.stringify(resp))
+                            reject(resp)
                         }
 
-                        resolve(resp);
+
                     })
                 } else {
                     console.log("fetchExistingSessionFromServer(): skipping update Session ID since the browser does not have a SessionID. ");
+                    reject(resp)
                 }
 
             })

@@ -30,11 +30,21 @@ const actions = {
         commit('SET_SOCKET_STATE_DISCONNECTED')
     },
 
-    processSocketConnected({ dispatch }) {
+    processSocketConnected({ getters, dispatch }) {
         dispatch('setSocketStateConnected')
-        dispatch('queryAgentLogin', { root: true })
-        dispatch('session/fetchExistingSessionFromServer', { root: true })
-        
+        dispatch('session/fetchExistingSessionFromServer', { root: true }).then(resp => {
+            if (resp.responseCode === 0 && (getters['session/getSessionId'])) {
+                dispatch('sendQueryAgentStateRequest', { root: true })
+            }
+        }).catch(error=>{
+            if(error.responseCode && error.responseCode!==0){
+                dispatch('processAgentLogout')
+            }
+        })
+
+
+
+
     },
 
     /**********************************
@@ -62,8 +72,8 @@ const actions = {
             console.log('ICALLDISC is called for primary call')
             dispatch('setCallStateDropped', payload)
         } else if (getters.getConferenceCall.callId == payload.callId) {
-            console.log('ICALLDISC is called for conference call')
-            dispatch('setConferenceCallStateDropped', payload)
+            console.log('ICALLDISC is called for consultedCall call')
+            dispatch('setConsultedCallStateDropped', payload)
         } else {
             console.log('ICALLDISC not identified for call OR conf call')
         }
@@ -77,23 +87,23 @@ const actions = {
     SOCKET_CONCALLRING({ dispatch, commit }, payload) {
         console.log('Received event: ' + 'CONCALLRING' + JSON.stringify(payload))
 
-        commit('setConferenceCallStateRinging', payload)
+        dispatch('setConsultedCallStateRinging', payload)
     },
 
     SOCKET_CONCALLTALK({ dispatch }, payload) {
         console.log('Received event: ' + 'CONCALLTALK' + JSON.stringify(payload))
 
-        dispatch('setConferenceCallStateTalking', payload)
+        dispatch('setConsultedCallStateTalking', payload)
     },
 
     SOCKET_CONCALLDISC({ dispatch }, payload) {
         console.log('Received event: ' + 'CONCALLDISC' + JSON.stringify(payload))
-        dispatch('setConferenceCallStateDropped', payload)
+        dispatch('setConsultedCallStateDropped', payload)
     },
 
     SOCKET_CONCALLHLD({ dispatch }, payload) {
         console.log('Received event: ' + 'CONCALLHOLD' + JSON.stringify(payload))
-        dispatch('setConferenceCallStateHeld', payload)
+        dispatch('setConsultedCallStateHeld', payload)
     },
 
 }

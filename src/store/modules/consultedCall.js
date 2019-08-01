@@ -1,7 +1,7 @@
 import { CALL_STATES, SOCKET_EVENTS } from '@/defines.js'
 function initialState() {
     return {
-        conference: {
+        consultedCall: {
             ucid: null,
             callId: null,
             status: CALL_STATES.IDLE,
@@ -17,15 +17,34 @@ export default {
     getters: {
 
         getConferenceCallStatus(state) {
-            return state.conference.status
+            return state.consultedCall.status
         },
 
         getConferenceCall(state) {
-            return state.conference
+            return state.consultedCall
         }
     },
 
     actions: {
+
+        setCallStateTransferred({ commit }) {
+            commit('RESET_PRIMARY_CALL')
+            commit('RESET_CONFERENCE_CALL')
+        },
+
+
+        setConsultedCallStateRinging({ commit }, payload) {
+            commit('SET_CONF_STATE_RINGING')
+        },
+        setConsultedCallStateTalking({ commit }, payload) {
+            commit('SET_CONF_STATE_TALKING')
+        },
+        setConsultedCallStateHeld({ commit }, payload) {
+            commit('SET_CONF_STATE_HELD')
+        },
+        setConsultedCallStateDropped({ commit }, payload) {
+            commit('SET_CONF_STATE_DROPPED')
+        },
 
         requestConsultCall({ getters, commit }) {
 
@@ -50,7 +69,7 @@ export default {
             )
         },
 
-        requestConferenceCall() {
+        requestConferenceCall({ getters, dispatch }) {
 
             let request = {
                 sessionId: getters['session/getSessionId'],
@@ -72,7 +91,7 @@ export default {
             )
         },
 
-        requestTransferCall() {
+        requestTransferCall({ getters, dispatch }) {
             let request = {
                 sessionId: getters['session/getSessionId'],
                 ucid: getters.getPrimaryCall.ucid,
@@ -92,29 +111,15 @@ export default {
             )
         },
 
-
-        setConferenceCallStateRinging({ commit }, payload) {
-            commit('SET_CONF_STATE_RINGING')
-        },
-        setConferenceCallStateTalking({ commit }, payload) {
-            commit('SET_CONF_STATE_TALKING')
-        },
-        setConferenceCallStateHeld({ commit }, payload) {
-            commit('SET_CONF_STATE_HELD')
-        },
-        setConferenceCallStateDropped({ commit }, payload) {
-            commit('SET_CONF_STATE_DROPPED')
-        }
-
     },
 
     mutations: {
         SET_CONF_STATE_CONSULTED(state, payload) {
-            state.conference.callId = payload.callId
-            state.conference.ucid = payload.ucid
-            state.conference.status = CALL_STATES.CREATED
-            state.conference.calledAddress = payload.calledAddress
-            state.conference.callingAddress = payload.callingAddress
+            state.consultedCall.callId = payload.callId
+            state.consultedCall.ucid = payload.ucid
+            state.consultedCall.status = CALL_STATES.CREATED
+            state.consultedCall.calledAddress = payload.calledAddress
+            state.consultedCall.callingAddress = payload.callingAddress
         },
 
         SET_CONF_STATE_TRANSFERRED(state, payload) {
@@ -124,14 +129,14 @@ export default {
             state.call.primary.ucid = ''
             state.call.primary.callId = ''
 
-            state.conference.status = CALL_STATES.IDLE
-            state.conference.calledAddress = ''
-            state.conference.callingAddress = ''
-            state.conference.ucid = ''
-            state.conference.callId = ''
+            state.consultedCall.status = CALL_STATES.IDLE
+            state.consultedCall.calledAddress = ''
+            state.consultedCall.callingAddress = ''
+            state.consultedCall.ucid = ''
+            state.consultedCall.callId = ''
 
-            state.conference.socketRequest.ucid = ''
-            state.conference.socketRequest.callId = ''
+            state.consultedCall.socketRequest.ucid = ''
+            state.consultedCall.socketRequest.callId = ''
         },
 
         SET_CONF_MODE_INITIATED(state) {
@@ -139,25 +144,25 @@ export default {
         },
 
         SET_CONF_STATE_RINGING(state, payload) {
-            state.conference.status = CALL_STATES.RINGING
+            state.consultedCall.status = CALL_STATES.RINGING
         },
 
         SET_CONF_STATE_TALKING(state, payload) {
-            state.conference.status = CALL_STATES.TALKING
+            state.consultedCall.status = CALL_STATES.TALKING
             //    state.call.primary.status = CALL_STATES.HELD
         },
 
         SET_CONF_STATE_HELD(state, payload) {
-            state.conference.status = CALL_STATES.HELD
+            state.consultedCall.status = CALL_STATES.HELD
             //    state.call.primary.status = CALL_STATES.HELD
         },
 
         SET_CONF_STATE_DROPPED(state, payload) {
-            state.conference.status = CALL_STATES.IDLE
-            state.conference.calledAddress = ''
-            state.conference.callingAddress = ''
-            state.conference.ucid = ''
-            state.conference.callId = ''
+            state.consultedCall.status = CALL_STATES.IDLE
+            state.consultedCall.calledAddress = ''
+            state.consultedCall.callingAddress = ''
+            state.consultedCall.ucid = ''
+            state.consultedCall.callId = ''
         },
     }
 }

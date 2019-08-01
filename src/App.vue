@@ -9,10 +9,9 @@
     <!-- <utility-bar v-if="isAgentLoggedIn"></utility-bar> -->
     <footer class="page-footer font-small special-color p-2"></footer>
     <!-- Footer -->
-    
+
     <notifications group="error" />
   </div>
-
 </template>
 
 <script>
@@ -74,39 +73,13 @@ export default {
 
       this.$store.dispatch('processSocketConnected')
       //this.$store.dispatch('session/updateIpAddress')
-      
     }
   },
-  mounted(){
+  mounted() {
     this.$store.dispatch('session/addWindowRefreshReloadListener')
   },
-  methods: {
-    // getIpAddressForClient() {
-    //   console.log('Running Function to Update the IP Address')
-    //   return new Promise(resolve => {
-    //     var w = window
-    //     var a = new (w.RTCPeerConnection ||
-    //       w.mozRTCPeerConnection ||
-    //       w.webkitRTCPeerConnection)({
-    //       iceServers: []
-    //     })
-    //     var b = () => {}
-    //     a.createDataChannel('')
-    //     a.createOffer(c => a.setLocalDescription(c, b, b), b)
-    //     a.onicecandidate = c => {
-    //       try {
-    //         c.candidate.candidate
-    //           .match(
-    //             /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g
-    //           )
-    //           .forEach(resolve)
-    //       } catch (e) {}
-    //     }
-    //   })
-    // }
-  },
+  methods: {},
   computed: {
-
     isAgentLoggedIn() {
       if (
         this.$store.getters['getAgentState'] === AGENT_STATES.LOG_OUT ||

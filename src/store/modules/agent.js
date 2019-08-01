@@ -67,7 +67,7 @@ export default {
                 console.log('sendAgentLoginRequest(): response: ' + JSON.stringify(resp))
 
                 if (resp.responseCode === '0') {
-                    commit('SET_AGENT_STATE_LOGIN')
+                    dispatch('processAgentLogin')
                     return resp
                 } else {
                     dispatch('showErrorBanner', ['Agent Login failed:', resp.responseMessage])
@@ -94,7 +94,7 @@ export default {
                 console.log('sendAgentLogoutEvent(): response: ' + JSON.stringify(resp))
 
                 if (resp.responseCode === '0') {
-                    commit('SET_AGENT_STATE_LOGOUT')
+                    dispatch('processAgentLogout')
                     dispatch('session/resetSessionId')
                 } else {
                     dispatch('showErrorBanner', ['Agent Logout failed:', resp.responseMessage])
@@ -135,20 +135,20 @@ export default {
             })
         },
 
-        queryAgentLogin({ getters, commit, dispatch }) {
+        sendQueryAgentStateRequest({ getters, commit, dispatch }) {
             let agent = getters.getAgent;
             let sessionId = getters['session/getSessionId'];
-            console.log("queryAgentLogin(): sessionId=", sessionId)
+            console.log("sendQueryAgentStateRequest(): sessionId=", sessionId)
             let request = {
                 sessionId: sessionId,
                 agentId: agent.agentId,
                 deviceId: agent.deviceId
             }
-            console.log('queryAgentLogin(): request: ' + JSON.stringify(request))
+            console.log('sendQueryAgentStateRequest(): request: ' + JSON.stringify(request))
 
-            this._vm.$socket.emit(SOCKET_EVENTS.QUERY_AGENT_LOGIN, request, (resp) => {
+            this._vm.$socket.emit(SOCKET_EVENTS.QUERY_AGENT_STATE, request, (resp) => {
 
-                console.log('queryAgentLogin(): response: ' + JSON.stringify(resp))
+                console.log('sendQueryAgentStateRequest(): response: ' + JSON.stringify(resp))
 
                 if (resp.responseCode === '0') {
 
@@ -172,6 +172,13 @@ export default {
 
         },
 
+        processAgentLogin({ commit }) {
+            commit('SET_AGENT_STATE_LOGIN')
+        },
+        processAgentLogout({ commit }) {
+            commit('SET_AGENT_STATE_LOGOUT')
+        },
+        /********************************* */
         setUpdatedAuxCode({ commit }, payload) {
             console.log("setUpdatedAuxCode(): payload=" + JSON.stringify(payload))
             let auxCodes = config.agentAuxCodes;
