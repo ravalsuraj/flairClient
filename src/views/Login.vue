@@ -78,8 +78,8 @@
           </mdb-card-body>
           <mdb-alert :color="loginAlert.color" v-if="loginAlert.show">{{loginAlert.message}}</mdb-alert>
         </mdb-card>
-        <mdb-btn color="success" @click="simulateAgentLogin">Simulate Login</mdb-btn>
-        <mdb-btn color="danger" @click="agentLogoutBtnClicked">Logout</mdb-btn>
+        <!-- <mdb-btn color="success" @click="simulateAgentLogin">Simulate Login</mdb-btn> -->
+        <a class="text-white" @click="agentLogoutBtnClicked">Logout</a>
       </mdb-col>
     </mdb-row>
   </mdb-container>
@@ -150,7 +150,7 @@ export default {
       console.log('socket connected')
       this.showAlert(
         'success',
-        'WebSocket Communication Established, please login'
+        'Server Communication Established, please proceed with login'
       )
       this.$store.dispatch('setSocketStateConnected')
     },
@@ -158,7 +158,7 @@ export default {
       console.log('Connection Error for WebSocket')
       this.showAlert(
         'danger',
-        'WebSocket connection could not be established. Please make sure the websocket server is running.'
+        'Server connection could not be established. Please make sure you have connectivity with the server before you attempt to log in.'
       )
       this.$store.dispatch('setSocketStateDisconnected')
     },

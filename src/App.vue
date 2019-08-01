@@ -1,7 +1,6 @@
 <template>
   <div class="d-flex flex-column">
     <top-navbar v-if="isAgentLoggedIn"></top-navbar>
-    <!-- <dialer-drawer></dialer-drawer> -->
     <main class="d-flex flex-fill main-body">
       <router-view v-if="isAgentLoggedIn" class="fl_topSpacing"></router-view>
       <login-page v-else class="flex-fill fl_topSpacing"></login-page>
@@ -33,7 +32,6 @@ import {
   waves
 } from 'mdbvue'
 import Dashboard from '@/views/Dashboard'
-import DialerDrawer from '@/components/widgets/Dialer/DialerDrawer'
 import TopNavbar from '@/views/TopNavbar'
 import LoginPage from '@/views/Login'
 import UtilityBar from '@/views/UtilityBar.vue'
@@ -43,7 +41,6 @@ import Utils from '@/services/Utils'
 export default {
   name: 'AdminTemplate',
   components: {
-    DialerDrawer,
     LoginPage,
     TopNavbar,
     Dashboard,
@@ -131,7 +128,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 html {
-  font-size: 75%;
+  font-size: 65%;
   color: rgba(0, 0, 0, 0.45);
 }
 .main-body {

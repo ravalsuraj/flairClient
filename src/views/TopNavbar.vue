@@ -131,7 +131,6 @@ main {
 <script>
 import AgentControl from '@/components/widgets/AgentControl/AgentControl.vue'
 import CallControl from '@/components/widgets/CallControl/CallControl.vue'
-import DialerDrawer from '@/components/widgets/Dialer/DialerDrawer'
 import {
   mdbRow,
   mdbCol,
@@ -155,7 +154,7 @@ import {
 export default {
   name: 'TopNavbar',
   components: {
-    DialerDrawer,
+  
     AgentControl,
     CallControl,
     mdbRow,

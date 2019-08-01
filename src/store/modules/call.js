@@ -9,17 +9,6 @@ function initialState() {
             calledAddress: '',
             callingAddress: ''
         },
-        conference: {
-            ucid: '0',
-            callId: '',
-            status: CALL_STATES.IDLE,
-            calledAddress: '',
-            callingAddress: ''
-        },
-
-        dialer: {
-            dialerDigits: null
-        }
 
     }
 }
@@ -30,16 +19,10 @@ const getters = {
         return state.primary.status
     },
 
-    getConferenceCallStatus(state) {
-        return state.conference.status
-    },
-
     getPrimaryCall(state) {
         return state.primary
     },
-    getConferenceCall(state) {
-        return state.conference
-    }
+ 
 }
 
 const actions = {
@@ -82,58 +65,13 @@ const actions = {
     setCallStateHeld({ commit }) {
         commit('SET_CALL_STATE_HELD')
     },
-    callConsulted(state, payload) {
-        state.socketRequest.consultedUcid = payload.ucid
-        state.socketRequest.consultedCallId = payload.callId
 
-        state.conference.callId = payload.callId
-        state.conference.ucid = payload.ucid
-        state.conference.status = CALL_STATES.CREATED
-        state.conference.calledAddress = payload.calledAddress
-        state.conference.callingAddress = payload.callingAddress
-    },
 
-    callTransfered(state, payload) {
-        state.primary.status = CALL_STATES.IDLE
-        state.primary.calledAddress = ''
-        state.primary.callingAddress = ''
-        state.primary.ucid = ''
-        state.primary.callId = ''
-
-        state.conference.status = CALL_STATES.IDLE
-        state.conference.calledAddress = ''
-        state.conference.callingAddress = ''
-        state.conference.ucid = ''
-        state.conference.callId = ''
-
-        state.socketRequest.ucid = ''
-        state.socketRequest.callId = ''
-    },
-
-    setConferenceCallStateInitiated(state) {
-        state.confereceMode = true
-    },
-
-    setConferenceCallStateRinging(state, payload) {
-        state.conference.status = CALL_STATES.RINGING
-    },
-
-    setConferenceCallStateTalking(state, payload) {
-        state.conference.status = CALL_STATES.TALKING
-        state.primary.status = CALL_STATES.HELD
-    },
-    setConferenceCallStateDropped(state, payload) {
-        state.conference.status = CALL_STATES.IDLE
-        state.conference.calledAddress = ''
-        state.conference.callingAddress = ''
-        state.conference.ucid = ''
-        state.conference.callId = ''
-    },
-
-    requestAnswerDropCall({ getters, dispatch }, callId) {
+    
+    requestAnswerDropCall({ getters, dispatch }, requestedUcid) {
         let request = {
             sessionId: getters['session/getSessionId'],
-            callId: callId
+            ucid: requestedUcid
         }
         console.log("request=", request)
 
@@ -196,13 +134,13 @@ const actions = {
         }
     },
 
-    requestHoldUnholdCall({ getters, dispatch }, callId) {
+    requestHoldUnholdCall({ getters, dispatch }, requestedUcid) {
         console.log("requestHoldUnholdCall(): action entered")
         let request = {
             sessionId: getters['session/getSessionId'],
             agentId: getters['getAgentCredentials'].agentId,
             deviceId: getters['getAgentCredentials'].deviceId,
-            callId: callId,
+            ucid: requestedUcid,
         }
         console.log("request=", request)
 
@@ -242,10 +180,6 @@ const actions = {
         })
     },
 
-    updateDialedDigits({ commit }, dialedDigits) {
-        commit('UPDATE_DIALED_DIGITS', dialedDigits)
-    }
-
 }
 
 const mutations = {
@@ -268,11 +202,6 @@ const mutations = {
         Object.keys(s).forEach(key => {
             state[key] = s[key]
         })
-    },
-
-    /***************Conference Call Mutations **************** */
-    UPDATE_DIALED_DIGITS(state, dialedDigits) {
-        state.dialer.dialedDigits = dialedDigits
     },
 
 }

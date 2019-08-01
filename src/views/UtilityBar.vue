@@ -14,7 +14,6 @@
 <script>
 import AgentControl from '@/components/widgets/AgentControl/AgentControl.vue'
 import CallControl from '@/components/widgets/CallControl/CallControl.vue'
-import DialerDrawer from '@/components/widgets/Dialer/DialerDrawer'
 import QuickLinks from '@/components/widgets/QuickLinks/QuickLinks.vue'
 import WebSocketIndicator from '@/components/util/WebSocketIndicator'
 import {
@@ -40,7 +39,6 @@ import {
 export default {
   name: 'UtilityBar',
   components: {
-    DialerDrawer,
     AgentControl,
     CallControl,
     QuickLinks,

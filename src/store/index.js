@@ -5,6 +5,8 @@ import Cookies from 'js-cookie'
 
 import agent from './modules/agent'
 import call from './modules/call'
+import conference from './modules/conference'
+import dialer from './modules/dialer'
 import session from './modules/session'
 import socket from './modules/socket'
 import timer from './modules/timer'
@@ -21,8 +23,8 @@ import {
 const vuexPersist = new VuexPersist({
   key: 'flair',
   storage: sessionStorage,
-  modules: ['agent', 'call', 'socket', 'timer', 'data', 'session'],
- 
+  modules: ['agent', 'call', 'conference', 'dialer', 'socket', 'timer', 'data', 'session'],
+
 })
 
 // const vuexCookie = new VuexPersist({
@@ -43,7 +45,9 @@ export default new Vuex.Store({
     session,
     socket,
     timer,
-    data
+    data,
+    conference,
+    dialer
   },
   plugins: [vuexPersist.plugin],
 

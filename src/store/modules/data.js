@@ -1,3 +1,4 @@
+import api from "@/services/api.js";
 function initialState() {
   //hard-coded UUI for testing
   return {
@@ -48,7 +49,13 @@ function initialState() {
 
 const state = initialState
 const mutations = {}
-const actions = {}
+const actions = {
+
+  requestSendSms({ }, payload) {
+
+    api.sendSmsRequestToGateway(payload)
+  }
+}
 const getters = {
   getCallerData(state) {
     return state.callerData

@@ -84,8 +84,7 @@ export default {
       if (this.autoShowWidget === false) {
         this.manualShowWidget = !this.manualShowWidget
       }
-    },
-
+    }
   },
   computed: {
     autoShowWidget() {
@@ -94,12 +93,33 @@ export default {
         this.$store.getters.getPrimaryCall.status === CALL_STATES.TALKING
       )
     },
+
+    callingAddress(){
+      return this.$store.getters.getPrimaryCall.callingAddress
+    },
+    calledAddress(){
+return this.$store.getters.getPrimaryCall.calledAddress
+    },
+    agentCredentials(){
+      return this.$store.getters.getAgentCredentials;
+    },
     showWidget() {
       return this.manualShowWidget || this.autoShowWidget
     },
-    
+
     crmUrl() {
-      return config.crmUrl
+
+      return (
+        config.crmUrl +
+        '?cli=' +
+        this.callingAddress +
+        '&dnis=' +
+        this.calledAddress +
+        '&agentId=' +
+        this.agentCredentials.agentId +
+        '&deviceId=' +
+        this.agentCredentials.deviceId
+      )
     }
   }
 }

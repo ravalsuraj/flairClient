@@ -1,6 +1,4 @@
 <template>
-  <!-- <mdb-card class="mb-0" color="special-color">
-  <mdb-card-body class="p-2 mb-1">-->
   <div class="fl_container_callControl d-flex align-items-center">
     <mdb-container fluid>
       <mdb-row class>
@@ -32,7 +30,7 @@
               class="fl_well_text"
               id="callingAddress"
               :class="{'onHold':isConfCallHeld}"
-            >{{conferenceCallingAddress}}</mdb-col>
+            >{{conferenceCalledAddress}}</mdb-col>
             <mdb-col col="3">
               <!-- <timer name="conferenceCallStateTimer" class="fl_well_text sm"></timer> -->
             </mdb-col>
@@ -79,6 +77,8 @@
               </button>
             </transition>
           </div>
+
+         
         </mdb-col>
 
         <div class="fl_dialerDrawer special-color" v-show-slide="showDialer && isCallActive">
@@ -93,7 +93,7 @@
 </template>
 
 <script>
-import DialerDrawer from '@/components/widgets/Dialer/DialerDrawer'
+
 import Dialer from '@/components/widgets/Dialer/Dialer'
 import Timer from '@/components/util/Timer'
 import {
@@ -125,7 +125,6 @@ export default {
   components: {
     Timer,
     Dialer,
-    DialerDrawer,
     CallTimer,
     mdbContainer,
     mdbRow,
@@ -159,10 +158,10 @@ export default {
       this.showDialer = !this.showDialer
     },
     answerDropCall() {
-      this.$store.dispatch('requestAnswerDropCall', this.$store.getters.getPrimaryCall.callId)
+      this.$store.dispatch('requestAnswerDropCall', this.$store.getters.getPrimaryCall.ucid)
     },
     holdUnholdCall() {
-      this.$store.dispatch('requestHoldUnholdCall', this.$store.getters.getPrimaryCall.callId)
+      this.$store.dispatch('requestHoldUnholdCall', this.$store.getters.getPrimaryCall.ucid)
     }
   },
   computed: {
@@ -246,12 +245,12 @@ export default {
       return CALL_STATES.Text[this.callStatus]
     },
 
-    conferenceCallingAddress() {
+    conferenceCalledAddress() {
       if (
         this.conferenceCallStatus === CALL_STATES.RINGING ||
         this.isConfCallActive
       ) {
-        return this.$store.state.call.conference.callingAddress
+        return this.$store.getters.getConferenceCall.calledAddress
       } else {
         return '-'
       }

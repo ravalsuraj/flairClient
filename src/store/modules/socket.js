@@ -63,7 +63,7 @@ const actions = {
             dispatch('setCallStateDropped', payload)
         } else if (getters.getConferenceCall.callId == payload.callId) {
             console.log('ICALLDISC is called for conference call')
-            dispatch('setConferenceCallDropped', payload)
+            dispatch('setConferenceCallStateDropped', payload)
         } else {
             console.log('ICALLDISC not identified for call OR conf call')
         }
@@ -74,25 +74,26 @@ const actions = {
         dispatch('setCallStateHeld', payload)
     },
 
-    SOCKET_CONCALLRING({ dispatch }, payload) {
+    SOCKET_CONCALLRING({ dispatch, commit }, payload) {
         console.log('Received event: ' + 'CONCALLRING' + JSON.stringify(payload))
 
-        dispatch('setConferenceCallRinging', payload)
+        commit('setConferenceCallStateRinging', payload)
     },
 
     SOCKET_CONCALLTALK({ dispatch }, payload) {
         console.log('Received event: ' + 'CONCALLTALK' + JSON.stringify(payload))
 
-        dispatch('setConferenceCallTalking', payload)
+        dispatch('setConferenceCallStateTalking', payload)
     },
 
     SOCKET_CONCALLDISC({ dispatch }, payload) {
         console.log('Received event: ' + 'CONCALLDISC' + JSON.stringify(payload))
-        dispatch('setConferenceCallDropped', payload)
+        dispatch('setConferenceCallStateDropped', payload)
     },
 
     SOCKET_CONCALLHLD({ dispatch }, payload) {
         console.log('Received event: ' + 'CONCALLHOLD' + JSON.stringify(payload))
+        dispatch('setConferenceCallStateHeld', payload)
     },
 
 }

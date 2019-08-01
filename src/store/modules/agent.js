@@ -199,30 +199,28 @@ export default {
             }
             console.log("setUpdatedAuxCode(): about to commit aux code. selectedAuxCode=", selectedAuxCode)
             commit('SET_AGENT_AUX_CODE', selectedAuxCode)
-        }
+        },
 
+        setDefaultAuxCode({ getters, commit }, payload) {
+            if (!getters.getAgentAuxState) {
+                console.log("getAgentAuxState is null, so setting default aux code for the state received from the login request")
 
+                switch (payload.agentState) {
+                    case AGENT_STATES.READY:
+                    case AGENT_STATES.NOT_READY:
 
-
-    },
-    setDefaultAuxCode({ getters, commit }, payload) {
-        if (!getters.getAgentAuxState) {
-            console.log("getAgentAuxState is null, so setting default aux code for the state received from the login request")
-
-            switch (payload.agentState) {
-                case AGENT_STATES.READY:
-                case AGENT_STATES.NOT_READY:
-
-                    //for the text value, find the default aux code from the config file
-                    let defaultAgentAuxCode = config.defaultAuxCodes[agentLoginState];
-                    commit('SET_AGENT_AUX_CODE', defaultAgentAuxCode);
-                    break;
+                        //for the text value, find the default aux code from the config file
+                        let defaultAgentAuxCode = config.defaultAuxCodes[agentLoginState];
+                        commit('SET_AGENT_AUX_CODE', defaultAgentAuxCode);
+                        break;
+                }
             }
-
-        }
+        },
 
 
     },
+
+
 
     mutations: {
 

@@ -1,7 +1,7 @@
 <template>
   <mdb-container fluid class="mx-2 px-0">
     <mdb-row class="mx-0">
-      <mdb-col lg="2p5" md="12" class="px-0">
+      <!-- <mdb-col lg="2p5" md="12" class="px-0">
         <draggable
           :list="leftComponents"
           class="dragArea"
@@ -16,13 +16,13 @@
               :key="component.name"
               class="fl_widget"
             >
-              <!-- <div v-html="component.html"></div> -->
+   
             </component>
           </transition-group>
         </draggable>
-      </mdb-col>
+      </mdb-col>-->
 
-      <mdb-col lg="7" md="12" class="mb-1 px-0 mx-0">
+      <mdb-col lg="10" md="12" class="mb-1 px-0 mx-0">
         <div class="w-100 h-100" color="primary">
           <!--     
           <mdb-input type="text" v-model="custName"></mdb-input>
@@ -31,7 +31,7 @@
         </div>
       </mdb-col>
 
-      <mdb-col lg="2p5" md="12" class="mb-1 px-0 mx-0">
+      <mdb-col lg="2" md="12" class="mb-1 px-0 mx-0">
         <draggable
           :list="rightComponents"
           class="dragArea"
@@ -55,7 +55,7 @@
 
 <script>
 import draggable from 'vuedraggable'
-import {config} from '@/config.js'
+import { config } from '@/config.js'
 import {
   mdbContainer,
   mdbRow,
@@ -81,6 +81,7 @@ import Dialer from '@/components/widgets/Dialer/Dialer.vue'
 import CallDisposition from '@/components/widgets/CallDisposition/CallDisposition.vue'
 import CrmFrame from '@/components/widgets/CrmFrame/CrmFrame.vue'
 import QuickLinks from '@/components/widgets/QuickLinks/QuickLinks.vue'
+import SmsHelper from '@/components/widgets/SmsHelper/SmsHelper.vue'
 
 export default {
   name: 'Dashboard',
@@ -98,7 +99,7 @@ export default {
     AgentControl,
     CallDetails,
     CallHistory,
-
+    SmsHelper,
     mdbContainer,
     mdbRow,
     mdbCol,

@@ -50,7 +50,8 @@ export const config = {
         },
     ],
 
-    crmUrl: 'http://andrewreifman.com/se7en/',
+    crmBaseUrl: 'http://andrewreifman.com/se7en/',
+    crmUrl: 'http://localhost:9527/#/dashboard',
 
     leftComponents: [
         {
@@ -65,16 +66,22 @@ export const config = {
     ],
     rightComponents: [
         {
-            name: 'agent-call-statistics'
+            name: 'sms-helper'
         },
-        {
+
+    ],
+
+
+}
+
+/*
+
+{
             name: 'call-disposition'
         },
         {
             name: 'test-bench'
         }
-    ],
 
-
-}
+*/
 
