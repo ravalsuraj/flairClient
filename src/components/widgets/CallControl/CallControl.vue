@@ -4,27 +4,26 @@
       <mdb-row class>
         <mdb-col col="md-4" class="fl_well_container w-100 px-0">
           <!--Primary Call Status-->
-          <mdb-row class="p-1 mx-1 no-gutters">
-            <mdb-col col="2" class="fl_well_text sm">IN:</mdb-col>
+          <mdb-row class="p-1 mx-1 no-gutters" v-if="isCallIdle">
+            <mdb-col col="12" class="fl_well_text mx-auto py-2">WAITING FOR CALL</mdb-col>
+          </mdb-row>
+          <mdb-row class="p-1 mx-1 no-gutters" v-else>
+            <mdb-col col="2" class="fl_well_text">PRIMARY:</mdb-col>
             <mdb-col
               col="5"
-              class="fl_well_text"
+              class="fl_well_text pl-4"
               id="callingAddress"
               :class="{'onHold':isCallHeld}"
             >{{callingAddress}}</mdb-col>
             <mdb-col col="3">
-              <timer name="callStateTimer" class="fl_well_text sm" :class="{'onHold':isCallHeld}"></timer>
+              <timer name="callStateTimer" class="fl_well_text" :class="{'onHold':isCallHeld}"></timer>
             </mdb-col>
-            <mdb-col
-              col="2"
-              class="fl_well_text sm"
-              :class="{'onHold':isCallHeld}"
-            >{{callStatusText}}</mdb-col>
+            <mdb-col col="2" class="fl_well_text" :class="{'onHold':isCallHeld}">{{callStatusText}}</mdb-col>
           </mdb-row>
 
           <!--Conference Call Status-->
           <mdb-row class="p-1 mx-1 no-gutters" v-if="showConfCallDetails">
-            <mdb-col col="2" class="fl_well_text">Conf:</mdb-col>
+            <mdb-col col="2" class="fl_well_text">CONSULT:</mdb-col>
             <mdb-col
               col="5"
               class="fl_well_text"
@@ -34,7 +33,7 @@
             <mdb-col col="3">
               <!-- <timer name="conferenceCallStateTimer" class="fl_well_text sm"></timer> -->
             </mdb-col>
-            <mdb-col col="2" class="fl_well_text sm">{{conferenceCallStatusText}}</mdb-col>
+            <mdb-col col="2" class="fl_well_text">{{conferenceCallStatusText}}</mdb-col>
           </mdb-row>
         </mdb-col>
 
@@ -77,8 +76,6 @@
               </button>
             </transition>
           </div>
-
-         
         </mdb-col>
 
         <div class="fl_dialerDrawer special-color" v-show-slide="showDialer && isCallActive">
@@ -93,7 +90,6 @@
 </template>
 
 <script>
-
 import Dialer from '@/components/widgets/Dialer/Dialer'
 import Timer from '@/components/util/Timer'
 import {
@@ -158,10 +154,16 @@ export default {
       this.showDialer = !this.showDialer
     },
     answerDropCall() {
-      this.$store.dispatch('requestAnswerDropCall', this.$store.getters.getPrimaryCall.ucid)
+      this.$store.dispatch(
+        'requestAnswerDropCall',
+        this.$store.getters.getPrimaryCall.ucid
+      )
     },
     holdUnholdCall() {
-      this.$store.dispatch('requestHoldUnholdCall', this.$store.getters.getPrimaryCall.ucid)
+      this.$store.dispatch(
+        'requestHoldUnholdCall',
+        this.$store.getters.getPrimaryCall.ucid
+      )
     }
   },
   computed: {
@@ -292,13 +294,14 @@ export default {
   color: rgba(255, 255, 255, 0.75);
   padding-right: 10px;
   padding-left: 10px;
+  font-family: 'Unica One', cursive;
+  font-size: 1.2em;
 }
 
 .fl_well_text.sm {
   font-size: 1em;
 }
 #callingAddress {
-  font-size: 1.3em;
 }
 .onHold {
   opacity: 0.7;

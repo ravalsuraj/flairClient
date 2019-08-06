@@ -14,6 +14,11 @@ export default {
         }
     },
     mutations: {
+
+        RESET_DIALER_MODULE(state) {
+            Object.assign(state, initialState())
+        },
+
         UPDATE_DIALED_DIGITS(state, inpDigits) {
             state.dialedDigits = inpDigits;
         }

@@ -47,28 +47,27 @@ function initialState() {
 
 }
 
-const state = initialState
-const mutations = {}
-const actions = {
-
-  requestSendSms({ }, payload) {
-
-    api.sendSmsRequestToGateway(payload)
-  }
-}
-const getters = {
-  getCallerData(state) {
-    return state.callerData
-  },
-  getUui(state) {
-    return state.uui
-  }
-}
-
 export default {
-  namespaced: false,
-  state,
-  getters,
-  mutations,
-  actions
+  state: initialState,
+  mutations: {
+    RESET_DATA_MODULE(state) {
+      Object.assign(state, initialState())
+    }
+  },
+
+  actions: {
+
+    requestSendSms({ }, payload) {
+
+      api.sendSmsRequestToGateway(payload)
+    }
+  },
+  getters: {
+    getCallerData(state) {
+      return state.callerData
+    },
+    getUui(state) {
+      return state.uui
+    }
+  }
 }

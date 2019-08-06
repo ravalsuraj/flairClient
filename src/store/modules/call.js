@@ -22,7 +22,7 @@ const getters = {
     getPrimaryCall(state) {
         return state.primary
     },
- 
+
 }
 
 const actions = {
@@ -67,7 +67,7 @@ const actions = {
     },
 
 
-    
+
     requestAnswerDropCall({ getters, dispatch }, requestedUcid) {
         let request = {
             sessionId: getters['session/getSessionId'],
@@ -183,6 +183,11 @@ const actions = {
 }
 
 const mutations = {
+
+    RESET_CALL_MODULE(state) {
+        Object.assign(state, initialState())
+    },
+
     SET_CALL_STATE_RINGING(state, payload) {
         state.primary.status = CALL_STATES.RINGING
         state.primary.ucid = payload.ucid

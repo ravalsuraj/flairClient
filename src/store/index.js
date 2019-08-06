@@ -79,6 +79,16 @@ export default new Vuex.Store({
         text: message,
         duration: 3000
       })
+    },
+
+    resetAllModules({ commit }) {
+      commit('RESET_AGENT_MODULE')
+      commit('RESET_CALL_MODULE')
+      commit('RESET_CONSULTED_CALL_MODULE')
+      commit('RESET_DATA_MODULE')
+      commit('RESET_DIALER_MODULE')
+      commit('RESET_SOCKET_MODULE')
+      commit('RESET_TIMER_MODULE')
     }
 
   },

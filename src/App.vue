@@ -100,8 +100,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+@import url('https://fonts.googleapis.com/css?family=Unica+One&display=swap');
+
 html {
-  font-size: 65%;
+  font-size: 70%;
   color: rgba(0, 0, 0, 0.45);
 }
 .main-body {
@@ -111,6 +113,9 @@ html {
 }
 footer {
   height: 25px;
+}
+.dispFont {
+  font-family: 'Unica One', cursive;
 }
 
 @media (min-width: 992px) {

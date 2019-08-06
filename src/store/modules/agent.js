@@ -5,7 +5,7 @@ function initialState() {
     return {
         agentState: AGENT_STATES.UNKNOWN,
         reasonCode: 0,
-        reasonCodeLabel: 'None',
+        reasonCodeLabel: '-',
         agentId: null,
         deviceId: null,
         password: null,
@@ -44,7 +44,6 @@ export default {
     },
 
     actions: {
-
         setAgentLoginCredentials({ commit }, credentials) {
             commit('SET_AGENT_LOGIN_CREDENTIALS', credentials)
         },
@@ -175,8 +174,10 @@ export default {
         processAgentLogin({ commit }) {
             commit('SET_AGENT_STATE_LOGIN')
         },
-        processAgentLogout({ commit }) {
+        processAgentLogout({ dispatch, commit }) {
+            dispatch('resetAllModules')
             commit('SET_AGENT_STATE_LOGOUT')
+
         },
         /********************************* */
         setUpdatedAuxCode({ commit }, payload) {
@@ -230,6 +231,9 @@ export default {
 
 
     mutations: {
+        RESET_AGENT_MODULE(state) {
+            Object.assign(state, initialState())
+        },
 
         SET_AGENT_LOGIN_CREDENTIALS(state, credentials) {
             state.agentId = credentials.agentId

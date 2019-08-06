@@ -19,18 +19,6 @@ export const AGENT_STATES = Object.freeze({
   }
 })
 
-export const REASON_CODES = Object.freeze({
-NONE: 0,
-LUNCH: 1,
-TRAINING: 2,
-END_OF_SHIFT:3,
-Text:{
-  0: 'None',
-  1: 'Lunch',
-  2: 'Training',
-  3: "End of Shift"
-}
-  })
 export const TIMER_STATES = Object.freeze({
   START: 1,
   STOP: 0,

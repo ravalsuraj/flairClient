@@ -27,11 +27,14 @@ export default {
 
     actions: {
 
-        setCallStateTransferred({ commit }) {
-            commit('RESET_PRIMARY_CALL')
-            commit('RESET_CONFERENCE_CALL')
+        processCallTransferDone({ commit }) {
+            commit('RESET_CALL_MODULE')
+            commit('RESET_CONSULTED_CALL_MODULE')
         },
 
+        processCallConferenceDone({ commit }) {
+
+        },
 
         setConsultedCallStateRinging({ commit }, payload) {
             commit('SET_CONF_STATE_RINGING')
@@ -85,7 +88,7 @@ export default {
                 resp => {
                     console.log("requestConferenceCall(): resp=" + JSON.stringify(resp));
                     if (resp.responseCode === '0') {
-                        dispatch('SET_CONF_CALL_STATE_Initiated', resp)
+                        dispatch('processCallConferenceDone', resp)
                     }
                 }
             )
@@ -105,7 +108,7 @@ export default {
                 resp => {
                     console.log("requestTransferCall(): resp=" + JSON.stringify(resp));
                     if (resp.responseCode === '0') {
-                        dispatch('setCallStateTransferred', resp)
+                        dispatch('processCallTransferDone', resp)
                     }
                 }
             )
@@ -114,6 +117,11 @@ export default {
     },
 
     mutations: {
+
+        RESET_CONSULTED_CALL_MODULE(state) {
+            Object.assign(state, initialState())
+        },
+        
         SET_CONF_STATE_CONSULTED(state, payload) {
             state.consultedCall.callId = payload.callId
             state.consultedCall.ucid = payload.ucid
@@ -122,22 +130,7 @@ export default {
             state.consultedCall.callingAddress = payload.callingAddress
         },
 
-        SET_CONF_STATE_TRANSFERRED(state, payload) {
-            state.call.primary.status = CALL_STATES.IDLE
-            state.call.primary.calledAddress = ''
-            state.call.primary.callingAddress = ''
-            state.call.primary.ucid = ''
-            state.call.primary.callId = ''
 
-            state.consultedCall.status = CALL_STATES.IDLE
-            state.consultedCall.calledAddress = ''
-            state.consultedCall.callingAddress = ''
-            state.consultedCall.ucid = ''
-            state.consultedCall.callId = ''
-
-            state.consultedCall.socketRequest.ucid = ''
-            state.consultedCall.socketRequest.callId = ''
-        },
 
         SET_CONF_MODE_INITIATED(state) {
             state.call.confereceMode = true
