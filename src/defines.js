@@ -48,6 +48,10 @@ export const CALL_STATES = Object.freeze({
   }
 })
 
+export const CALL_TYPES = Object.freeze({
+  PRIMARY: '1',
+  CONSULTED: '2',
+})
 
 
 export const CONNECTION_STATES = Object.freeze({

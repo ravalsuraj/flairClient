@@ -4,15 +4,14 @@
       <mdb-row class>
         <mdb-col col="md-4" class="fl_well_container w-100 px-0">
           <!--Primary Call Status-->
-          <mdb-row class="p-1 mx-1 no-gutters" v-if="isCallIdle">
+          <!-- <mdb-row class="p-1 mx-1 no-gutters" v-if="isCallIdle">
             <mdb-col col="12" class="fl_well_text mx-auto py-2">WAITING FOR CALL</mdb-col>
-          </mdb-row>
-          <mdb-row class="p-1 mx-1 no-gutters" v-else>
+          </mdb-row>-->
+          <mdb-row class="p-1 mx-1 no-gutters">
             <mdb-col col="2" class="fl_well_text">PRIMARY:</mdb-col>
             <mdb-col
               col="5"
-              class="fl_well_text pl-4"
-              id="callingAddress"
+              class="fl_well_text pl-4 text-center"
               :class="{'onHold':isCallHeld}"
             >{{callingAddress}}</mdb-col>
             <mdb-col col="3">
@@ -22,12 +21,11 @@
           </mdb-row>
 
           <!--Conference Call Status-->
-          <mdb-row class="p-1 mx-1 no-gutters" v-if="showConfCallDetails">
+          <mdb-row class="p-1 mx-1 no-gutters" v-if="!isConfCallIdle">
             <mdb-col col="2" class="fl_well_text">CONSULT:</mdb-col>
             <mdb-col
               col="5"
-              class="fl_well_text"
-              id="callingAddress"
+              class="fl_well_text text-center"
               :class="{'onHold':isConfCallHeld}"
             >{{conferenceCalledAddress}}</mdb-col>
             <mdb-col col="3">
@@ -112,7 +110,7 @@ import {
   mdbModalBody,
   mdbModalFooter
 } from 'mdbvue'
-import { CALL_STATES, SOCKET_EVENTS } from '@/defines.js'
+import { CALL_STATES, CALL_TYPES, SOCKET_EVENTS } from '@/defines.js'
 
 import CallTimer from '@/components/util/CallTimer.vue'
 
@@ -154,41 +152,36 @@ export default {
       this.showDialer = !this.showDialer
     },
     answerDropCall() {
-      this.$store.dispatch(
-        'requestAnswerDropCall',
-        this.$store.getters.getPrimaryCall.ucid
-      )
+      this.$store.dispatch('requestAnswerDropCall', [
+        this.$store.getters.getPrimaryCall.ucid,
+        CALL_TYPES.PRIMARY
+      ])
     },
     holdUnholdCall() {
-      this.$store.dispatch(
-        'requestHoldUnholdCall',
-        this.$store.getters.getPrimaryCall.ucid
-      )
+      this.$store.dispatch('requestHoldUnholdCall', [
+        this.$store.getters.getPrimaryCall.ucid,
+        CALL_TYPES.PRIMARY
+      ])
     }
   },
   computed: {
-    showDialerAsync() {
-      return (
-        this.showDialer &&
-        this.$store.getters.getPrimaryCall.state === CALL_STATES.TALKING
-      )
-    },
-    credentials() {
-      return this.$store.getters.getAgentCredentials
-    },
-    socketRequest() {
-      return this.$store.state.socketRequest
-    },
     callStatus() {
       return this.$store.getters.getCallStatus
     },
     conferenceCallStatus() {
-      return this.$store.getters.getConferenceCallStatus
+      return this.$store.getters.getConsultedCallStatus
     },
+
     isCallIdle() {
       return (
         this.callStatus === CALL_STATES.IDLE ||
         this.callStatus === CALL_STATES.DROPPED
+      )
+    },
+    isConfCallIdle() {
+      return (
+        this.conferenceCallStatus === CALL_STATES.IDLE ||
+        this.conferenceCallStatus === CALL_STATES.DROPPED
       )
     },
     isCallRinging() {
@@ -214,6 +207,7 @@ export default {
     isConfCallHeld() {
       return this.conferenceCallStatus === CALL_STATES.HELD
     },
+
     answerButtonText() {
       if (this.callStatus === CALL_STATES.RINGING) {
         return 'Answer'
@@ -224,19 +218,16 @@ export default {
       }
     },
     answerButtonColor() {
-      if (this.callStatus === CALL_STATES.RINGING) {
+      if (this.isCallRinging) {
         return { 'btn-success': true }
-      } else if (
-        this.callStatus === CALL_STATES.TALKING ||
-        this.callStatus === CALL_STATES.HELD
-      ) {
+      } else if (this.isCallActive) {
         return { 'btn-deep-orange': true }
       } else {
         return { 'blue-grey': true }
       }
     },
     callingAddress() {
-      if (this.callStatus === CALL_STATES.RINGING || this.isCallActive) {
+      if (this.isCallRinging || this.isCallActive) {
         return this.$store.getters.getPrimaryCall.callingAddress
       } else {
         return '-'
@@ -248,11 +239,8 @@ export default {
     },
 
     conferenceCalledAddress() {
-      if (
-        this.conferenceCallStatus === CALL_STATES.RINGING ||
-        this.isConfCallActive
-      ) {
-        return this.$store.getters.getConferenceCall.calledAddress
+      if (this.isCallRinging || this.isConfCallActive) {
+        return this.$store.getters.getConsultedCall.calledAddress
       } else {
         return '-'
       }
@@ -260,10 +248,6 @@ export default {
 
     conferenceCallStatusText() {
       return CALL_STATES.Text[this.conferenceCallStatus]
-    },
-
-    showConfCallDetails() {
-      return this.conferenceCallStatus !== CALL_STATES.IDLE
     }
   },
   watch: {
@@ -301,8 +285,7 @@ export default {
 .fl_well_text.sm {
   font-size: 1em;
 }
-#callingAddress {
-}
+
 .onHold {
   opacity: 0.7;
 }

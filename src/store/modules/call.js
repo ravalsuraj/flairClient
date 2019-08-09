@@ -1,4 +1,4 @@
-import { CALL_STATES, SOCKET_EVENTS } from '@/defines.js'
+import { CALL_STATES, CALL_TYPES, SOCKET_EVENTS } from '@/defines.js'
 function initialState() {
     return {
 
@@ -68,24 +68,31 @@ const actions = {
 
 
 
-    requestAnswerDropCall({ getters, dispatch }, requestedUcid) {
+    requestAnswerDropCall({ getters, dispatch }, [requestedUcid, callType]) {
         let request = {
             sessionId: getters['session/getSessionId'],
             ucid: requestedUcid
         }
-        console.log("request=", request)
-
-        switch (getters.getCallStatus) {
+        console.log("requestAnswerDropCall(): request=", request)
+        let callStatus;
+        if (callType === CALL_TYPES.PRIMARY) {
+            callStatus = getters.getCallStatus
+        }
+        else {
+            callStatus = getters.getConsultedCallStatus
+        }
+        switch (callStatus) {
             case CALL_STATES.RINGING:
-                console.log('AnswerDropCall: calling answerCall()')
+                console.log('AnswerDropCall(): calling answerCall()')
                 dispatch('requestAnswerCall', request)
                 break
             case CALL_STATES.TALKING:
-                console.log('AnswerDropCall: calling dropCall()')
+                console.log('AnswerDropCall(): calling dropCall()')
                 dispatch('requestDropCall', request)
 
                 break
             default:
+                console.log('AnswerDropCall(): skipping answer or drop because call state is: ' + CALL_STATES.Text[callStatus])
         }
     },
     requestAnswerCall({ getters, dispatch }, request) {
@@ -119,7 +126,7 @@ const actions = {
     processAnswerCallResponse({ dispatch }, response) {
         console.log(SOCKET_EVENTS.ANSWER_CALL + '(): response=' + JSON.stringify(response))
         if (response.responseCode === '0') {
-            dispatch('setCallStateTalking')
+           // dispatch('setCallStateTalking')
         } else {
             dispatch('showErrorBanner', ['Call Answer Failed', response.responseMessage])
         }
@@ -128,24 +135,30 @@ const actions = {
     processDropCallResponse({ dispatch }, response) {
         console.log('processDropCallResponse(): response=' + JSON.stringify(response))
         if (response.responseCode === '0') {
-            dispatch('setCallStateDropped')
+            //dispatch('setCallStateDropped')
         } else {
             dispatch('showErrorBanner', ['Call Drop Failed', response.responseMessage])
         }
     },
 
-    requestHoldUnholdCall({ getters, dispatch }, requestedUcid) {
+    requestHoldUnholdCall({ getters, dispatch }, [requestedUcid, callType]) {
         console.log("requestHoldUnholdCall(): action entered")
+
         let request = {
             sessionId: getters['session/getSessionId'],
             agentId: getters['getAgentCredentials'].agentId,
             deviceId: getters['getAgentCredentials'].deviceId,
             ucid: requestedUcid,
         }
-        console.log("request=", request)
-
-        // $socket is socket.io-client instance
-        switch (getters.getCallStatus) {
+        console.log("requestHoldUnholdCall(): request=", request)
+        let callStatus;
+        if (callType === CALL_TYPES.PRIMARY) {
+            callStatus = getters.getCallStatus
+        }
+        else {
+            callStatus = getters.getConsultedCallStatus
+        }
+        switch (callStatus) {
             case CALL_STATES.HELD:
                 dispatch('requestUnholdCall', request)
                 break
@@ -161,7 +174,7 @@ const actions = {
         this._vm.$socket.emit(SOCKET_EVENTS.HOLD_CALL, request, (response) => {
             console.log('requestHoldCall(): response=' + JSON.stringify(response))
             if (response.responseCode === '0') {
-                dispatch('setCallStateHeld')
+               // dispatch('setCallStateHeld')
             } else {
                 dispatch('showErrorBanner', ['Hold Call Failed', JSON.stringify(response)])
             }
@@ -173,7 +186,7 @@ const actions = {
         this._vm.$socket.emit(SOCKET_EVENTS.RETRIEVE_CALL, request, (response) => {
             console.log('requestUnholdCall(): response=' + JSON.stringify(response))
             if (response.responseCode === '0') {
-                dispatch('setCallStateTalking')
+                //dispatch('setCallStateTalking')
             } else {
                 console.log('Call Unhold Failed' + JSON.stringify(response))
             }

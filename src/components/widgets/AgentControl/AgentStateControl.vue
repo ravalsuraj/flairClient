@@ -97,7 +97,7 @@ export default {
     },
     agentStateIndicatorColor(state) {
       if (state) {
-        console.log('agentStateIndicatorColor(): state=', state)
+        // console.log('agentStateIndicatorColor(): state=', state)
         switch (state) {
           case AGENT_STATES.READY:
             return 'green-text'

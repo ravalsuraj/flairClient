@@ -16,11 +16,11 @@ export default {
 
     getters: {
 
-        getConferenceCallStatus(state) {
+        getConsultedCallStatus(state) {
             return state.consultedCall.status
         },
 
-        getConferenceCall(state) {
+        getConsultedCall(state) {
             return state.consultedCall
         }
     },
@@ -47,6 +47,7 @@ export default {
         },
         setConsultedCallStateDropped({ commit }, payload) {
             commit('SET_CONF_STATE_DROPPED')
+            commit('RESET_CONSULTED_CALL_MODULE')
         },
 
         requestConsultCall({ getters, commit }) {
@@ -54,7 +55,7 @@ export default {
             let request = {
                 sessionId: getters['session/getSessionId'],
                 ucid: getters.getPrimaryCall.ucid,
-                remoteId: getters.getDialedDigits,
+                dialedNumber: getters.getDialedDigits,
             }
 
 
@@ -76,9 +77,8 @@ export default {
 
             let request = {
                 sessionId: getters['session/getSessionId'],
-                remoteId: getters.getDialedDigits,
-                ucid: getters.getPrimaryCall.ucid,
-                consultedUcid: getters.getConferenceCall.ucid
+                primaryUcid: getters.getPrimaryCall.ucid,
+                consultedUcid: getters.getConsultedCall.ucid
             }
 
             console.log("requestConferenceCall(): request=" + JSON.stringify(request));
@@ -95,10 +95,11 @@ export default {
         },
 
         requestTransferCall({ getters, dispatch }) {
+
             let request = {
                 sessionId: getters['session/getSessionId'],
-                ucid: getters.getPrimaryCall.ucid,
-                consultedUcid: getters.getConferenceCall.ucid
+                primaryUcid: getters.getPrimaryCall.ucid,
+                consultedUcid: getters.getConsultedCall.ucid
             }
 
             console.log("requestTransferCall(): request=" + JSON.stringify(request));

@@ -34,51 +34,30 @@
       </mdb-row>
 
       <mdb-row class="mx-0 pb-3">
-        <mdb-btn class="mdb-color mx-2 w-100" @click="onConsultButtonClicked">Consult</mdb-btn>
-        <!-- <div class="btn-group" role="group">
-            <transition name="fade">
-              
-              <button
-                type="button"
-                class="btn"
-                @click="answerDropCall"
-                :disabled="isCallIdle"
-                :class="[{iconGlow:isCallRinging}, answerButtonColor]"
-              >
-                <transition name="fade">
-                  <mdb-icon icon="phone" style="font-size:1.5em" v-if="false" />
-                  <mdb-icon icon="phone-slash" style="font-size:1.5em" v-else />
-                </transition>
-              </button>
-            </transition>
-            <transition name="fade">
-              
-              <button
-                type="checkbox"
-                class="btn"
-                v-if="true"
-                @click="holdUnholdCall"
-                :class="{'mdb-color': !isCallHeld}"
-              >
-                <mdb-icon icon="pause" style="font-size:1.5em" />
-              </button>
-            </transition>
-        </div>-->
-
-        <!-- <div class="btn-group w-100 pb-2">
-          <mdb-btn class="danger-color mx-2 px-2 w-50" @click="onConferenceDropButtonClicked">Drop</mdb-btn>
-
+        <transition name="fade">
           <mdb-btn
-            class="info-color mx-2 px-2 w-50"
-            @click="onConferenceHoldUnholdButtonClicked"
-          >Hold/Unhold</mdb-btn>
-        </div> -->
-        <div class="btn-group w-100">
-          <mdb-btn class="mdb-color mx-2 px-2" @click="onTransferButtonClicked">Trans</mdb-btn>
-          <!-- <mdb-btn class="mdb-color mx-2 px-2" @click="onSwitchButtonClicked">Switch</mdb-btn> -->
-          <mdb-btn class="rgba-cyan-strong mx-2 px-2" @click="onConferenceButtonClicked">Conf</mdb-btn>
-          <!-- <mdb-btn class="mdb-color mx-2 px-2" @click="onRejoinButtonClicked">Rejoin</mdb-btn> -->
-        </div>
+            class="mdb-color mx-2 w-100"
+            v-if="isConsultCallIdle"
+            @click="onConsultButtonClicked"
+          >Consult</mdb-btn>
+        </transition>
+        <transition name="fade">
+          <div class="btn-group w-100 pb-2" v-if="!isConsultCallIdle">
+            <mdb-btn class="danger-color mx-2 px-2 w-50" @click="onConfDropButtonClicked">Drop</mdb-btn>
+            <mdb-btn
+              class="info-color mx-2 px-2 w-50"
+              @click="onConfHoldBtnClicked"
+            >{{confHoldText}}</mdb-btn>
+          </div>
+        </transition>
+        <transition name="fade">
+          <div class="btn-group w-100" v-if="!isConsultCallIdle">
+            <mdb-btn class="mdb-color mx-2 px-2 w-50" @click="onTransferButtonClicked">Trans</mdb-btn>
+            <mdb-btn class="mdb-color mx-2 px-2 w-50" @click="onConferenceButtonClicked">Conf</mdb-btn>
+            <!-- <mdb-btn class="mdb-color mx-2 px-2" @click="onRejoinButtonClicked">Rejoin</mdb-btn> -->
+            <!-- <mdb-btn class="mdb-color mx-2 px-2" @click="onSwitchButtonClicked">Switch</mdb-btn> -->
+          </div>
+        </transition>
 
         <!-- <mdb-btn class="unique-color">Conf</mdb-btn> -->
       </mdb-row>
@@ -102,7 +81,12 @@ import {
   mdbInput,
   mdbIcon
 } from 'mdbvue'
-import { CALL_STATES, SOCKET_EVENTS } from '@/defines.js'
+import {
+  CALL_STATES,
+  CALL_TYPES,
+  AGENT_STATES,
+  SOCKET_EVENTS
+} from '@/defines.js'
 
 import CallTimer from '@/components/util/CallTimer.vue'
 
@@ -181,8 +165,18 @@ export default {
     onRejoinButtonClicked() {},
     onSwitchButtonClicked() {},
 
-    onConferenceDropButtonClicked() {},
-    onConferenceHoldUnholdButtonClicked() {}
+    onConfDropButtonClicked() {
+      this.$store.dispatch('requestAnswerDropCall', [
+        this.$store.getters.getConsultedCall.ucid,
+        CALL_TYPES.CONSULTED
+      ])
+    },
+    onConfHoldBtnClicked() {
+      this.$store.dispatch('requestHoldUnholdCall', [
+        this.$store.getters.getConsultedCall.ucid,
+        CALL_TYPES.CONSULTED
+      ])
+    }
   },
   computed: {
     credentials() {
@@ -190,6 +184,20 @@ export default {
     },
     callStatus() {
       return this.$store.getters.getPrimaryCall.status
+    },
+    isAgentStateHeld() {
+      return this.$store.getters.getAgentState === AGENT_STATES.HELD
+    },
+    isConsultCallIdle() {
+      return (
+        this.$store.getters.getConsultedCallStatus === CALL_STATES.IDLE ||
+        this.$store.getters.getConsultedCallStatus === CALL_STATES.DROPPED
+      )
+    },
+    confHoldText() {
+      return this.$store.getters.consultedCallStatus === CALL_STATES.HELD
+        ? 'UNHOLD'
+        : 'HOLD'
     }
   }
 }
@@ -206,10 +214,15 @@ export default {
   height: 25px;
   width: 100%;
   border-bottom: 1px solid grey;
-  font-size: 1.5rem;
+  font-family: 'Unica One', cursive;
   overflow: hidden;
-  background: white;
+  background: rgba(255, 255, 255, 0.75);
   border-radius: 5px;
+}
+
+.fl_inp_dialedDigits input {
+  font-size: 2em;
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .fl_button_dialerDigit {

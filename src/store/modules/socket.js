@@ -52,28 +52,30 @@ export default {
         /**********************************
         *  INCOMING SOCKET REQUESTS
         **********************************/
-
+        SOCKET_DEVEVENT({}, payload){
+            console.log('Recieved event:' + 'DEVEVENT' + JSON.stringify(payload))
+        },
         SOCKET_ICALLRING({ dispatch }, payload) {
             console.log('Recieved event:' + 'ICALLRING' + JSON.stringify(payload))
             dispatch('setCallStateRinging', payload)
         },
 
         SOCKET_ICALLTALK({ dispatch }, payload) {
-            console.log('Received event: ' + 'ICALLANS: ' + JSON.stringify(payload))
+            console.log('Received event: ' + 'ICALLTALK: ' + JSON.stringify(payload))
             dispatch('setCallStateTalking', payload)
         },
 
         SOCKET_ICALLDISC({ dispatch, getters }, payload) {
             console.log('payload call iD is ' + payload.callId)
             console.log('callId for primary call is: ' + getters.getPrimaryCall.callId)
-            console.log('callId for conf call is: ' + getters.getConferenceCall.callId)
+            console.log('callId for conf call is: ' + getters.getConsultedCall.callId)
             console.log(payload)
             console.log('Received event: ' + 'ICALLDISC' + JSON.stringify(payload))
 
             if (getters.getPrimaryCall.callId == payload.callId) {
                 console.log('ICALLDISC is called for primary call')
                 dispatch('setCallStateDropped', payload)
-            } else if (getters.getConferenceCall.callId == payload.callId) {
+            } else if (getters.getConsultedCall.callId == payload.callId) {
                 console.log('ICALLDISC is called for consultedCall call')
                 dispatch('setConsultedCallStateDropped', payload)
             } else {
