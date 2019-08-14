@@ -1,3 +1,4 @@
+
 <template>
   <div class="d-flex flex-column">
     <top-navbar v-if="isAgentLoggedIn"></top-navbar>
@@ -5,10 +6,7 @@
       <router-view v-if="isAgentLoggedIn" class="fl_topSpacing"></router-view>
       <login-page v-else class="flex-fill fl_topSpacing"></login-page>
     </main>
-    <!-- Footer -->
-    <!-- <utility-bar v-if="isAgentLoggedIn"></utility-bar> -->
-    <footer class="page-footer font-small special-color p-2"></footer>
-    <!-- Footer -->
+    <bottom-footer></bottom-footer>
 
     <notifications group="error" />
   </div>
@@ -34,6 +32,7 @@ import Dashboard from '@/views/Dashboard'
 import TopNavbar from '@/views/TopNavbar'
 import LoginPage from '@/views/Login'
 import UtilityBar from '@/views/UtilityBar.vue'
+import BottomFooter from '@/views/BottomFooter.vue'
 
 import { AGENT_STATES, SOCKET_EVENTS } from '@/defines'
 import Utils from '@/services/Utils'
@@ -44,7 +43,7 @@ export default {
     TopNavbar,
     Dashboard,
     UtilityBar,
-
+    BottomFooter,
     mdbContainer,
     mdbNavbar,
     mdbNavbarBrand,
@@ -67,12 +66,25 @@ export default {
   },
   sockets: {
     connect() {
-      console.log(
-        'App.vue/sockets/connect(): Connection to SocketIO Server Established'
-      )
-
+      console.log('App/sockets/connect(): socket connected')
       this.$store.dispatch('processSocketConnected')
-      //this.$store.dispatch('session/updateIpAddress')
+    },
+    connect_error() {
+      console.log('App/sockets/connect(): socket connect_error')
+      this.$store.dispatch('showErrorBanner', [
+        'Server Connection Lost!',
+        'Server connection could not be established. Please make sure you have connectivity with the server before you attempt to log in.'
+      ])
+      this.$store.dispatch('setSocketStateDisconnected')
+    },
+    connection_error() {
+      console.log('App/sockets/connect(): socket connection_error')
+      this.$store.dispatch('showErrorBanner', [
+        'Server Connection Lost!',
+        'WebSocket connection timed out. Please make sure the websocket server is running.'
+      ])
+  
+      this.$store.dispatch('setSocketStateDisconnected')
     }
   },
   mounted() {

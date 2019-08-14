@@ -20,7 +20,7 @@ export default {
   },
   computed: {
     socketStatus() {
-      return this.$store.state.socket.status;
+      return this.$store.getters.getSocketStatus;
     },
     socketStateIndicatorColor() {
       return this.socketStatus === CONNECTION_STATES.CONNECTED

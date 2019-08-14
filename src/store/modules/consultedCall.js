@@ -51,26 +51,37 @@ export default {
         },
 
         requestConsultCall({ getters, commit }) {
-
-            let request = {
-                sessionId: getters['session/getSessionId'],
-                ucid: getters.getPrimaryCall.ucid,
-                dialedNumber: getters.getDialedDigits,
-            }
+            return new Promise((resolve, reject) => {
+                try {
 
 
-            console.log("requestConsultCall(): request=" + JSON.stringify(request));
-            this._vm.$socket.emit(
-                SOCKET_EVENTS.CONSULT_CALL,
-                request,
-                resp => {
-                    console.log("requestConsultCall(): resp=" + JSON.stringify(resp));
-                    if (resp.responseCode === '0') {
-                        commit('SET_CONF_STATE_CONSULTED', resp)
-
+                    let request = {
+                        sessionId: getters['session/getSessionId'],
+                        ucid: getters.getPrimaryCall.ucid,
+                        dialedNumber: getters.getDialedDigits,
                     }
+
+
+                    console.log("requestConsultCall(): request=" + JSON.stringify(request));
+                    this._vm.$socket.emit(
+                        SOCKET_EVENTS.CONSULT_CALL,
+                        request,
+                        resp => {
+                            console.log("requestConsultCall(): resp=" + JSON.stringify(resp));
+                            if (resp.responseCode === '0') {
+                                commit('SET_CONF_STATE_CONSULTED', resp)
+                                resolve(resp)
+
+                            } else {
+                                resolve(resp)
+                            }
+                        }
+                    )
+                } catch (err) {
+                    reject(err)
                 }
-            )
+            })
+
         },
 
         requestConferenceCall({ getters, dispatch }) {
@@ -122,7 +133,7 @@ export default {
         RESET_CONSULTED_CALL_MODULE(state) {
             Object.assign(state, initialState())
         },
-        
+
         SET_CONF_STATE_CONSULTED(state, payload) {
             state.consultedCall.callId = payload.callId
             state.consultedCall.ucid = payload.ucid

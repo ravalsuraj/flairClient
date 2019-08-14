@@ -2,7 +2,7 @@
   <div class="fl_container_callControl d-flex align-items-center">
     <mdb-container fluid>
       <mdb-row class>
-        <mdb-col col="md-4" class="fl_well_container w-100 px-0">
+        <mdb-col col="md-8" class="fl_well_container w-100 px-0">
           <!--Primary Call Status-->
           <!-- <mdb-row class="p-1 mx-1 no-gutters" v-if="isCallIdle">
             <mdb-col col="12" class="fl_well_text mx-auto py-2">WAITING FOR CALL</mdb-col>
@@ -35,7 +35,7 @@
           </mdb-row>
         </mdb-col>
 
-        <mdb-col col="md-5">
+        <mdb-col col="md-4">
           <div class="btn-group" role="group">
             <transition name="fade">
               <button
@@ -306,7 +306,7 @@ export default {
   pointer-events: none;
 }
 .fl_container_callControl {
-  width: 1000px;
+  width: 500px;
 }
 
 .iconGlow {

@@ -44,6 +44,11 @@ export default {
     },
 
     actions: {
+
+        setAgentState({ commit }, agentState){
+            commit('SET_AGENT_STATE', agentState)
+        },
+
         setAgentLoginCredentials({ commit }, credentials) {
             commit('SET_AGENT_LOGIN_CREDENTIALS', credentials)
         },
@@ -193,11 +198,10 @@ export default {
                 selectedAuxCode.label = "Ready"
             } else {
                 for (let i = 0; i < auxCodes.length; i++) {
-                    console.log("auxCode(" + i + ")=", auxCodes[i])
 
                     if (auxCodes[i].reasonCode == payload.reasonCode) {
                         selectedAuxCode.label = auxCodes[i].label
-                        console.log("setUpdatedAuxCode(): setting label=" + selectedAuxCode.label)
+                        console.log("setUpdatedAuxCode(): setting label= " + selectedAuxCode.label)
 
                     } else {
                         //console.log("aux code failed for i=" + i)
@@ -250,8 +254,8 @@ export default {
             state.agentState = AGENT_STATES.LOG_OUT
         },
 
-        SET_AGENT_STATE(state, payload) {
-            state.agentState = payload
+        SET_AGENT_STATE(state, agentState) {
+            state.agentState = agentState
         },
 
         SET_AGENT_AUX_CODE(state, payload) {

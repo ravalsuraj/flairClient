@@ -2,7 +2,7 @@
   <mdb-container fluid class="d-flex fl_corner_bg">
     <!-- Material form login -->
     <mdb-row class="d-flex flex-fill justify-content-center">
-      <mdb-col col="lg-4" class style>
+      <mdb-col col="lg-6" class style>
         <mdb-card>
           <div class="pt-3 mx-auto">
             <img
@@ -146,30 +146,7 @@ export default {
     }
   },
   sockets: {
-    connect() {
-      console.log('socket connected')
-      this.showAlert(
-        'success',
-        'Server Communication Established, please proceed with login'
-      )
-      this.$store.dispatch('setSocketStateConnected')
-    },
-    connect_error() {
-      console.log('Connection Error for WebSocket')
-      this.showAlert(
-        'danger',
-        'Server connection could not be established. Please make sure you have connectivity with the server before you attempt to log in.'
-      )
-      this.$store.dispatch('setSocketStateDisconnected')
-    },
-    connection_error() {
-      console.log('Connection Timeout for WebSocket')
-      this.showAlert(
-        'danger',
-        'WebSocket connection timed out. Please make sure the websocket server is running.'
-      )
-      this.$store.dispatch('setSocketStateDisconnected')
-    }
+   
   },
   methods: {
     handleEnterKeyForLogin(e) {

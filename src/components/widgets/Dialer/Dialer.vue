@@ -39,7 +39,10 @@
             class="mdb-color mx-2 w-100"
             v-if="isConsultCallIdle"
             @click="onConsultButtonClicked"
-          >Consult</mdb-btn>
+          >
+            <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
+            <span>Consult</span>
+          </mdb-btn>
         </transition>
         <transition name="fade">
           <div class="btn-group w-100 pb-2" v-if="!isConsultCallIdle">
@@ -114,7 +117,10 @@ export default {
       digits: [1, 2, 3, 4, 5, 6, 7, 8, 9, '*', 0, '#'],
       interval: false,
       digitDeleteSpeed: 200,
-      initialDeleteSpeed: 500
+      initialDeleteSpeed: 500,
+      spinner: {
+        show: false
+      }
     }
   },
   // sockets: {
@@ -126,6 +132,13 @@ export default {
   //   }
   // },
   methods: {
+    showSpinner() {
+      this.spinner.show = true
+    },
+    hideSpinner() {
+      this.spinner.show = false
+    },
+
     appendDigit(digit) {
       this.dialedDigits += digit
     },
@@ -151,7 +164,10 @@ export default {
 
     onConsultButtonClicked() {
       this.$store.dispatch('updateDialedDigits', this.dialedDigits)
-      this.$store.dispatch('requestConsultCall')
+      this.showSpinner();
+      this.$store.dispatch('requestConsultCall').then(resp=>{
+        this.hideSpinner();
+      })
     },
 
     onConferenceButtonClicked() {

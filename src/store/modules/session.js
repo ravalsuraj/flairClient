@@ -116,23 +116,26 @@ export default {
 
 
         sendRemoveSessionRequest({ getters, commit }) {
+            new Promise((resolve, reject) => {
 
-            let request = {
-                sessionId: getters['session/getSessionId']
-            }
-            console.log('sendRemoveSessionRequest(): request' + JSON.stringify(request))
 
-            this._vm.$socket.emit(SOCKET_EVENTS.END_SESSION, request, resp => {
-                console.log('sendRemoveSessionRequest():' + JSON.stringify(resp))
-                commit('SET_SESSION_ID', resp.sessionId)
-                resolve(resp);
+                let request = {
+                    sessionId: getters['session/getSessionId']
+                }
+                console.log('sendRemoveSessionRequest(): request' + JSON.stringify(request))
+
+                this._vm.$socket.emit(SOCKET_EVENTS.END_SESSION, request, resp => {
+                    console.log('sendRemoveSessionRequest():' + JSON.stringify(resp))
+                    commit('SET_SESSION_ID', resp.sessionId)
+                    resolve(resp);
+                })
             })
         },
 
         addWindowRefreshReloadListener({ dispatch }, ) {
             console.log("addWindowRefreshReloadListener(): entered action")
             window.addEventListener('beforeunload', function (e) {
-                // dispatch('sendRemoveSessionRequest')
+                //dispatch('sendRemoveSessionRequest')
             });
         }
 

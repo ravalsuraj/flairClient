@@ -17,7 +17,7 @@ export default {
         RESET_SOCKET_MODULE(state) {
             Object.assign(state, initialState())
         },
-        
+
         /******************* SOCKETIO STATE MUTATIONS *********************/
         SET_SOCKET_STATE_CONNECTED(state) {
             state.status = CONNECTION_STATES.CONNECTED
@@ -52,7 +52,7 @@ export default {
         /**********************************
         *  INCOMING SOCKET REQUESTS
         **********************************/
-        SOCKET_DEVEVENT({}, payload){
+        SOCKET_DEVEVENT({ }, payload) {
             console.log('Recieved event:' + 'DEVEVENT' + JSON.stringify(payload))
         },
         SOCKET_ICALLRING({ dispatch }, payload) {
@@ -109,7 +109,14 @@ export default {
             console.log('Received event: ' + 'CONCALLHOLD' + JSON.stringify(payload))
             dispatch('setConsultedCallStateHeld', payload)
         },
-
+        SOCKET_AGTUPDATED({ dispatch }, payload) {
+            console.log('Received event: ' + 'AGTUPDATED' + JSON.stringify(payload))
+            dispatch('setAgentState', payload.agentState)
+        }
     },
-    getters: {}
+    getters: {
+        getSocketStatus(state) {
+            return state.status
+        }
+    }
 }
