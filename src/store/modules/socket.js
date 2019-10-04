@@ -53,42 +53,88 @@ export default {
         *  INCOMING SOCKET REQUESTS
         **********************************/
         SOCKET_DEVEVENT({ }, payload) {
-            console.log('Recieved event:' + 'DEVEVENT' + JSON.stringify(payload))
+            console.log('Recieved event: ' + 'DEVEVENT' + JSON.stringify(payload))
         },
-        SOCKET_ICALLRING({ dispatch }, payload) {
-            console.log('Recieved event:' + 'ICALLRING' + JSON.stringify(payload))
+        SOCKET_ICALLRING({ dispatch, getters }, payload) {
+            console.log('SOCKET_ICALLRING: ' + 'ICALLRING' + JSON.stringify(payload))
             dispatch('setCallStateRinging', payload)
+
+            // if (getters.getPrimaryCall.ucid == payload.callId) {
+
+            //     console.log('SOCKET_ICALLRING: called for primary call')
+            //     dispatch('setCallStateRinging', payload)
+
+            // } else if (getters.getConsultedCall.ucid == payload.callId) {
+
+            //     console.log('SOCKET_ICALLRING: called for consultedCall call')
+            //     dispatch('setConsultedCallStateRinging', payload)
+
+            // } else {
+
+            //     console.log('SOCKET_ICALLRING: not identified for call OR conf call')
+            // }
         },
 
-        SOCKET_ICALLTALK({ dispatch }, payload) {
+        SOCKET_ICALLTALK({ dispatch, getters }, payload) {
             console.log('Received event: ' + 'ICALLTALK: ' + JSON.stringify(payload))
-            dispatch('setCallStateTalking', payload)
-        },
 
-        SOCKET_ICALLDISC({ dispatch, getters }, payload) {
-            console.log('payload call iD is ' + payload.callId)
-            console.log('callId for primary call is: ' + getters.getPrimaryCall.callId)
-            console.log('callId for conf call is: ' + getters.getConsultedCall.callId)
-            console.log(payload)
-            console.log('Received event: ' + 'ICALLDISC' + JSON.stringify(payload))
 
-            if (getters.getPrimaryCall.callId == payload.callId) {
-                console.log('ICALLDISC is called for primary call')
-                dispatch('setCallStateDropped', payload)
-            } else if (getters.getConsultedCall.callId == payload.callId) {
-                console.log('ICALLDISC is called for consultedCall call')
-                dispatch('setConsultedCallStateDropped', payload)
+            if (getters.getPrimaryCall.ucid == payload.ucid) {
+
+                console.log('SOCKET_ICALLTALK: called for primary call')
+                dispatch('setCallStateTalking', payload)
+
+            } else if (getters.getConsultedCall.ucid == payload.ucid) {
+
+                console.log('SOCKET_ICALLTALK: called for consultedCall call')
+                dispatch('setConsultedCallStateTalking', payload)
+
             } else {
-                console.log('ICALLDISC not identified for call OR conf call')
+
+                console.log('SOCKET_ICALLTALK: not identified for call OR conf call')
             }
         },
 
-        SOCKET_ICALLHLD({ dispatch }, payload) {
-            console.log('Recieved event:' + 'ICALLHLD' + JSON.stringify(payload))
-            dispatch('setCallStateHeld', payload)
+        SOCKET_ICALLDISC({ dispatch, getters }, payload) {
+            console.log('SOCKET_ICALLDISC(): Received event: ' + 'ICALLDISC' + JSON.stringify(payload))
+
+            if (getters.getPrimaryCall.ucid == payload.ucid) {
+
+                console.log('SOCKET_ICALLDISC(): called for primary call')
+                dispatch('setCallStateDropped', payload)
+
+            } else if (getters.getConsultedCall.ucid == payload.ucid) {
+
+                console.log('SOCKET_ICALLDISC(): called for consultedCall call')
+                dispatch('setConsultedCallStateDropped', payload)
+
+            } else {
+                console.log('SOCKET_ICALLDISC(): not identified for call OR conf call')
+            }
         },
 
-        SOCKET_CONCALLRING({ dispatch, commit }, payload) {
+        SOCKET_ICALLHLD({ dispatch, getters }, payload) {
+            console.log('Recieved event: ' + 'ICALLHLD' + JSON.stringify(payload))
+
+            if (getters.getPrimaryCall.ucid == payload.ucid) {
+
+                console.log('SOCKET_ICALLHLD: called for primary call')
+                dispatch('setCallStateHeld', payload)
+
+            } else if (getters.getConsultedCall.ucid == payload.ucid) {
+
+                console.log('ISOCKET_ICALLHLD:  called for consultedCall call')
+                dispatch('setConsultedCallStateHeld', payload)
+
+            } else {
+
+                console.log('ICALLHOLD not identified for call OR conf call')
+            }
+
+
+        },
+
+        SOCKET_CONCALLRING({ dispatch }, payload) {
             console.log('Received event: ' + 'CONCALLRING' + JSON.stringify(payload))
 
             dispatch('setConsultedCallStateRinging', payload)

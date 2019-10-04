@@ -83,12 +83,15 @@ export default {
         'Server Connection Lost!',
         'WebSocket connection timed out. Please make sure the websocket server is running.'
       ])
-  
+
       this.$store.dispatch('setSocketStateDisconnected')
     }
   },
   mounted() {
     this.$store.dispatch('session/addWindowRefreshReloadListener')
+    this.$store.dispatch('authenticateCrm').then(() => {
+      //this.$store.dispatch('getAccountIdFromCli', '8879708222')
+    })
   },
   methods: {},
   computed: {

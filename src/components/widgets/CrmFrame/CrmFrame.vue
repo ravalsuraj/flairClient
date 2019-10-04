@@ -12,7 +12,8 @@
       </mdb-card-header>
       <div>
         <mdb-card-body class="p-0 m-0" v-show-slide="showWidget" :class="{'p-0': !showWidget}">
-          <iframe :src="crmUrl" class="w-100" style="border:none; height:550px;"></iframe>
+          <iframe :src="crmUrl" class="w-100 fl_crm_window" style></iframe>
+          <!-- <iframe is="x-frame-bypass" :src="crmUrl" class="w-100 fl_crm_window" ></iframe> -->
         </mdb-card-body>
       </div>
     </mdb-card>
@@ -94,32 +95,21 @@ export default {
       )
     },
 
-    callingAddress(){
+    callingAddress() {
       return this.$store.getters.getPrimaryCall.callingAddress
     },
-    calledAddress(){
-return this.$store.getters.getPrimaryCall.calledAddress
+    calledAddress() {
+      return this.$store.getters.getPrimaryCall.calledAddress
     },
-    agentCredentials(){
-      return this.$store.getters.getAgentCredentials;
+    agentCredentials() {
+      return this.$store.getters.getAgentCredentials
     },
     showWidget() {
       return this.manualShowWidget || this.autoShowWidget
     },
 
     crmUrl() {
-
-      return (
-        config.crmUrl +
-        '?cli=' +
-        this.callingAddress +
-        '&dnis=' +
-        this.calledAddress +
-        '&agentId=' +
-        this.agentCredentials.agentId +
-        '&deviceId=' +
-        this.agentCredentials.deviceId
-      )
+      return this.$store.getters.getComputedCrmUrl
     }
   }
 }
@@ -127,22 +117,8 @@ return this.$store.getters.getPrimaryCall.calledAddress
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-th,
-td {
-  font-size: 1rem;
+.fl_crm_window {
+  border: none;
+  height: 600px;
 }
 </style>

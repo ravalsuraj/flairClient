@@ -1,4 +1,4 @@
-import { CALL_STATES, SOCKET_EVENTS } from '@/defines.js'
+import { CALL_STATES, SOCKET_EVENTS, CALL_TYPES } from '@/defines.js'
 function initialState() {
     return {
         consultedCall: {
@@ -26,7 +26,16 @@ export default {
     },
 
     actions: {
+        checkCallTypePrimaryConsulted({ getters }, ucid) {
 
+            if (ucid === getters.getPrimaryCall.ucid) {
+                return CALL_TYPES.PRIMARY
+            } else if (ucid === getters.getConsultedCall.ucid) {
+                return CALL_TYPES.CONSULTED
+            } else {
+                return CALL_TYPES.UNKNOWN
+            }
+        },
         processCallTransferDone({ commit }) {
             commit('RESET_CALL_MODULE')
             commit('RESET_CONSULTED_CALL_MODULE')
@@ -57,7 +66,7 @@ export default {
 
                     let request = {
                         sessionId: getters['session/getSessionId'],
-                        ucid: getters.getPrimaryCall.ucid,
+                        primaryUcid: getters.getPrimaryCall.ucid,
                         dialedNumber: getters.getDialedDigits,
                     }
 

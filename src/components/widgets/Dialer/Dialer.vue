@@ -46,11 +46,11 @@
         </transition>
         <transition name="fade">
           <div class="btn-group w-100 pb-2" v-if="!isConsultCallIdle">
-            <mdb-btn class="danger-color mx-2 px-2 w-50" @click="onConfDropButtonClicked">Drop</mdb-btn>
-            <mdb-btn
+            <mdb-btn class="btn-deep-orange mx-2 px-2 w-100" @click="onConfDropButtonClicked">Drop</mdb-btn>
+            <!-- <mdb-btn
               class="info-color mx-2 px-2 w-50"
               @click="onConfHoldBtnClicked"
-            >{{confHoldText}}</mdb-btn>
+            >{{confHoldText}}</mdb-btn> -->
           </div>
         </transition>
         <transition name="fade">

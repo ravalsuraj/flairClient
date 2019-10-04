@@ -51,13 +51,14 @@ export const CALL_STATES = Object.freeze({
 export const CALL_TYPES = Object.freeze({
   PRIMARY: '1',
   CONSULTED: '2',
+  UNKNWON: '99'
 })
 
 
 export const CONNECTION_STATES = Object.freeze({
   CONNECTED: 'CONNECTED',
   CONNECTING: 'CONNECTING',
-  DROPPED: 'DROPPED'
+  DISCONNECTED: 'DISCONNECTED'
 })
 
 export const MESSAGE_TYPES = Object.freeze({

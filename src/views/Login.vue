@@ -3,6 +3,8 @@
     <!-- Material form login -->
     <mdb-row class="d-flex flex-fill justify-content-center">
       <mdb-col col="lg-6" class style>
+        <!--Logout button only for testing. Remove it for production-->
+          <a class="text-white" @click="agentLogoutBtnClicked">Logout</a>
         <mdb-card>
           <div class="pt-3 mx-auto">
             <img
@@ -79,7 +81,7 @@
           <mdb-alert :color="loginAlert.color" v-if="loginAlert.show">{{loginAlert.message}}</mdb-alert>
         </mdb-card>
         <!-- <mdb-btn color="success" @click="simulateAgentLogin">Simulate Login</mdb-btn> -->
-        <a class="text-white" @click="agentLogoutBtnClicked">Logout</a>
+      
       </mdb-col>
     </mdb-row>
   </mdb-container>

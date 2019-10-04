@@ -92,6 +92,7 @@ export default {
 
                         if (resp && resp.sessionId) {
                             commit('SET_SESSION_ID', resp.sessionId);
+                            commit('SET_IP_ADDRESS', resp.ipAddress);
                             resolve(resp);
                         } else {
                             console.log("fetchExistingSessionFromServer(): skipping update Session ID since the response does not contain a session ID. resp=", JSON.stringify(resp))

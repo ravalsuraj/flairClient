@@ -87,7 +87,8 @@ export default new Vuex.Store({
       commit('RESET_CONSULTED_CALL_MODULE')
       commit('RESET_DATA_MODULE')
       commit('RESET_DIALER_MODULE')
-      commit('RESET_SOCKET_MODULE')
+      commit('session/RESET_SESSION_MODULE')
+      //commit('RESET_SOCKET_MODULE')
       commit('RESET_TIMER_MODULE')
     }
 

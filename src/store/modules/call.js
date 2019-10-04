@@ -26,18 +26,10 @@ const getters = {
 }
 
 const actions = {
-    setCallStateRinging({ commit }, payload) {
+    setCallStateRinging({ commit, dispatch }, payload) {
         commit('SET_CALL_STATE_RINGING', payload)
+        dispatch('getAccountIdFromCli', payload.callingAddress)
 
-        // state.uui[1].value = payload.callingAddress
-        // state.uui[2].value = '20180202181123454'
-        // state.uui[3].value = payload.callingAddress
-        // state.uui[4].value = 'Accounts'
-
-        // state.callerData[0].value = 'Suraj Raval'
-        // state.callerData[1].value = payload.callingAddress
-        // state.callerData[2].value = '00100295902701'
-        // state.callerData[3].value = 'Imperial'
     },
 
     setCallStateTalking({ commit }) {
@@ -46,20 +38,8 @@ const actions = {
 
     setCallStateDropped({ commit }, payload) {
         commit('RESET_CALL_STATUS')
-        // state.uui.CLI = ''
-
-        // state.uui[0].value = ''
-        // state.uui[1].value = ''
-        // state.uui[2].value = ''
-        // state.uui[3].value = ''
-        // state.callerData[0].value = ''
-        // state.callerData[1].value = ''
-        // state.callerData[2].value = ''
-        // state.callerData[3].value = ''
-
-        // for (let i = 0; i < state.uui.length; ++i) {
-        //     state.uui[i].value = ''
-        // }
+        commit('RESET_CRM_DATA')
+       
     },
 
     setCallStateHeld({ commit }) {
@@ -126,7 +106,7 @@ const actions = {
     processAnswerCallResponse({ dispatch }, response) {
         console.log(SOCKET_EVENTS.ANSWER_CALL + '(): response=' + JSON.stringify(response))
         if (response.responseCode === '0') {
-           // dispatch('setCallStateTalking')
+            // dispatch('setCallStateTalking')
         } else {
             dispatch('showErrorBanner', ['Call Answer Failed', response.responseMessage])
         }
@@ -174,7 +154,7 @@ const actions = {
         this._vm.$socket.emit(SOCKET_EVENTS.HOLD_CALL, request, (response) => {
             console.log('requestHoldCall(): response=' + JSON.stringify(response))
             if (response.responseCode === '0') {
-               // dispatch('setCallStateHeld')
+                // dispatch('setCallStateHeld')
             } else {
                 dispatch('showErrorBanner', ['Hold Call Failed', JSON.stringify(response)])
             }

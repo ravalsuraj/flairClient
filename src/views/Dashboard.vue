@@ -1,9 +1,9 @@
 <template>
   <mdb-container fluid class="mx-2 px-0">
     <mdb-row class="mx-0">
-      <!-- <mdb-col lg="2p5" md="12" class="px-0">
+      <mdb-col :lg="leftComponentWidth" md="12" class="px-0">
         <draggable
-          :list="leftComponents"
+          :list="leftComponentWidgets"
           class="dragArea"
           :options="{ghostClass:'ghost-component', chosenClass: 'chosen-component', 
           animation:150, dragClass:'dragged-component',
@@ -11,29 +11,21 @@
         >
           <transition-group name>
             <component
-              v-for="component in leftComponents"
+              v-for="component in leftComponentWidgets"
               :is="component.name"
               :key="component.name"
               class="fl_widget"
-            >
-   
-            </component>
+            ></component>
           </transition-group>
         </draggable>
-      </mdb-col>-->
-
-      <mdb-col lg="10" md="12" class="mb-1 px-0 mx-0">
-        <div class="w-100 h-100" color="primary">
-          <!--     
-          <mdb-input type="text" v-model="custName"></mdb-input>
-          -->
-          <crm-frame class style></crm-frame>
-        </div>
       </mdb-col>
 
-      <mdb-col lg="2" md="12" class="mb-1 px-0 mx-0">
+      <mdb-col :lg="middleComponentWidth" md="12" class="mb-1 px-0 mx-0">
+        <!--     
+          <mdb-input type="text" v-model="custName"></mdb-input>
+        -->
         <draggable
-          :list="rightComponents"
+          :list="middleComponentWidgets"
           class="dragArea"
           :options="{ghostClass:'ghost-component', chosenClass: 'chosen-component', 
           animation:150, dragClass:'dragged-component',
@@ -41,7 +33,29 @@
         >
           <transition-group name>
             <component
-              v-for="component in rightComponents"
+              v-for="component in middleComponentWidgets"
+              :is="component.name"
+              :key="component.name"
+              class="fl_widget"
+            ></component>
+          </transition-group>
+        </draggable>
+        <!-- <div class="w-100 h-100" color="primary">
+          <crm-frame class style></crm-frame>
+        </div>-->
+      </mdb-col>
+
+      <mdb-col :lg="rightComponentWidth" md="12" class="mb-1 px-0 mx-0">
+        <draggable
+          :list="rightComponentWidgets"
+          class="dragArea"
+          :options="{ghostClass:'ghost-component', chosenClass: 'chosen-component', 
+          animation:150, dragClass:'dragged-component',
+           filter: '.card-body', preventOnFilter: false}"
+        >
+          <transition-group name>
+            <component
+              v-for="component in rightComponentWidgets"
               :is="component.name"
               :key="component.name"
               class="fl_widget"
@@ -133,20 +147,36 @@ export default {
     myGhost() {
       return { 'my-ghost': true }
     },
-    leftComponents: {
+    leftComponentWidgets: {
       get() {
-        return config.leftComponents
-      },
-      set(value) {
-        this.$store.commit('updateLeftComponents', value)
+        return config.leftComponents.widgets
       }
     },
-    rightComponents: {
+    leftComponentWidth: {
       get() {
-        return config.rightComponents
-      },
-      set(value) {
-        this.$store.commit('updateRightComponents', value)
+        return config.leftComponents.width
+      }
+    },
+    middleComponentWidgets: {
+      get() {
+        return config.middleComponents.widgets
+      }
+    },
+    middleComponentWidth:{
+      get() {
+        return config.middleComponents.width
+      }
+    },
+
+    rightComponentWidgets: {
+      get() {
+        return config.rightComponents.widgets
+      }
+    },
+
+    rightComponentWidth: {
+      get() {
+        return config.rightComponents.width
       }
     },
     isDevMode() {

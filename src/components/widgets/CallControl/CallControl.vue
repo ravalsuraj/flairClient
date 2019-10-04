@@ -252,17 +252,21 @@ export default {
   },
   watch: {
     callStatus(newCallStatus, oldCallStatus) {
-      if (
-        newCallStatus === CALL_STATES.IDLE ||
-        newCallStatus === CALL_STATES.UNKNOWN
-      ) {
-        this.$store.dispatch('stopTimer', 'callStateTimer')
-      } else if (
-        newCallStatus !== CALL_STATES.IDLE ||
-        newCallStatus !== CALL_STATES.UNKNOWN
-      ) {
-        //this.$store.commit('stopTimer', 'callStateTimer')
-        this.$store.dispatch('startTimer', 'callStateTimer')
+      switch (oldCallStatus) {
+        case CALL_STATES.IDLE:
+        case CALL_STATES.UNKNOWN:
+          break
+        case CALL_STATES.RINGING:
+          if (newCallStatus === CALL_STATES.TALKING) {
+            this.$store.dispatch('startTimer', 'callStateTimer')
+          }
+        default:
+          if (
+            newCallStatus === CALL_STATES.IDLE ||
+            newCallStatus === CALL_STATES.UNKNOWN
+          ) {
+            this.$store.dispatch('stopTimer', 'callStateTimer')
+          }
       }
     }
   }
@@ -296,8 +300,8 @@ export default {
 
 .fl_dialerDrawer {
   position: fixed;
-  top: 45px;
-  left: 390px;
+  top: 59px;
+  left: 500px;
   /* border: rgba(0, 0, 0, 0.3) solid 2px; */
   border-top: none;
 }
