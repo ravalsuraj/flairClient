@@ -19,10 +19,20 @@ export const AGENT_STATES = Object.freeze({
   }
 })
 
+export const RESPONSE_CODES = Object.freeze({
+  SUCCESS: '0'
+})
+
 export const TIMER_STATES = Object.freeze({
-  START: 1,
   STOP: 0,
-  PAUSE: 2
+  START: 1,
+  PAUSE: 2,
+  RESET: 3
+})
+
+export const TIMER_DIRECTIONS = Object.freeze({
+  UP: "UP",
+  DOWN: "DOWN"
 })
 // States according to Avaya: [Login, Ready, Not Ready, Wrap-Up, Pending States]
 export const CALL_STATES = Object.freeze({
@@ -103,7 +113,10 @@ export const SOCKET_EVENTS = Object.freeze({
   CONFERENCE_CALL_RINGING: 'CONCALLRING',
   CONFERENCE_CALL_DISCONNECTED: 'CONCALLDISC',
   CONFERENCE_CALL_TALKING: 'CONCALLTALK',
-  
+
   AGENT_STATE_UPDATED: "AGTUPDATED"
 })
 
+export default {
+  RESPONSE_CODES
+}

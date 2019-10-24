@@ -109,7 +109,17 @@ export default {
     },
 
     crmUrl() {
-      return this.$store.getters.getComputedCrmUrl
+      //return this.$store.getters.getComputedCrmUrl
+      if (this.callingAddress) {
+        return (
+          this.$store.getters.getCrmUrl +
+          '?cli=' +
+          this.callingAddress +
+          '&dnis=067412101&agentId=1501&deviceId=2101'
+        )
+      } else {
+        return this.$store.getters.getCrmUrl
+      }
     }
   }
 }

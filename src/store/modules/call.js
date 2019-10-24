@@ -1,4 +1,4 @@
-import { CALL_STATES, CALL_TYPES, SOCKET_EVENTS } from '@/defines.js'
+import { CALL_STATES, CALL_TYPES, SOCKET_EVENTS, AGENT_STATES } from '@/defines.js'
 function initialState() {
     return {
 
@@ -28,18 +28,45 @@ const getters = {
 const actions = {
     setCallStateRinging({ commit, dispatch }, payload) {
         commit('SET_CALL_STATE_RINGING', payload)
-        dispatch('getAccountIdFromCli', payload.callingAddress)
+        //dispatch('getAccountIdFromCli', payload.callingAddress)
+        let uui = {
+            cli: payload.callingAddress,
+            ucid: payload.ucid
+        }
+        dispatch('setUui', uui)
+        dispatch('setCallerData', uui)
+    },
 
+    setCallStateDialing({ commit, dispatch }, payload) {
+        commit('SET_CALL_STATE_DIALING', payload)
+
+        let uui = {
+            cli: payload.callingAddress,
+            ucid: payload.ucid
+        }
+        dispatch('setUui', uui)
+        dispatch('setCallerData', uui)
     },
 
     setCallStateTalking({ commit }) {
         commit('SET_CALL_STATE_TALKING')
     },
 
-    setCallStateDropped({ commit }, payload) {
+    setCallStateDropped({ commit, dispatch }, payload) {
+        commit('SET_CALL_STATE_DROPPED')
+        dispatch('setAgentAuxCode', {
+            label: 'After Call Work',
+            state: AGENT_STATES.WORK_NOT_READY,
+            userSelectable: true,
+            reasonCode: 3
+        })
+
+
+    },
+
+    resetCallState({ commit }) {
         commit('RESET_CALL_STATUS')
         commit('RESET_CRM_DATA')
-       
     },
 
     setCallStateHeld({ commit }) {
@@ -57,23 +84,25 @@ const actions = {
         let callStatus;
         if (callType === CALL_TYPES.PRIMARY) {
             callStatus = getters.getCallStatus
+            switch (callStatus) {
+                case CALL_STATES.RINGING:
+                    console.log('AnswerDropCall(): calling answerCall()')
+                    dispatch('requestAnswerCall', request)
+                    break
+                case CALL_STATES.TALKING:
+                    console.log('AnswerDropCall(): calling dropCall()')
+                    dispatch('requestDropCall', request)
+
+                    break
+                default:
+                    console.log('AnswerDropCall(): skipping answer or drop because call state is: ' + CALL_STATES.Text[callStatus])
+            }
         }
         else {
             callStatus = getters.getConsultedCallStatus
+            dispatch('requestDropCall', request)
         }
-        switch (callStatus) {
-            case CALL_STATES.RINGING:
-                console.log('AnswerDropCall(): calling answerCall()')
-                dispatch('requestAnswerCall', request)
-                break
-            case CALL_STATES.TALKING:
-                console.log('AnswerDropCall(): calling dropCall()')
-                dispatch('requestDropCall', request)
 
-                break
-            default:
-                console.log('AnswerDropCall(): skipping answer or drop because call state is: ' + CALL_STATES.Text[callStatus])
-        }
     },
     requestAnswerCall({ getters, dispatch }, request) {
         console.log('requestAnswerCall(): action entered')
@@ -188,11 +217,23 @@ const mutations = {
         state.primary.calledAddress = payload.calledAddress
         state.primary.callingAddress = payload.callingAddress
     },
+
+    SET_CALL_STATE_DIALING(state, payload) {
+        state.primary.status = CALL_STATES.DIALING
+        state.primary.ucid = payload.ucid
+        state.primary.callId = payload.callId
+        state.primary.calledAddress = payload.calledAddress
+        state.primary.callingAddress = payload.callingAddress
+    },
+
     SET_CALL_STATE_TALKING(state) {
         state.primary.status = CALL_STATES.TALKING
     },
     SET_CALL_STATE_HELD(state) {
         state.primary.status = CALL_STATES.HELD
+    },
+    SET_CALL_STATE_DROPPED(state) {
+        state.primary.status = CALL_STATES.DROPPED
     },
 
     RESET_CALL_STATUS(state) {

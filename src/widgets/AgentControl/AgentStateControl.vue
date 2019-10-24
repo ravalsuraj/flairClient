@@ -88,6 +88,7 @@ export default {
             .dispatch('sendAgentStateRequest', selectedAuxCode)
             .then(resp => {
               if (resp.responseCode === '0') {
+                this.$store.commit('SET_AGENT_AUX_CODE', selectedAuxCode)
               }
             })
           break
@@ -97,7 +98,7 @@ export default {
     },
     agentStateIndicatorColor(state) {
       if (state) {
-        // console.log('agentStateIndicatorColor(): state=', state)
+         //console.log('agentStateIndicatorColor(): state=', state)
         switch (state) {
           case AGENT_STATES.READY:
             return 'green-text'

@@ -1,7 +1,8 @@
 
 <template>
   <div class="d-flex flex-column">
-    <top-navbar v-if="isAgentLoggedIn"></top-navbar>
+    <top-navbar v-if="isAgentLoggedIn" ref="topNavBar"></top-navbar>
+
     <main class="d-flex flex-fill main-body">
       <router-view v-if="isAgentLoggedIn" class="fl_topSpacing"></router-view>
       <login-page v-else class="flex-fill fl_topSpacing"></login-page>
@@ -89,9 +90,13 @@ export default {
   },
   mounted() {
     this.$store.dispatch('session/addWindowRefreshReloadListener')
-    this.$store.dispatch('authenticateCrm').then(() => {
-      //this.$store.dispatch('getAccountIdFromCli', '8879708222')
-    })
+    // this.$store.dispatch('authenticateCrm').then(() => {
+    //   //this.$store.dispatch('getAccountIdFromCli', '8879708222')
+    // })
+
+    if (this.$refs.topNavBar) {
+      console.log('App/mounted(): navbar height is' + this.$refs.topNavBar.clientHeight)
+    }
   },
   methods: {},
   computed: {
@@ -115,6 +120,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+.test-cont {
+  height: 280px;
+  width: 280px;
+  background: red;
+}
 @import url('https://fonts.googleapis.com/css?family=Unica+One&display=swap');
 
 html {
@@ -193,6 +203,13 @@ footer {
 }
 .fa-1p5x {
   font-size: 1.5em;
+}
+
+/************   Utility Styles   *******************/
+
+.disableWidget {
+  pointer-events: none;
+  opacity: 0.5;
 }
 .btn-circle {
   width: 30px;

@@ -3,67 +3,89 @@
   <mdb-card-body class="p-2 mb-1">-->
   <div class="fl_container_dialer">
     <mdb-container fluid>
-      <mdb-row class="px-3 py-4">
-        <mdb-col class="d-flex align-items-baseline">
-          <!--Input Textbox for digits-->
-          <mdb-input
+      <form @click.stop>
+        <mdb-row class="px-3 py-4" @click.stop>
+          <mdb-col class="d-flex align-items-baseline">
+            <!--Input Textbox for digits-->
+
+            <input
+              class="fl_inp_dialedDigits line light-blue-text px-3"
+              type="text"
+              v-model="dialedDigits"
+              @click.stop
+            />
+            <!-- <mdb-input
             class="fl_inp_dialedDigits light-blue-text px-3"
             type="number"
             v-model="dialedDigits"
-          ></mdb-input>
-        </mdb-col>
+            @click.stop
+            ></mdb-input>-->
+          </mdb-col>
 
-        <!--Delete Single Digit-->
-        <a class="black-text align-self-baseline mr-3 fl_btn_btnIcon" @click="deleteSingleDigit">
-          <mdb-icon icon="backspace" size="1p5x" />
-        </a>
+          <!--Delete Single Digit-->
+          <a
+            class="black-text align-self-baseline mr-3 fl_btn_btnIcon"
+            @click="deleteSingleDigit"
+            @click.stop
+          >
+            <mdb-icon icon="backspace" size="1p5x" />
+          </a>
 
-        <!--Delete All Digits-->
-        <a class="black-text align-self-baseline fl_btn_btnIcon" @click="clearDigits">
-          <mdb-icon icon="trash" size="1p5x" />
-        </a>
-      </mdb-row>
+          <!--Delete All Digits-->
+          <a class="black-text align-self-baseline fl_btn_btnIcon" @click="clearDigits" @click.stop>
+            <mdb-icon icon="trash" size="1p5x" />
+          </a>
+        </mdb-row>
+      </form>
+
       <mdb-row>
         <!--For Loop for cycling through array of digits to for a grid of dialpad digits-->
         <mdb-col col="md-4 px-0" v-for="digit in digits" :key="digit.id">
           <div
             class="fl_button_dialerDigit btn-block transparent-color text-center fl_btn_btnIcon"
-            @click="appendDigit(digit)"
-          >{{digit}}</div>
+            @click="appendDigit(digit.text)"
+            @click.stop
+          >
+            <div class="number">{{digit.text}}</div>
+            <div class="subText">{{digit.subText}}</div>
+          </div>
         </mdb-col>
       </mdb-row>
+      <form @click.stop>
+        <mdb-row class="mx-0 pb-3" @click.stop>
+          <transition name="fade">
+            <mdb-btn class="mdb-color mx-2 w-100" @click="onMakeCallButtonClicked">
+              <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
+              <span>Call</span>
+            </mdb-btn>
+          </transition>
+          <transition name="fade">
+            <div class="btn-group w-100 pb-2" v-if="!isConsultCallIdle">
+              <mdb-btn class="btn-deep-orange mx-2 px-2 w-100" @click="onCallDropBtnClicked">
+                <span>Drop</span>
+              </mdb-btn>
+            </div>
+          </transition>
+          <transition name="fade">
+            <div class="btn-group w-100" v-if="!isConsultCallIdle">
+              <!-- <mdb-btn class="mdb-color mx-2 px-2 w-50" @click="onTransferButtonClicked" @click.stop>
+              <span>Trans</span>
+            </mdb-btn>
+            <mdb-btn
+              class="mdb-color mx-2 px-2 w-50"
+              @click="onConferenceButtonClicked"
+              @click.stop
+            >
+              <span>Conf</span>>
+              </mdb-btn>-->
+              <!-- <mdb-btn class="mdb-color mx-2 px-2" @click="onRejoinButtonClicked">Rejoin</mdb-btn> -->
+              <!-- <mdb-btn class="mdb-color mx-2 px-2" @click="onSwitchButtonClicked">Switch</mdb-btn> -->
+            </div>
+          </transition>
 
-      <mdb-row class="mx-0 pb-3">
-        <transition name="fade">
-          <mdb-btn
-            class="mdb-color mx-2 w-100"
-            v-if="isConsultCallIdle"
-            @click="onConsultButtonClicked"
-          >
-            <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
-            <span>Consult</span>
-          </mdb-btn>
-        </transition>
-        <transition name="fade">
-          <div class="btn-group w-100 pb-2" v-if="!isConsultCallIdle">
-            <mdb-btn class="btn-deep-orange mx-2 px-2 w-100" @click="onConfDropButtonClicked">Drop</mdb-btn>
-            <!-- <mdb-btn
-              class="info-color mx-2 px-2 w-50"
-              @click="onConfHoldBtnClicked"
-            >{{confHoldText}}</mdb-btn> -->
-          </div>
-        </transition>
-        <transition name="fade">
-          <div class="btn-group w-100" v-if="!isConsultCallIdle">
-            <mdb-btn class="mdb-color mx-2 px-2 w-50" @click="onTransferButtonClicked">Trans</mdb-btn>
-            <mdb-btn class="mdb-color mx-2 px-2 w-50" @click="onConferenceButtonClicked">Conf</mdb-btn>
-            <!-- <mdb-btn class="mdb-color mx-2 px-2" @click="onRejoinButtonClicked">Rejoin</mdb-btn> -->
-            <!-- <mdb-btn class="mdb-color mx-2 px-2" @click="onSwitchButtonClicked">Switch</mdb-btn> -->
-          </div>
-        </transition>
-
-        <!-- <mdb-btn class="unique-color">Conf</mdb-btn> -->
-      </mdb-row>
+          <!-- <mdb-btn class="unique-color">Conf</mdb-btn> -->
+        </mdb-row>
+      </form>
     </mdb-container>
   </div>
 
@@ -90,13 +112,11 @@ import {
   AGENT_STATES,
   SOCKET_EVENTS
 } from '@/defines.js'
-
-import CallTimer from '@/components/util/CallTimer.vue'
+import '@/defines.js'
 
 export default {
-  name: 'Dialer',
+  name: 'OutboundDialer',
   components: {
-    CallTimer,
     mdbContainer,
     mdbRow,
     mdbCol,
@@ -110,11 +130,75 @@ export default {
   },
   mounted() {},
   props: {},
-
+  //digits: [1, 2, 3, 4, 5, 6, 7, 8, 9, '*', 0, '#'],
   data() {
     return {
       dialedDigits: '08879708222',
-      digits: [1, 2, 3, 4, 5, 6, 7, 8, 9, '*', 0, '#'],
+
+      digits: [
+        {
+          text: 1,
+          subText: ''
+        },
+        {
+          text: 2,
+          subText: 'ABC'
+        },
+        {
+          text: 3,
+          subText: 'DEF'
+        },
+        {
+          text: 4,
+          subText: 'GHI'
+        },
+        {
+          text: 5,
+          subText: 'JKL'
+        },
+        {
+          text: 6,
+          subText: 'MNO'
+        },
+        {
+          text: 7,
+          subText: 'PQRS'
+        },
+        {
+          text: 8,
+          subText: 'TUV'
+        },
+        {
+          text: 9,
+          subText: 'WXYZ'
+        },
+        {
+          text: '*',
+          subText: ''
+        },
+        {
+          text: 0,
+          subText: '+'
+        },
+        {
+          text: '#',
+          subText: ''
+        }
+      ],
+      digitSubText: [
+        '',
+        'ABC',
+        'DEF',
+        'GHI',
+        'JKL',
+        'MNO',
+        'PQRS',
+        'TUV',
+        'WXYZ',
+        '',
+        '+',
+        ''
+      ],
       interval: false,
       digitDeleteSpeed: 200,
       initialDeleteSpeed: 500,
@@ -162,29 +246,21 @@ export default {
       this.dialedDigits = ''
     },
 
-    onConsultButtonClicked() {
+    onMakeCallButtonClicked() {
       this.$store.dispatch('updateDialedDigits', this.dialedDigits)
-      this.showSpinner();
-      this.$store.dispatch('requestConsultCall').then(resp=>{
-        this.hideSpinner();
+      this.showSpinner()
+      this.$store.dispatch('requestOutboundCall').then(resp => {
+        this.hideSpinner()
+        if (resp.ResponseCode === 0) {
+          dispatch('setCallStateDialed', resp)
+        }
       })
     },
 
-    onConferenceButtonClicked() {
-      this.$store.dispatch('requestConferenceCall')
-    },
-
-    onTransferButtonClicked() {
-      this.$store.dispatch('requestTransferCall')
-    },
-
-    onRejoinButtonClicked() {},
-    onSwitchButtonClicked() {},
-
-    onConfDropButtonClicked() {
+    onCallDropBtnClicked() {
       this.$store.dispatch('requestAnswerDropCall', [
-        this.$store.getters.getConsultedCall.ucid,
-        CALL_TYPES.CONSULTED
+        this.$store.getters.getPrimaryCall.ucid,
+        CALL_TYPES.PRIMARY
       ])
     },
     onConfHoldBtnClicked() {
@@ -221,6 +297,27 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.line {
+  display: block;
+  border: none;
+  color: #333;
+  background: transparent;
+  border-bottom: 1px dotted black;
+  padding: 5px 2px 0 2px;
+  font-size: 1.5em;
+}
+
+.line:focus {
+  outline: none;
+  border-color: #51cbee;
+}
+
+.line::-webkit-inner-spin-button,
+.line::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 .fl_container_dialer {
   /* box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12); */
   border-radius: 0px 0px 8px 8px;
@@ -233,7 +330,6 @@ export default {
   font-family: 'Unica One', cursive;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.75);
-  border-radius: 5px;
 }
 
 .fl_inp_dialedDigits input {
@@ -244,18 +340,33 @@ export default {
 .fl_button_dialerDigit {
   padding: 8px;
   cursor: pointer;
-  font-size: 1.2rem;
-
+ 
   -webkit-user-select: none; /* Safari 3.1+ */
   -moz-user-select: none; /* Firefox 2+ */
   -ms-user-select: none; /* IE 10+ */
   user-select: none; /* Standard syntax */
 }
 
+.fl_button_dialerDigit .number {
+    font-family: 'Unica One', cursive;
+  font-size: 1.3rem;
+  font-weight: 400;
+}
+
+.fl_button_dialerDigit .subText {
+  font-size: 0.9rem;
+  font-weight: 300;
+}
+
 .fl_button_dialerDigit:hover {
+  
   color: #00bcd4;
-  font-weight: bold;
+
   background-color: rgba(240, 240, 240, 0.05);
+}
+.fl_button_dialerDigit:hover .number {
+  font-size: 1.3rem;
+  font-weight: 700;
 }
 .fl_button_dialerDigit:active {
   color: #0097a7;

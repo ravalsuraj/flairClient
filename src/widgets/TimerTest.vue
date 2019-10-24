@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import DemoTimer from '@/components/widgets/DemoTimer.vue'
+import DemoTimer from '@/widgets/DemoTimer.vue'
 import {
   mdbContainer,
   mdbRow,

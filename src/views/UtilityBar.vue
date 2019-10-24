@@ -12,9 +12,9 @@
 </style>
 
 <script>
-import AgentControl from '@/components/widgets/AgentControl/AgentControl.vue'
-import CallControl from '@/components/widgets/CallControl/CallControl.vue'
-import QuickLinks from '@/components/widgets/QuickLinks/QuickLinks.vue'
+import AgentControl from '@/widgets/AgentControl/AgentControl.vue'
+import CallControl from '@/widgets/CallControl/CallControl.vue'
+import QuickLinks from '@/widgets/QuickLinks/QuickLinks.vue'
 import WebSocketIndicator from '@/components/util/WebSocketIndicator'
 import {
   mdbRow,

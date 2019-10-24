@@ -45,7 +45,7 @@ export default {
 
     actions: {
 
-        setAgentState({ commit }, agentState){
+        setAgentState({ commit }, agentState) {
             commit('SET_AGENT_STATE', agentState)
         },
 
@@ -53,6 +53,9 @@ export default {
             commit('SET_AGENT_LOGIN_CREDENTIALS', credentials)
         },
 
+        setAgentAuxCode({ commit }, auxCodeObj) {
+            commit('SET_AGENT_AUX_CODE', auxCodeObj)
+        },
         async sendAgentLoginRequest({ commit, dispatch, getters }) {
             let agent = getters.getAgent;
             let sessionId = getters['session/getSessionId'];
@@ -176,7 +179,7 @@ export default {
 
         },
 
-        processAgentLogin({ commit,dispatch }) {
+        processAgentLogin({ commit, dispatch }) {
             commit('SET_AGENT_STATE_LOGIN')
             dispatch('authenticateCrm')
         },
@@ -261,7 +264,7 @@ export default {
 
         SET_AGENT_AUX_CODE(state, payload) {
             state.reasonCode = payload.reasonCode
-            state.agentState = payload.agentState
+            state.agentState = payload.state
             state.reasonCodeLabel = payload.label
         }
     }

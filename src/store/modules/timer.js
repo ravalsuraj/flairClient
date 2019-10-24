@@ -1,14 +1,26 @@
 import {
-    AGENT_STATES,
-    CALL_STATES,
-    CONNECTION_STATES,
-    TIMER_STATES
+    TIMER_STATES,
+    TIMER_DIRECTIONS
 } from '@/defines.js'
 
 function initialState() {
     return {
         demo: 0,
-        callStateTimer: 0
+        callStateTimer: {
+            status: TIMER_STATES.STOP,
+        },
+
+        acwTimer: {
+            status: TIMER_STATES.STOP,
+            expiry: 60
+        },
+        callTimerInstate: {
+            status: TIMER_STATES.STOP
+        },
+        agentTimerInstate: {
+            status: TIMER_STATES.STOP
+        }
+
     }
 }
 export default {
@@ -21,14 +33,17 @@ export default {
         },
 
         SET_TIMER_STATE_START(state, timerName) {
-            state[timerName] = TIMER_STATES.START
+            state[timerName].status = TIMER_STATES.START
         },
 
         SET_TIMER_STATE_STOP(state, timerName) {
-            state[timerName] = TIMER_STATES.STOP
+            state[timerName].status = TIMER_STATES.STOP
         },
         SET_TIMER_STATE_PAUSE(state, timerName) {
-            state[timerName] = TIMER_STATES.PAUSE
+            state[timerName].status = TIMER_STATES.PAUSE
+        },
+        SET_TIMER_STATE_RESET(state, timerName) {
+            state[timerName].status = TIMER_STATES.RESET
         }
     },
     actions: {
@@ -41,6 +56,9 @@ export default {
 
         pauseTimer({ commit }, timerName) {
             commit('SET_TIMER_STATE_PAUSE', timerName)
+        },
+        resetTimer({ commit }, timerName) {
+            commit('SET_TIMER_STATE_RESET', timerName)
         },
 
         togglePauseResumeTimer({ getters, dispatch }, timerName) {
@@ -61,8 +79,15 @@ export default {
         },
     },
     getters: {
-        getTimer(state, timerName) {
-            return state[timerName]
-        }
+        getTimerStatus: (state) => (timerName) => {
+            console.log("getters.getTimerStatus=" + state[timerName].status)
+            return state[timerName].status
+        },
+
+
+        getTimerExpiry: (state) => (timerName) => {
+            console.log("getTimerExpiry, timerName=", timerName)
+            return state[timerName].expiry
+        },
     }
 }

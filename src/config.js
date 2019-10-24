@@ -1,7 +1,7 @@
 import { AGENT_STATES } from "./defines";
 
 export const config = {
-    WebSocketUrl: 'http://localhost:9092',
+    WebSocketUrl: 'http://192.168.230.23:9092',
     defaultAuxCodes: {
         'READY': {
             label: 'Ready',
@@ -31,22 +31,28 @@ export const config = {
             reasonCode: 0
         },
         {
-            label: 'Lunch Break',
+            label: 'Break',
             state: AGENT_STATES.NOT_READY,
             userSelectable: true,
-            reasonCode: 21
+            reasonCode: 1
         },
         {
-            label: 'Training',
+            label: 'Lunch',
             state: AGENT_STATES.NOT_READY,
             userSelectable: true,
-            reasonCode: 22
+            reasonCode: 2
         },
         {
-            label: 'End of Shift',
+            label: 'Dinner',
             state: AGENT_STATES.NOT_READY,
             userSelectable: true,
-            reasonCode: 23
+            reasonCode: 3
+        },
+        {
+            label: 'After Call Work',
+            state: AGENT_STATES.WORK_NOT_READY,
+            userSelectable: true,
+            reasonCode: 3
         },
     ],
 
@@ -55,19 +61,19 @@ export const config = {
     sugarCrmUrl: "https://auth.sugarcrm.com/",
 
     leftComponents: {
-        width: "3",
+        width: "2p5",
         widgets: [
-
             {
-                name: 'call-disposition'
+                name: 'call-details'
             },
             {
-                name: 'quick-links'
-            }
+                name: 'menu-traversal'
+            },
+
         ],
     },
     middleComponents: {
-        width: "9",
+        width: "7",
         widgets: [
             {
                 name: 'crm-frame'
@@ -79,10 +85,21 @@ export const config = {
     ,
     rightComponents:
     {
-        width: "4",
+        width: "2p5",
         widgets: [
+            {
+                name: 'call-disposition'
+            },
 
-
+            {
+                name: 'sms-helper'
+            },
+            {
+                name: 'quick-links'
+            },
+            {
+                name: 'agent-call-statistics'
+            }
         ],
     }
 

@@ -83,26 +83,26 @@ import {
   mdbTbl,
   mdbInput
 } from 'mdbvue'
-import CallHistory from '@/components/widgets/CallHistory/CallHistory.vue'
-import CallDetails from '@/components/widgets/CallDetails/CallDetails.vue'
-import MenuTraversal from '@/components/widgets/MenuTraversal/MenuTraversal.vue'
-import CallControl from '@/components/widgets/CallControl/CallControl.vue'
-import AgentControl from '@/components/widgets/AgentControl/AgentControl.vue'
-import AgentCallStatistics from '@/components/widgets/AgentCallStatistics/AgentCallStatistics.vue'
-import TestBench from '@/components/widgets/TestBench.vue'
-import TimerTest from '@/components/widgets/TimerTest.vue'
-import Dialer from '@/components/widgets/Dialer/Dialer.vue'
-import CallDisposition from '@/components/widgets/CallDisposition/CallDisposition.vue'
-import CrmFrame from '@/components/widgets/CrmFrame/CrmFrame.vue'
-import QuickLinks from '@/components/widgets/QuickLinks/QuickLinks.vue'
-import SmsHelper from '@/components/widgets/SmsHelper/SmsHelper.vue'
+import CallHistory from '@/widgets/CallHistory/CallHistory.vue'
+import CallDetails from '@/widgets/CallDetails/CallDetails.vue'
+import MenuTraversal from '@/widgets/MenuTraversal/MenuTraversal.vue'
+import CallControl from '@/widgets/CallControl/CallControl.vue'
+import AgentControl from '@/widgets/AgentControl/AgentControl.vue'
+import AgentCallStatistics from '@/widgets/AgentCallStatistics/AgentCallStatistics.vue'
+import TestBench from '@/widgets/TestBench.vue'
+import TimerTest from '@/widgets/TimerTest.vue'
+import ConsultDialer from '@/widgets/Dialer/ConsultDialer.vue'
+import CallDisposition from '@/widgets/CallDisposition/CallDisposition.vue'
+import CrmFrame from '@/widgets/CrmFrame/CrmFrame.vue'
+import QuickLinks from '@/widgets/QuickLinks/QuickLinks.vue'
+import SmsHelper from '@/widgets/SmsHelper/SmsHelper.vue'
 
 export default {
   name: 'Dashboard',
   components: {
     TimerTest,
     draggable,
-    Dialer,
+    ConsultDialer,
     CrmFrame,
     QuickLinks,
     CallDisposition,

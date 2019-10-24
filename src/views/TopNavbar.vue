@@ -3,7 +3,6 @@
     class="special-color white-text flexible-navbar"
     position="top"
     scrolling
-    hamburger
     navIconClass="white-text"
   >
     <mdb-navbar-brand href="/" target="_blank">
@@ -13,18 +12,17 @@
           class="mx-5"
           alt="Responsive image"
           style="width: 75px; opacity:1 !important"
-        >
+        />
       </div>
     </mdb-navbar-brand>
-    <mdb-navbar-toggler>
-      <mdb-navbar-nav left>
-        <call-control></call-control>
-      </mdb-navbar-nav>
-      <mdb-navbar-nav right class="pr-5">
-        <agent-control></agent-control>
-      </mdb-navbar-nav>
-
-    </mdb-navbar-toggler>
+    <!-- <mdb-navbar-toggler>
+    </mdb-navbar-toggler>-->
+    <mdb-navbar-nav left>
+      <call-control></call-control>
+    </mdb-navbar-nav>
+    <mdb-navbar-nav right class="pr-5">
+      <agent-control></agent-control>
+    </mdb-navbar-nav>
   </mdb-navbar>
 </template>
 <style>
@@ -58,7 +56,6 @@ main {
   padding-left: 0;
   padding-top: 4px !important;
   padding-bottom: 4px !important;
-
 }
 
 .sidebar-fixed {
@@ -87,8 +84,8 @@ main {
 </style>
 
 <script>
-import AgentControl from '@/components/widgets/AgentControl/AgentControl.vue'
-import CallControl from '@/components/widgets/CallControl/CallControl.vue'
+import AgentControl from '@/widgets/AgentControl/AgentControl.vue'
+import CallControl from '@/widgets/CallControl/CallControl.vue'
 import {
   mdbRow,
   mdbCol,
@@ -112,7 +109,6 @@ import {
 export default {
   name: 'TopNavbar',
   components: {
-  
     AgentControl,
     CallControl,
     mdbRow,

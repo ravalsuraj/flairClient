@@ -12,19 +12,20 @@
       </mdb-card-header>
       <mdb-card-body class="px-1" v-show-slide="showWidget" :class="{'p-0': !showWidget}">
         <!-- <mdb-card-text><strong>Test Bench</strong></mdb-card-text> -->
-        <mdb-container fluid>
+        <mdb-container fluid :class="{'disableWidget': !isCallAvailable}">
           <div v-if="cli">
             <label>The SMS will be sent to:</label>
             <span v-if="cli.length>0">{{cli}}</span>
             <select class="browser-default custom-select mb-4" v-model="smsContentType">
               <option disabled selected value>SMS Content</option>
-              <option value="0">Reset Password</option>
-              <option value="1">Registration Link</option>
+              <option value="0">Feedback Survey</option>
+              <option value="1">Reset Password</option>
+              <option value="2">Registration Link</option>
             </select>
             <mdb-btn block color="mdb-color" @click="onSendSmsClick">Send SMS</mdb-btn>
           </div>
           <div v-else>
-            <h3 class="grey-text">Waiting for call</h3>
+            <h4 class="grey-text">Waiting for call</h4>
           </div>
         </mdb-container>
       </mdb-card-body>
@@ -66,11 +67,12 @@ export default {
 
   data() {
     return {
-      showWidget: true,
+      showWidget: false,
       smsContentType: '',
       message: [
+        'Dear Customer, your feedback is valuable to us. Please visit https://tinyurl.com/y44tb3sm',
         'Dear customer, to reset your password, please visit http://dummyurl.com/resetPassword',
-        'Dear customer, you can begin your registration process by visiting http://dummyurl.com/register',
+        'Dear customer, you can begin your registration process by visiting http://dummyurl.com/register'
       ]
     }
   },
@@ -78,8 +80,16 @@ export default {
   computed: {
     cli() {
       let cli = this.$store.getters.getPrimaryCall.callingAddress
-      console.log('calling number changed to=' + cli)
+      if (cli) {
+        this.showWidget = true
+      }
       return cli
+    },
+    isCallAvailable() {
+      return (
+        this.callStatus !== CALL_STATES.IDLE &&
+        this.callStatus !== CALL_STATES.RINGING
+      )
     }
   },
 
@@ -89,7 +99,7 @@ export default {
     },
 
     onSendSmsClick() {
-      if (this.smsContentType.length>0) {
+      if (this.smsContentType.length > 0) {
         let request = {
           cli: this.cli,
           message: this.message[this.smsContentType]

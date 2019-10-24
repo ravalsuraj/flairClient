@@ -10,10 +10,6 @@ function initialState() {
     },
     uui: [
       {
-        key: 'Current Call Time',
-        value: ''
-      },
-      {
         key: 'CLI',
         value: ''
       },
@@ -41,11 +37,11 @@ function initialState() {
         value: ''
       },
       {
-        key: 'Account No.',
+        key: 'Credit Card.',
         value: ''
       },
       {
-        key: 'Account Type',
+        key: 'Credit Card Type',
         value: ''
       }
     ]
@@ -73,11 +69,37 @@ export default {
     },
     SET_COMPUTED_URL(state, accountId) {
       state.crm.computedUrl = "http://13.235.180.13/sugarcrm/#Accounts/" + accountId
+    },
+
+
+    SET_UUI(state, payload) {
+      state.uui[0].value = payload.cli
+      state.uui[1].value = payload.ucid
+      state.uui[3].value = "CreditCard"
+    },
+
+    SET_CALLER_DATA(state, payload) {
+      state.callerData[0].value = "Suraj Raval"
+      state.callerData[1].value = payload.cli
+      state.callerData[2].value = "5412 1234 4321 8888"
+      state.callerData[3].value = "Premium Rewards Plus"
     }
+
   },
 
   actions: {
 
+    resetDummyData({ commit }) {
+      commit('RESET_DATA_MODULE')
+    },
+    setUui({ commit }, payload) {
+
+      commit('SET_UUI', payload)
+    },
+
+    setCallerData({ commit }, payload) {
+      commit('SET_CALLER_DATA', payload)
+    },
     requestSendSms({ }, payload) {
       api.sendSmsRequestToGateway(payload)
     },
@@ -134,6 +156,9 @@ export default {
     },
     getComputedCrmUrl(state) {
       return state.crm.computedUrl
+    },
+    getCrmUrl(state) {
+      return "http://localhost:9527/#/dashboard"
     }
   }
 }

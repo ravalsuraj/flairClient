@@ -8,7 +8,7 @@
 <script>
 import { TIMER_STATES } from '@/defines.js'
 export default {
-  name: 'Timer',
+  name: 'UpTimer',
   props: {
     name: String
   },
@@ -41,31 +41,18 @@ export default {
     milliseconds() {
       return this.currentTime - this.$data.startTime
     },
-    hours() {
-      var lapsed = this.milliseconds
-      var hrs = Math.floor(lapsed / 1000 / 60 / 60)
-      return hrs >= 10 ? hrs : '0' + hrs
-    },
-    minutes() {
-      var lapsed = this.milliseconds
-      var min = Math.floor((lapsed / 1000 / 60) % 60)
-      return min >= 10 ? min : '0' + min
-    },
-    seconds() {
-      var lapsed = this.milliseconds
-      var sec = Math.ceil((lapsed / 1000) % 60)
-      return sec >= 10 ? sec : '0' + sec
-    },
 
     timer() {
-      let name = this.name
-      return this.$store.state.timer[name]
+      return this.$store.getters.getTimerStatus(this.name)
     }
   },
   watch: {
     timer(newTimerCommand, oldTimerCommand) {
       if (oldTimerCommand === TIMER_STATES.STOP) {
-        if (newTimerCommand === TIMER_STATES.START) {
+        if (
+          newTimerCommand === TIMER_STATES.START ||
+          newTimerCommand === TIMER_STATES.RESET
+        ) {
           this.startTicking()
         }
       } else if (oldTimerCommand === TIMER_STATES.START) {
@@ -73,8 +60,10 @@ export default {
           this.stopTicking()
         } else if (newTimerCommand === TIMER_STATES.PAUSE) {
           this.pauseTicking()
-        } else if (newTimerCommand === TIMER_STATES.START) {
-          this.resetTicking()
+        } else if (newTimerCommand === TIMER_STATES.RESET) {
+          this.stopTicking()
+          this.startTicking()
+          this.$store.dispatch('startTimer', this.name)
         }
       } else if (oldTimerCommand === TIMER_STATES.PAUSE) {
         if (newTimerCommand === TIMER_STATES.STOP) {
@@ -87,7 +76,7 @@ export default {
   },
   methods: {
     startTicking() {
-      this.updateTicks()
+      //this.updateTicks()
       this.interval = setInterval(this.updateTicks, 1000)
     },
     stopTicking() {
@@ -106,6 +95,7 @@ export default {
     updateTicks() {
       this.secondTicks = this.secondTicks + 1
     },
+
     padNumber(i) {
       return i < 10 ? '0' + i : i
     }

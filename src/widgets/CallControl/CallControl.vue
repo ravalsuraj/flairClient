@@ -2,11 +2,9 @@
   <div class="fl_container_callControl d-flex align-items-center">
     <mdb-container fluid>
       <mdb-row class>
-        <mdb-col col="md-8" class="fl_well_container w-100 px-0">
+        <!--Call Display Well-->
+        <mdb-col col="md-5" class="fl_well_container w-100 px-0">
           <!--Primary Call Status-->
-          <!-- <mdb-row class="p-1 mx-1 no-gutters" v-if="isCallIdle">
-            <mdb-col col="12" class="fl_well_text mx-auto py-2">WAITING FOR CALL</mdb-col>
-          </mdb-row>-->
           <mdb-row class="p-1 mx-1 no-gutters">
             <mdb-col col="2" class="fl_well_text">PRIMARY:</mdb-col>
             <mdb-col
@@ -15,7 +13,7 @@
               :class="{'onHold':isCallHeld}"
             >{{callingAddress}}</mdb-col>
             <mdb-col col="3">
-              <timer name="callStateTimer" class="fl_well_text" :class="{'onHold':isCallHeld}"></timer>
+              <up-timer name="callStateTimer" class="fl_well_text" :class="{'onHold':isCallHeld}"></up-timer>
             </mdb-col>
             <mdb-col col="2" class="fl_well_text" :class="{'onHold':isCallHeld}">{{callStatusText}}</mdb-col>
           </mdb-row>
@@ -24,7 +22,7 @@
           <mdb-row class="p-1 mx-1 no-gutters" v-if="!isConfCallIdle">
             <mdb-col col="2" class="fl_well_text">CONSULT:</mdb-col>
             <mdb-col
-              col="5"
+              col="md-4"
               class="fl_well_text text-center"
               :class="{'onHold':isConfCallHeld}"
             >{{conferenceCalledAddress}}</mdb-col>
@@ -35,66 +33,103 @@
           </mdb-row>
         </mdb-col>
 
-        <mdb-col col="md-4">
-          <div class="btn-group" role="group">
-            <transition name="fade">
-              <button
-                type="button"
-                class="btn"
-                @click="answerDropCall"
-                :disabled="isCallIdle"
-                :class="[{iconGlow:isCallRinging}, answerButtonColor]"
-              >
-                <transition name="fade">
-                  <mdb-icon icon="phone" style="font-size:1.5em" v-if="isCallRinging" />
-                  <mdb-icon icon="phone-slash" style="font-size:1.5em" v-else />
-                </transition>
-              </button>
-            </transition>
-            <transition name="fade">
+        <!--START: Inbound Call Controls-->
+        <mdb-col col="md-7">
+          <!-- <div class="btn-group mx-4" role="group"> </div> -->
+          <!-- START: Answer/Drop Button -->
+          <transition name="fade">
+            <button
+              type="button"
+              class="btn"
+              @click="answerDropCall"
+              :disabled="isCallIdle"
+              :class="[{iconGlow:isCallRinging}, answerButtonColor]"
+            >
+              <transition name="fade">
+                <mdb-icon icon="phone" style="font-size:1.5em" v-if="isCallRinging" />
+                <mdb-icon icon="phone-slash" style="font-size:1.5em" v-else />
+              </transition>
+            </button>
+          </transition>
+          <!-- END: Answer/Drop Button -->
+
+          <!-- START: Hold Button -->
+          <transition name="fade">
+            <button
+              type="checkbox"
+              class="btn"
+              :disabled="!isCallActive"
+              @click="holdUnholdCall"
+              :class="{'mdb-color': !isCallHeld}"
+            >
+              <mdb-icon icon="pause" style="font-size:1.5em" />
+            </button>
+          </transition>
+          <!--END: Hold Button-->
+
+          <!-- START: Conference Dialer Toggle -->
+          <transition name="fade">
+            <mdb-dropdown>
               <button
                 type="checkbox"
-                class="btn"
-                v-if="isCallActive"
-                @click="holdUnholdCall"
-                :class="{'mdb-color': !isCallHeld}"
-              >
-                <mdb-icon icon="pause" style="font-size:1.5em" />
-              </button>
-            </transition>
-
-            <transition name="fade">
-              <button
-                type="button"
-                class="btn mdb-color"
-                v-if="isCallActive"
-                @click="toggleDialerDisplay"
+                class="btn red lighten-1"
+                :disabled="!isCallActive"
+                slot="toggle"
               >
                 <mdb-icon icon="users" style="font-size:1.5em" />
               </button>
-            </transition>
-          </div>
-        </mdb-col>
+              <mdb-dropdown-menu color="primary" style="width:280px">
+                <consult-dialer></consult-dialer>
+              </mdb-dropdown-menu>
+            </mdb-dropdown>
+          </transition>
 
-        <div class="fl_dialerDrawer special-color" v-show-slide="showDialer && isCallActive">
-          <dialer></dialer>
-        </div>
+          <!-- END: Conference Dialer Toggle -->
+
+          <!-- START: Transfer TO IVR -->
+          <!-- <button
+            type="button"
+            class="btn mdb-color"
+            :disabled="!isCallActive"
+            @click="transferToIvr"
+          >
+            <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
+            <span>Transfer To IVR</span>
+          </button>-->
+          <!-- END: Transfer TO IVR -->
+          
+          <!-- START: Outbound Dialer -->
+          <mdb-dropdown multiLevel>
+            <button type="checkbox" class="btn blue-grey" :disabled="isCallActive" slot="toggle">
+              Make Call
+              <!-- <mdb-icon icon="users" style="font-size:1.5em" /> -->
+            </button>
+
+            <mdb-dropdown-menu color="primary" style="width:280px">
+              <outbound-dialer @click.stop></outbound-dialer>
+            </mdb-dropdown-menu>
+          </mdb-dropdown>
+          <!-- END: Outbound Dialer -->
+        </mdb-col>
       </mdb-row>
     </mdb-container>
   </div>
-
-  <!-- </mdb-card-body>
-  </mdb-card>-->
 </template>
 
 <script>
-import Dialer from '@/components/widgets/Dialer/Dialer'
-import Timer from '@/components/util/Timer'
+import ConsultDialer from '@/widgets/Dialer/ConsultDialer'
+import OutboundDialer from '@/widgets/Dialer/OutboundDialer'
+import UpTimer from '@/components/util/UpTimer'
+import DownTimer from '@/components/util/DownTimer'
+
+import { CALL_STATES, CALL_TYPES, SOCKET_EVENTS } from '@/defines.js'
+
 import {
   mdbContainer,
   mdbRow,
   mdbCol,
   mdbBtn,
+  mdbPopover,
   mdbCard,
   mdbCardBody,
   mdbCardHeader,
@@ -108,18 +143,21 @@ import {
   mdbModalHeader,
   mdbModalTitle,
   mdbModalBody,
-  mdbModalFooter
+  mdbModalFooter,
+  mdbDropdown,
+  mdbDropdownToggle,
+  mdbDropdownItem,
+  mdbDropdownMenu
 } from 'mdbvue'
-import { CALL_STATES, CALL_TYPES, SOCKET_EVENTS } from '@/defines.js'
-
-import CallTimer from '@/components/util/CallTimer.vue'
 
 export default {
   name: 'CallControl',
   components: {
-    Timer,
-    Dialer,
-    CallTimer,
+    UpTimer,
+    ConsultDialer,
+    OutboundDialer,
+
+    mdbPopover,
     mdbContainer,
     mdbRow,
     mdbCol,
@@ -137,19 +175,50 @@ export default {
     mdbModalHeader,
     mdbModalTitle,
     mdbModalBody,
-    mdbModalFooter
+    mdbModalFooter,
+    mdbDropdown,
+    mdbDropdownToggle,
+    mdbDropdownItem,
+    mdbDropdownMenu
   },
   mounted() {},
-  props: {
-    msg: String
-  },
+  props: {},
 
   data() {
-    return { showDialer: false }
+    return {
+      showConsultDialer: false,
+      showOutboundDialer: false,
+      spinner: {
+        show: false
+      }
+    }
   },
   methods: {
-    toggleDialerDisplay() {
-      this.showDialer = !this.showDialer
+    showSpinner() {
+      this.spinner.show = true
+    },
+    hideSpinner() {
+      this.spinner.show = false
+    },
+
+    transferToIvr() {
+      this.$store.dispatch('updateDialedDigits', '2501')
+      this.showSpinner()
+      this.$store.dispatch('requestConsultCall').then(resp => {
+        this.hideSpinner()
+        this.$store.dispatch('requestTransferCall')
+        this.$store.dispatch('showErrorBanner', [
+          'IVR Transfer Successful',
+          'The call was transferred to the IVR'
+        ])
+      })
+    },
+    toggleConsultDialerDisplay() {
+      this.showConsultDialer = !this.showConsultDialer
+    },
+
+    toggleOutboundDialerDisplay() {
+      this.showOutboundDialer = !this.showOutboundDialer
     },
     answerDropCall() {
       this.$store.dispatch('requestAnswerDropCall', [
@@ -263,7 +332,8 @@ export default {
         default:
           if (
             newCallStatus === CALL_STATES.IDLE ||
-            newCallStatus === CALL_STATES.UNKNOWN
+            newCallStatus === CALL_STATES.UNKNOWN ||
+            newCallStatus === CALL_STATES.DROPPED
           ) {
             this.$store.dispatch('stopTimer', 'callStateTimer')
           }
@@ -300,17 +370,37 @@ export default {
 
 .fl_dialerDrawer {
   position: fixed;
-  top: 59px;
-  left: 500px;
+
   /* border: rgba(0, 0, 0, 0.3) solid 2px; */
   border-top: none;
 }
+
+#consultDialer {
+  top: 50px;
+  left: 500px;
+}
+
+#outboundDialer {
+  top: 50px;
+  left: 800px;
+}
+
+.fldialerDrawer .default {
+  top: 50px;
+  padding-top: unset;
+}
+
+.fldialerDrawer .lowered {
+  top: 60px;
+  padding-top: 20px;
+}
+
 .hide-checkbox {
   opacity: 0;
   pointer-events: none;
 }
 .fl_container_callControl {
-  width: 500px;
+  width: 900px;
 }
 
 .iconGlow {
