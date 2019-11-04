@@ -5,66 +5,73 @@
     <mdb-container fluid>
       <mdb-row class="px-3 py-4">
         <mdb-col class="d-flex align-items-baseline">
-          <!-- <mdb-input
-            type="tel"
-            class="fl_inp_dialedDigits w-100"
-            disabled
-            :value="this.dialedDigits"
-          ></mdb-input>-->
+          <!--Input Textbox for digits-->
           <mdb-input
             class="fl_inp_dialedDigits light-blue-text px-3"
             type="number"
             v-model="dialedDigits"
+            @click.stop
           ></mdb-input>
         </mdb-col>
+
         <!--Delete Single Digit-->
         <a
           class="black-text align-self-baseline mr-3 fl_btn_btnIcon"
-          @mouseclick="deleteSingleDigit"
+          @click="deleteSingleDigit"
+          @click.stop
         >
-          <mdb-icon icon="backspace" size="1p5x"/>
+          <mdb-icon icon="backspace" size="1p5x" />
         </a>
 
         <!--Delete All Digits-->
-        <a class="black-text align-self-baseline fl_btn_btnIcon" @click="clearDigits">
-          <mdb-icon icon="trash" size="1p5x"/>
+        <a class="black-text align-self-baseline fl_btn_btnIcon" @click="clearDigits" @click.stop>
+          <mdb-icon icon="trash" size="1p5x" />
         </a>
       </mdb-row>
       <mdb-row>
+        <!--For Loop for cycling through array of digits to for a grid of dialpad digits-->
         <mdb-col col="md-4 px-0" v-for="digit in digits" :key="digit.id">
           <div
             class="fl_button_dialerDigit btn-block transparent-color text-center fl_btn_btnIcon"
             @click="appendDigit(digit)"
+            @click.stop
           >{{digit}}</div>
         </mdb-col>
       </mdb-row>
-      <!-- <mdb-row>
-        <mdb-col col="md-3 py-1 fl_well_container d-flex justify-content-between w-100">
-          <div class="d-flex flex-column">
-            <div class="fl_well_text" id="callingAddress" :class="{'onHold':isCallHeld}">
-              <span>1234</span>
-              <span
-                icon="pause"
-                style="font-size:0.75em"
-                class="ml-1"
-                :class="{'onHold':isCallHeld}"
-              >on hold</span>
-            </div>
-            <div>
-              <call-timer class="fl_well_text sm"></call-timer>
-            </div>
-          </div>
-          <span class="fl_well_text sm">{{callStatusText}}</span>
-        </mdb-col>
-      </mdb-row>-->
+
       <mdb-row class="mx-0 pb-3">
-        <mdb-btn class="mdb-color mx-2 w-100" @click="onConsultButtonClicked">Consult</mdb-btn>
-        <div class="btn-group w-100">
-          <mdb-btn class="mdb-color mx-2 px-2" @click="onTransferButtonClicked">Trans</mdb-btn>
-          <!-- <mdb-btn class="mdb-color mx-2 px-2" @click="onSwitchButtonClicked">Switch</mdb-btn> -->
-          <mdb-btn class="mdb-color mx-2 px-2" @click="onConferenceButtonClicked">Conf</mdb-btn>
-          <!-- <mdb-btn class="mdb-color mx-2 px-2" @click="onRejoinButtonClicked">Rejoin</mdb-btn> -->
-        </div>
+        <transition name="fade">
+          <mdb-btn
+            class="mdb-color mx-2 w-100"
+            v-if="isConsultCallIdle"
+            @click="onConsultButtonClicked"
+            @click.stop
+          >
+            <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
+            <span>Consult</span>
+          </mdb-btn>
+        </transition>
+        <transition name="fade">
+          <div class="btn-group w-100 pb-2" v-if="!isConsultCallIdle">
+            <mdb-btn
+              class="btn-deep-orange mx-2 px-2 w-100"
+              @click="onConfDropButtonClicked"
+              @click.stop
+            >Drop</mdb-btn>
+            <!-- <mdb-btn
+              class="info-color mx-2 px-2 w-50"
+              @click="onConfHoldBtnClicked"
+            >{{confHoldText}}</mdb-btn>-->
+          </div>
+        </transition>
+        <transition name="fade">
+          <div class="btn-group w-100" v-if="!isConsultCallIdle">
+            <mdb-btn class="mdb-color mx-2 px-2 w-50" @click="onTransferButtonClicked">Trans</mdb-btn>
+            <mdb-btn class="mdb-color mx-2 px-2 w-50" @click="onConferenceButtonClicked">Conf</mdb-btn>
+            <!-- <mdb-btn class="mdb-color mx-2 px-2" @click="onRejoinButtonClicked">Rejoin</mdb-btn> -->
+            <!-- <mdb-btn class="mdb-color mx-2 px-2" @click="onSwitchButtonClicked">Switch</mdb-btn> -->
+          </div>
+        </transition>
 
         <!-- <mdb-btn class="unique-color">Conf</mdb-btn> -->
       </mdb-row>
@@ -88,14 +95,16 @@ import {
   mdbInput,
   mdbIcon
 } from 'mdbvue'
-import { CALL_STATES, SOCKET_EVENTS } from '@/defines.js'
-
-import CallTimer from '@/components/util/CallTimer.vue'
+import {
+  CALL_STATES,
+  CALL_TYPES,
+  AGENT_STATES,
+  SOCKET_EVENTS
+} from '@/defines.js'
 
 export default {
-  name: 'Dialer',
+  name: 'ConsultDialer',
   components: {
-    CallTimer,
     mdbContainer,
     mdbRow,
     mdbCol,
@@ -116,7 +125,10 @@ export default {
       digits: [1, 2, 3, 4, 5, 6, 7, 8, 9, '*', 0, '#'],
       interval: false,
       digitDeleteSpeed: 200,
-      initialDeleteSpeed: 500
+      initialDeleteSpeed: 500,
+      spinner: {
+        show: false
+      }
     }
   },
   // sockets: {
@@ -128,11 +140,22 @@ export default {
   //   }
   // },
   methods: {
+    showSpinner() {
+      this.spinner.show = true
+    },
+    hideSpinner() {
+      this.spinner.show = false
+    },
+
     appendDigit(digit) {
       this.dialedDigits += digit
     },
     deleteSingleDigit() {
-      this.dialedDigits = this.dialedDigits.slice(0, -1)
+      console.log('deleteSingleDigits')
+      this.dialedDigits = this.dialedDigits.slice(
+        0,
+        this.dialedDigits.length - 1
+      )
     },
     startDeletingDigits() {
       this.interval = setInterval(
@@ -146,103 +169,37 @@ export default {
     clearDigits() {
       this.dialedDigits = ''
     },
-    onRejoinButtonClicked() {},
-    onSwitchButtonClicked() {},
-
-    onConferenceButtonClicked() {
-      let vm = this
-      console.log('Conference Button Pressed')
-      if (this.$store.state.devMode) {
-        this.updateConferenceCall({
-          responseCode: '0',
-          responseMessage: 'success'
-        })
-      } else {
-        console.log(
-          'CONFCALL' +
-            'Sending Socket Request: ' +
-            JSON.stringify(this.$store.state.socketRequest)
-        )
-        this.$socket.emit(
-          SOCKET_EVENTS.CONFERENCE_CALL,
-          this.$store.state.socketRequest,
-          function(resp) {
-            vm.updateConferenceCall(resp)
-          }
-        )
-      }
-    },
-    updateConferenceCall(resp) {
-      if (resp.responseCode === '0') {
-        console.log('Call Conference Successful' + JSON.stringify(resp))
-        this.$store.dispatch('setConferenceCallStateInitiated', resp)
-      } else {
-        console.log('Call Conference Failed' + JSON.stringify(resp))
-      }
-    },
-
-    onTransferButtonClicked() {
-      let vm = this
-      console.log('Transfer Button Pressed')
-      if (this.$store.state.devMode) {
-        this.updateTransferCall({
-          responseCode: '0',
-          responseMessage: 'success'
-        })
-      } else {
-        console.log(
-          'Sending Socket Request: ' +
-            JSON.stringify(this.$store.state.socketRequest)
-        )
-        this.$socket.emit(
-          SOCKET_EVENTS.TRANSFER_CALL,
-          this.$store.state.socketRequest,
-          function(resp) {
-            vm.updateTransferCall(resp)
-          }
-        )
-      }
-    },
-    updateTransferCall(resp) {
-      if (resp.responseCode === '0') {
-        console.log('Call Transfer Successful' + JSON.stringify(resp))
-        this.$store.dispatch('setCallStateTransfered', resp)
-      } else {
-        console.log('Call Transfer Failed' + JSON.stringify(resp))
-      }
-    },
 
     onConsultButtonClicked() {
       this.$store.dispatch('updateDialedDigits', this.dialedDigits)
-      let vm = this
-      console.log('Consult Button Pressed')
-      if (this.$store.state.devMode) {
-        this.updateConsultCall({
-          responseCode: '0',
-          responseMessage: 'success'
-        })
-      } else {
-        console.log(
-          SOCKET_EVENTS.CONSULT_CALL +
-            ' Sending Socket Request: ' +
-            JSON.stringify(this.$store.state.socketRequest)
-        )
-        this.$socket.emit(
-          SOCKET_EVENTS.CONSULT_CALL,
-          this.$store.state.socketRequest,
-          function(resp) {
-            vm.updateConsultCall(resp)
-          }
-        )
-      }
+      this.showSpinner()
+      this.$store.dispatch('requestConsultCall').then(resp => {
+        this.hideSpinner()
+      })
     },
-    updateConsultCall(resp) {
-      console.log(
-        SOCKET_EVENTS.CONSULT_CALL + 'Received Response' + JSON.stringify(resp)
-      )
-      if (resp.responseCode === '0') {
-        this.$store.dispatch('setCallStateConsulted', resp)
-      }
+
+    onConferenceButtonClicked() {
+      this.$store.dispatch('requestConferenceCall')
+    },
+
+    onTransferButtonClicked() {
+      this.$store.dispatch('requestTransferCall')
+    },
+
+    onRejoinButtonClicked() {},
+    onSwitchButtonClicked() {},
+
+    onConfDropButtonClicked() {
+      this.$store.dispatch('requestAnswerDropCall', [
+        this.$store.getters.getConsultedCall.ucid,
+        CALL_TYPES.CONSULTED
+      ])
+    },
+    onConfHoldBtnClicked() {
+      this.$store.dispatch('requestHoldUnholdCall', [
+        this.$store.getters.getConsultedCall.ucid,
+        CALL_TYPES.CONSULTED
+      ])
     }
   },
   computed: {
@@ -251,6 +208,20 @@ export default {
     },
     callStatus() {
       return this.$store.getters.getPrimaryCall.status
+    },
+    isAgentStateHeld() {
+      return this.$store.getters.getAgentState === AGENT_STATES.HELD
+    },
+    isConsultCallIdle() {
+      return (
+        this.$store.getters.getConsultedCallStatus === CALL_STATES.IDLE ||
+        this.$store.getters.getConsultedCallStatus === CALL_STATES.DROPPED
+      )
+    },
+    confHoldText() {
+      return this.$store.getters.consultedCallStatus === CALL_STATES.HELD
+        ? 'UNHOLD'
+        : 'HOLD'
     }
   }
 }
@@ -267,10 +238,15 @@ export default {
   height: 25px;
   width: 100%;
   border-bottom: 1px solid grey;
-  font-size: 1.5rem;
+  font-family: 'Unica One', cursive;
   overflow: hidden;
-  background: white;
+  background: rgba(255, 255, 255, 0.75);
   border-radius: 5px;
+}
+
+.fl_inp_dialedDigits input {
+  font-size: 2em;
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .fl_button_dialerDigit {

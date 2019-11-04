@@ -19,22 +19,20 @@ export const AGENT_STATES = Object.freeze({
   }
 })
 
-export const REASON_CODES = Object.freeze({
-NONE: 0,
-LUNCH: 1,
-TRAINING: 2,
-END_OF_SHIFT:3,
-Text:{
-  0: 'None',
-  1: 'Lunch',
-  2: 'Training',
-  3: "End of Shift"
-}
-  })
+export const RESPONSE_CODES = Object.freeze({
+  SUCCESS: '0'
+})
+
 export const TIMER_STATES = Object.freeze({
-  START: 1,
   STOP: 0,
-  PAUSE: 2
+  START: 1,
+  PAUSE: 2,
+  RESET: 3
+})
+
+export const TIMER_DIRECTIONS = Object.freeze({
+  UP: "UP",
+  DOWN: "DOWN"
 })
 // States according to Avaya: [Login, Ready, Not Ready, Wrap-Up, Pending States]
 export const CALL_STATES = Object.freeze({
@@ -60,12 +58,17 @@ export const CALL_STATES = Object.freeze({
   }
 })
 
+export const CALL_TYPES = Object.freeze({
+  PRIMARY: '1',
+  CONSULTED: '2',
+  UNKNWON: '99'
+})
 
 
 export const CONNECTION_STATES = Object.freeze({
   CONNECTED: 'CONNECTED',
   CONNECTING: 'CONNECTING',
-  DROPPED: 'DROPPED'
+  DISCONNECTED: 'DISCONNECTED'
 })
 
 export const MESSAGE_TYPES = Object.freeze({
@@ -109,6 +112,11 @@ export const SOCKET_EVENTS = Object.freeze({
 
   CONFERENCE_CALL_RINGING: 'CONCALLRING',
   CONFERENCE_CALL_DISCONNECTED: 'CONCALLDISC',
-  CONFERENCE_CALL_TALKING: 'CONCALLTALK'
+  CONFERENCE_CALL_TALKING: 'CONCALLTALK',
+
+  AGENT_STATE_UPDATED: "AGTUPDATED"
 })
 
+export default {
+  RESPONSE_CODES
+}

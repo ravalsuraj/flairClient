@@ -1,19 +1,16 @@
+
 <template>
   <div class="d-flex flex-column">
-    <top-navbar v-if="isAgentLoggedIn"></top-navbar>
-    <!-- <dialer-drawer></dialer-drawer> -->
-    <main class="d-flex flex-fill main-body">
-      <router-view v-if="isAgentLoggedIn" class="fl_topSpacing"></router-view>
-      <login-page v-else class="flex-fill fl_topSpacing"></login-page>
+    <top-navbar v-if="isAgentLoggedIn" ref="topNavBar" class></top-navbar>
+    <!-- <call-drawer class="pt-4 mx-5"></call-drawer> -->
+    <main class="d-flex flex-fill main-body pt-5">
+      <router-view v-if="isAgentLoggedIn" class="pt-5"></router-view>
+      <login-page v-else class="flex-fill pt-4"></login-page>
     </main>
-    <!-- Footer -->
-    <!-- <utility-bar v-if="isAgentLoggedIn"></utility-bar> -->
-    <footer class="page-footer font-small special-color p-2"></footer>
-    <!-- Footer -->
-    
+    <bottom-footer></bottom-footer>
+
     <notifications group="error" />
   </div>
-
 </template>
 
 <script>
@@ -33,22 +30,23 @@ import {
   waves
 } from 'mdbvue'
 import Dashboard from '@/views/Dashboard'
-import DialerDrawer from '@/components/widgets/Dialer/DialerDrawer'
 import TopNavbar from '@/views/TopNavbar'
+import CallDrawer from '@/views/CallDrawer'
 import LoginPage from '@/views/Login'
 import UtilityBar from '@/views/UtilityBar.vue'
+import BottomFooter from '@/views/BottomFooter.vue'
 
 import { AGENT_STATES, SOCKET_EVENTS } from '@/defines'
 import Utils from '@/services/Utils'
 export default {
   name: 'AdminTemplate',
   components: {
-    DialerDrawer,
     LoginPage,
     TopNavbar,
+    CallDrawer,
     Dashboard,
     UtilityBar,
-
+    BottomFooter,
     mdbContainer,
     mdbNavbar,
     mdbNavbarBrand,
@@ -71,45 +69,41 @@ export default {
   },
   sockets: {
     connect() {
-      console.log(
-        'App.vue/sockets/connect(): Connection to SocketIO Server Established'
-      )
-
+      console.log('App/sockets/connect(): socket connected')
       this.$store.dispatch('processSocketConnected')
-      //this.$store.dispatch('session/updateIpAddress')
-      
+    },
+    connect_error() {
+      console.log('App/sockets/connect(): socket connect_error')
+      this.$store.dispatch('showErrorBanner', [
+        'Server Connection Lost!',
+        'Server connection could not be established. Please make sure you have connectivity with the server before you attempt to log in.'
+      ])
+      this.$store.dispatch('setSocketStateDisconnected')
+    },
+    connection_error() {
+      console.log('App/sockets/connect(): socket connection_error')
+      this.$store.dispatch('showErrorBanner', [
+        'Server Connection Lost!',
+        'WebSocket connection timed out. Please make sure the websocket server is running.'
+      ])
+
+      this.$store.dispatch('setSocketStateDisconnected')
     }
   },
-  mounted(){
+  mounted() {
     this.$store.dispatch('session/addWindowRefreshReloadListener')
-  },
-  methods: {
-    // getIpAddressForClient() {
-    //   console.log('Running Function to Update the IP Address')
-    //   return new Promise(resolve => {
-    //     var w = window
-    //     var a = new (w.RTCPeerConnection ||
-    //       w.mozRTCPeerConnection ||
-    //       w.webkitRTCPeerConnection)({
-    //       iceServers: []
-    //     })
-    //     var b = () => {}
-    //     a.createDataChannel('')
-    //     a.createOffer(c => a.setLocalDescription(c, b, b), b)
-    //     a.onicecandidate = c => {
-    //       try {
-    //         c.candidate.candidate
-    //           .match(
-    //             /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g
-    //           )
-    //           .forEach(resolve)
-    //       } catch (e) {}
-    //     }
-    //   })
-    // }
-  },
-  computed: {
+    // this.$store.dispatch('authenticateCrm').then(() => {
+    //   //this.$store.dispatch('getAccountIdFromCli', '8879708222')
+    // })
 
+    if (this.$refs.topNavBar) {
+      console.log(
+        'App/mounted(): navbar height is' + this.$refs.topNavBar.clientHeight
+      )
+    }
+  },
+  methods: {},
+  computed: {
     isAgentLoggedIn() {
       if (
         this.$store.getters['getAgentState'] === AGENT_STATES.LOG_OUT ||
@@ -130,9 +124,17 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+.test-cont {
+  height: 280px;
+  width: 280px;
+  background: red;
+}
+@import url('https://fonts.googleapis.com/css?family=Unica+One&display=swap');
+
 html {
-  font-size: 75%;
+  font-size: 70%;
   color: rgba(0, 0, 0, 0.45);
+  
 }
 .main-body {
   height: calc(100vh - 25px);
@@ -141,6 +143,9 @@ html {
 }
 footer {
   height: 25px;
+}
+.dispFont {
+  font-family: 'Unica One', cursive;
 }
 
 @media (min-width: 992px) {
@@ -203,6 +208,13 @@ footer {
 }
 .fa-1p5x {
   font-size: 1.5em;
+}
+
+/************   Utility Styles   *******************/
+
+.disableWidget {
+  pointer-events: none;
+  opacity: 0.5;
 }
 .btn-circle {
   width: 30px;

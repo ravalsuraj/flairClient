@@ -1,21 +1,22 @@
 <template>
-  <mdb-navbar color="unique" position="bottom" dark>
-    <web-socket-indicator></web-socket-indicator>
-    <span class="white-text">SessionID: {{sessionId}}</span>
-    
-    <mdb-navbar-nav right>
-      <mdb-nav-item href="#" class>Dialer</mdb-nav-item>
-    </mdb-navbar-nav>
-  </mdb-navbar>
+  <section class="mt-lg-5">
+    <mdb-card class="card-body" style="width: 22rem; margin-top: 1rem;">
+      <mdb-card-title>Panel Title</mdb-card-title>
+      <mdb-card-text>Some quick example text to build on the panel title and make up the bulk of the panel's content.</mdb-card-text>
+      <div class="flex-row">
+        <a>Card link</a>
+        <a style="margin-left: 1.25rem">Another link</a>
+      </div>
+    </mdb-card>
+  </section>
 </template>
+
 <style>
 </style>
 
 <script>
 import AgentControl from '@/widgets/AgentControl/AgentControl.vue'
 import CallControl from '@/widgets/CallControl/CallControl.vue'
-import QuickLinks from '@/widgets/QuickLinks/QuickLinks.vue'
-import WebSocketIndicator from '@/components/util/WebSocketIndicator'
 import {
   mdbRow,
   mdbCol,
@@ -37,12 +38,10 @@ import {
   waves
 } from 'mdbvue'
 export default {
-  name: 'UtilityBar',
+  name: 'CallDrawer',
   components: {
     AgentControl,
     CallControl,
-    QuickLinks,
-    WebSocketIndicator,
     mdbRow,
     mdbCol,
     mdbContainer,
@@ -69,10 +68,9 @@ export default {
   data() {
     return {}
   },
-  methods: {},
-  computed: {
-    sessionId() {
-      return this.$store.getters['session/getSessionId']
+  methods: {
+    toggleDevMode() {
+      this.$store.commit('TOGGLE_DEV_MODE')
     }
   }
 }

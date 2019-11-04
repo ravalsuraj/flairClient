@@ -5,7 +5,7 @@ function initialState() {
     return {
         agentState: AGENT_STATES.UNKNOWN,
         reasonCode: 0,
-        reasonCodeLabel: 'None',
+        reasonCodeLabel: '-',
         agentId: null,
         deviceId: null,
         password: null,
@@ -45,10 +45,17 @@ export default {
 
     actions: {
 
+        setAgentState({ commit }, agentState) {
+            commit('SET_AGENT_STATE', agentState)
+        },
+
         setAgentLoginCredentials({ commit }, credentials) {
             commit('SET_AGENT_LOGIN_CREDENTIALS', credentials)
         },
 
+        setAgentAuxCode({ commit }, auxCodeObj) {
+            commit('SET_AGENT_AUX_CODE', auxCodeObj)
+        },
         async sendAgentLoginRequest({ commit, dispatch, getters }) {
             let agent = getters.getAgent;
             let sessionId = getters['session/getSessionId'];
@@ -67,7 +74,7 @@ export default {
                 console.log('sendAgentLoginRequest(): response: ' + JSON.stringify(resp))
 
                 if (resp.responseCode === '0') {
-                    commit('SET_AGENT_STATE_LOGIN')
+                    dispatch('processAgentLogin')
                     return resp
                 } else {
                     dispatch('showErrorBanner', ['Agent Login failed:', resp.responseMessage])
@@ -94,7 +101,7 @@ export default {
                 console.log('sendAgentLogoutEvent(): response: ' + JSON.stringify(resp))
 
                 if (resp.responseCode === '0') {
-                    commit('SET_AGENT_STATE_LOGOUT')
+                    dispatch('processAgentLogout')
                     dispatch('session/resetSessionId')
                 } else {
                     dispatch('showErrorBanner', ['Agent Logout failed:', resp.responseMessage])
@@ -135,20 +142,20 @@ export default {
             })
         },
 
-        queryAgentLogin({ getters, commit, dispatch }) {
+        sendQueryAgentStateRequest({ getters, commit, dispatch }) {
             let agent = getters.getAgent;
             let sessionId = getters['session/getSessionId'];
-            console.log("queryAgentLogin(): sessionId=", sessionId)
+            console.log("sendQueryAgentStateRequest(): sessionId=", sessionId)
             let request = {
                 sessionId: sessionId,
                 agentId: agent.agentId,
                 deviceId: agent.deviceId
             }
-            console.log('queryAgentLogin(): request: ' + JSON.stringify(request))
+            console.log('sendQueryAgentStateRequest(): request: ' + JSON.stringify(request))
 
-            this._vm.$socket.emit(SOCKET_EVENTS.QUERY_AGENT_LOGIN, request, (resp) => {
+            this._vm.$socket.emit(SOCKET_EVENTS.QUERY_AGENT_STATE, request, (resp) => {
 
-                console.log('queryAgentLogin(): response: ' + JSON.stringify(resp))
+                console.log('sendQueryAgentStateRequest(): response: ' + JSON.stringify(resp))
 
                 if (resp.responseCode === '0') {
 
@@ -172,6 +179,16 @@ export default {
 
         },
 
+        processAgentLogin({ commit, dispatch }) {
+            commit('SET_AGENT_STATE_LOGIN')
+            dispatch('authenticateCrm')
+        },
+        processAgentLogout({ dispatch, commit }) {
+            dispatch('resetAllModules')
+            commit('SET_AGENT_STATE_LOGOUT')
+
+        },
+        /********************************* */
         setUpdatedAuxCode({ commit }, payload) {
             console.log("setUpdatedAuxCode(): payload=" + JSON.stringify(payload))
             let auxCodes = config.agentAuxCodes;
@@ -185,11 +202,10 @@ export default {
                 selectedAuxCode.label = "Ready"
             } else {
                 for (let i = 0; i < auxCodes.length; i++) {
-                    console.log("auxCode(" + i + ")=", auxCodes[i])
 
                     if (auxCodes[i].reasonCode == payload.reasonCode) {
                         selectedAuxCode.label = auxCodes[i].label
-                        console.log("setUpdatedAuxCode(): setting label=" + selectedAuxCode.label)
+                        console.log("setUpdatedAuxCode(): setting label= " + selectedAuxCode.label)
 
                     } else {
                         //console.log("aux code failed for i=" + i)
@@ -199,32 +215,33 @@ export default {
             }
             console.log("setUpdatedAuxCode(): about to commit aux code. selectedAuxCode=", selectedAuxCode)
             commit('SET_AGENT_AUX_CODE', selectedAuxCode)
-        }
+        },
 
+        setDefaultAuxCode({ getters, commit }, payload) {
+            if (!getters.getAgentAuxState) {
+                console.log("getAgentAuxState is null, so setting default aux code for the state received from the login request")
 
+                switch (payload.agentState) {
+                    case AGENT_STATES.READY:
+                    case AGENT_STATES.NOT_READY:
 
-
-    },
-    setDefaultAuxCode({ getters, commit }, payload) {
-        if (!getters.getAgentAuxState) {
-            console.log("getAgentAuxState is null, so setting default aux code for the state received from the login request")
-
-            switch (payload.agentState) {
-                case AGENT_STATES.READY:
-                case AGENT_STATES.NOT_READY:
-
-                    //for the text value, find the default aux code from the config file
-                    let defaultAgentAuxCode = config.defaultAuxCodes[agentLoginState];
-                    commit('SET_AGENT_AUX_CODE', defaultAgentAuxCode);
-                    break;
+                        //for the text value, find the default aux code from the config file
+                        let defaultAgentAuxCode = config.defaultAuxCodes[agentLoginState];
+                        commit('SET_AGENT_AUX_CODE', defaultAgentAuxCode);
+                        break;
+                }
             }
-
-        }
+        },
 
 
     },
+
+
 
     mutations: {
+        RESET_AGENT_MODULE(state) {
+            Object.assign(state, initialState())
+        },
 
         SET_AGENT_LOGIN_CREDENTIALS(state, credentials) {
             state.agentId = credentials.agentId
@@ -241,13 +258,13 @@ export default {
             state.agentState = AGENT_STATES.LOG_OUT
         },
 
-        SET_AGENT_STATE(state, payload) {
-            state.agentState = payload
+        SET_AGENT_STATE(state, agentState) {
+            state.agentState = agentState
         },
 
         SET_AGENT_AUX_CODE(state, payload) {
             state.reasonCode = payload.reasonCode
-            state.agentState = payload.agentState
+            state.agentState = payload.state
             state.reasonCodeLabel = payload.label
         }
     }

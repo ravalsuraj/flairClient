@@ -1,9 +1,9 @@
 <template>
   <mdb-container fluid class="mx-2 px-0">
     <mdb-row class="mx-0">
-      <mdb-col lg="2p5" md="12" class="px-0">
+      <mdb-col :lg="leftComponentWidth" md="12" class>
         <draggable
-          :list="leftComponents"
+          :list="leftComponentWidgets"
           class="dragArea"
           :options="{ghostClass:'ghost-component', chosenClass: 'chosen-component', 
           animation:150, dragClass:'dragged-component',
@@ -11,29 +11,21 @@
         >
           <transition-group name>
             <component
-              v-for="component in leftComponents"
+              v-for="component in leftComponentWidgets"
               :is="component.name"
               :key="component.name"
               class="fl_widget"
-            >
-              <!-- <div v-html="component.html"></div> -->
-            </component>
+            ></component>
           </transition-group>
         </draggable>
       </mdb-col>
 
-      <mdb-col lg="7" md="12" class="mb-1 px-0 mx-0">
-        <div class="w-100 h-100" color="primary">
-          <!--     
+      <mdb-col :lg="middleComponentWidth" md="12" class="mb-1 px-0 mx-0">
+        <!--     
           <mdb-input type="text" v-model="custName"></mdb-input>
-          -->
-          <crm-frame class style></crm-frame>
-        </div>
-      </mdb-col>
-
-      <mdb-col lg="2p5" md="12" class="mb-1 px-0 mx-0">
+        -->
         <draggable
-          :list="rightComponents"
+          :list="middleComponentWidgets"
           class="dragArea"
           :options="{ghostClass:'ghost-component', chosenClass: 'chosen-component', 
           animation:150, dragClass:'dragged-component',
@@ -41,7 +33,26 @@
         >
           <transition-group name>
             <component
-              v-for="component in rightComponents"
+              v-for="component in middleComponentWidgets"
+              :is="component.name"
+              :key="component.name"
+              class="fl_widget"
+            ></component>
+          </transition-group>
+        </draggable>
+      </mdb-col>
+
+      <mdb-col :lg="rightComponentWidth" md="12" class="mb-1 px-0 mx-0">
+        <draggable
+          :list="rightComponentWidgets"
+          class="dragArea"
+          :options="{ghostClass:'ghost-component', chosenClass: 'chosen-component', 
+          animation:150, dragClass:'dragged-component',
+           filter: '.card-body', preventOnFilter: false}"
+        >
+          <transition-group name>
+            <component
+              v-for="component in rightComponentWidgets"
               :is="component.name"
               :key="component.name"
               class="fl_widget"
@@ -55,7 +66,7 @@
 
 <script>
 import draggable from 'vuedraggable'
-import {config} from '@/config.js'
+import { config } from '@/config.js'
 import {
   mdbContainer,
   mdbRow,
@@ -69,25 +80,26 @@ import {
   mdbTbl,
   mdbInput
 } from 'mdbvue'
-import CallHistory from '@/components/widgets/CallHistory/CallHistory.vue'
-import CallDetails from '@/components/widgets/CallDetails/CallDetails.vue'
-import MenuTraversal from '@/components/widgets/MenuTraversal/MenuTraversal.vue'
-import CallControl from '@/components/widgets/CallControl/CallControl.vue'
-import AgentControl from '@/components/widgets/AgentControl/AgentControl.vue'
-import AgentCallStatistics from '@/components/widgets/AgentCallStatistics/AgentCallStatistics.vue'
-import TestBench from '@/components/widgets/TestBench.vue'
-import TimerTest from '@/components/widgets/TimerTest.vue'
-import Dialer from '@/components/widgets/Dialer/Dialer.vue'
-import CallDisposition from '@/components/widgets/CallDisposition/CallDisposition.vue'
-import CrmFrame from '@/components/widgets/CrmFrame/CrmFrame.vue'
-import QuickLinks from '@/components/widgets/QuickLinks/QuickLinks.vue'
+import CallHistory from '@/widgets/CallHistory/CallHistory.vue'
+import CallDetails from '@/widgets/CallDetails/CallDetails.vue'
+import MenuTraversal from '@/widgets/MenuTraversal/MenuTraversal.vue'
+import CallControl from '@/widgets/CallControl/CallControl.vue'
+import AgentControl from '@/widgets/AgentControl/AgentControl.vue'
+import AgentCallStatistics from '@/widgets/AgentCallStatistics/AgentCallStatistics.vue'
+import TestBench from '@/widgets/TestBench.vue'
+import TimerTest from '@/widgets/TimerTest.vue'
+import ConsultDialer from '@/widgets/Dialer/ConsultDialer.vue'
+import CallDisposition from '@/widgets/CallDisposition/CallDisposition.vue'
+import CrmFrame from '@/widgets/CrmFrame/CrmFrame.vue'
+import QuickLinks from '@/widgets/QuickLinks/QuickLinks.vue'
+import SmsHelper from '@/widgets/SmsHelper/SmsHelper.vue'
 
 export default {
   name: 'Dashboard',
   components: {
     TimerTest,
     draggable,
-    Dialer,
+    ConsultDialer,
     CrmFrame,
     QuickLinks,
     CallDisposition,
@@ -98,7 +110,7 @@ export default {
     AgentControl,
     CallDetails,
     CallHistory,
-
+    SmsHelper,
     mdbContainer,
     mdbRow,
     mdbCol,
@@ -132,20 +144,36 @@ export default {
     myGhost() {
       return { 'my-ghost': true }
     },
-    leftComponents: {
+    leftComponentWidgets: {
       get() {
-        return config.leftComponents
-      },
-      set(value) {
-        this.$store.commit('updateLeftComponents', value)
+        return config.leftComponents.widgets
       }
     },
-    rightComponents: {
+    leftComponentWidth: {
       get() {
-        return config.rightComponents
-      },
-      set(value) {
-        this.$store.commit('updateRightComponents', value)
+        return config.leftComponents.width
+      }
+    },
+    middleComponentWidgets: {
+      get() {
+        return config.middleComponents.widgets
+      }
+    },
+    middleComponentWidth: {
+      get() {
+        return config.middleComponents.width
+      }
+    },
+
+    rightComponentWidgets: {
+      get() {
+        return config.rightComponents.widgets
+      }
+    },
+
+    rightComponentWidth: {
+      get() {
+        return config.rightComponents.width
       }
     },
     isDevMode() {
@@ -167,4 +195,5 @@ export default {
 .dragged-component {
   opacity: 1 !important;
 }
+
 </style>

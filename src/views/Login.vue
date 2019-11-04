@@ -2,7 +2,9 @@
   <mdb-container fluid class="d-flex fl_corner_bg">
     <!-- Material form login -->
     <mdb-row class="d-flex flex-fill justify-content-center">
-      <mdb-col col="lg-4" class style>
+      <mdb-col col="lg-6" class style>
+        <!--Logout button only for testing. Remove it for production-->
+          <a class="text-white" @click="agentLogoutBtnClicked">Logout</a>
         <mdb-card>
           <div class="pt-3 mx-auto">
             <img
@@ -78,8 +80,8 @@
           </mdb-card-body>
           <mdb-alert :color="loginAlert.color" v-if="loginAlert.show">{{loginAlert.message}}</mdb-alert>
         </mdb-card>
-        <mdb-btn color="success" @click="simulateAgentLogin">Simulate Login</mdb-btn>
-        <mdb-btn color="danger" @click="agentLogoutBtnClicked">Logout</mdb-btn>
+        <!-- <mdb-btn color="success" @click="simulateAgentLogin">Simulate Login</mdb-btn> -->
+      
       </mdb-col>
     </mdb-row>
   </mdb-container>
@@ -146,30 +148,7 @@ export default {
     }
   },
   sockets: {
-    connect() {
-      console.log('socket connected')
-      this.showAlert(
-        'success',
-        'WebSocket Communication Established, please login'
-      )
-      this.$store.dispatch('setSocketStateConnected')
-    },
-    connect_error() {
-      console.log('Connection Error for WebSocket')
-      this.showAlert(
-        'danger',
-        'WebSocket connection could not be established. Please make sure the websocket server is running.'
-      )
-      this.$store.dispatch('setSocketStateDisconnected')
-    },
-    connection_error() {
-      console.log('Connection Timeout for WebSocket')
-      this.showAlert(
-        'danger',
-        'WebSocket connection timed out. Please make sure the websocket server is running.'
-      )
-      this.$store.dispatch('setSocketStateDisconnected')
-    }
+   
   },
   methods: {
     handleEnterKeyForLogin(e) {
