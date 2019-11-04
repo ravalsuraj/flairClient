@@ -1,7 +1,12 @@
 import { AGENT_STATES } from "./defines";
 
 export const config = {
-    WebSocketUrl: 'http://192.168.230.23:9092',
+    WebSocketUrl: "http://localhost:9092",
+
+    crmBaseUrl: 'http://andrewreifman.com/se7en/',
+    crmUrl: 'http://localhost:9527/#/dashboard',
+    sugarCrmUrl: "https://auth.sugarcrm.com/",
+
     defaultAuxCodes: {
         'READY': {
             label: 'Ready',
@@ -56,9 +61,6 @@ export const config = {
         },
     ],
 
-    crmBaseUrl: 'http://andrewreifman.com/se7en/',
-    crmUrl: 'http://localhost:9527/#/dashboard',
-    sugarCrmUrl: "https://auth.sugarcrm.com/",
 
     leftComponents: {
         width: "2p5",

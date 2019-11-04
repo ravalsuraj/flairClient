@@ -1,11 +1,11 @@
 
 <template>
   <div class="d-flex flex-column">
-    <top-navbar v-if="isAgentLoggedIn" ref="topNavBar"></top-navbar>
-
-    <main class="d-flex flex-fill main-body">
-      <router-view v-if="isAgentLoggedIn" class="fl_topSpacing"></router-view>
-      <login-page v-else class="flex-fill fl_topSpacing"></login-page>
+    <top-navbar v-if="isAgentLoggedIn" ref="topNavBar" class></top-navbar>
+    <!-- <call-drawer class="pt-4 mx-5"></call-drawer> -->
+    <main class="d-flex flex-fill main-body pt-5">
+      <router-view v-if="isAgentLoggedIn" class="pt-5"></router-view>
+      <login-page v-else class="flex-fill pt-4"></login-page>
     </main>
     <bottom-footer></bottom-footer>
 
@@ -31,6 +31,7 @@ import {
 } from 'mdbvue'
 import Dashboard from '@/views/Dashboard'
 import TopNavbar from '@/views/TopNavbar'
+import CallDrawer from '@/views/CallDrawer'
 import LoginPage from '@/views/Login'
 import UtilityBar from '@/views/UtilityBar.vue'
 import BottomFooter from '@/views/BottomFooter.vue'
@@ -42,6 +43,7 @@ export default {
   components: {
     LoginPage,
     TopNavbar,
+    CallDrawer,
     Dashboard,
     UtilityBar,
     BottomFooter,
@@ -95,7 +97,9 @@ export default {
     // })
 
     if (this.$refs.topNavBar) {
-      console.log('App/mounted(): navbar height is' + this.$refs.topNavBar.clientHeight)
+      console.log(
+        'App/mounted(): navbar height is' + this.$refs.topNavBar.clientHeight
+      )
     }
   },
   methods: {},
@@ -130,6 +134,7 @@ export default {
 html {
   font-size: 70%;
   color: rgba(0, 0, 0, 0.45);
+  
 }
 .main-body {
   height: calc(100vh - 25px);

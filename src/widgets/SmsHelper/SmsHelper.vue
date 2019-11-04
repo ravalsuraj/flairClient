@@ -11,7 +11,7 @@
         </a>
       </mdb-card-header>
       <mdb-card-body class="px-1" v-show-slide="showWidget" :class="{'p-0': !showWidget}">
-        <!-- <mdb-card-text><strong>Test Bench</strong></mdb-card-text> -->
+        
         <mdb-container fluid :class="{'disableWidget': !isCallAvailable}">
           <div v-if="cli">
             <label>The SMS will be sent to:</label>

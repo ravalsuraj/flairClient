@@ -1,7 +1,7 @@
 <template>
   <mdb-container fluid class="mx-2 px-0">
     <mdb-row class="mx-0">
-      <mdb-col :lg="leftComponentWidth" md="12" class="px-0">
+      <mdb-col :lg="leftComponentWidth" md="12" class>
         <draggable
           :list="leftComponentWidgets"
           class="dragArea"
@@ -40,9 +40,6 @@
             ></component>
           </transition-group>
         </draggable>
-        <!-- <div class="w-100 h-100" color="primary">
-          <crm-frame class style></crm-frame>
-        </div>-->
       </mdb-col>
 
       <mdb-col :lg="rightComponentWidth" md="12" class="mb-1 px-0 mx-0">
@@ -162,7 +159,7 @@ export default {
         return config.middleComponents.widgets
       }
     },
-    middleComponentWidth:{
+    middleComponentWidth: {
       get() {
         return config.middleComponents.width
       }
@@ -198,4 +195,5 @@ export default {
 .dragged-component {
   opacity: 1 !important;
 }
+
 </style>

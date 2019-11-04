@@ -66,45 +66,7 @@
             </button>
           </transition>
           <!--END: Hold Button-->
-
-          <!-- START: Conference Dialer Toggle -->
-          <transition name="fade">
-            <mdb-dropdown :class="{'disableWidget':!isCallActive}">
-              <button type="checkbox" class="btn red lighten-1" slot="toggle">
-                <mdb-icon icon="users" style="font-size:1.5em" />
-              </button>
-              <mdb-dropdown-menu color="primary" style="width:280px">
-                <consult-dialer></consult-dialer>
-              </mdb-dropdown-menu>
-            </mdb-dropdown>
-          </transition>
-
-          <!-- END: Conference Dialer Toggle -->
-
-          <!-- START: Transfer TO IVR -->
-          <!-- <button
-            type="button"
-            class="btn mdb-color"
-            :disabled="!isCallActive"
-            @click="transferToIvr"
-          >
-            <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
-            <span>Transfer To IVR</span>
-          </button>-->
-          <!-- END: Transfer TO IVR -->
-
-          <!-- START: Outbound Dialer -->
-          <mdb-dropdown multiLevel>
-            <button type="checkbox" class="btn blue-grey" :disabled="isCallActive" slot="toggle">
-              Make Call
-              <!-- <mdb-icon icon="users" style="font-size:1.5em" /> -->
-            </button>
-
-            <mdb-dropdown-menu color="primary" style="width:280px">
-              <outbound-dialer @click.stop></outbound-dialer>
-            </mdb-dropdown-menu>
-          </mdb-dropdown>
-          <!-- END: Outbound Dialer -->
+          
         </mdb-col>
       </mdb-row>
     </mdb-container>
