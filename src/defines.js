@@ -65,7 +65,7 @@ export const CALL_TYPES = Object.freeze({
 })
 
 
-export const CONNECTION_STATES = Object.freeze({
+export const SOCKET_STATES = Object.freeze({
   CONNECTED: 'CONNECTED',
   CONNECTING: 'CONNECTING',
   DISCONNECTED: 'DISCONNECTED'
@@ -116,6 +116,8 @@ export const SOCKET_EVENTS = Object.freeze({
 
   AGENT_STATE_UPDATED: "AGTUPDATED"
 })
+
+
 
 export default {
   RESPONSE_CODES

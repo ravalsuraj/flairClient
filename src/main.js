@@ -2,6 +2,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import 'bootstrap-css-only/css/bootstrap.min.css'
 import '../build/css/mdb.css'
+
 import Vue from 'vue'
 import Vuex from 'vuex'
 import App from './App'

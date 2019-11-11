@@ -4,7 +4,7 @@
     <mdb-row class="d-flex flex-fill justify-content-center">
       <mdb-col col="lg-6" class style>
         <!--Logout button only for testing. Remove it for production-->
-          <a class="text-white" @click="agentLogoutBtnClicked">Logout</a>
+        <a class="text-white" @click="agentLogoutBtnClicked">Logout</a>
         <mdb-card>
           <div class="pt-3 mx-auto">
             <img
@@ -80,8 +80,6 @@
           </mdb-card-body>
           <mdb-alert :color="loginAlert.color" v-if="loginAlert.show">{{loginAlert.message}}</mdb-alert>
         </mdb-card>
-        <!-- <mdb-btn color="success" @click="simulateAgentLogin">Simulate Login</mdb-btn> -->
-      
       </mdb-col>
     </mdb-row>
   </mdb-container>
@@ -122,9 +120,7 @@ export default {
     mdbTbl,
     mdbInput
   },
-  mounted() {
-    
-  },
+  mounted() {},
   props: {},
 
   data() {
@@ -147,9 +143,7 @@ export default {
       ipAddress: ''
     }
   },
-  sockets: {
-   
-  },
+  sockets: {},
   methods: {
     handleEnterKeyForLogin(e) {
       if (e.keyCode === 13) {
@@ -157,19 +151,20 @@ export default {
       }
     },
     async agentLoginBtnClicked(state) {
-      this.$store.dispatch('setAgentLoginCredentials', this.credentials)
-      console.log('agentLoginBtnClicked(): login button clicked')
-      this.showSpinner()
-
       let sendAgentLoginRequest = () => {
-        this.$store.dispatch('sendAgentLoginRequest').then(resp => { 
+        this.$store.dispatch('sendAgentLoginRequest').then(resp => {
           this.hideSpinner()
           if (resp && response.responseCode && resp.responseCode === '0') {
+            this.$store.dispatch('showErrorBanner', [
+              'Welcome',
+              'You are successfully logged in'
+            ])
           }
         })
       }
-
-      
+      this.showSpinner()
+      this.$store.dispatch('setAgentLoginCredentials', this.credentials)
+      console.log('agentLoginBtnClicked(): login button clicked')
 
       let currentSessionId = this.$store.getters['session/getSessionId']
 

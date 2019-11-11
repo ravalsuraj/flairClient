@@ -1,46 +1,17 @@
 <template>
   <div class="fl_container_callControl d-flex align-items-center">
-    <mdb-container fluid>
-      <mdb-row class>
-        <!--Call Display Well-->
-        <mdb-col col="md-5" class="fl_well_container w-100 px-0">
-          <!--Primary Call Status-->
-          <mdb-row class="p-1 mx-1 no-gutters">
-            <!-- <mdb-col col="2" class="fl_well_text">PRIMARY:</mdb-col> -->
-            <mdb-col
-              col="5"
-              class="fl_well_text pl-4 text-center"
-              :class="{'onHold':isCallHeld}"
-            >{{callingAddress}}</mdb-col>
-            <mdb-col col="3">
-              <up-timer name="callStateTimer" class="fl_well_text" :class="{'onHold':isCallHeld}"></up-timer>
-            </mdb-col>
-            <mdb-col col="2" class="fl_well_text" :class="{'onHold':isCallHeld}">{{callStatusText}}</mdb-col>
-          </mdb-row>
-
-          <!--Conference Call Status-->
-          <mdb-row class="p-1 mx-1 no-gutters" v-if="!isConfCallIdle">
-            <!-- <mdb-col col="2" class="fl_well_text">CONSULT:</mdb-col> -->
-            <mdb-col
-              col="md-4"
-              class="fl_well_text text-center"
-              :class="{'onHold':isConfCallHeld}"
-            >{{conferenceCalledAddress}}</mdb-col>
-            <mdb-col col="3">
-              <!-- <timer name="conferenceCallStateTimer" class="fl_well_text sm"></timer> -->
-            </mdb-col>
-            <mdb-col col="2" class="fl_well_text">{{conferenceCallStatusText}}</mdb-col>
-          </mdb-row>
-        </mdb-col>
-
+    <mdb-container fluid v-if="isCallActive || isCallRinging">
+      <mdb-card class="card-body" style="width: 22rem; margin-top: 1rem;">
+        <mdb-card-title>Panel Title</mdb-card-title>
+        <mdb-card-text>Calling Number: {{callingAddress}}</mdb-card-text>
         <!--START: Inbound Call Controls-->
-        <mdb-col col="md-7">
+        <mdb-col col="md-12">
           <!-- <div class="btn-group mx-4" role="group"> </div> -->
           <!-- START: Answer/Drop Button -->
           <transition name="fade">
             <button
               type="button"
-              class="btn"
+              class="btn btn-rounded"
               @click="answerDropCall"
               :disabled="isCallIdle"
               :class="[{iconGlow:isCallRinging}, answerButtonColor]"
@@ -66,9 +37,12 @@
             </button>
           </transition>
           <!--END: Hold Button-->
-          
         </mdb-col>
-      </mdb-row>
+
+        <div class="flex-row">
+          <mdb-btn color="cyan" @click="disposeCall">Dispose</mdb-btn>
+        </div>
+      </mdb-card>
     </mdb-container>
   </div>
 </template>
@@ -88,6 +62,7 @@ import {
   mdbBtn,
   mdbPopover,
   mdbCard,
+  mdbCardTitle,
   mdbCardBody,
   mdbCardHeader,
   mdbCardText,
@@ -120,6 +95,7 @@ export default {
     mdbCol,
     mdbBtn,
     mdbCard,
+    mdbCardTitle,
     mdbCardBody,
     mdbCardHeader,
     mdbCardText,
@@ -139,7 +115,9 @@ export default {
     mdbDropdownMenu
   },
   mounted() {},
-  props: {},
+  props: {
+    callIndex: String
+  },
 
   data() {
     return {
@@ -158,25 +136,6 @@ export default {
       this.spinner.show = false
     },
 
-    transferToIvr() {
-      this.$store.dispatch('updateDialedDigits', '2501')
-      this.showSpinner()
-      this.$store.dispatch('requestConsultCall').then(resp => {
-        this.hideSpinner()
-        this.$store.dispatch('requestTransferCall')
-        this.$store.dispatch('showErrorBanner', [
-          'IVR Transfer Successful',
-          'The call was transferred to the IVR'
-        ])
-      })
-    },
-    toggleConsultDialerDisplay() {
-      this.showConsultDialer = !this.showConsultDialer
-    },
-
-    toggleOutboundDialerDisplay() {
-      this.showOutboundDialer = !this.showOutboundDialer
-    },
     answerDropCall() {
       this.$store.dispatch('requestAnswerDropCall', [
         this.$store.getters.getPrimaryCall.ucid,
@@ -188,14 +147,18 @@ export default {
         this.$store.getters.getPrimaryCall.ucid,
         CALL_TYPES.PRIMARY
       ])
+    },
+
+    disposeCall() {
+      this.$store.dispatch('removeCallFromActiveCalls')
     }
   },
   computed: {
-    callStatus() {
-      return this.$store.getters.getCallStatus
+    call() {
+      return this.$store.getters.getCall(this.callIndex)
     },
-    conferenceCallStatus() {
-      return this.$store.getters.getConsultedCallStatus
+    callStatus() {
+      return this.call.status
     },
 
     isCallIdle() {
@@ -220,18 +183,8 @@ export default {
       )
     },
 
-    isConfCallActive() {
-      return (
-        this.conferenceCallStatus === CALL_STATES.TALKING ||
-        this.conferenceCallStatus === CALL_STATES.HELD
-      )
-    },
     isCallHeld() {
       return this.callStatus === CALL_STATES.HELD
-    },
-
-    isConfCallHeld() {
-      return this.conferenceCallStatus === CALL_STATES.HELD
     },
 
     answerButtonText() {
@@ -254,7 +207,7 @@ export default {
     },
     callingAddress() {
       if (this.isCallRinging || this.isCallActive) {
-        return this.$store.getters.getPrimaryCall.callingAddress
+        return this.call.callingAddress
       } else {
         return '-'
       }
@@ -262,18 +215,6 @@ export default {
 
     callStatusText() {
       return CALL_STATES.Text[this.callStatus]
-    },
-
-    conferenceCalledAddress() {
-      if (this.isCallRinging || this.isConfCallActive) {
-        return this.$store.getters.getConsultedCall.calledAddress
-      } else {
-        return '-'
-      }
-    },
-
-    conferenceCallStatusText() {
-      return CALL_STATES.Text[this.conferenceCallStatus]
     }
   },
   watch: {
@@ -309,7 +250,7 @@ export default {
   color: rgba(255, 255, 255, 0.75);
   padding-right: 10px;
   padding-left: 10px;
-  font-family: 'Unica One', cursive;
+  font-family: 'Teko', san-serif;
   font-size: 1.2em;
 }
 

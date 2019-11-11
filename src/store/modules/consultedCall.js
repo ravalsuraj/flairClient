@@ -45,21 +45,28 @@ export default {
 
         },
 
-        setConsultedCallStateRinging({ commit }, payload) {
+        setConsultedCallStateRinging({ commit, dispatch }, payload) {
+            dispatch('addCallToActiveCalls', payload)
             commit('SET_CONF_STATE_RINGING')
+            dispatch('setCallState', [payload.ucid, CALL_STATES.RINGING])
+
+
         },
-        setConsultedCallStateTalking({ commit }, payload) {
+        setConsultedCallStateTalking({ commit, dispatch }, payload) {
             commit('SET_CONF_STATE_TALKING')
+            dispatch('setCallState', [payload.ucid, CALL_STATES.TALKING])
         },
-        setConsultedCallStateHeld({ commit }, payload) {
+        setConsultedCallStateHeld({ commit, dispatch }, payload) {
             commit('SET_CONF_STATE_HELD')
+            dispatch('setCallState', [payload.ucid, CALL_STATES.HELD])
         },
-        setConsultedCallStateDropped({ commit }, payload) {
+        setConsultedCallStateDropped({ commit, dispatch }, payload) {
             commit('SET_CONF_STATE_DROPPED')
+            dispatch('setCallState', [payload.ucid, CALL_STATES.DROPPED])
             commit('RESET_CONSULTED_CALL_MODULE')
         },
 
-        requestConsultCall({ getters, commit }) {
+        requestConsultCall({ getters, commit, dispatch }) {
             return new Promise((resolve, reject) => {
                 try {
 
@@ -79,6 +86,7 @@ export default {
                             console.log("requestConsultCall(): resp=" + JSON.stringify(resp));
                             if (resp.responseCode === '0') {
                                 commit('SET_CONF_STATE_CONSULTED', resp)
+                                dispatch('addCallToActiveCalls', resp)
                                 resolve(resp)
 
                             } else {
@@ -158,17 +166,18 @@ export default {
         },
 
         SET_CONF_STATE_RINGING(state, payload) {
+
             state.consultedCall.status = CALL_STATES.RINGING
         },
 
         SET_CONF_STATE_TALKING(state, payload) {
             state.consultedCall.status = CALL_STATES.TALKING
-            //    state.call.primary.status = CALL_STATES.HELD
+
         },
 
         SET_CONF_STATE_HELD(state, payload) {
             state.consultedCall.status = CALL_STATES.HELD
-            //    state.call.primary.status = CALL_STATES.HELD
+
         },
 
         SET_CONF_STATE_DROPPED(state, payload) {

@@ -179,9 +179,8 @@ export default {
 
         },
 
-        processAgentLogin({ commit, dispatch }) {
+        processAgentLogin({ commit }) {
             commit('SET_AGENT_STATE_LOGIN')
-            dispatch('authenticateCrm')
         },
         processAgentLogout({ dispatch, commit }) {
             dispatch('resetAllModules')

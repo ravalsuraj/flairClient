@@ -26,6 +26,8 @@
     "moment": "^2.23.0",
     "npm": "^6.5.0",
     "popper.js": "^1.14.6",
+    "qs": "^6.9.1",
+    "querystring": "^0.2.0",
     "v-show-slide": "^1.6.0",
     "vue": "^2.5.21",
     "vue-chartjs": "^3.4.0",

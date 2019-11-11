@@ -92,14 +92,16 @@ export default {
     },
     updateTicks() {
       if (this.secondTicks > 0) {
+        if (this.secondTicks === 1) {
+          this.$emit('timer-expired')
+          this.$store.dispatch('stopTimer', 'acwTimer')
+        }
         this.secondTicks = this.secondTicks - 1
       } else {
         this.secondTicks = 0
       }
 
       if (this.secondTicks === 0) {
-        this.$emit('timer-expired')
-        //this.$store.dispatch('stopTimer', 'acwTimer')
       }
     },
 

@@ -1,13 +1,13 @@
 import {
     AGENT_STATES,
     CALL_STATES,
-    CONNECTION_STATES,
+    SOCKET_STATES,
     TIMER_STATES
 } from '@/defines.js'
 
 function initialState() {
     return {
-        status: CONNECTION_STATES.DISCONNECTED
+        status: SOCKET_STATES.DISCONNECTED
     }
 }
 export default {
@@ -20,10 +20,10 @@ export default {
 
         /******************* SOCKETIO STATE MUTATIONS *********************/
         SET_SOCKET_STATE_CONNECTED(state) {
-            state.status = CONNECTION_STATES.CONNECTED
+            state.status = SOCKET_STATES.CONNECTED
         },
         SET_SOCKET_STATE_DISCONNECTED(state) {
-            state.status = CONNECTION_STATES.DISCONNECTED
+            state.status = SOCKET_STATES.DISCONNECTED
         }
     },
     actions: {

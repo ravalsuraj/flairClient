@@ -1,13 +1,9 @@
 <template>
   <section class="mt-lg-5">
-    <mdb-card class="card-body" style="width: 22rem; margin-top: 1rem;">
-      <mdb-card-title>Panel Title</mdb-card-title>
-      <mdb-card-text>Some quick example text to build on the panel title and make up the bulk of the panel's content.</mdb-card-text>
-      <div class="flex-row">
-        <a>Card link</a>
-        <a style="margin-left: 1.25rem">Another link</a>
-      </div>
-    </mdb-card>
+    <div v-for="(call, index) in myCalls">
+      <!-- {{call.ucid}} -->
+      <call-control-card :callIndex="call.ucid"></call-control-card>
+    </div>
   </section>
 </template>
 
@@ -16,12 +12,13 @@
 
 <script>
 import AgentControl from '@/widgets/AgentControl/AgentControl.vue'
-import CallControl from '@/widgets/CallControl/CallControl.vue'
+import CallControlCard from '@/widgets/CallControl/CallControlCard.vue'
 import {
   mdbRow,
   mdbCol,
   mdbContainer,
   mdbCard,
+  mdbCardTitle,
   mdbCardHeader,
   mdbCardText,
   mdbNavbar,
@@ -41,11 +38,12 @@ export default {
   name: 'CallDrawer',
   components: {
     AgentControl,
-    CallControl,
+    CallControlCard,
     mdbRow,
     mdbCol,
     mdbContainer,
     mdbCard,
+    mdbCardTitle,
     mdbCardHeader,
     mdbCardText,
     mdbNavbar,
@@ -66,11 +64,26 @@ export default {
   props: {},
 
   data() {
-    return {}
+    return {
+      calls: null
+    }
   },
   methods: {
     toggleDevMode() {
       this.$store.commit('TOGGLE_DEV_MODE')
+    }
+  },
+  computed: {
+    myCalls() {
+      return this.$store.getters.getCalls
+    }
+  },
+  watch: {
+    myCalls(newState, oldState) {
+      console.log(
+        'CallDrawer()/watch(myCalls): call state changed to:',
+        newState
+      )
     }
   }
 }

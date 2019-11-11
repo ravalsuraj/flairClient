@@ -347,7 +347,7 @@ export default {
   color: rgba(255, 255, 255, 0.75);
   padding-right: 10px;
   padding-left: 10px;
-  font-family: 'Unica One', cursive;
+  font-family: 'Teko';
   font-size: 1.2em;
 }
 

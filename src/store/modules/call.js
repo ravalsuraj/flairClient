@@ -1,7 +1,8 @@
 import { CALL_STATES, CALL_TYPES, SOCKET_EVENTS, AGENT_STATES } from '@/defines.js'
 function initialState() {
     return {
-
+        calls: [],
+        callIndices: [],
         primary: {
             ucid: '0',
             callId: '',
@@ -9,7 +10,6 @@ function initialState() {
             calledAddress: '',
             callingAddress: ''
         },
-
     }
 }
 const state = initialState()
@@ -22,12 +22,36 @@ const getters = {
     getPrimaryCall(state) {
         return state.primary
     },
+    getCalls(state) {
+        return state.calls
+    },
+    getCall: (state) => (index) => {
+        return state.calls[index]
+    },
+
+    getCallIndex: (state) => (ucid) => {
+        return state.callIndices.findIndex(ucid)
+    }
 
 }
 
 const actions = {
+    addCallToActiveCalls({ commit }, call) {
+        let newCall = call;
+        newCall.status = CALL_STATES.CREATED
+        commit('ADD_CALL', newCall)
+    },
+
+    removeCallFromActiveCalls({ commit }, ucid) {
+        commit('REMOVE_CALL', ucid)
+    },
+    setCallState({ commit }, [ucid, newStatus]) {
+        commit('SET_CALL_STATE', [ucid, newStatus])
+    },
     setCallStateRinging({ commit, dispatch }, payload) {
+        dispatch('addCallToActiveCalls', payload)
         commit('SET_CALL_STATE_RINGING', payload)
+
         //dispatch('getAccountIdFromCli', payload.callingAddress)
         let uui = {
             cli: payload.callingAddress,
@@ -48,20 +72,22 @@ const actions = {
         dispatch('setCallerData', uui)
     },
 
-    setCallStateTalking({ commit }) {
-        commit('SET_CALL_STATE_TALKING')
+    setCallStateTalking({ commit }, payload) {
+        commit('SET_CALL_STATE_TALKING', payload)
+    },
+    setCallStateHeld({ commit }, payload) {
+        commit('SET_CALL_STATE_HELD', payload)
     },
 
     setCallStateDropped({ commit, dispatch }, payload) {
-        commit('SET_CALL_STATE_DROPPED')
+        commit('SET_CALL_STATE_DROPPED', payload)
         dispatch('setAgentAuxCode', {
             label: 'After Call Work',
             state: AGENT_STATES.WORK_NOT_READY,
             userSelectable: true,
             reasonCode: 3
         })
-
-
+        dispatch('removeCallFromActiveCalls', payload.ucid)
     },
 
     resetCallState({ commit }) {
@@ -69,9 +95,7 @@ const actions = {
         commit('RESET_CRM_DATA')
     },
 
-    setCallStateHeld({ commit }) {
-        commit('SET_CALL_STATE_HELD')
-    },
+
 
 
 
@@ -210,7 +234,17 @@ const mutations = {
         Object.assign(state, initialState())
     },
 
+    ADD_CALL(state, call) {
+        state.calls.push(call)
+        state.callIndices.push(call.ucid)
+    },
+
+    SET_CALL_STATE(state, [ucid, newStatus]) {
+        state.calls[ucid].status = newStatus
+    },
+
     SET_CALL_STATE_RINGING(state, payload) {
+        state.calls[payload.ucid].status = CALL_STATES.RINGING
         state.primary.status = CALL_STATES.RINGING
         state.primary.ucid = payload.ucid
         state.primary.callId = payload.callId
@@ -219,6 +253,7 @@ const mutations = {
     },
 
     SET_CALL_STATE_DIALING(state, payload) {
+        state.calls[payload.ucid].status = CALL_STATES.DIALING
         state.primary.status = CALL_STATES.DIALING
         state.primary.ucid = payload.ucid
         state.primary.callId = payload.callId
@@ -226,14 +261,22 @@ const mutations = {
         state.primary.callingAddress = payload.callingAddress
     },
 
-    SET_CALL_STATE_TALKING(state) {
+    SET_CALL_STATE_TALKING(state, payload) {
         state.primary.status = CALL_STATES.TALKING
+        state.calls[payload.ucid].status = CALL_STATES.TALKING
     },
-    SET_CALL_STATE_HELD(state) {
+    SET_CALL_STATE_HELD(state, payload) {
         state.primary.status = CALL_STATES.HELD
+        state.calls[payload.ucid].status = CALL_STATES.HELD
     },
-    SET_CALL_STATE_DROPPED(state) {
+    SET_CALL_STATE_DROPPED(state, payload) {
         state.primary.status = CALL_STATES.DROPPED
+        state.calls[payload.ucid].status = CALL_STATES.DROPPED
+    },
+
+    REMOVE_CALL(state, index) {
+        delete state.callIndices[index]
+        delete state.calls[index]
     },
 
     RESET_CALL_STATUS(state) {

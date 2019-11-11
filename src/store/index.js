@@ -15,7 +15,7 @@ import data from './modules/data'
 import {
   AGENT_STATES,
   CALL_STATES,
-  CONNECTION_STATES,
+  SOCKET_STATES,
   TIMER_STATES
 } from '@/defines.js'
 
@@ -67,7 +67,7 @@ export default new Vuex.Store({
     sockets: {
       connect() { },
       connection_error() {
-        this.state.socket.status = CONNECTION_STATES.DISCONNECTED
+        this.state.socket.status = SOCKET_STATES.DISCONNECTED
       }
     },
   },

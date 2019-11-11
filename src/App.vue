@@ -2,7 +2,7 @@
 <template>
   <div class="d-flex flex-column">
     <top-navbar v-if="isAgentLoggedIn" ref="topNavBar" class></top-navbar>
-    <!-- <call-drawer class="pt-4 mx-5"></call-drawer> -->
+    <call-drawer class="pt-4 mx-5"></call-drawer>
     <main class="d-flex flex-fill main-body pt-5">
       <router-view v-if="isAgentLoggedIn" class="pt-5"></router-view>
       <login-page v-else class="flex-fill pt-4"></login-page>
@@ -36,7 +36,7 @@ import LoginPage from '@/views/Login'
 import UtilityBar from '@/views/UtilityBar.vue'
 import BottomFooter from '@/views/BottomFooter.vue'
 
-import { AGENT_STATES, SOCKET_EVENTS } from '@/defines'
+import { AGENT_STATES, SOCKET_EVENTS, SOCKET_STATES } from '@/defines'
 import Utils from '@/services/Utils'
 export default {
   name: 'AdminTemplate',
@@ -74,11 +74,13 @@ export default {
     },
     connect_error() {
       console.log('App/sockets/connect(): socket connect_error')
-      this.$store.dispatch('showErrorBanner', [
-        'Server Connection Lost!',
-        'Server connection could not be established. Please make sure you have connectivity with the server before you attempt to log in.'
-      ])
-      this.$store.dispatch('setSocketStateDisconnected')
+      if (this.$store.getters.getSocketStatus === SOCKET_STATES.CONNECTED) {
+        this.$store.dispatch('showErrorBanner', [
+          'Server Connection Lost!',
+          'Server connection could not be established. Please make sure you have connectivity with the server before you attempt to log in.'
+        ])
+        this.$store.dispatch('setSocketStateDisconnected')
+      }
     },
     connection_error() {
       console.log('App/sockets/connect(): socket connection_error')
@@ -129,12 +131,12 @@ export default {
   width: 280px;
   background: red;
 }
-@import url('https://fonts.googleapis.com/css?family=Unica+One&display=swap');
+/* @import url('https://fonts.googleapis.com/css?family=Teko&display=swap'); */
+@import url('/static/fonts.css');
 
 html {
   font-size: 70%;
   color: rgba(0, 0, 0, 0.45);
-  
 }
 .main-body {
   height: calc(100vh - 25px);
@@ -145,7 +147,7 @@ footer {
   height: 25px;
 }
 .dispFont {
-  font-family: 'Unica One', cursive;
+  font-family: 'Teko', sans-serif;
 }
 
 @media (min-width: 992px) {

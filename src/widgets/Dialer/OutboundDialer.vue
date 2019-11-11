@@ -327,7 +327,7 @@ export default {
   height: 25px;
   width: 100%;
   border-bottom: 1px solid grey;
-  font-family: 'Unica One', cursive;
+  font-family: 'Teko', san-serif;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.75);
 }
@@ -348,7 +348,7 @@ export default {
 }
 
 .fl_button_dialerDigit .number {
-    font-family: 'Unica One', cursive;
+    font-family: 'Teko', san-serif;
   font-size: 1.3rem;
   font-weight: 400;
 }
