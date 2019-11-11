@@ -238,7 +238,7 @@ export default {
   height: 25px;
   width: 100%;
   border-bottom: 1px solid grey;
-  font-family: 'Teko', san-serif;
+  font-family: 'Unica One', sans-serif;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.75);
   border-radius: 5px;

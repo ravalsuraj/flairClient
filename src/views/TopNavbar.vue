@@ -52,6 +52,7 @@ main {
 }
 
 .flexible-navbar {
+  user-select: none;
   transition: padding-left 0.5s;
   padding-left: 0;
   padding-top: 4px !important;

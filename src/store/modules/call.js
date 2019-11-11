@@ -25,12 +25,17 @@ const getters = {
     getCalls(state) {
         return state.calls
     },
-    getCall: (state) => (index) => {
+    getCallByUcid: (state) => (ucid) => {
+        return state.calls[state.callIndices.indexOf(ucid)]
+    },
+
+    getCallByIndex: (state) => (index) => {
         return state.calls[index]
     },
 
     getCallIndex: (state) => (ucid) => {
-        return state.callIndices.findIndex(ucid)
+        console.log("state.callIndices.findIndex(ucid)=" + state.callIndices.indexOf(ucid))
+        return state.callIndices.indexOf(ucid)
     }
 
 }
@@ -46,13 +51,13 @@ const actions = {
         commit('REMOVE_CALL', ucid)
     },
     setCallState({ commit }, [ucid, newStatus]) {
-        commit('SET_CALL_STATE', [ucid, newStatus])
+        
+        commit('SET_CALL_STATE', [getters.getCallIndex(ucid), newStatus])
     },
-    setCallStateRinging({ commit, dispatch }, payload) {
+    setCallStateRinging({ commit, dispatch, getters }, payload) {
         dispatch('addCallToActiveCalls', payload)
         commit('SET_CALL_STATE_RINGING', payload)
-
-        //dispatch('getAccountIdFromCli', payload.callingAddress)
+        commit('SET_CALL_ARR_STATE_RINGING', getters.getCallIndex(payload.ucid))
         let uui = {
             cli: payload.callingAddress,
             ucid: payload.ucid
@@ -61,8 +66,9 @@ const actions = {
         dispatch('setCallerData', uui)
     },
 
-    setCallStateDialing({ commit, dispatch }, payload) {
+    setCallStateDialing({ commit, dispatch, getters }, payload) {
         commit('SET_CALL_STATE_DIALING', payload)
+        commit('SET_CALL_ARR_STATE_DIALING', getters.getCallIndex(payload.ucid))
 
         let uui = {
             cli: payload.callingAddress,
@@ -72,15 +78,18 @@ const actions = {
         dispatch('setCallerData', uui)
     },
 
-    setCallStateTalking({ commit }, payload) {
+    setCallStateTalking({ commit, getters }, payload) {
         commit('SET_CALL_STATE_TALKING', payload)
+        commit('SET_CALL_ARR_STATE_TALKING', getters.getCallIndex(payload.ucid))
     },
-    setCallStateHeld({ commit }, payload) {
+    setCallStateHeld({ commit, getters }, payload) {
         commit('SET_CALL_STATE_HELD', payload)
+        commit('SET_CALL_ARR_STATE_HELD', getters.getCallIndex(payload.ucid))
     },
 
-    setCallStateDropped({ commit, dispatch }, payload) {
+    setCallStateDropped({ commit, dispatch, getters }, payload) {
         commit('SET_CALL_STATE_DROPPED', payload)
+        commit('SET_CALL_ARR_STATE_DROPPED', getters.getCallIndex(payload.ucid))
         dispatch('setAgentAuxCode', {
             label: 'After Call Work',
             state: AGENT_STATES.WORK_NOT_READY,
@@ -184,13 +193,8 @@ const actions = {
             ucid: requestedUcid,
         }
         console.log("requestHoldUnholdCall(): request=", request)
-        let callStatus;
-        if (callType === CALL_TYPES.PRIMARY) {
-            callStatus = getters.getCallStatus
-        }
-        else {
-            callStatus = getters.getConsultedCallStatus
-        }
+        let callStatus = getters.getCallByUcid(requestedUcid).status;
+
         switch (callStatus) {
             case CALL_STATES.HELD:
                 dispatch('requestUnholdCall', request)
@@ -239,12 +243,13 @@ const mutations = {
         state.callIndices.push(call.ucid)
     },
 
-    SET_CALL_STATE(state, [ucid, newStatus]) {
-        state.calls[ucid].status = newStatus
+    SET_CALL_STATE(state, [index, newStatus]) {
+
+        state.calls[index].status = newStatus
     },
 
     SET_CALL_STATE_RINGING(state, payload) {
-        state.calls[payload.ucid].status = CALL_STATES.RINGING
+
         state.primary.status = CALL_STATES.RINGING
         state.primary.ucid = payload.ucid
         state.primary.callId = payload.callId
@@ -253,7 +258,6 @@ const mutations = {
     },
 
     SET_CALL_STATE_DIALING(state, payload) {
-        state.calls[payload.ucid].status = CALL_STATES.DIALING
         state.primary.status = CALL_STATES.DIALING
         state.primary.ucid = payload.ucid
         state.primary.callId = payload.callId
@@ -263,15 +267,30 @@ const mutations = {
 
     SET_CALL_STATE_TALKING(state, payload) {
         state.primary.status = CALL_STATES.TALKING
-        state.calls[payload.ucid].status = CALL_STATES.TALKING
     },
     SET_CALL_STATE_HELD(state, payload) {
         state.primary.status = CALL_STATES.HELD
-        state.calls[payload.ucid].status = CALL_STATES.HELD
     },
     SET_CALL_STATE_DROPPED(state, payload) {
         state.primary.status = CALL_STATES.DROPPED
-        state.calls[payload.ucid].status = CALL_STATES.DROPPED
+    },
+
+    SET_CALL_ARR_STATE_RINGING(state, index) {
+        state.calls[index].status = CALL_STATES.RINGING
+    },
+
+    SET_CALL_ARR_STATE_DIALING(state, index) {
+        state.calls[index].status = CALL_STATES.DIALING
+    },
+
+    SET_CALL_ARR_STATE_TALKING(state, index) {
+        state.calls[index].status = CALL_STATES.TALKING
+    },
+    SET_CALL_ARR_STATE_HELD(state, index) {
+        state.calls[index].status = CALL_STATES.HELD
+    },
+    SET_CALL_ARR_STATE_DROPPED(state, index) {
+        state.calls[index].status = CALL_STATES.DROPPED
     },
 
     REMOVE_CALL(state, index) {

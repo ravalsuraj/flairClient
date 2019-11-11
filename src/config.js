@@ -8,13 +8,13 @@ export const config = {
     sugarCrmUrl: "https://auth.sugarcrm.com/",
 
     defaultAuxCodes: {
-        'READY': {
+        3: {
             label: 'Ready',
             state: AGENT_STATES.READY,
             userSelectable: true,
             reasonCode: 0
         },
-        'NOT_READY': {
+        4: {
             label: 'Not Ready',
             state: AGENT_STATES.NOT_READY,
             userSelectable: true,

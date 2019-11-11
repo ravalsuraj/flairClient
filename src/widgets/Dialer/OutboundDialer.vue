@@ -14,12 +14,7 @@
               v-model="dialedDigits"
               @click.stop
             />
-            <!-- <mdb-input
-            class="fl_inp_dialedDigits light-blue-text px-3"
-            type="number"
-            v-model="dialedDigits"
-            @click.stop
-            ></mdb-input>-->
+
           </mdb-col>
 
           <!--Delete Single Digit-->
@@ -68,22 +63,10 @@
           </transition>
           <transition name="fade">
             <div class="btn-group w-100" v-if="!isConsultCallIdle">
-              <!-- <mdb-btn class="mdb-color mx-2 px-2 w-50" @click="onTransferButtonClicked" @click.stop>
-              <span>Trans</span>
-            </mdb-btn>
-            <mdb-btn
-              class="mdb-color mx-2 px-2 w-50"
-              @click="onConferenceButtonClicked"
-              @click.stop
-            >
-              <span>Conf</span>>
-              </mdb-btn>-->
-              <!-- <mdb-btn class="mdb-color mx-2 px-2" @click="onRejoinButtonClicked">Rejoin</mdb-btn> -->
-              <!-- <mdb-btn class="mdb-color mx-2 px-2" @click="onSwitchButtonClicked">Switch</mdb-btn> -->
             </div>
           </transition>
 
-          <!-- <mdb-btn class="unique-color">Conf</mdb-btn> -->
+        
         </mdb-row>
       </form>
     </mdb-container>
@@ -327,7 +310,7 @@ export default {
   height: 25px;
   width: 100%;
   border-bottom: 1px solid grey;
-  font-family: 'Teko', san-serif;
+  font-family: 'Unica One', san-serif;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.75);
 }
@@ -348,7 +331,7 @@ export default {
 }
 
 .fl_button_dialerDigit .number {
-    font-family: 'Teko', san-serif;
+    font-family: 'Unica One', san-serif;
   font-size: 1.3rem;
   font-weight: 400;
 }

@@ -39,8 +39,13 @@ export default {
         processSocketConnected({ getters, dispatch }) {
             dispatch('setSocketStateConnected')
             dispatch('session/fetchExistingSessionFromServer', { root: true }).then(resp => {
-                if (resp.responseCode === 0 && (getters['session/getSessionId'])) {
+                console.log("processSocketConnected(): response received from fetchExistingSessionFromServer: resp=" + JSON.stringify(resp))
+                console.log("responseCode " + (resp.responseCode === 0 ? "Not " : "is ") + "zero. sessionID not retreived. sessionId=" + getters['session/getSessionId'])
+                if (resp.responseCode === "0" && (getters['session/getSessionId'].length)) {
+                    console.log("processSocketConnected(): sending request for sendQueryAgentStateRequest")
                     dispatch('sendQueryAgentStateRequest', { root: true })
+                } else {
+                    console.log("processSocketConnected(): skipping request for sendQueryAgentStateRequest")
                 }
             }).catch(() => {
 
@@ -77,7 +82,9 @@ export default {
 
         SOCKET_ICALLTALK({ dispatch, getters }, payload) {
             console.log('Received event: ' + 'ICALLTALK: ' + JSON.stringify(payload))
-
+            if (getters.getCallIndex(payload.ucid)) {
+                dispatch('setCallStateTalking', payload)
+            }
 
             if (getters.getPrimaryCall.ucid == payload.ucid) {
 
@@ -97,6 +104,9 @@ export default {
 
         SOCKET_ICALLDISC({ dispatch, getters }, payload) {
             console.log('SOCKET_ICALLDISC(): Received event: ' + 'ICALLDISC' + JSON.stringify(payload))
+            if (getters.getCallIndex(payload.ucid)) {
+                dispatch('setCallStateDropped', payload)
+            }
 
             if (getters.getPrimaryCall.ucid == payload.ucid) {
 
@@ -115,7 +125,9 @@ export default {
 
         SOCKET_ICALLHLD({ dispatch, getters }, payload) {
             console.log('Recieved event: ' + 'ICALLHLD' + JSON.stringify(payload))
-
+            if (getters.getCallIndex(payload.ucid)) {
+                dispatch('setCallStateHeld', payload)
+            }
             if (getters.getPrimaryCall.ucid == payload.ucid) {
 
                 console.log('SOCKET_ICALLHLD: called for primary call')

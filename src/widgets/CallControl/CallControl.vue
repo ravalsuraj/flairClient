@@ -2,11 +2,10 @@
   <div class="fl_container_callControl d-flex align-items-center">
     <mdb-container fluid>
       <mdb-row class>
-        <!--Call Display Well-->
+        {{/*Call Display Well*/}}
         <mdb-col col="md-5" class="fl_well_container w-100 px-0">
-          <!--Primary Call Status-->
+          {{/*Primary Call Status*/}}
           <mdb-row class="p-1 mx-1 no-gutters">
-            <!-- <mdb-col col="2" class="fl_well_text">PRIMARY:</mdb-col> -->
             <mdb-col
               col="5"
               class="fl_well_text pl-4 text-center"
@@ -17,26 +16,20 @@
             </mdb-col>
             <mdb-col col="2" class="fl_well_text" :class="{'onHold':isCallHeld}">{{callStatusText}}</mdb-col>
           </mdb-row>
-
-          <!--Conference Call Status-->
+          {{/*Conference Call Status*/}}
           <mdb-row class="p-1 mx-1 no-gutters" v-if="!isConfCallIdle">
-            <!-- <mdb-col col="2" class="fl_well_text">CONSULT:</mdb-col> -->
             <mdb-col
               col="md-4"
               class="fl_well_text text-center"
               :class="{'onHold':isConfCallHeld}"
             >{{conferenceCalledAddress}}</mdb-col>
-            <mdb-col col="3">
-              <!-- <timer name="conferenceCallStateTimer" class="fl_well_text sm"></timer> -->
-            </mdb-col>
+            <mdb-col col="3"></mdb-col>
             <mdb-col col="2" class="fl_well_text">{{conferenceCallStatusText}}</mdb-col>
           </mdb-row>
         </mdb-col>
 
         <!--START: Inbound Call Controls-->
         <mdb-col col="md-7">
-          <!-- <div class="btn-group mx-4" role="group"> </div> -->
-          <!-- START: Answer/Drop Button -->
           <transition name="fade">
             <button
               type="button"
@@ -60,9 +53,9 @@
               class="btn"
               :disabled="!isCallActive"
               @click="holdUnholdCall"
-              :class="{'mdb-color': !isCallHeld}"
+              :class="holdButtonColor"
             >
-              <mdb-icon icon="pause" style="font-size:1.5em" />
+              <mdb-icon :icon="isCallHeld?'play':'pause'" style="font-size:1.5em" />
             </button>
           </transition>
           <!--END: Hold Button-->
@@ -95,7 +88,7 @@
 
           <!-- START: Outbound Dialer -->
           <mdb-dropdown multiLevel>
-            <button type="checkbox" class="btn blue-grey" :disabled="isCallActive" slot="toggle">
+            <button type="checkbox" class="btn cyan darken-3" slot="toggle">
               Make Call
               <!-- <mdb-icon icon="users" style="font-size:1.5em" /> -->
             </button>
@@ -290,6 +283,13 @@ export default {
         return { 'blue-grey': true }
       }
     },
+    holdButtonColor() {
+      if (this.isCallHeld) {
+        return { 'blue-grey': true }
+      } else {
+        return { cyan: true }
+      }
+    },
     callingAddress() {
       if (this.isCallRinging || this.isCallActive) {
         return this.$store.getters.getPrimaryCall.callingAddress
@@ -347,7 +347,7 @@ export default {
   color: rgba(255, 255, 255, 0.75);
   padding-right: 10px;
   padding-left: 10px;
-  font-family: 'Teko';
+  font-family: 'Unica One', sans-serif;
   font-size: 1.2em;
 }
 

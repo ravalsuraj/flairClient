@@ -3,8 +3,8 @@
   <div class="d-flex flex-column">
     <top-navbar v-if="isAgentLoggedIn" ref="topNavBar" class></top-navbar>
     <call-drawer class="pt-4 mx-5"></call-drawer>
-    <main class="d-flex flex-fill main-body pt-5">
-      <router-view v-if="isAgentLoggedIn" class="pt-5"></router-view>
+    <main class="d-flex flex-fill main-body pt-4">
+      <router-view v-if="isAgentLoggedIn" class=""></router-view>
       <login-page v-else class="flex-fill pt-4"></login-page>
     </main>
     <bottom-footer></bottom-footer>
@@ -131,8 +131,8 @@ export default {
   width: 280px;
   background: red;
 }
-/* @import url('https://fonts.googleapis.com/css?family=Teko&display=swap'); */
-@import url('/static/fonts.css');
+@import url('https://fonts.googleapis.com/css?family=Unica+One&display=swap');
+/* @import url('/static/fonts.css'); */
 
 html {
   font-size: 70%;
@@ -147,7 +147,7 @@ footer {
   height: 25px;
 }
 .dispFont {
-  font-family: 'Teko', sans-serif;
+  font-family: 'Unica One', sans-serif;
 }
 
 @media (min-width: 992px) {

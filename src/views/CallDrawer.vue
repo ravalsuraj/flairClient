@@ -1,9 +1,13 @@
 <template>
   <section class="mt-lg-5">
-    <div v-for="(call, index) in myCalls">
-      <!-- {{call.ucid}} -->
-      <call-control-card :callIndex="call.ucid"></call-control-card>
-    </div>
+    <mdb-container>
+      <mdb-row>
+        <mdb-col col="3" v-for="call in myCalls" :key="call.ucid">
+          <!-- {{call.ucid}} -->
+          <call-control-card :ucid="call.ucid"></call-control-card>
+        </mdb-col>
+      </mdb-row>
+    </mdb-container>
   </section>
 </template>
 

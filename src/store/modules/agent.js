@@ -179,8 +179,9 @@ export default {
 
         },
 
-        processAgentLogin({ commit }) {
+        processAgentLogin({ commit, dispatch }) {
             commit('SET_AGENT_STATE_LOGIN')
+            dispatch('sendQueryAgentStateRequest')
         },
         processAgentLogout({ dispatch, commit }) {
             dispatch('resetAllModules')
@@ -217,19 +218,19 @@ export default {
         },
 
         setDefaultAuxCode({ getters, commit }, payload) {
-            if (!getters.getAgentAuxState) {
-                console.log("getAgentAuxState is null, so setting default aux code for the state received from the login request")
 
-                switch (payload.agentState) {
-                    case AGENT_STATES.READY:
-                    case AGENT_STATES.NOT_READY:
+            console.log("getAgentAuxState is null, so setting default aux code for the state received from the login request")
 
-                        //for the text value, find the default aux code from the config file
-                        let defaultAgentAuxCode = config.defaultAuxCodes[agentLoginState];
-                        commit('SET_AGENT_AUX_CODE', defaultAgentAuxCode);
-                        break;
-                }
+            switch (payload.agentState) {
+                case AGENT_STATES.READY:
+                case AGENT_STATES.NOT_READY:
+
+                    //for the text value, find the default aux code from the config file
+                    let defaultAgentAuxCode = config.defaultAuxCodes[payload.agentState];
+                    commit('SET_AGENT_AUX_CODE', defaultAgentAuxCode);
+                    break;
             }
+
         },
 
 

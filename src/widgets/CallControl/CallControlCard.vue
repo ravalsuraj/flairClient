@@ -2,8 +2,8 @@
   <div class="fl_container_callControl d-flex align-items-center">
     <mdb-container fluid v-if="isCallActive || isCallRinging">
       <mdb-card class="card-body" style="width: 22rem; margin-top: 1rem;">
-        <mdb-card-title>Panel Title</mdb-card-title>
-        <mdb-card-text>Calling Number: {{callingAddress}}</mdb-card-text>
+        <mdb-card-title>{{callingAddress}}</mdb-card-title>
+
         <!--START: Inbound Call Controls-->
         <mdb-col col="md-12">
           <!-- <div class="btn-group mx-4" role="group"> </div> -->
@@ -31,9 +31,9 @@
               class="btn"
               :disabled="!isCallActive"
               @click="holdUnholdCall"
-              :class="{'mdb-color': !isCallHeld}"
+              :class="holdButtonColor"
             >
-              <mdb-icon icon="pause" style="font-size:1.5em" />
+              <mdb-icon :icon="isCallHeld?'play':'pause'" style="font-size:1.5em" />
             </button>
           </transition>
           <!--END: Hold Button-->
@@ -83,7 +83,7 @@ import {
 } from 'mdbvue'
 
 export default {
-  name: 'CallControl',
+  name: 'CallControlCard',
   components: {
     UpTimer,
     ConsultDialer,
@@ -116,7 +116,7 @@ export default {
   },
   mounted() {},
   props: {
-    callIndex: String
+    ucid: String
   },
 
   data() {
@@ -155,7 +155,7 @@ export default {
   },
   computed: {
     call() {
-      return this.$store.getters.getCall(this.callIndex)
+      return this.$store.getters.getCallByUcid(this.ucid)
     },
     callStatus() {
       return this.call.status
@@ -205,6 +205,13 @@ export default {
         return { 'blue-grey': true }
       }
     },
+    holdButtonColor() {
+      if (this.isCallHeld) {
+        return { 'blue-grey': true }
+      } else {
+        return { cyan: true }
+      }
+    },
     callingAddress() {
       if (this.isCallRinging || this.isCallActive) {
         return this.call.callingAddress
@@ -250,7 +257,7 @@ export default {
   color: rgba(255, 255, 255, 0.75);
   padding-right: 10px;
   padding-left: 10px;
-  font-family: 'Teko', san-serif;
+  font-family: 'Unica One', sans-serif;
   font-size: 1.2em;
 }
 
