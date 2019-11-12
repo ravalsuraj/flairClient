@@ -1,0 +1,141 @@
+<template>
+  <mdb-container fluid>
+    <mdb-card class="mb-0">
+      <mdb-card-header color="special-color">
+        Call Disposition
+        <a @click="toggleShowWidget">
+          <transition name="fade" mode="out-in">
+            <mdb-icon v-if="showWidget" icon="window-minimize" class="float-right"></mdb-icon>
+            <mdb-icon v-else icon="bars" class="float-right"></mdb-icon>
+          </transition>
+        </a>
+      </mdb-card-header>
+      <mdb-card-body class="px-1" v-show-slide="showWidget" :class="{'p-0': !showWidget}">
+        <!-- <mdb-card-text><strong>Test Bench</strong></mdb-card-text> -->
+        <mdb-container fluid>
+          <div v-if="isAgentInAcw">
+            <div class="h5 grey-text" v-if="showTimer">
+              Time Left:
+              <down-timer name="acwTimer" @timer-expired="onAcwTimerExpired"></down-timer>
+              <hr />
+            </div>
+
+            <label>Call Reason</label>
+            <select class="browser-default custom-select mb-3">
+              <option selected>Select Disposition Reason</option>
+              <option value="1">Account Inquiry</option>
+              <option value="2">Product Information</option>
+              <option value="3">Technical Support</option>
+            </select>
+            <label class>Outcome</label>
+
+            <select class="browser-default custom-select mb-4">
+              <option selected>Select Outcome</option>
+              <option value="1">Successful</option>
+              <option value="2">Transfered to IVR</option>
+              <option value="3">Disconnected</option>
+            </select>
+            <mdb-btn block color="mdb-color" @click="disposeCall">Dispose</mdb-btn>
+          </div>
+          <div v-else>
+            <h4 class="grey-text">Available when call ends</h4>
+          </div>
+        </mdb-container>
+      </mdb-card-body>
+    </mdb-card>
+  </mdb-container>
+</template>
+
+<script>
+import {
+  mdbContainer,
+  mdbRow,
+  mdbCol,
+  mdbBtn,
+  mdbCard,
+  mdbCardBody,
+  mdbCardHeader,
+  mdbCardText,
+  mdbInput,
+  mdbIcon
+} from 'mdbvue'
+import { AGENT_STATES, CALL_STATES } from '@/defines.js'
+import DownTimer from '@/components/util/DownTimer'
+export default {
+  name: 'CallDisposition',
+  components: {
+    DownTimer,
+
+    mdbContainer,
+    mdbRow,
+    mdbCol,
+    mdbBtn,
+    mdbCard,
+    mdbCardBody,
+    mdbCardHeader,
+    mdbCardText,
+    mdbInput,
+    mdbIcon
+  },
+  mounted() {},
+  props: {
+    msg: String
+  },
+
+  data() {
+    return {
+      showWidget: false,
+      showTimer: false
+    }
+  },
+
+  methods: {
+    toggleShowWidget() {
+      this.showWidget = !this.showWidget
+    },
+    onAcwTimerExpired() {
+      this.showTimer = false
+      this.$store.dispatch('resetCallState')
+      this.$store.dispatch('setAgentAuxCode', {
+        label: 'Ready',
+        state: AGENT_STATES.READY,
+        userSelectable: true,
+        reasonCode: null
+      })
+      this.$store.dispatch('resetDummyData')
+    },
+    disposeCall() {
+      this.onAcwTimerExpired()
+    }
+  },
+
+  computed: {
+    callStatus() {
+      return this.$store.getters.getCallStatus
+    },
+    isAgentInAcw() {
+      return this.callStatus === CALL_STATES.DROPPED
+    }
+  },
+
+  watch: {
+    callStatus(newCallStatus, oldCallStatus) {
+      switch (oldCallStatus) {
+        case CALL_STATES.TALKING:
+        case CALL_STATES.HELD:
+          if (newCallStatus === CALL_STATES.DROPPED) {
+            console.log('timer changed from talking to dropped')
+            this.showWidget = true
+            this.showTimer = true
+            this.$store.dispatch('startTimer', 'acwTimer')
+          }
+          break
+        default:
+          //this.$store.dispatch('stopTimer', 'acwTimer')
+          break
+      }
+    }
+  }
+}
+</script>
+

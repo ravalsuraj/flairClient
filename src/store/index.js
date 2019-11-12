@@ -5,6 +5,8 @@ import Cookies from 'js-cookie'
 
 import agent from './modules/agent'
 import call from './modules/call'
+import consultedCall from './modules/consultedCall'
+import dialer from './modules/dialer'
 import session from './modules/session'
 import socket from './modules/socket'
 import timer from './modules/timer'
@@ -13,7 +15,7 @@ import data from './modules/data'
 import {
   AGENT_STATES,
   CALL_STATES,
-  CONNECTION_STATES,
+  SOCKET_STATES,
   TIMER_STATES
 } from '@/defines.js'
 
@@ -21,8 +23,8 @@ import {
 const vuexPersist = new VuexPersist({
   key: 'flair',
   storage: sessionStorage,
-  modules: ['agent', 'call', 'socket', 'timer', 'data', 'session'],
- 
+  modules: ['agent', 'call', 'consultedCall', 'dialer', 'socket', 'timer', 'data', 'session'],
+
 })
 
 // const vuexCookie = new VuexPersist({
@@ -43,7 +45,9 @@ export default new Vuex.Store({
     session,
     socket,
     timer,
-    data
+    data,
+    consultedCall,
+    dialer
   },
   plugins: [vuexPersist.plugin],
 
@@ -63,7 +67,7 @@ export default new Vuex.Store({
     sockets: {
       connect() { },
       connection_error() {
-        this.state.socket.status = CONNECTION_STATES.DISCONNECTED
+        this.state.socket.status = SOCKET_STATES.DISCONNECTED
       }
     },
   },
@@ -75,6 +79,17 @@ export default new Vuex.Store({
         text: message,
         duration: 3000
       })
+    },
+
+    resetAllModules({ commit }) {
+      commit('RESET_AGENT_MODULE')
+      commit('RESET_CALL_MODULE')
+      commit('RESET_CONSULTED_CALL_MODULE')
+      commit('RESET_DATA_MODULE')
+      commit('RESET_DIALER_MODULE')
+      commit('session/RESET_SESSION_MODULE')
+      //commit('RESET_SOCKET_MODULE')
+      commit('RESET_TIMER_MODULE')
     }
 
   },

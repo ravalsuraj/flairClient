@@ -2,6 +2,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import 'bootstrap-css-only/css/bootstrap.min.css'
 import '../build/css/mdb.css'
+
 import Vue from 'vue'
 import Vuex from 'vuex'
 import App from './App'
@@ -14,6 +15,8 @@ import Vuedraggable from 'vuedraggable'
 import Vuebar from 'vuebar'
 import VueCookies from 'vue-cookies'
 import Notifications from 'vue-notification'
+import'x-frame-bypass'
+import { config } from '@/config'
 Vue.use(Notifications)
 Vue.use(Vuex)
 
@@ -25,6 +28,7 @@ Vue.use(VueCookies)
 // set default config
 VueCookies.config('1d')
 
+
 // set global cookie
 VueCookies.set('theme', 'default')
 VueCookies.set('hover-time', '1s')
@@ -32,7 +36,7 @@ VueCookies.set('hover-time', '1s')
 Vue.use(
   new VueSocketIO({
     debug: true,
-    connection: 'http://localhost:9092',
+    connection: config.WebSocketUrl,
     vuex: {
       store,
       actionPrefix: 'SOCKET_',

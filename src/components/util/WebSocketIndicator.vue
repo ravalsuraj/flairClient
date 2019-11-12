@@ -6,7 +6,7 @@
 
 <script>
 import { mdbIcon } from "mdbvue";
-import { CONNECTION_STATES } from "@/defines.js";
+import { SOCKET_STATES } from "@/defines.js";
 
 export default {
   name: "WebSocketIndicator",
@@ -20,10 +20,10 @@ export default {
   },
   computed: {
     socketStatus() {
-      return this.$store.state.socket.status;
+      return this.$store.getters.getSocketStatus;
     },
     socketStateIndicatorColor() {
-      return this.socketStatus === CONNECTION_STATES.CONNECTED
+      return this.socketStatus === SOCKET_STATES.CONNECTED
         ? "light-green-text"
         : "red-text";
     }

@@ -1,5 +1,6 @@
 <template>
-  <span id="time" class="time text-unique-color">{{time}}</span>
+  <span id="time">{{time}}</span>
+  <up-timer></up-timer>
 </template>
 
 <style>
@@ -9,9 +10,10 @@
 </style>
 
 <script>
-import { CALL_STATES } from "@/defines.js";
+import { CALL_STATES, AGENT_STATES } from "@/defines.js";
+
 export default {
-  name: "CallTimer",
+  name: "LoginTimer",
   data() {
     return {
       state: "started",
@@ -46,26 +48,18 @@ export default {
     },
 
     callStatus() {
-      return this.$store.getters.getPrimaryCall.status;
+      return this.$store.getters.getAgent.status;
     }
   },
   watch: {
-    callStatus(newCallStatus, oldCallStatus) {
-      console.log(
-        "Call Status Changed from:" + oldCallStatus + " to:" + newCallStatus
-      );
-      if (
-        oldCallStatus === CALL_STATES.RINGING &&
-        newCallStatus === CALL_STATES.TALKING
-      ) {
+    agentStatus(newAgentStatus, oldAgentStatus) {
+      console.log("Agent Status Changed to:" + newAgentStatus);
+      if (newAgentStatus === AGENT_STATES.LOG_IN) {
         this.reset();
         this.interval = setInterval(this.updateCurrentTime, 1000);
-      } else if (
-        newCallStatus === CALL_STATES.DROPPED ||
-        newCallStatus === CALL_STATES.IDLE
-      ) {
-        clearInterval(this.interval);
+      } else if (newCallStatus === AGENT_STATES.LOG_OUT) {
         this.reset();
+        clearInterval(this.interval);
       } else {
         // this.reset();
       }

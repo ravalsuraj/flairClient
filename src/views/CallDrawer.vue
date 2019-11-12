@@ -1,26 +1,28 @@
 <template>
-  <mdb-navbar color="unique" position="bottom" dark>
-    <web-socket-indicator></web-socket-indicator>
-    <span class="white-text">SessionID: {{sessionId}}</span>
-    
-    <mdb-navbar-nav right>
-      <mdb-nav-item href="#" class>Dialer</mdb-nav-item>
-    </mdb-navbar-nav>
-  </mdb-navbar>
+  <section class="mt-lg-5">
+    <mdb-container>
+      <mdb-row>
+        <mdb-col col="3" v-for="call in myCalls" :key="call.ucid">
+          <!-- {{call.ucid}} -->
+          <call-control-card :ucid="call.ucid"></call-control-card>
+        </mdb-col>
+      </mdb-row>
+    </mdb-container>
+  </section>
 </template>
+
 <style>
 </style>
 
 <script>
 import AgentControl from '@/widgets/AgentControl/AgentControl.vue'
-import CallControl from '@/widgets/CallControl/CallControl.vue'
-import QuickLinks from '@/widgets/QuickLinks/QuickLinks.vue'
-import WebSocketIndicator from '@/components/util/WebSocketIndicator'
+import CallControlCard from '@/widgets/CallControl/CallControlCard.vue'
 import {
   mdbRow,
   mdbCol,
   mdbContainer,
   mdbCard,
+  mdbCardTitle,
   mdbCardHeader,
   mdbCardText,
   mdbNavbar,
@@ -37,16 +39,15 @@ import {
   waves
 } from 'mdbvue'
 export default {
-  name: 'UtilityBar',
+  name: 'CallDrawer',
   components: {
     AgentControl,
-    CallControl,
-    QuickLinks,
-    WebSocketIndicator,
+    CallControlCard,
     mdbRow,
     mdbCol,
     mdbContainer,
     mdbCard,
+    mdbCardTitle,
     mdbCardHeader,
     mdbCardText,
     mdbNavbar,
@@ -67,12 +68,26 @@ export default {
   props: {},
 
   data() {
-    return {}
+    return {
+      calls: null
+    }
   },
-  methods: {},
+  methods: {
+    toggleDevMode() {
+      this.$store.commit('TOGGLE_DEV_MODE')
+    }
+  },
   computed: {
-    sessionId() {
-      return this.$store.getters['session/getSessionId']
+    myCalls() {
+      return this.$store.getters.getCalls
+    }
+  },
+  watch: {
+    myCalls(newState, oldState) {
+      console.log(
+        'CallDrawer()/watch(myCalls): call state changed to:',
+        newState
+      )
     }
   }
 }

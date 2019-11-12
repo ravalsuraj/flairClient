@@ -11,9 +11,7 @@
         </a>
       </mdb-card-header>
       <mdb-card-body class="p-0 m-0" v-show-slide="showWidget">
-        <!-- <mdb-card-text><strong>Menu Traversal</strong></mdb-card-text> -->
-        <!-- <mdb-container> -->
-        <mdb-row class="no-gutters">
+        <mdb-row class="no-gutters" v-if="isCallActive">
           <mdb-col>
             <mdb-tbl sm bordered scrollY maxHeight="150px">
               <mdb-tbl-head color="light-blue lighten-5">
@@ -24,37 +22,32 @@
               </mdb-tbl-head>
               <mdb-tbl-body>
                 <tr>
-                  <td>28/01/19 10:02:30</td>
+                  <td>09/10/19 13:05:30</td>
                   <td>Lanaguage Selection</td>
                 </tr>
                 <tr>
-                  <td>28/01/19 10:02:30</td>
+                  <td>09/10/19 13:05:30</td>
                   <td>Main Menu</td>
                 </tr>
                 <tr>
-                  <td>28/01/19 10:02:38</td>
+                  <td>09/10/19 13:05:38</td>
                   <td>Account Services</td>
                 </tr>
                 <tr>
-                  <td>28/01/19 10:02:47</td>
+                  <td>09/10/19 13:05:47</td>
                   <td>Balance Inquiry</td>
                 </tr>
                 <tr>
-                  <td>28/01/19 10:03:05</td>
+                  <td>09/10/19 10:06:05</td>
                   <td>Main Menu</td>
-                </tr>
-                <tr>
-                  <td>28/01/19 10:03:11</td>
-                  <td>PIN Generation</td>
-                </tr>
-                <tr>
-                  <td>28/01/19 10:03:21</td>
-                  <td>Self-Validation</td>
                 </tr>
               </mdb-tbl-body>
             </mdb-tbl>
           </mdb-col>
         </mdb-row>
+        <mdb-container fluid v-else class="p-4">
+          <h4 class="grey-text">Waiting for call</h4>
+        </mdb-container>
         <!-- </mdb-container> -->
       </mdb-card-body>
     </mdb-card>
@@ -83,9 +76,12 @@ import {
   mdbModalTitle,
   mdbModalBody,
   mdbModalFooter
-} from "mdbvue";
+} from 'mdbvue'
+
+import { CALL_STATES } from '@/defines.js'
+
 export default {
-  name: "MenuTraversal",
+  name: 'MenuTraversal',
   components: {
     mdbRow,
     mdbCol,
@@ -112,19 +108,29 @@ export default {
   data() {
     return {
       showWidget: true,
-      callerName: "John Doe",
-      callerRMN: "+919876512345",
-      callerAccountNo: "1234512345",
-      callerTransferReason: "TPIN Generate",
-      callerLanguage: "English"
-    };
+      callerName: 'John Doe',
+      callerRMN: '+919876512345',
+      callerAccountNo: '1234512345',
+      callerTransferReason: 'TPIN Generate',
+      callerLanguage: 'English'
+    }
   },
   methods: {
     toggleShowWidget() {
-      this.showWidget = !this.showWidget;
+      this.showWidget = !this.showWidget
+    }
+  },
+  computed: {
+    isCallActive() {
+      let callStatus = this.$store.getters.getCallStatus
+      return (
+        callStatus === CALL_STATES.TALKING ||
+        callStatus === CALL_STATES.HELD ||
+        callStatus === CALL_STATES.RINGING
+      )
     }
   }
-};
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

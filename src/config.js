@@ -1,15 +1,20 @@
 import { AGENT_STATES } from "./defines";
 
 export const config = {
+    WebSocketUrl: "http://localhost:9092",
+
+    crmBaseUrl: 'http://andrewreifman.com/se7en/',
+    crmUrl: 'http://localhost:9527/#/dashboard',
+    sugarCrmUrl: "https://auth.sugarcrm.com/",
 
     defaultAuxCodes: {
-        'READY': {
+        3: {
             label: 'Ready',
             state: AGENT_STATES.READY,
             userSelectable: true,
             reasonCode: 0
         },
-        'NOT_READY': {
+        4: {
             label: 'Not Ready',
             state: AGENT_STATES.NOT_READY,
             userSelectable: true,
@@ -31,50 +36,99 @@ export const config = {
             reasonCode: 0
         },
         {
-            label: 'Lunch Break',
+            label: 'Break',
             state: AGENT_STATES.NOT_READY,
             userSelectable: true,
-            reasonCode: 21
+            reasonCode: 1
         },
         {
-            label: 'Training',
+            label: 'Lunch',
             state: AGENT_STATES.NOT_READY,
             userSelectable: true,
-            reasonCode: 22
+            reasonCode: 2
         },
         {
-            label: 'End of Shift',
+            label: 'Dinner',
             state: AGENT_STATES.NOT_READY,
             userSelectable: true,
-            reasonCode: 23
+            reasonCode: 3
+        },
+        {
+            label: 'After Call Work',
+            state: AGENT_STATES.WORK_NOT_READY,
+            userSelectable: true,
+            reasonCode: 3
         },
     ],
 
-    crmUrl: 'http://andrewreifman.com/se7en/',
 
-    leftComponents: [
-        {
-            name: 'call-details'
-        },
-        {
-            name: 'menu-traversal'
-        },
-        {
-            name: 'quick-links'
-        }
-    ],
-    rightComponents: [
-        {
-            name: 'agent-call-statistics'
-        },
-        {
+    leftComponents: {
+        width: "2p5",
+        widgets: [
+            {
+                name: 'call-details'
+            },
+            {
+                name: 'menu-traversal'
+            },
+
+        ],
+    },
+    middleComponents: {
+        width: "7",
+        widgets: [
+            {
+                name: 'crm-frame'
+            }
+
+
+        ]
+    }
+    ,
+    rightComponents:
+    {
+        width: "2p5",
+        widgets: [
+            {
+                name: 'call-disposition'
+            },
+
+            {
+                name: 'sms-helper'
+            },
+            {
+                name: 'quick-links'
+            },
+            {
+                name: 'agent-call-statistics'
+            }
+        ],
+    }
+
+}
+
+/*
+            {
+                name: 'call-details'
+            },
+            {
+                name: 'menu-traversal'
+            },
+            {
+                name: 'call-details'
+            },
+            {
+                name: 'menu-traversal'
+            },
+            {
+                name: 'quick-links'
+            }
+
+{
             name: 'call-disposition'
         },
         {
             name: 'test-bench'
         }
-    ],
 
-
-}
-
+*/

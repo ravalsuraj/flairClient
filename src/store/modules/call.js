@@ -1,7 +1,8 @@
-import { CALL_STATES, SOCKET_EVENTS } from '@/defines.js'
+import { CALL_STATES, CALL_TYPES, SOCKET_EVENTS, AGENT_STATES } from '@/defines.js'
 function initialState() {
     return {
-
+        calls: [],
+        callIndices: [],
         primary: {
             ucid: '0',
             callId: '',
@@ -9,18 +10,6 @@ function initialState() {
             calledAddress: '',
             callingAddress: ''
         },
-        conference: {
-            ucid: '0',
-            callId: '',
-            status: CALL_STATES.IDLE,
-            calledAddress: '',
-            callingAddress: ''
-        },
-
-        dialer: {
-            dialerDigits: null
-        }
-
     }
 }
 const state = initialState()
@@ -30,125 +19,123 @@ const getters = {
         return state.primary.status
     },
 
-    getConferenceCallStatus(state) {
-        return state.conference.status
-    },
-
     getPrimaryCall(state) {
         return state.primary
     },
-    getConferenceCall(state) {
-        return state.conference
+    getCalls(state) {
+        return state.calls
+    },
+    getCallByUcid: (state) => (ucid) => {
+        return state.calls[state.callIndices.indexOf(ucid)]
+    },
+
+    getCallByIndex: (state) => (index) => {
+        return state.calls[index]
+    },
+
+    getCallIndex: (state) => (ucid) => {
+        console.log("state.callIndices.findIndex(ucid)=" + state.callIndices.indexOf(ucid))
+        return state.callIndices.indexOf(ucid)
     }
+
 }
 
 const actions = {
-    setCallStateRinging({ commit }, payload) {
+    addCallToActiveCalls({ commit }, call) {
+        let newCall = call;
+        newCall.status = CALL_STATES.CREATED
+        commit('ADD_CALL', newCall)
+    },
+
+    removeCallFromActiveCalls({ commit }, ucid) {
+        commit('REMOVE_CALL', ucid)
+    },
+    setCallState({ commit }, [ucid, newStatus]) {
+        
+        commit('SET_CALL_STATE', [getters.getCallIndex(ucid), newStatus])
+    },
+    setCallStateRinging({ commit, dispatch, getters }, payload) {
+        dispatch('addCallToActiveCalls', payload)
         commit('SET_CALL_STATE_RINGING', payload)
-
-        // state.uui[1].value = payload.callingAddress
-        // state.uui[2].value = '20180202181123454'
-        // state.uui[3].value = payload.callingAddress
-        // state.uui[4].value = 'Accounts'
-
-        // state.callerData[0].value = 'Suraj Raval'
-        // state.callerData[1].value = payload.callingAddress
-        // state.callerData[2].value = '00100295902701'
-        // state.callerData[3].value = 'Imperial'
+        commit('SET_CALL_ARR_STATE_RINGING', getters.getCallIndex(payload.ucid))
+        let uui = {
+            cli: payload.callingAddress,
+            ucid: payload.ucid
+        }
+        dispatch('setUui', uui)
+        dispatch('setCallerData', uui)
     },
 
-    setCallStateTalking({ commit }) {
-        commit('SET_CALL_STATE_TALKING')
+    setCallStateDialing({ commit, dispatch, getters }, payload) {
+        commit('SET_CALL_STATE_DIALING', payload)
+        commit('SET_CALL_ARR_STATE_DIALING', getters.getCallIndex(payload.ucid))
+
+        let uui = {
+            cli: payload.callingAddress,
+            ucid: payload.ucid
+        }
+        dispatch('setUui', uui)
+        dispatch('setCallerData', uui)
     },
 
-    setCallStateDropped({ commit }, payload) {
+    setCallStateTalking({ commit, getters }, payload) {
+        commit('SET_CALL_STATE_TALKING', payload)
+        commit('SET_CALL_ARR_STATE_TALKING', getters.getCallIndex(payload.ucid))
+    },
+    setCallStateHeld({ commit, getters }, payload) {
+        commit('SET_CALL_STATE_HELD', payload)
+        commit('SET_CALL_ARR_STATE_HELD', getters.getCallIndex(payload.ucid))
+    },
+
+    setCallStateDropped({ commit, dispatch, getters }, payload) {
+        commit('SET_CALL_STATE_DROPPED', payload)
+        commit('SET_CALL_ARR_STATE_DROPPED', getters.getCallIndex(payload.ucid))
+        dispatch('setAgentAuxCode', {
+            label: 'After Call Work',
+            state: AGENT_STATES.WORK_NOT_READY,
+            userSelectable: true,
+            reasonCode: 3
+        })
+        dispatch('removeCallFromActiveCalls', payload.ucid)
+    },
+
+    resetCallState({ commit }) {
         commit('RESET_CALL_STATUS')
-        // state.uui.CLI = ''
-
-        // state.uui[0].value = ''
-        // state.uui[1].value = ''
-        // state.uui[2].value = ''
-        // state.uui[3].value = ''
-        // state.callerData[0].value = ''
-        // state.callerData[1].value = ''
-        // state.callerData[2].value = ''
-        // state.callerData[3].value = ''
-
-        // for (let i = 0; i < state.uui.length; ++i) {
-        //     state.uui[i].value = ''
-        // }
+        commit('RESET_CRM_DATA')
     },
 
-    setCallStateHeld({ commit }) {
-        commit('SET_CALL_STATE_HELD')
-    },
-    callConsulted(state, payload) {
-        state.socketRequest.consultedUcid = payload.ucid
-        state.socketRequest.consultedCallId = payload.callId
 
-        state.conference.callId = payload.callId
-        state.conference.ucid = payload.ucid
-        state.conference.status = CALL_STATES.CREATED
-        state.conference.calledAddress = payload.calledAddress
-        state.conference.callingAddress = payload.callingAddress
-    },
 
-    callTransfered(state, payload) {
-        state.primary.status = CALL_STATES.IDLE
-        state.primary.calledAddress = ''
-        state.primary.callingAddress = ''
-        state.primary.ucid = ''
-        state.primary.callId = ''
 
-        state.conference.status = CALL_STATES.IDLE
-        state.conference.calledAddress = ''
-        state.conference.callingAddress = ''
-        state.conference.ucid = ''
-        state.conference.callId = ''
 
-        state.socketRequest.ucid = ''
-        state.socketRequest.callId = ''
-    },
-
-    setConferenceCallStateInitiated(state) {
-        state.confereceMode = true
-    },
-
-    setConferenceCallStateRinging(state, payload) {
-        state.conference.status = CALL_STATES.RINGING
-    },
-
-    setConferenceCallStateTalking(state, payload) {
-        state.conference.status = CALL_STATES.TALKING
-        state.primary.status = CALL_STATES.HELD
-    },
-    setConferenceCallStateDropped(state, payload) {
-        state.conference.status = CALL_STATES.IDLE
-        state.conference.calledAddress = ''
-        state.conference.callingAddress = ''
-        state.conference.ucid = ''
-        state.conference.callId = ''
-    },
-
-    requestAnswerDropCall({ getters, dispatch }, callId) {
+    requestAnswerDropCall({ getters, dispatch }, [requestedUcid, callType]) {
         let request = {
             sessionId: getters['session/getSessionId'],
-            callId: callId
+            ucid: requestedUcid
         }
-        console.log("request=", request)
+        console.log("requestAnswerDropCall(): request=", request)
+        let callStatus;
+        if (callType === CALL_TYPES.PRIMARY) {
+            callStatus = getters.getCallStatus
+            switch (callStatus) {
+                case CALL_STATES.RINGING:
+                    console.log('AnswerDropCall(): calling answerCall()')
+                    dispatch('requestAnswerCall', request)
+                    break
+                case CALL_STATES.TALKING:
+                    console.log('AnswerDropCall(): calling dropCall()')
+                    dispatch('requestDropCall', request)
 
-        switch (getters.getCallStatus) {
-            case CALL_STATES.RINGING:
-                console.log('AnswerDropCall: calling answerCall()')
-                dispatch('requestAnswerCall', request)
-                break
-            case CALL_STATES.TALKING:
-                console.log('AnswerDropCall: calling dropCall()')
-                dispatch('requestDropCall', request)
-
-                break
-            default:
+                    break
+                default:
+                    console.log('AnswerDropCall(): skipping answer or drop because call state is: ' + CALL_STATES.Text[callStatus])
+            }
         }
+        else {
+            callStatus = getters.getConsultedCallStatus
+            dispatch('requestDropCall', request)
+        }
+
     },
     requestAnswerCall({ getters, dispatch }, request) {
         console.log('requestAnswerCall(): action entered')
@@ -181,7 +168,7 @@ const actions = {
     processAnswerCallResponse({ dispatch }, response) {
         console.log(SOCKET_EVENTS.ANSWER_CALL + '(): response=' + JSON.stringify(response))
         if (response.responseCode === '0') {
-            dispatch('setCallStateTalking')
+            // dispatch('setCallStateTalking')
         } else {
             dispatch('showErrorBanner', ['Call Answer Failed', response.responseMessage])
         }
@@ -190,24 +177,25 @@ const actions = {
     processDropCallResponse({ dispatch }, response) {
         console.log('processDropCallResponse(): response=' + JSON.stringify(response))
         if (response.responseCode === '0') {
-            dispatch('setCallStateDropped')
+            //dispatch('setCallStateDropped')
         } else {
             dispatch('showErrorBanner', ['Call Drop Failed', response.responseMessage])
         }
     },
 
-    requestHoldUnholdCall({ getters, dispatch }, callId) {
+    requestHoldUnholdCall({ getters, dispatch }, [requestedUcid, callType]) {
         console.log("requestHoldUnholdCall(): action entered")
+
         let request = {
             sessionId: getters['session/getSessionId'],
             agentId: getters['getAgentCredentials'].agentId,
             deviceId: getters['getAgentCredentials'].deviceId,
-            callId: callId,
+            ucid: requestedUcid,
         }
-        console.log("request=", request)
+        console.log("requestHoldUnholdCall(): request=", request)
+        let callStatus = getters.getCallByUcid(requestedUcid).status;
 
-        // $socket is socket.io-client instance
-        switch (getters.getCallStatus) {
+        switch (callStatus) {
             case CALL_STATES.HELD:
                 dispatch('requestUnholdCall', request)
                 break
@@ -223,7 +211,7 @@ const actions = {
         this._vm.$socket.emit(SOCKET_EVENTS.HOLD_CALL, request, (response) => {
             console.log('requestHoldCall(): response=' + JSON.stringify(response))
             if (response.responseCode === '0') {
-                dispatch('setCallStateHeld')
+                // dispatch('setCallStateHeld')
             } else {
                 dispatch('showErrorBanner', ['Hold Call Failed', JSON.stringify(response)])
             }
@@ -235,32 +223,79 @@ const actions = {
         this._vm.$socket.emit(SOCKET_EVENTS.RETRIEVE_CALL, request, (response) => {
             console.log('requestUnholdCall(): response=' + JSON.stringify(response))
             if (response.responseCode === '0') {
-                dispatch('setCallStateTalking')
+                //dispatch('setCallStateTalking')
             } else {
                 console.log('Call Unhold Failed' + JSON.stringify(response))
             }
         })
     },
 
-    updateDialedDigits({ commit }, dialedDigits) {
-        commit('UPDATE_DIALED_DIGITS', dialedDigits)
-    }
-
 }
 
 const mutations = {
+
+    RESET_CALL_MODULE(state) {
+        Object.assign(state, initialState())
+    },
+
+    ADD_CALL(state, call) {
+        state.calls.push(call)
+        state.callIndices.push(call.ucid)
+    },
+
+    SET_CALL_STATE(state, [index, newStatus]) {
+
+        state.calls[index].status = newStatus
+    },
+
     SET_CALL_STATE_RINGING(state, payload) {
+
         state.primary.status = CALL_STATES.RINGING
         state.primary.ucid = payload.ucid
         state.primary.callId = payload.callId
         state.primary.calledAddress = payload.calledAddress
         state.primary.callingAddress = payload.callingAddress
     },
-    SET_CALL_STATE_TALKING(state) {
+
+    SET_CALL_STATE_DIALING(state, payload) {
+        state.primary.status = CALL_STATES.DIALING
+        state.primary.ucid = payload.ucid
+        state.primary.callId = payload.callId
+        state.primary.calledAddress = payload.calledAddress
+        state.primary.callingAddress = payload.callingAddress
+    },
+
+    SET_CALL_STATE_TALKING(state, payload) {
         state.primary.status = CALL_STATES.TALKING
     },
-    SET_CALL_STATE_HELD(state) {
+    SET_CALL_STATE_HELD(state, payload) {
         state.primary.status = CALL_STATES.HELD
+    },
+    SET_CALL_STATE_DROPPED(state, payload) {
+        state.primary.status = CALL_STATES.DROPPED
+    },
+
+    SET_CALL_ARR_STATE_RINGING(state, index) {
+        state.calls[index].status = CALL_STATES.RINGING
+    },
+
+    SET_CALL_ARR_STATE_DIALING(state, index) {
+        state.calls[index].status = CALL_STATES.DIALING
+    },
+
+    SET_CALL_ARR_STATE_TALKING(state, index) {
+        state.calls[index].status = CALL_STATES.TALKING
+    },
+    SET_CALL_ARR_STATE_HELD(state, index) {
+        state.calls[index].status = CALL_STATES.HELD
+    },
+    SET_CALL_ARR_STATE_DROPPED(state, index) {
+        state.calls[index].status = CALL_STATES.DROPPED
+    },
+
+    REMOVE_CALL(state, index) {
+        delete state.callIndices[index]
+        delete state.calls[index]
     },
 
     RESET_CALL_STATUS(state) {
@@ -268,11 +303,6 @@ const mutations = {
         Object.keys(s).forEach(key => {
             state[key] = s[key]
         })
-    },
-
-    /***************Conference Call Mutations **************** */
-    UPDATE_DIALED_DIGITS(state, dialedDigits) {
-        state.dialer.dialedDigits = dialedDigits
     },
 
 }

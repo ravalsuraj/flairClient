@@ -1,8 +1,10 @@
+
+
 <template>
-  <mdb-navbar color="unique" position="bottom" dark>
-    <web-socket-indicator></web-socket-indicator>
+  <mdb-navbar text="white" color="special" position="bottom" dark>
+    <web-socket-indicator class="white-text mr-4 pr-4"></web-socket-indicator>
     <span class="white-text">SessionID: {{sessionId}}</span>
-    
+
     <mdb-navbar-nav right>
       <mdb-nav-item href="#" class>Dialer</mdb-nav-item>
     </mdb-navbar-nav>

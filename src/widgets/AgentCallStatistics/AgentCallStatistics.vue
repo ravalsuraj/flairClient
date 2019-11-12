@@ -12,69 +12,6 @@
       </mdb-card-header>
       <mdb-card-body class="p-0 m-0" v-show-slide="showWidget">
         <mdb-container>
-          <!-- <mdb-row>
-            <span class="ml-0 my-2 mx-auto fl_statHeading">Session Statistics</span>
-          </mdb-row>
-
-          <mdb-row class="my-2">
-            <dl class="row mb-0 no-gutters"
-              <div class="fl_statName">Time since Login</div>
-              <div class="fl_statTimer">00:38:43</div>
-            </mdb-col>
-            <dl class="row mb-0 no-gutters"
-              <div class="fl_statName">Time On Call</div>
-              <div class="fl_statTimer">00:30:05</div>
-            </mdb-col>
-          </mdb-row>
-          <mdb-row>
-            <span class="ml-0 my-2 mx-auto fl_statHeading">Agent Statistics</span>
-          </mdb-row>
-
-          <mdb-row>
-            <dl class="row mb-0 no-gutters"
-              <div class="fl_statName">Agent State</div>
-              <div class="fl_statTimer">READY</div>
-            </mdb-col>
-            <dl class="row mb-0 no-gutters"
-              <div class="fl_statName">In-State Time</div>
-              <div class="fl_statTimer">00:00:00</div>
-            </mdb-col>
-          </mdb-row>
-          <mdb-row>
-            <dl class="row mb-0 no-gutters"
-              <div class="fl_statName">Aux Time</div>
-              <div class="fl_statTimer">00:00:00</div>
-            </mdb-col>
-            <dl class="row mb-0 no-gutters"
-              <div class="fl_statName">ACW Time</div>
-              <div class="fl_statTimer">00:00:00</div>
-            </mdb-col>
-          </mdb-row>
-          <mdb-row>
-            <span class="ml-0 my-2 mx-auto fl_statHeading">Current Call Statistics</span>
-          </mdb-row>
-          <mdb-row class="my-2">
-            <mdb-col col="md-4">
-              <div class="fl_statName">Call State</div>
-              <div class="fl_statTimer">TALKING</div>
-            </mdb-col>
-            <mdb-col col="md-4">
-              <div class="fl_statName">In-State Time</div>
-              <div class="fl_statTimer">00:00:30</div>
-            </mdb-col>
-            <mdb-col col="md-4">
-              <div class="fl_statName">Talk Time</div>
-              <div class="fl_statTimer">00:00:30</div>
-            </mdb-col>
-            <mdb-col col="md-4">
-              <div class="fl_statName">Hold Time</div>
-              <div class="fl_statTimer">00:00:30</div>
-            </mdb-col>
-            <mdb-col col="md-4">
-              <div class="fl_statName">Hold Count</div>
-              <div class="fl_statTimer">1</div>
-            </mdb-col>
-          </mdb-row>-->
           <span class="row mb-0 my-2 no-gutters text-justify fl_statHeading">
             <span>Session Statistics</span>
           </span>
@@ -97,7 +34,7 @@
           </dl>
           <dl class="row mb-0 no-gutters text-justify">
             <dd class="col">In-State Time</dd>
-            <dd class="col">00:01:35</dd>
+            <dd class="col"><agent-timer-instate></agent-timer-instate></dd>
           </dl>
 
           <dl class="row mb-0 no-gutters text-justify">
@@ -114,12 +51,12 @@
           </span>
           <dl class="row mb-0 no-gutters text-justify">
             <dd class="col">Call State</dd>
-            <dd class="col">TALKING</dd>
+            <dd class="col">{{currentCallState}}</dd>
           </dl>
           <dl class="row mb-0 no-gutters text-justify">
             <dd class="col">In-State Time</dd>
             <dd class="col">
-              <timer name="callStateTimer"></timer>
+              <call-timer-instate></call-timer-instate>
             </dd>
           </dl>
           <dl class="row mb-0 no-gutters text-justify">
@@ -141,7 +78,7 @@
 </template>
 
 <script>
-import {AGENT_STATES} from '@/defines'
+import { AGENT_STATES, CALL_STATES } from '@/defines'
 import {
   mdbRow,
   mdbCol,
@@ -154,13 +91,16 @@ import {
   mdbIcon
 } from 'mdbvue'
 
-import LoginTimer from '@/components/widgets/AgentCallStatistics/LoginTimer.vue'
-import Timer from '@/components/util/Timer.vue'
+import UpTimer from '@/components/util/UpTimer.vue'
+import CallTimerInstate from '@/widgets/AgentCallStatistics/CallTimerInstate.vue'
+import AgentTimerInstate from '@/widgets/AgentCallStatistics/AgentTimerInstate.vue'
+
 export default {
   name: 'AgentCallStats',
   components: {
-    Timer,
-    LoginTimer,
+    UpTimer,
+    CallTimerInstate,
+    AgentTimerInstate,
     mdbRow,
     mdbCol,
     mdbContainer,
@@ -192,8 +132,11 @@ export default {
     uuiElements() {
       return this.$store.state.uui
     },
-    currentAgentState(){
+    currentAgentState() {
       return AGENT_STATES.Text[this.$store.getters.getAgentState]
+    },
+    currentCallState() {
+      return CALL_STATES.Text[this.$store.getters.getCallStatus]
     }
   }
 }
