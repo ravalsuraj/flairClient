@@ -47,9 +47,9 @@
         </mdb-col>
       </mdb-row>
       <form @click.stop>
-        <mdb-row class="mx-0 pb-3" @click.stop>
+        <mdb-row class="" @click.stop>
           <transition name="fade">
-            <mdb-btn class="mdb-color mx-2 w-100" @click="onMakeCallButtonClicked">
+            <mdb-btn color="success" class="mx-2 w-100" @click="onMakeCallButtonClicked">
               <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
               <span>Call</span>
             </mdb-btn>
@@ -234,7 +234,7 @@ export default {
       this.showSpinner()
       this.$store.dispatch('requestOutboundCall').then(resp => {
         this.hideSpinner()
-        if (resp.ResponseCode === 0) {
+        if (resp.responseCode === 0) {
           dispatch('setCallStateDialed', resp)
         }
       })
@@ -355,100 +355,10 @@ export default {
   color: #0097a7;
   background-color: rgba(200, 200, 200, 0.05);
 }
-.hide-checkbox {
-  opacity: 0;
-  pointer-events: none;
-}
-.fl_container_callControl {
-  width: 1000px;
-}
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
 
-.fl_iconCallHangup {
-  transform: rotate(135deg);
-}
-.fl_iconCallRinging {
-  transform: rotate(-45deg);
-}
 
-.fl_iconGlow {
-  -webkit-animation: glowing 1500ms infinite;
-  -moz-animation: glowing 1500ms infinite;
-  -o-animation: glowing 1500ms infinite;
-  animation: glowing 1500ms infinite;
-}
-@-webkit-keyframes glowing {
-  0% {
-    background-color: #85d8a6;
-    -webkit-box-shadow: 0 0 3px #85d8a6;
-  }
-  50% {
-    background-color: #00c851;
-    -webkit-box-shadow: 0 0 6px #00c851;
-  }
-  100% {
-    background-color: #85d8a6;
-    -webkit-box-shadow: 0 0 3px #85d8a6;
-  }
-}
 
-@-moz-keyframes glowing {
-  0% {
-    background-color: #85d8a6;
-    -moz-box-shadow: 0 0 3px #85d8a6;
-  }
-  50% {
-    background-color: #00c851;
-    -moz-box-shadow: 0 0 6px #00c851;
-  }
-  100% {
-    background-color: #85d8a6;
-    -moz-box-shadow: 0 0 3px #85d8a6;
-  }
-}
 
-@-o-keyframes glowing {
-  0% {
-    background-color: #85d8a6;
-    box-shadow: 0 0 3px #85d8a6;
-  }
-  50% {
-    background-color: #00c851;
-    box-shadow: 0 0 6px #00c851;
-  }
-  100% {
-    background-color: #85d8a6;
-    box-shadow: 0 0 3px #85d8a6;
-  }
-}
-
-@keyframes glowing {
-  0% {
-    background-color: #85d8a6;
-    box-shadow: 0 0 3px #85d8a6;
-  }
-  50% {
-    background-color: #00c851;
-    box-shadow: 0 0 6px #00c851;
-  }
-  100% {
-    background-color: #85d8a6;
-    box-shadow: 0 0 3px #85d8a6;
-  }
-}
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s;

@@ -4,7 +4,7 @@
     <top-navbar v-if="isAgentLoggedIn" ref="topNavBar" class></top-navbar>
     <call-drawer class="pt-4 mx-5"></call-drawer>
     <main class="d-flex flex-fill main-body pt-4">
-      <router-view v-if="isAgentLoggedIn" class=""></router-view>
+      <router-view v-if="isAgentLoggedIn" class></router-view>
       <login-page v-else class="flex-fill pt-4"></login-page>
     </main>
     <bottom-footer></bottom-footer>
@@ -171,6 +171,7 @@ footer {
 .fl_btn_btnIcon:active i {
   color: #0097a7;
 }
+
 .fl-color-agc {
   background: rgba(204, 0, 0, 1);
   background: -moz-linear-gradient(

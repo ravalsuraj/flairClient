@@ -87,13 +87,18 @@
           <!-- END: Transfer TO IVR -->
 
           <!-- START: Outbound Dialer -->
-          <mdb-dropdown multiLevel>
-            <button type="checkbox" class="btn cyan darken-3" slot="toggle">
+          <mdb-dropdown multiLevel class="fl_btn_dropdown">
+            <button
+              type="checkbox"
+              class="btn btn-blue-grey"
+              slot="toggle"
+              
+            >
               Make Call
               <!-- <mdb-icon icon="users" style="font-size:1.5em" /> -->
             </button>
 
-            <mdb-dropdown-menu color="primary" style="width:280px">
+            <mdb-dropdown-menu color style="width:280px">
               <outbound-dialer @click.stop></outbound-dialer>
             </mdb-dropdown-menu>
           </mdb-dropdown>
@@ -188,7 +193,6 @@ export default {
     hideSpinner() {
       this.spinner.show = false
     },
-
     transferToIvr() {
       this.$store.dispatch('updateDialedDigits', '2501')
       this.showSpinner()

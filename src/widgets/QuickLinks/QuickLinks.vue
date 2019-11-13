@@ -12,7 +12,8 @@
       </mdb-card-header>
       <mdb-card-body class="p-0" v-show-slide="showWidget" :class="{'p-0': !showWidget}">
         <div class="list-group">
-          <a href="#" class="list-group-item list-group-item-action">IVR Reports</a>
+          <!--target=_blank causes the links to open in a new tab-->
+          <a href="http://www.google.com" target="_blank" class="list-group-item list-group-item-action">Google</a>
           <a href="#" class="list-group-item list-group-item-action">CMS Reports</a>
           <a href="#" class="list-group-item list-group-item-action">Finnacle UI</a>
         </div>

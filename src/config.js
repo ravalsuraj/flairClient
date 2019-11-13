@@ -20,6 +20,12 @@ export const config = {
             userSelectable: true,
             reasonCode: 0
         },
+        7: {
+            label: 'Busy',
+            state: AGENT_STATES.BUSY,
+            userSelectable: false,
+            reasonCode: 0
+        }
     },
     agentAuxCodes: [
         {

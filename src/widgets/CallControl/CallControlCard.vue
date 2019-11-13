@@ -2,9 +2,18 @@
   <div class="fl_container_callControl d-flex align-items-center">
     <mdb-container fluid v-if="isCallActive || isCallRinging">
       <mdb-card class="card-body" style="width: 22rem; margin-top: 1rem;">
-        <mdb-card-title>{{callingAddress}}</mdb-card-title>
-
-        <!--START: Inbound Call Controls-->
+      
+      <mdb-card-header color="special-color">
+        {{callingAddress}}
+        <a @click="toggleShowWidget">
+          <mdb-icon v-if="showWidget" icon="phone" class="float-right"></mdb-icon>
+          <!-- <transition name="fade" mode="out-in">
+            <mdb-icon v-if="showWidget" icon="window-minimize" class="float-right"></mdb-icon>
+            <mdb-icon v-else icon="bars" class="float-right"></mdb-icon>
+          </transition> -->
+        </a>
+      </mdb-card-header>
+        <mdb-card-text>{{callingAddress}} : ({{callStatusText}})</mdb-card-text>        <!--START: Inbound Call Controls-->
         <mdb-col col="md-12">
           <!-- <div class="btn-group mx-4" role="group"> </div> -->
           <!-- START: Answer/Drop Button -->
@@ -39,9 +48,9 @@
           <!--END: Hold Button-->
         </mdb-col>
 
-        <div class="flex-row">
+        <!-- <div class="flex-row">
           <mdb-btn color="cyan" @click="disposeCall">Dispose</mdb-btn>
-        </div>
+        </div> -->
       </mdb-card>
     </mdb-container>
   </div>

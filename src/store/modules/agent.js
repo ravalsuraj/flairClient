@@ -220,15 +220,14 @@ export default {
         setDefaultAuxCode({ getters, commit }, payload) {
 
             console.log("getAgentAuxState is null, so setting default aux code for the state received from the login request")
-
+            //for the text value, find the default aux code from the config file
+            let defaultAgentAuxCode = config.defaultAuxCodes[payload.agentState];
             switch (payload.agentState) {
                 case AGENT_STATES.READY:
                 case AGENT_STATES.NOT_READY:
-
-                    //for the text value, find the default aux code from the config file
-                    let defaultAgentAuxCode = config.defaultAuxCodes[payload.agentState];
+                case AGENT_STATES.BUSY:
                     commit('SET_AGENT_AUX_CODE', defaultAgentAuxCode);
-                    break;
+
             }
 
         },

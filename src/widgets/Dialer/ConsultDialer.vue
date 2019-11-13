@@ -3,43 +3,49 @@
   <mdb-card-body class="p-2 mb-1">-->
   <div class="fl_container_dialer">
     <mdb-container fluid>
-      <mdb-row class="px-3 py-4">
-        <mdb-col class="d-flex align-items-baseline">
-          <!--Input Textbox for digits-->
-          <mdb-input
-            class="fl_inp_dialedDigits light-blue-text px-3"
-            type="number"
-            v-model="dialedDigits"
+      <form @click.stop>
+        <mdb-row class="px-3 py-4" @click.stop>
+          <mdb-col class="d-flex align-items-baseline">
+            <!--Input Textbox for digits-->
+
+            <input
+              class="fl_inp_dialedDigits line light-blue-text px-3"
+              type="text"
+              v-model="dialedDigits"
+              @click.stop
+            />
+          </mdb-col>
+
+          <!--Delete Single Digit-->
+          <a
+            class="black-text align-self-baseline mr-3 fl_btn_btnIcon"
+            @click="deleteSingleDigit"
             @click.stop
-          ></mdb-input>
-        </mdb-col>
+          >
+            <mdb-icon icon="backspace" size="1p5x" />
+          </a>
 
-        <!--Delete Single Digit-->
-        <a
-          class="black-text align-self-baseline mr-3 fl_btn_btnIcon"
-          @click="deleteSingleDigit"
-          @click.stop
-        >
-          <mdb-icon icon="backspace" size="1p5x" />
-        </a>
-
-        <!--Delete All Digits-->
-        <a class="black-text align-self-baseline fl_btn_btnIcon" @click="clearDigits" @click.stop>
-          <mdb-icon icon="trash" size="1p5x" />
-        </a>
-      </mdb-row>
+          <!--Delete All Digits-->
+          <a class="black-text align-self-baseline fl_btn_btnIcon" @click="clearDigits" @click.stop>
+            <mdb-icon icon="trash" size="1p5x" />
+          </a>
+        </mdb-row>
+      </form>
       <mdb-row>
         <!--For Loop for cycling through array of digits to for a grid of dialpad digits-->
         <mdb-col col="md-4 px-0" v-for="digit in digits" :key="digit.id">
           <div
             class="fl_button_dialerDigit btn-block transparent-color text-center fl_btn_btnIcon"
-            @click="appendDigit(digit)"
+            @click="appendDigit(digit.text)"
             @click.stop
-          >{{digit}}</div>
+          >
+            <div class="number">{{digit.text}}</div>
+            <div class="subText">{{digit.subText}}</div>
+          </div>
         </mdb-col>
       </mdb-row>
 
-      <mdb-row class="mx-0 pb-3">
+      <mdb-row class="">
         <transition name="fade">
           <mdb-btn
             class="mdb-color mx-2 w-100"
@@ -122,7 +128,71 @@ export default {
   data() {
     return {
       dialedDigits: '08879708222',
-      digits: [1, 2, 3, 4, 5, 6, 7, 8, 9, '*', 0, '#'],
+
+      digits: [
+        {
+          text: 1,
+          subText: ''
+        },
+        {
+          text: 2,
+          subText: 'ABC'
+        },
+        {
+          text: 3,
+          subText: 'DEF'
+        },
+        {
+          text: 4,
+          subText: 'GHI'
+        },
+        {
+          text: 5,
+          subText: 'JKL'
+        },
+        {
+          text: 6,
+          subText: 'MNO'
+        },
+        {
+          text: 7,
+          subText: 'PQRS'
+        },
+        {
+          text: 8,
+          subText: 'TUV'
+        },
+        {
+          text: 9,
+          subText: 'WXYZ'
+        },
+        {
+          text: '*',
+          subText: ''
+        },
+        {
+          text: 0,
+          subText: '+'
+        },
+        {
+          text: '#',
+          subText: ''
+        }
+      ],
+      digitSubText: [
+        '',
+        'ABC',
+        'DEF',
+        'GHI',
+        'JKL',
+        'MNO',
+        'PQRS',
+        'TUV',
+        'WXYZ',
+        '',
+        '+',
+        ''
+      ],
       interval: false,
       digitDeleteSpeed: 200,
       initialDeleteSpeed: 500,
@@ -229,6 +299,26 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.line {
+  display: block;
+  border: none;
+  color: #333;
+  background: transparent;
+  border-bottom: 1px dotted black;
+  padding: 5px 2px 0 2px;
+  font-size: 1.5em;
+}
+
+.line:focus {
+  outline: none;
+  border-color: #51cbee;
+}
+
+.line::-webkit-inner-spin-button,
+.line::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 .fl_container_dialer {
   /* box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12); */
   border-radius: 0px 0px 8px 8px;
@@ -238,10 +328,9 @@ export default {
   height: 25px;
   width: 100%;
   border-bottom: 1px solid grey;
-  font-family: 'Unica One', sans-serif;
+  font-family: 'Unica One', san-serif;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.75);
-  border-radius: 5px;
 }
 
 .fl_inp_dialedDigits input {
@@ -252,7 +341,6 @@ export default {
 .fl_button_dialerDigit {
   padding: 8px;
   cursor: pointer;
-  font-size: 1.2rem;
 
   -webkit-user-select: none; /* Safari 3.1+ */
   -moz-user-select: none; /* Firefox 2+ */
@@ -260,108 +348,29 @@ export default {
   user-select: none; /* Standard syntax */
 }
 
+.fl_button_dialerDigit .number {
+  font-family: 'Unica One', san-serif;
+  font-size: 1.3rem;
+  font-weight: 400;
+}
+
+.fl_button_dialerDigit .subText {
+  font-size: 0.9rem;
+  font-weight: 300;
+}
+
 .fl_button_dialerDigit:hover {
   color: #00bcd4;
-  font-weight: bold;
+
   background-color: rgba(240, 240, 240, 0.05);
+}
+.fl_button_dialerDigit:hover .number {
+  font-size: 1.3rem;
+  font-weight: 700;
 }
 .fl_button_dialerDigit:active {
   color: #0097a7;
   background-color: rgba(200, 200, 200, 0.05);
-}
-.hide-checkbox {
-  opacity: 0;
-  pointer-events: none;
-}
-.fl_container_callControl {
-  width: 1000px;
-}
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-
-.fl_iconCallHangup {
-  transform: rotate(135deg);
-}
-.fl_iconCallRinging {
-  transform: rotate(-45deg);
-}
-
-.fl_iconGlow {
-  -webkit-animation: glowing 1500ms infinite;
-  -moz-animation: glowing 1500ms infinite;
-  -o-animation: glowing 1500ms infinite;
-  animation: glowing 1500ms infinite;
-}
-@-webkit-keyframes glowing {
-  0% {
-    background-color: #85d8a6;
-    -webkit-box-shadow: 0 0 3px #85d8a6;
-  }
-  50% {
-    background-color: #00c851;
-    -webkit-box-shadow: 0 0 6px #00c851;
-  }
-  100% {
-    background-color: #85d8a6;
-    -webkit-box-shadow: 0 0 3px #85d8a6;
-  }
-}
-
-@-moz-keyframes glowing {
-  0% {
-    background-color: #85d8a6;
-    -moz-box-shadow: 0 0 3px #85d8a6;
-  }
-  50% {
-    background-color: #00c851;
-    -moz-box-shadow: 0 0 6px #00c851;
-  }
-  100% {
-    background-color: #85d8a6;
-    -moz-box-shadow: 0 0 3px #85d8a6;
-  }
-}
-
-@-o-keyframes glowing {
-  0% {
-    background-color: #85d8a6;
-    box-shadow: 0 0 3px #85d8a6;
-  }
-  50% {
-    background-color: #00c851;
-    box-shadow: 0 0 6px #00c851;
-  }
-  100% {
-    background-color: #85d8a6;
-    box-shadow: 0 0 3px #85d8a6;
-  }
-}
-
-@keyframes glowing {
-  0% {
-    background-color: #85d8a6;
-    box-shadow: 0 0 3px #85d8a6;
-  }
-  50% {
-    background-color: #00c851;
-    box-shadow: 0 0 6px #00c851;
-  }
-  100% {
-    background-color: #85d8a6;
-    box-shadow: 0 0 3px #85d8a6;
-  }
 }
 .fade-enter-active,
 .fade-leave-active {

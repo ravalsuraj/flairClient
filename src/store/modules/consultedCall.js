@@ -47,21 +47,21 @@ export default {
 
         setConsultedCallStateRinging({ commit, dispatch }, payload) {
             dispatch('addCallToActiveCalls', payload)
-            commit('SET_CONF_STATE_RINGING')
+            commit('SET_CONF_STATE_RINGING', payload)
             dispatch('setCallState', [payload.ucid, CALL_STATES.RINGING])
 
 
         },
         setConsultedCallStateTalking({ commit, dispatch }, payload) {
-            commit('SET_CONF_STATE_TALKING')
+            commit('SET_CONF_STATE_TALKING', payload)
             dispatch('setCallState', [payload.ucid, CALL_STATES.TALKING])
         },
         setConsultedCallStateHeld({ commit, dispatch }, payload) {
-            commit('SET_CONF_STATE_HELD')
+            commit('SET_CONF_STATE_HELD', payload)
             dispatch('setCallState', [payload.ucid, CALL_STATES.HELD])
         },
         setConsultedCallStateDropped({ commit, dispatch }, payload) {
-            commit('SET_CONF_STATE_DROPPED')
+            commit('SET_CONF_STATE_DROPPED', payload)
             dispatch('setCallState', [payload.ucid, CALL_STATES.DROPPED])
             commit('RESET_CONSULTED_CALL_MODULE')
         },
