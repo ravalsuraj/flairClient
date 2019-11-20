@@ -2,7 +2,7 @@
 <template>
   <div class="d-flex flex-column">
     <div ref="topNavBar">
-      <top-navbar v-if="isAgentLoggedIn"  class></top-navbar>
+      <top-navbar v-if="isAgentLoggedIn" class></top-navbar>
     </div>
     <main class="d-flex flex-fill main-body pt-5">
       <router-view v-if="isAgentLoggedIn" class></router-view>
@@ -10,7 +10,15 @@
     </main>
     <bottom-footer></bottom-footer>
 
-    <notifications group="error" />
+    <notifications group="warning" width="500" position="bottom center" ignoreDuplicates="true" />
+    <notifications group="info" width="500" position="bottom center" ignoreDuplicates="true" />
+    <notifications
+      group="error"
+      width="500"
+      position="bottom center"
+      ignoreDuplicates="true"
+      classes="vue-notification fl-notification"
+    />
   </div>
 </template>
 
@@ -158,7 +166,9 @@ footer {
     max-width: 20.833333%;
   }
 }
-
+.fl-notification {
+  /* margin-bottom: 70px; */
+}
 .fl_widget {
   margin-bottom: 10px !important;
 }

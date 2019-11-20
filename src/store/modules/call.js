@@ -135,6 +135,7 @@ const actions = {
                 break
             default:
                 console.log('AnswerDropCall(): skipping answer or drop because call state is: ' + CALL_STATES.Text[callStatus])
+                dispatch('showErrorBanner', ['Cannot Disconnect', 'Please remove the call from hold, before attempting to disconnect'])
         }
 
     },
