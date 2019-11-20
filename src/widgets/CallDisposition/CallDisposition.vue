@@ -1,49 +1,38 @@
 <template>
-  <mdb-container fluid>
-    <mdb-card class="mb-0">
-      <mdb-card-header color="special-color">
-        Call Disposition
-        <a @click="toggleShowWidget">
-          <transition name="fade" mode="out-in">
-            <mdb-icon v-if="showWidget" icon="window-minimize" class="float-right"></mdb-icon>
-            <mdb-icon v-else icon="bars" class="float-right"></mdb-icon>
-          </transition>
-        </a>
-      </mdb-card-header>
-      <mdb-card-body class="px-1" v-show-slide="showWidget" :class="{'p-0': !showWidget}">
-        <!-- <mdb-card-text><strong>Test Bench</strong></mdb-card-text> -->
-        <mdb-container fluid>
-          <div v-if="isAgentInAcw">
-            <div class="h5 grey-text" v-if="showTimer">
-              Time Left:
-              <down-timer name="acwTimer" @timer-expired="onAcwTimerExpired"></down-timer>
-              <hr />
-            </div>
-
-            <label>Call Reason</label>
-            <select class="browser-default custom-select mb-3">
-              <option selected>Select Disposition Reason</option>
-              <option value="1">Account Inquiry</option>
-              <option value="2">Product Information</option>
-              <option value="3">Technical Support</option>
-            </select>
-            <label class>Outcome</label>
-
-            <select class="browser-default custom-select mb-4">
-              <option selected>Select Outcome</option>
-              <option value="1">Successful</option>
-              <option value="2">Transfered to IVR</option>
-              <option value="3">Disconnected</option>
-            </select>
-            <mdb-btn block color="mdb-color" @click="disposeCall">Dispose</mdb-btn>
+  <widget title="Call Disposition">
+    <template v-slot:body>
+      <!-- <mdb-card-text><strong>Test Bench</strong></mdb-card-text> -->
+      <mdb-container fluid>
+        <div v-if="isAgentInAcw">
+          <div class="h5 grey-text" v-if="showTimer">
+            Time Left:
+            <down-timer name="acwTimer" @timer-expired="onAcwTimerExpired"></down-timer>
+            <hr />
           </div>
-          <div v-else>
-            <h4 class="grey-text">Available when call ends</h4>
-          </div>
-        </mdb-container>
-      </mdb-card-body>
-    </mdb-card>
-  </mdb-container>
+
+          <!-- <label>Call Reason</label> -->
+          <select class="browser-default custom-select mb-3">
+            <option selected>Select Disposition Reason</option>
+            <option value="1">Account Inquiry</option>
+            <option value="2">Product Information</option>
+            <option value="3">Technical Support</option>
+          </select>
+          <!-- <label class>Outcome</label> -->
+
+          <select class="browser-default custom-select mb-4">
+            <option selected>Select Outcome</option>
+            <option value="1">Successful</option>
+            <option value="2">Transfered to IVR</option>
+            <option value="3">Disconnected</option>
+          </select>
+          <mdb-btn block color="mdb-color" @click="disposeCall">Dispose</mdb-btn>
+        </div>
+        <div v-else>
+          <h4 class="grey-text">Available when call ends</h4>
+        </div>
+      </mdb-container>
+    </template>
+  </widget>
 </template>
 
 <script>
@@ -60,12 +49,13 @@ import {
   mdbIcon
 } from 'mdbvue'
 import { AGENT_STATES, CALL_STATES } from '@/defines.js'
-import DownTimer from '@/components/util/DownTimer'
+import DownTimer from '@/components/agc/DownTimer'
+import Widget from '@/components/agc/Widget'
 export default {
   name: 'CallDisposition',
   components: {
     DownTimer,
-
+    Widget,
     mdbContainer,
     mdbRow,
     mdbCol,
@@ -79,7 +69,7 @@ export default {
   },
   mounted() {},
   props: {
-    msg: String
+    ucid: null
   },
 
   data() {
@@ -95,7 +85,10 @@ export default {
     },
     onAcwTimerExpired() {
       this.showTimer = false
-      this.$store.dispatch('resetCallState')
+      this.disposeCall()
+    },
+    disposeCall() {
+      this.$store.dispatch('resetCallState', this.ucid)
       this.$store.dispatch('setAgentAuxCode', {
         label: 'Ready',
         state: AGENT_STATES.READY,
@@ -103,9 +96,6 @@ export default {
         reasonCode: null
       })
       this.$store.dispatch('resetDummyData')
-    },
-    disposeCall() {
-      this.onAcwTimerExpired()
     }
   },
 

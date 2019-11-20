@@ -77,6 +77,9 @@ export const config = {
             {
                 name: 'menu-traversal'
             },
+            {
+                name: 'quick-links'
+            },
 
         ],
     },
@@ -96,15 +99,9 @@ export const config = {
         width: "2p5",
         widgets: [
             {
-                name: 'call-disposition'
-            },
-
-            {
                 name: 'sms-helper'
             },
-            {
-                name: 'quick-links'
-            },
+
             {
                 name: 'agent-call-statistics'
             }

@@ -82,7 +82,7 @@ export default {
 
         SOCKET_ICALLTALK({ dispatch, getters }, payload) {
             console.log('Received event: ' + 'ICALLTALK: ' + JSON.stringify(payload))
-            if (getters.getCallIndex(payload.ucid)) {
+            if (getters.getCallIndex(payload.ucid) !== null) {
                 dispatch('setCallStateTalking', payload)
             }
 
@@ -104,8 +104,10 @@ export default {
 
         SOCKET_ICALLDISC({ dispatch, getters }, payload) {
             console.log('SOCKET_ICALLDISC(): Received event: ' + 'ICALLDISC' + JSON.stringify(payload))
-            if (getters.getCallIndex(payload.ucid)) {
+            if (getters.getCallIndex(payload.ucid) !== null) {
                 dispatch('setCallStateDropped', payload)
+            } else {
+                console.log("SOCKET_ICALLDISC(): no calls found for UCID:" + payload.ucid)
             }
 
             if (getters.getPrimaryCall.ucid == payload.ucid) {
@@ -125,7 +127,7 @@ export default {
 
         SOCKET_ICALLHLD({ dispatch, getters }, payload) {
             console.log('Recieved event: ' + 'ICALLHLD' + JSON.stringify(payload))
-            if (getters.getCallIndex(payload.ucid)) {
+            if (getters.getCallIndex(payload.ucid) !== null) {
                 dispatch('setCallStateHeld', payload)
             }
             if (getters.getPrimaryCall.ucid == payload.ucid) {

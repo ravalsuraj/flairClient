@@ -1,9 +1,10 @@
 
 <template>
   <div class="d-flex flex-column">
-    <top-navbar v-if="isAgentLoggedIn" ref="topNavBar" class></top-navbar>
-    <call-drawer class="pt-4 mx-5"></call-drawer>
-    <main class="d-flex flex-fill main-body pt-4">
+    <div ref="topNavBar">
+      <top-navbar v-if="isAgentLoggedIn"  class></top-navbar>
+    </div>
+    <main class="d-flex flex-fill main-body pt-5">
       <router-view v-if="isAgentLoggedIn" class></router-view>
       <login-page v-else class="flex-fill pt-4"></login-page>
     </main>
@@ -100,7 +101,8 @@ export default {
 
     if (this.$refs.topNavBar) {
       console.log(
-        'App/mounted(): navbar height is' + this.$refs.topNavBar.clientHeight
+        'App/mounted(): navbar height is' +
+          JSON.stringify(this.$refs.topNavBar.clientHeight)
       )
     }
   },
@@ -140,7 +142,6 @@ html {
 }
 .main-body {
   height: calc(100vh - 25px);
-  overflow-y: auto;
   background: linear-gradient(#fff, rgb(243, 243, 243));
 }
 footer {

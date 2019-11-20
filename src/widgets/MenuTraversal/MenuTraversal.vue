@@ -1,57 +1,45 @@
 <template>
-  <mdb-container fluid>
-    <mdb-card class="mb-0">
-      <mdb-card-header color="special-color text-white">
-        Menu Traversal
-        <a @click="toggleShowWidget">
-          <transition name="fade" mode="out-in">
-            <mdb-icon v-if="showWidget" icon="window-minimize" class="float-right"></mdb-icon>
-            <mdb-icon v-else icon="bars" class="float-right"></mdb-icon>
-          </transition>
-        </a>
-      </mdb-card-header>
-      <mdb-card-body class="p-0 m-0" v-show-slide="showWidget">
-        <mdb-row class="no-gutters" v-if="isCallActive">
-          <mdb-col>
-            <mdb-tbl sm bordered scrollY maxHeight="150px">
-              <mdb-tbl-head color="light-blue lighten-5">
-                <tr>
-                  <th>Time</th>
-                  <th>Menu</th>
-                </tr>
-              </mdb-tbl-head>
-              <mdb-tbl-body>
-                <tr>
-                  <td>09/10/19 13:05:30</td>
-                  <td>Lanaguage Selection</td>
-                </tr>
-                <tr>
-                  <td>09/10/19 13:05:30</td>
-                  <td>Main Menu</td>
-                </tr>
-                <tr>
-                  <td>09/10/19 13:05:38</td>
-                  <td>Account Services</td>
-                </tr>
-                <tr>
-                  <td>09/10/19 13:05:47</td>
-                  <td>Balance Inquiry</td>
-                </tr>
-                <tr>
-                  <td>09/10/19 10:06:05</td>
-                  <td>Main Menu</td>
-                </tr>
-              </mdb-tbl-body>
-            </mdb-tbl>
-          </mdb-col>
-        </mdb-row>
-        <mdb-container fluid v-else class="p-4">
-          <h4 class="grey-text">Waiting for call</h4>
-        </mdb-container>
-        <!-- </mdb-container> -->
-      </mdb-card-body>
-    </mdb-card>
-  </mdb-container>
+  <widget title="Menu Traversal">
+    <template v-slot:body>
+      <mdb-row class="no-gutters" v-if="isCallActive">
+        <mdb-col>
+          <mdb-tbl sm bordered scrollY maxHeight="150px">
+            <mdb-tbl-head color="light-blue lighten-5">
+              <tr>
+                <th>Time</th>
+                <th>Menu</th>
+              </tr>
+            </mdb-tbl-head>
+            <mdb-tbl-body>
+              <tr>
+                <td>09/10/19 13:05:30</td>
+                <td>Lanaguage Selection</td>
+              </tr>
+              <tr>
+                <td>09/10/19 13:05:30</td>
+                <td>Main Menu</td>
+              </tr>
+              <tr>
+                <td>09/10/19 13:05:38</td>
+                <td>Account Services</td>
+              </tr>
+              <tr>
+                <td>09/10/19 13:05:47</td>
+                <td>Balance Inquiry</td>
+              </tr>
+              <tr>
+                <td>09/10/19 10:06:05</td>
+                <td>Main Menu</td>
+              </tr>
+            </mdb-tbl-body>
+          </mdb-tbl>
+        </mdb-col>
+      </mdb-row>
+      <mdb-container fluid v-else class="p-4">
+        <h4 class="grey-text">Waiting for call</h4>
+      </mdb-container>
+    </template>
+  </widget>
 </template>
 
 <script>
@@ -77,12 +65,13 @@ import {
   mdbModalBody,
   mdbModalFooter
 } from 'mdbvue'
-
+import Widget from '@/components/agc/Widget'
 import { CALL_STATES } from '@/defines.js'
 
 export default {
   name: 'MenuTraversal',
   components: {
+    Widget,
     mdbRow,
     mdbCol,
     mdbContainer,

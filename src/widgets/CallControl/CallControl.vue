@@ -112,8 +112,8 @@
 <script>
 import ConsultDialer from '@/widgets/Dialer/ConsultDialer'
 import OutboundDialer from '@/widgets/Dialer/OutboundDialer'
-import UpTimer from '@/components/util/UpTimer'
-import DownTimer from '@/components/util/DownTimer'
+import UpTimer from '@/components/agc/UpTimer'
+import DownTimer from '@/components/agc/DownTimer'
 
 import { CALL_STATES, CALL_TYPES, SOCKET_EVENTS } from '@/defines.js'
 

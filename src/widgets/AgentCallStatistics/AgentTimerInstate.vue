@@ -10,7 +10,7 @@
 
 <script>
 import { AGENT_STATES } from '@/defines.js'
-import UpTimer from '@/components/util/UpTimer.vue'
+import UpTimer from '@/components/agc/UpTimer.vue'
 export default {
   name: 'AgentTimerInstate',
   components: {

@@ -1,23 +1,10 @@
 <template>
-  <mdb-container fluid class="px-0 mx-0" style="opacity: 1">
-    <mdb-card class="mb-0">
-      <mdb-card-header color="special-color">
-        CRM ScreenPop
-        <a @click="toggleShowWidget">
-          <transition name="fade" mode="out-in">
-            <mdb-icon v-if="showWidget" icon="window-minimize" class="float-right"></mdb-icon>
-            <mdb-icon v-else icon="bars" class="float-right"></mdb-icon>
-          </transition>
-        </a>
-      </mdb-card-header>
-      <div>
-        <mdb-card-body class="p-0 m-0" v-show-slide="showWidget" :class="{'p-0': !showWidget}">
-          <iframe :src="crmUrl" class="w-100 fl_crm_window" style></iframe>
-          <!-- <iframe is="x-frame-bypass" :src="crmUrl" class="w-100 fl_crm_window" ></iframe> -->
-        </mdb-card-body>
-      </div>
-    </mdb-card>
-  </mdb-container>
+  <widget title="CRM">
+    <template v-slot:body>
+      <iframe :src="crmUrl" class="w-100 fl_crm_window" style></iframe>
+      <!-- <iframe is="x-frame-bypass" :src="crmUrl" class="w-100 fl_crm_window" ></iframe> -->
+    </template>
+  </widget>
 </template>
 
 <script>
@@ -45,9 +32,11 @@ import {
 } from 'mdbvue'
 import { CALL_STATES } from '@/defines'
 import { config } from '@/config.js'
+import Widget from '@/components/agc/Widget'
 export default {
   name: 'CrmFrame',
   components: {
+    Widget,
     mdbRow,
     mdbCol,
     mdbContainer,
@@ -129,6 +118,6 @@ export default {
 <style scoped>
 .fl_crm_window {
   border: none;
-  height: 600px;
+  height: 500px;
 }
 </style>

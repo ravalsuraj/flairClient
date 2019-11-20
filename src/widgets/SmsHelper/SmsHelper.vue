@@ -1,36 +1,24 @@
 <template>
-  <mdb-container fluid>
-    <mdb-card class="mb-0">
-      <mdb-card-header color="special-color">
-        SMS Helper
-        <a @click="toggleShowWidget">
-          <transition name="fade" mode="out-in">
-            <mdb-icon v-if="showWidget" icon="window-minimize" class="float-right"></mdb-icon>
-            <mdb-icon v-else icon="bars" class="float-right"></mdb-icon>
-          </transition>
-        </a>
-      </mdb-card-header>
-      <mdb-card-body class="px-1" v-show-slide="showWidget" :class="{'p-0': !showWidget}">
-        
-        <mdb-container fluid :class="{'disableWidget': !isCallAvailable}">
-          <div v-if="cli">
-            <label>The SMS will be sent to:</label>
-            <span v-if="cli.length>0">{{cli}}</span>
-            <select class="browser-default custom-select mb-4" v-model="smsContentType">
-              <option disabled selected value>SMS Content</option>
-              <option value="0">Feedback Survey</option>
-              <option value="1">Reset Password</option>
-              <option value="2">Registration Link</option>
-            </select>
-            <mdb-btn block color="mdb-color" @click="onSendSmsClick">Send SMS</mdb-btn>
-          </div>
-          <div v-else>
-            <h4 class="grey-text">Waiting for call</h4>
-          </div>
-        </mdb-container>
-      </mdb-card-body>
-    </mdb-card>
-  </mdb-container>
+  <widget title="SMS Helper">
+    <template v-slot:body>
+      <mdb-container fluid :class="{'disableWidget': !isCallAvailable}">
+        <div v-if="cli">
+          <label>The SMS will be sent to:</label>
+          <span v-if="cli.length>0">{{cli}}</span>
+          <select class="browser-default custom-select mb-4" v-model="smsContentType">
+            <option disabled selected value>SMS Content</option>
+            <option value="0">Feedback Survey</option>
+            <option value="1">Reset Password</option>
+            <option value="2">Registration Link</option>
+          </select>
+          <mdb-btn block color="mdb-color" @click="onSendSmsClick">Send SMS</mdb-btn>
+        </div>
+        <div v-else>
+          <h4 class="grey-text">Waiting for call</h4>
+        </div>
+      </mdb-container>
+    </template>
+  </widget>
 </template>
 
 <script>
@@ -47,10 +35,12 @@ import {
   mdbIcon
 } from 'mdbvue'
 import { AGENT_STATES, CALL_STATES } from '@/defines.js'
+import Widget from '@/components/agc/Widget'
 
 export default {
   name: 'SmsHelper',
   components: {
+    Widget,
     mdbContainer,
     mdbRow,
     mdbCol,

@@ -1,108 +1,83 @@
 <template>
-  <mdb-container fluid>
-    <mdb-card class="mb-0">
-      <mdb-card-header color="special-color">
-        Test Bench
-        <a @click="toggleShowWidget">
-          <transition name="fade" mode="out-in">
-            <mdb-icon v-if="showWidget" icon="window-minimize" class="float-right"></mdb-icon>
-            <mdb-icon v-else icon="bars" class="float-right"></mdb-icon>
-          </transition>
-        </a>
-      </mdb-card-header>
-      <mdb-card-body class="px-1" v-show-slide="showWidget" :class="{'p-0': !showWidget}">
-        <!-- <mdb-card-text><strong>Test Bench</strong></mdb-card-text> -->
-        <form @submit.prevent>
-          <mdb-container fluid>
-            <mdb-col col>
-              <mdb-row class>
-                <mdb-col>
-                  <mdb-input
-                    name="call-status"
-                    disabled
-                    :value="callStatusText"
-                    label="Call Status"
-                  />
-                </mdb-col>
-                <mdb-col>
-                  <mdb-input
-                    name="agent-status"
-                    disabled
-                    :value="agentStatus"
-                    label="Agent Status"
-                  />
-                </mdb-col>
-              </mdb-row>
-              <mdb-row>
-                <div class="btn-group w-100 mb-2">
-                  <mdb-btn class="btn mdb-color white-text mx-2" @click="sendDevEvent">Dev Event</mdb-btn>
-                  <mdb-btn class="btn mdb-color white-text mx-2">Answer</mdb-btn>
-                </div>
-                <div class="btn-group w-100 my-2">
-                  <mdb-btn
-                    class="btn mdb-color white-text mx-2"
-                    @click="toggleDevMode"
-                  >Turn Dev {{devMode? "OFF" : "ON"}}</mdb-btn>
-                  <mdb-btn class="btn mdb-color white-text mx-2">Hold</mdb-btn>
-                </div>
-                <div class="btn-group w-100 my-2">
-                  <mdb-btn class="btn mdb-color white-text mx-2">Unhold</mdb-btn>
-                  <mdb-btn class="btn mdb-color white-text mx-2">Call</mdb-btn>
-                </div>
-              </mdb-row>
-              <mdb-row>
-                <mdb-col>
-                  <mdb-input
-                    required
-                    name="callingAddress"
-                    v-model="simCall.callingAddress"
-                    type="number"
-                    label="ANI"
-                  />
-                </mdb-col>
-                <mdb-col>
-                  <mdb-input
-                    required
-                    name="calledAddress"
-                    v-model="simCall.calledAddress"
-                    type="number"
-                    label="DNIS"
-                  />
-                </mdb-col>
-              </mdb-row>
+  <widget title="Test Bench" color="mdb-color">
+    <template v-slot:body>
+      <!-- <mdb-card-text><strong>Test Bench</strong></mdb-card-text> -->
+      <form @submit.prevent>
+        <mdb-container fluid>
+          <mdb-col col>
+            <mdb-row class>
+              <mdb-col>
+                <mdb-input name="call-status" disabled :value="callStatusText" label="Call Status" />
+              </mdb-col>
+              <mdb-col>
+                <mdb-input name="agent-status" disabled :value="agentStatus" label="Agent Status" />
+              </mdb-col>
+            </mdb-row>
+            <mdb-row>
+              <div class="btn-group w-100 mb-2">
+                <mdb-btn class="btn mdb-color white-text mx-2" @click="sendDevEvent">Dev Event</mdb-btn>
+                <mdb-btn class="btn mdb-color white-text mx-2">Answer</mdb-btn>
+              </div>
+              <div class="btn-group w-100 my-2">
+                <mdb-btn
+                  class="btn mdb-color white-text mx-2"
+                  @click="toggleDevMode"
+                >Turn Dev {{devMode? "OFF" : "ON"}}</mdb-btn>
+                <mdb-btn class="btn mdb-color white-text mx-2">Hold</mdb-btn>
+              </div>
+              <div class="btn-group w-100 my-2">
+                <mdb-btn class="btn mdb-color white-text mx-2">Unhold</mdb-btn>
+                <mdb-btn class="btn mdb-color white-text mx-2">Call</mdb-btn>
+              </div>
+            </mdb-row>
+            <mdb-row>
+              <mdb-col>
+                <mdb-input
+                  required
+                  name="callingAddress"
+                  v-model="simCall.callingAddress"
+                  type="number"
+                  label="ANI"
+                />
+              </mdb-col>
+              <mdb-col>
+                <mdb-input
+                  required
+                  name="calledAddress"
+                  v-model="simCall.calledAddress"
+                  type="number"
+                  label="DNIS"
+                />
+              </mdb-col>
+            </mdb-row>
+            <div
+              class="alert alert-danger"
+              role="alert"
+              v-if="showAgentNotReadyError"
+            >Agent Not Ready Yet!</div>
+            <mdb-row>
               <div
                 class="alert alert-danger"
                 role="alert"
-                v-if="showAgentNotReadyError"
-              >Agent Not Ready Yet!</div>
-              <mdb-row>
+                v-if="showAniNotEnteredError"
+              >ANI Not Entered</div>
+
+              <div class="btn-group w-100">
                 <div
-                  class="alert alert-danger"
-                  role="alert"
-                  v-if="showAniNotEnteredError"
-                >ANI Not Entered</div>
+                  class="btn mdb-color white-text mx-2"
+                  size="md"
+                  @click="simulateIncomingCall"
+                >Ring</div>
+                <div class="btn mdb-color white-text mx-2" size="md" @click="hangupCall">Disconnect</div>
+              </div>
 
-                <div class="btn-group w-100">
-                  <div
-                    class="btn mdb-color white-text mx-2"
-                    size="md"
-                    @click="simulateIncomingCall"
-                  >Ring</div>
-                  <div
-                    class="btn mdb-color white-text mx-2"
-                    size="md"
-                    @click="hangupCall"
-                  >Disconnect</div>
-                </div>
-
-                <br />
-              </mdb-row>
-            </mdb-col>
-          </mdb-container>
-        </form>
-      </mdb-card-body>
-    </mdb-card>
-  </mdb-container>
+              <br />
+            </mdb-row>
+          </mdb-col>
+        </mdb-container>
+      </form>
+    </template>
+  </widget>
 </template>
 
 <script>

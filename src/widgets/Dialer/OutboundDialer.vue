@@ -14,7 +14,6 @@
               v-model="dialedDigits"
               @click.stop
             />
-
           </mdb-col>
 
           <!--Delete Single Digit-->
@@ -47,26 +46,21 @@
         </mdb-col>
       </mdb-row>
       <form @click.stop>
-        <mdb-row class="" @click.stop>
+        <mdb-row class @click.stop>
           <transition name="fade">
-            <mdb-btn color="success" class="mx-2 w-100" @click="onMakeCallButtonClicked">
+            <mdb-btn color="success" class="mx-2 btn-block" @click="onMakeCallButtonClicked">
               <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
               <span>Call</span>
             </mdb-btn>
           </transition>
           <transition name="fade">
-            <div class="btn-group w-100 pb-2" v-if="!isConsultCallIdle">
-              <mdb-btn class="btn-deep-orange mx-2 px-2 w-100" @click="onCallDropBtnClicked">
+            <div class="btn-group w-50 pb-2" v-if="!isCallIdle">
+              <mdb-btn class="btn-red mx-2 px-2 w-100" @click="onCallDropBtnClicked">
                 <span>Drop</span>
               </mdb-btn>
             </div>
           </transition>
-          <transition name="fade">
-            <div class="btn-group w-100" v-if="!isConsultCallIdle">
-            </div>
-          </transition>
 
-        
         </mdb-row>
       </form>
     </mdb-container>
@@ -233,6 +227,7 @@ export default {
       this.$store.dispatch('updateDialedDigits', this.dialedDigits)
       this.showSpinner()
       this.$store.dispatch('requestOutboundCall').then(resp => {
+        console.log('onMakeCallButtonClicked(): resp=' + JSON.stringify(resp))
         this.hideSpinner()
         if (resp.responseCode === 0) {
           dispatch('setCallStateDialed', resp)
@@ -263,16 +258,11 @@ export default {
     isAgentStateHeld() {
       return this.$store.getters.getAgentState === AGENT_STATES.HELD
     },
-    isConsultCallIdle() {
+    isCallIdle() {
       return (
-        this.$store.getters.getConsultedCallStatus === CALL_STATES.IDLE ||
-        this.$store.getters.getConsultedCallStatus === CALL_STATES.DROPPED
+        this.callStatus === CALL_STATES.IDLE ||
+        this.callStatus === CALL_STATES.DROPPED
       )
-    },
-    confHoldText() {
-      return this.$store.getters.consultedCallStatus === CALL_STATES.HELD
-        ? 'UNHOLD'
-        : 'HOLD'
     }
   }
 }
@@ -323,7 +313,7 @@ export default {
 .fl_button_dialerDigit {
   padding: 8px;
   cursor: pointer;
- 
+
   -webkit-user-select: none; /* Safari 3.1+ */
   -moz-user-select: none; /* Firefox 2+ */
   -ms-user-select: none; /* IE 10+ */
@@ -331,7 +321,7 @@ export default {
 }
 
 .fl_button_dialerDigit .number {
-    font-family: 'Unica One', san-serif;
+  font-family: 'Unica One', san-serif;
   font-size: 1.3rem;
   font-weight: 400;
 }
@@ -342,7 +332,6 @@ export default {
 }
 
 .fl_button_dialerDigit:hover {
-  
   color: #00bcd4;
 
   background-color: rgba(240, 240, 240, 0.05);
@@ -355,9 +344,6 @@ export default {
   color: #0097a7;
   background-color: rgba(200, 200, 200, 0.05);
 }
-
-
-
 
 .fade-enter-active,
 .fade-leave-active {

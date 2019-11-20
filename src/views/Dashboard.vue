@@ -1,5 +1,11 @@
 <template>
-  <mdb-container fluid class="mx-2 px-0">
+  <mdb-container fluid class="mx-2 px-0 pt-2">
+    <mdb-row class="mb-4 mx-0">
+      <mdb-col col="12">
+        <call-drawer class="mx-5"></call-drawer>
+      </mdb-col>
+    </mdb-row>
+    <hr />
     <mdb-row class="mx-0">
       <mdb-col :lg="leftComponentWidth" md="12" class>
         <draggable
@@ -21,9 +27,6 @@
       </mdb-col>
 
       <mdb-col :lg="middleComponentWidth" md="12" class="mb-1 px-0 mx-0">
-        <!--     
-          <mdb-input type="text" v-model="custName"></mdb-input>
-        -->
         <draggable
           :list="middleComponentWidgets"
           class="dragArea"
@@ -93,6 +96,7 @@ import CallDisposition from '@/widgets/CallDisposition/CallDisposition.vue'
 import CrmFrame from '@/widgets/CrmFrame/CrmFrame.vue'
 import QuickLinks from '@/widgets/QuickLinks/QuickLinks.vue'
 import SmsHelper from '@/widgets/SmsHelper/SmsHelper.vue'
+import CallDrawer from '@/views/CallDrawer.vue'
 
 export default {
   name: 'Dashboard',
@@ -111,6 +115,8 @@ export default {
     CallDetails,
     CallHistory,
     SmsHelper,
+    CallDrawer,
+
     mdbContainer,
     mdbRow,
     mdbCol,
@@ -195,5 +201,4 @@ export default {
 .dragged-component {
   opacity: 1 !important;
 }
-
 </style>

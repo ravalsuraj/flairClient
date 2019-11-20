@@ -27,14 +27,15 @@
                     <strong>{{credentials.deviceId}}</strong>
                   </span>
                 </div>
-                <span class="text-left">
+                <!-- <span class="text-left">
                   <a href="#" class="btn white-text unique-color btn-block btn-sm">Settings</a>
-                </span>
+                </span>-->
+                <a href="#" class="btn btn-danger btn-block" @click="agentLogoutBtnClicked">Log Out</a>
               </div>
             </div>
           </div>
         </li>
-        <div class="dropdown-divider"></div>
+        <!-- <div class="dropdown-divider"></div>
         <li>
           <div class="navbar-login navbar-login-session">
             <div class="row">
@@ -49,7 +50,7 @@
               </div>
             </div>
           </div>
-        </li>
+        </li> -->
       </mdb-dropdown-item>
     </mdb-dropdown-menu>
   </mdb-dropdown>

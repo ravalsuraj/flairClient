@@ -27,28 +27,35 @@ export default {
         updateDialedDigits({ commit }, inpDigits) {
             commit('UPDATE_DIALED_DIGITS', inpDigits)
         },
-        requestOutboundCall({ getters, dispatch }) {
-            if (!getters.getDialedDigits) {
-                dispatch('showErrorBanner', ['Outbound Call Not Made', 'Please enter a valid number'])
-            } else {
+        async requestOutboundCall({ getters, dispatch }) {
+            return new Promise((resolve, reject) => {
+                if (!getters.getDialedDigits) {
+                    dispatch('showErrorBanner', ['Outbound Call Not Made', 'Please enter a valid number'])
+                } else {
 
-                let request = {
-                    sessionId: getters['session/getSessionId'],
-                    dialedDigits: getters.getDialedDigits
-                }
-
-                console.log("requestOutboundCall(): request=" + JSON.stringify(request));
-                this._vm.$socket.emit(
-                    SOCKET_EVENTS.MAKE_CALL,
-                    request,
-                    resp => {
-                        console.log("requestOutboundCall(): resp=" + JSON.stringify(resp));
-                        if (resp.responseCode === '0') {
-                            // dispatch('processCallConferenceDone', resp)
-                        }
+                    let request = {
+                        sessionId: getters['session/getSessionId'],
+                        dialedDigits: getters.getDialedDigits
                     }
-                )
-            }
+
+                    console.log("requestOutboundCall(): request=" + JSON.stringify(request));
+                    try {
+
+
+                        this._vm.$socket.emit(
+                            SOCKET_EVENTS.MAKE_CALL,
+                            request,
+                            resp => {
+                                console.log("requestOutboundCall(): resp=" + JSON.stringify(resp));
+                                resolve(resp)
+                            }
+                        )
+                    } catch (err) {
+                        reject(err)
+                    }
+                }
+            })
+
         },
     }
 }

@@ -15,7 +15,7 @@
 import AgentControl from '@/widgets/AgentControl/AgentControl.vue'
 import CallControl from '@/widgets/CallControl/CallControl.vue'
 import QuickLinks from '@/widgets/QuickLinks/QuickLinks.vue'
-import WebSocketIndicator from '@/components/util/WebSocketIndicator'
+import WebSocketIndicator from '@/components/agc/WebSocketIndicator'
 import {
   mdbRow,
   mdbCol,

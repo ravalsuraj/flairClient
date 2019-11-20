@@ -46,13 +46,15 @@ export default {
         },
 
         setConsultedCallStateRinging({ commit, dispatch }, payload) {
-            dispatch('addCallToActiveCalls', payload)
+            //dispatch('addCallToActiveCalls', payload)
             commit('SET_CONF_STATE_RINGING', payload)
+            
             dispatch('setCallState', [payload.ucid, CALL_STATES.RINGING])
 
 
         },
         setConsultedCallStateTalking({ commit, dispatch }, payload) {
+            dispatch('addCallToActiveCalls', payload)
             commit('SET_CONF_STATE_TALKING', payload)
             dispatch('setCallState', [payload.ucid, CALL_STATES.TALKING])
         },
@@ -86,7 +88,7 @@ export default {
                             console.log("requestConsultCall(): resp=" + JSON.stringify(resp));
                             if (resp.responseCode === '0') {
                                 commit('SET_CONF_STATE_CONSULTED', resp)
-                                dispatch('addCallToActiveCalls', resp)
+                                //dispatch('addCallToActiveCalls', resp)
                                 resolve(resp)
 
                             } else {

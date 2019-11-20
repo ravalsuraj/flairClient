@@ -1,80 +1,71 @@
 <template>
-  <mdb-container fluid>
-    <mdb-card class="mb-0">
-      <mdb-card-header color="special-color text-white">
-        Agent & Call Statistics
-        <a @click="toggleShowWidget">
-          <transition name="fade" mode="out-in">
-            <mdb-icon v-if="showWidget" icon="window-minimize" class="float-right"></mdb-icon>
-            <mdb-icon v-else icon="bars" class="float-right"></mdb-icon>
-          </transition>
-        </a>
-      </mdb-card-header>
-      <mdb-card-body class="p-0 m-0" v-show-slide="showWidget">
-        <mdb-container>
-          <span class="row mb-0 my-2 no-gutters text-justify fl_statHeading">
-            <span>Session Statistics</span>
-          </span>
+  <widget title="Statistics">
+    <template v-slot:body>
+      <mdb-container>
+        <span class="row mb-0 my-2 no-gutters text-justify fl_statHeading">
+          <span>Session Statistics</span>
+        </span>
 
-          <dl class="row mb-0 no-gutters text-justify">
-            <dd class="col">Time since Login</dd>
-            <dd class="col">00:38:45</dd>
-          </dl>
-          <dl class="row mb-0 no-gutters text-justify">
-            <dd class="col">Total Time On Calls</dd>
-            <dd class="col">00:14:44</dd>
-          </dl>
+        <dl class="row mb-0 no-gutters text-justify">
+          <dd class="col">Time since Login</dd>
+          <dd class="col">00:38:45</dd>
+        </dl>
+        <dl class="row mb-0 no-gutters text-justify">
+          <dd class="col">Total Time On Calls</dd>
+          <dd class="col">00:14:44</dd>
+        </dl>
 
-          <span class="row mb-0 my-2 no-gutters text-justify fl_statHeading">
-            <span>Agent Statistics</span>
-          </span>
-          <dl class="row mb-0 no-gutters text-justify">
-            <dd class="col">Agent State</dd>
-            <dd class="col">{{currentAgentState}}</dd>
-          </dl>
-          <dl class="row mb-0 no-gutters text-justify">
-            <dd class="col">In-State Time</dd>
-            <dd class="col"><agent-timer-instate></agent-timer-instate></dd>
-          </dl>
+        <span class="row mb-0 my-2 no-gutters text-justify fl_statHeading">
+          <span>Agent Statistics</span>
+        </span>
+        <dl class="row mb-0 no-gutters text-justify">
+          <dd class="col">Agent State</dd>
+          <dd class="col">{{currentAgentState}}</dd>
+        </dl>
+        <dl class="row mb-0 no-gutters text-justify">
+          <dd class="col">In-State Time</dd>
+          <dd class="col">
+            <agent-timer-instate></agent-timer-instate>
+          </dd>
+        </dl>
 
-          <dl class="row mb-0 no-gutters text-justify">
-            <dd class="col">Aux Time</dd>
-            <dd class="col">00:00:00</dd>
-          </dl>
-          <dl class="row mb-0 no-gutters text-justify">
-            <dd class="col">ACW Time</dd>
-            <dd class="col">00:00:00</dd>
-          </dl>
+        <dl class="row mb-0 no-gutters text-justify">
+          <dd class="col">Aux Time</dd>
+          <dd class="col">00:00:00</dd>
+        </dl>
+        <dl class="row mb-0 no-gutters text-justify">
+          <dd class="col">ACW Time</dd>
+          <dd class="col">00:00:00</dd>
+        </dl>
 
-          <span class="row mb-0 my-2 no-gutters text-justify fl_statHeading">
-            <span>Current Call Statistics</span>
-          </span>
-          <dl class="row mb-0 no-gutters text-justify">
-            <dd class="col">Call State</dd>
-            <dd class="col">{{currentCallState}}</dd>
-          </dl>
-          <dl class="row mb-0 no-gutters text-justify">
-            <dd class="col">In-State Time</dd>
-            <dd class="col">
-              <call-timer-instate></call-timer-instate>
-            </dd>
-          </dl>
-          <dl class="row mb-0 no-gutters text-justify">
-            <dd class="col">Talk Time</dd>
-            <dd class="col">00:01:05</dd>
-          </dl>
-          <dl class="row mb-0 no-gutters text-justify">
-            <dd class="col">Hold Time</dd>
-            <dd class="col">00:00:30</dd>
-          </dl>
-          <dl class="row mb-0 no-gutters text-justify">
-            <dd class="col">Hold Count</dd>
-            <dd class="col">1</dd>
-          </dl>
-        </mdb-container>
-      </mdb-card-body>
-    </mdb-card>
-  </mdb-container>
+        <span class="row mb-0 my-2 no-gutters text-justify fl_statHeading">
+          <span>Current Call Statistics</span>
+        </span>
+        <dl class="row mb-0 no-gutters text-justify">
+          <dd class="col">Call State</dd>
+          <dd class="col">{{currentCallState}}</dd>
+        </dl>
+        <dl class="row mb-0 no-gutters text-justify">
+          <dd class="col">In-State Time</dd>
+          <dd class="col">
+            <call-timer-instate></call-timer-instate>
+          </dd>
+        </dl>
+        <dl class="row mb-0 no-gutters text-justify">
+          <dd class="col">Talk Time</dd>
+          <dd class="col">00:01:05</dd>
+        </dl>
+        <dl class="row mb-0 no-gutters text-justify">
+          <dd class="col">Hold Time</dd>
+          <dd class="col">00:00:30</dd>
+        </dl>
+        <dl class="row mb-0 no-gutters text-justify">
+          <dd class="col">Hold Count</dd>
+          <dd class="col">1</dd>
+        </dl>
+      </mdb-container>
+    </template>
+  </widget>
 </template>
 
 <script>
@@ -91,13 +82,15 @@ import {
   mdbIcon
 } from 'mdbvue'
 
-import UpTimer from '@/components/util/UpTimer.vue'
+import UpTimer from '@/components/agc/UpTimer.vue'
 import CallTimerInstate from '@/widgets/AgentCallStatistics/CallTimerInstate.vue'
 import AgentTimerInstate from '@/widgets/AgentCallStatistics/AgentTimerInstate.vue'
+import Widget from '@/components/agc/Widget'
 
 export default {
   name: 'AgentCallStats',
   components: {
+    Widget,
     UpTimer,
     CallTimerInstate,
     AgentTimerInstate,
@@ -113,25 +106,14 @@ export default {
   },
   props: {},
   data() {
-    return {
-      showWidget: true
-    }
+    return {}
   },
-  methods: {
-    toggleShowWidget() {
-      this.showWidget = !this.showWidget
-    }
-  },
+  methods: {},
   computed: {
-    uuiLabels() {
-      return this.$store.state.uui.labels
-    },
     callerData() {
       return this.$store.state.callerData
     },
-    uuiElements() {
-      return this.$store.state.uui
-    },
+
     currentAgentState() {
       return AGENT_STATES.Text[this.$store.getters.getAgentState]
     },

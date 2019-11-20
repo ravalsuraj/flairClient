@@ -34,25 +34,36 @@ const getters = {
     },
 
     getCallIndex: (state) => (ucid) => {
-        console.log("state.callIndices.findIndex(ucid)=" + state.callIndices.indexOf(ucid))
+        console.log("getCallIndex():ucid=" + ucid + ", callindices=" + JSON.stringify(state.callIndices))
+        console.log("getCallIndex(): returning index=" + state.callIndices.indexOf(ucid))
         return state.callIndices.indexOf(ucid)
     }
 
 }
 
 const actions = {
-    addCallToActiveCalls({ commit }, call) {
-        let newCall = call;
-        newCall.status = CALL_STATES.CREATED
-        commit('ADD_CALL', newCall)
+    addCallToActiveCalls({ commit, getters }, call) {
+        let existingCall = getters.getCallByUcid(call.ucid);
+        console.log("addCallToActiveCalls(): existingCall=" + JSON.stringify(existingCall))
+        if (!existingCall) {
+            let newCall = call;
+            newCall.status = CALL_STATES.CREATED
+            commit('ADD_CALL', newCall)
+        } else {
+            console.log("addCallToActiveCalls(): skipping ADD_CALL mutation since the call already exists")
+        }
+
     },
 
     removeCallFromActiveCalls({ commit }, ucid) {
         commit('REMOVE_CALL', ucid)
     },
-    setCallState({ commit }, [ucid, newStatus]) {
-        
-        commit('SET_CALL_STATE', [getters.getCallIndex(ucid), newStatus])
+    setCallState({ commit, getters }, [ucid, newStatus]) {
+
+        console.log("setCallState(): ucid=" + ucid)
+        let index = getters.getCallIndex(ucid);
+        console.log("setCallState(): index=" + index)
+        commit('SET_CALL_STATE', [index, newStatus])
     },
     setCallStateRinging({ commit, dispatch, getters }, payload) {
         dispatch('addCallToActiveCalls', payload)
@@ -104,36 +115,26 @@ const actions = {
         commit('RESET_CRM_DATA')
     },
 
-
-
-
-
-    requestAnswerDropCall({ getters, dispatch }, [requestedUcid, callType]) {
+    requestAnswerDropCall({ getters, dispatch }, [requestedUcid]) {
         let request = {
             sessionId: getters['session/getSessionId'],
             ucid: requestedUcid
         }
         console.log("requestAnswerDropCall(): request=", request)
-        let callStatus;
-        if (callType === CALL_TYPES.PRIMARY) {
-            callStatus = getters.getCallStatus
-            switch (callStatus) {
-                case CALL_STATES.RINGING:
-                    console.log('AnswerDropCall(): calling answerCall()')
-                    dispatch('requestAnswerCall', request)
-                    break
-                case CALL_STATES.TALKING:
-                    console.log('AnswerDropCall(): calling dropCall()')
-                    dispatch('requestDropCall', request)
+        let callStatus = getters.getCallByUcid(requestedUcid).status
+        // callStatus = getters.getCallStatus
+        switch (callStatus) {
+            case CALL_STATES.RINGING:
+                console.log('AnswerDropCall(): calling answerCall()')
+                dispatch('requestAnswerCall', request)
+                break
+            case CALL_STATES.TALKING:
+                console.log('AnswerDropCall(): calling dropCall()')
+                dispatch('requestDropCall', request)
 
-                    break
-                default:
-                    console.log('AnswerDropCall(): skipping answer or drop because call state is: ' + CALL_STATES.Text[callStatus])
-            }
-        }
-        else {
-            callStatus = getters.getConsultedCallStatus
-            dispatch('requestDropCall', request)
+                break
+            default:
+                console.log('AnswerDropCall(): skipping answer or drop because call state is: ' + CALL_STATES.Text[callStatus])
         }
 
     },

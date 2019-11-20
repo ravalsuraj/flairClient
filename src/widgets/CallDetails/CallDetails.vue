@@ -1,21 +1,10 @@
 <template>
-  <mdb-container fluid>
-    <mdb-card class="mb-0">
-      <mdb-card-header color="special-color text-white">
-        Call Details
-        <a @click="toggleShowWidget">
-          <transition name="fade" mode="out-in">
-            <mdb-icon v-if="showWidget" icon="window-minimize" class="float-right"></mdb-icon>
-            <mdb-icon v-else icon="bars" class="float-right"></mdb-icon>
-          </transition>
-        </a>
-      </mdb-card-header>
-      <mdb-card-body class="p-0 m-0" v-show-slide="showWidget">
-        <!-- <mdb-card-text><strong>Caller Details</strong></mdb-card-text> -->
-        <mdb-container>
+  <widget title="Call Details">
+    <template v-slot:body>
+      <mdb-container>
           <mdb-row>
             <mdb-col col="lg-12 mt-2">
-              <dl class="row mb-1 no-gutters fl_dl" v-for="element in callerData">
+              <dl class="row mb-1 no-gutters fl_dl" v-for="element in callerData" :key=element.key>
                 <dt class="col-sm-6 fl_dt">{{element.key}}</dt>
                 <dd class="col-sm-6 fl_dd">{{element.value.length>0?element.value : "-"}}</dd>
               </dl>
@@ -24,16 +13,15 @@
           <hr>
           <mdb-row>
             <mdb-col col="lg-12">
-              <dl class="row mb-1 no-gutters fl_dl" v-for="element in uuiElements">
+              <dl class="row mb-1 no-gutters fl_dl" v-for="element in uuiElements" :key=element.key>
                 <dt class="col-sm-6 fl_dt">{{element.key}}</dt>
                 <dd class="col-sm-6 fl_dd">{{element.value.length>0?element.value : "-"}}</dd>
               </dl>
             </mdb-col>
           </mdb-row>
         </mdb-container>
-      </mdb-card-body>
-    </mdb-card>
-  </mdb-container>
+    </template>
+  </widget>
 </template>
 
 <script>
@@ -59,9 +47,13 @@ import {
   mdbModalBody,
   mdbModalFooter
 } from 'mdbvue'
+
+import Widget from '@/components/agc/Widget'
+
 export default {
   name: 'CallerDetails',
   components: {
+    Widget,
     mdbRow,
     mdbCol,
     mdbContainer,
@@ -85,7 +77,8 @@ export default {
   },
   props: {},
   data() {
-    return { showWidget: true }
+    return { showWidget: true ,
+    }
   },
   methods: {
     toggleShowWidget() {

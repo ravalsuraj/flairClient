@@ -1,67 +1,66 @@
 <template>
-  <div class="fl_container_callControl d-flex align-items-center">
-    <mdb-container fluid v-if="isCallActive || isCallRinging">
-      <mdb-card class="card-body" style="width: 22rem; margin-top: 1rem;">
-      
-      <mdb-card-header color="special-color">
-        {{callingAddress}}
-        <a @click="toggleShowWidget">
-          <mdb-icon v-if="showWidget" icon="phone" class="float-right"></mdb-icon>
-          <!-- <transition name="fade" mode="out-in">
-            <mdb-icon v-if="showWidget" icon="window-minimize" class="float-right"></mdb-icon>
-            <mdb-icon v-else icon="bars" class="float-right"></mdb-icon>
-          </transition> -->
-        </a>
-      </mdb-card-header>
-        <mdb-card-text>{{callingAddress}} : ({{callStatusText}})</mdb-card-text>        <!--START: Inbound Call Controls-->
-        <mdb-col col="md-12">
-          <!-- <div class="btn-group mx-4" role="group"> </div> -->
-          <!-- START: Answer/Drop Button -->
-          <transition name="fade">
-            <button
-              type="button"
-              class="btn btn-rounded"
-              @click="answerDropCall"
-              :disabled="isCallIdle"
-              :class="[{iconGlow:isCallRinging}, answerButtonColor]"
-            >
+  <div>
+    <widget :title="callingAddress" v-if="!isCallDropped">
+      <template v-slot:body>
+        <mdb-container>
+          <mdb-row>
+            <mdb-col col="md-6" class="mb-4">
+              <up-timer name="callStateTimer" class="fl_well_text" :class="{'onHold':isCallHeld}"></up-timer>
+            </mdb-col>
+            <mdb-col col="md-6" class="mb-4">
+              <span>{{callStatusText}}</span>
+            </mdb-col>
+          </mdb-row>
+          <mdb-row>
+            <!--START: Inbound Call Controls-->
+            <mdb-col col="md-6">
+              <!-- START: Answer/Drop Button -->
               <transition name="fade">
-                <mdb-icon icon="phone" style="font-size:1.5em" v-if="isCallRinging" />
-                <mdb-icon icon="phone-slash" style="font-size:1.5em" v-else />
+                <button
+                  type="button"
+                  class="btn btn-block btn-rounded"
+                  @click="answerDropCall"
+                  :disabled="isCallIdle"
+                  :class="[{iconGlow:isCallRinging}, answerButtonColor]"
+                >
+                  <transition name="fade">
+                    <mdb-icon icon="phone" style="font-size:1.5em" v-if="isCallRinging" />
+                    <mdb-icon icon="phone-slash" style="font-size:1.5em" v-else />
+                  </transition>
+                </button>
               </transition>
-            </button>
-          </transition>
-          <!-- END: Answer/Drop Button -->
-
-          <!-- START: Hold Button -->
-          <transition name="fade">
-            <button
-              type="checkbox"
-              class="btn"
-              :disabled="!isCallActive"
-              @click="holdUnholdCall"
-              :class="holdButtonColor"
-            >
-              <mdb-icon :icon="isCallHeld?'play':'pause'" style="font-size:1.5em" />
-            </button>
-          </transition>
-          <!--END: Hold Button-->
-        </mdb-col>
-
-        <!-- <div class="flex-row">
-          <mdb-btn color="cyan" @click="disposeCall">Dispose</mdb-btn>
-        </div> -->
-      </mdb-card>
-    </mdb-container>
+              <!-- END: Answer/Drop Button -->
+            </mdb-col>
+            <mdb-col col="md-6">
+              <!-- START: Hold Button -->
+              <transition name="fade">
+                <button
+                  type="checkbox"
+                  class="btn btn-block"
+                  :disabled="!isCallActive"
+                  @click="holdUnholdCall"
+                  :class="holdButtonColor"
+                >
+                  <mdb-icon :icon="isCallHeld?'play':'pause'" style="font-size:1.5em" />
+                </button>
+              </transition>
+              <!--END: Hold Button-->
+            </mdb-col>
+          </mdb-row>
+        </mdb-container>
+      </template>
+    </widget>
+    <call-disposition v-else></call-disposition>
   </div>
 </template>
 
 <script>
 import ConsultDialer from '@/widgets/Dialer/ConsultDialer'
 import OutboundDialer from '@/widgets/Dialer/OutboundDialer'
-import UpTimer from '@/components/util/UpTimer'
-import DownTimer from '@/components/util/DownTimer'
-
+import CallDisposition from '@/widgets/CallDisposition/CallDisposition'
+import UpTimer from '@/components/agc/UpTimer'
+import DownTimer from '@/components/agc/DownTimer'
+import Widget from '@/components/agc/Widget'
 import { CALL_STATES, CALL_TYPES, SOCKET_EVENTS } from '@/defines.js'
 
 import {
@@ -94,9 +93,10 @@ import {
 export default {
   name: 'CallControlCard',
   components: {
+    Widget,
     UpTimer,
     ConsultDialer,
-    OutboundDialer,
+    CallDisposition,
 
     mdbPopover,
     mdbContainer,
@@ -147,13 +147,13 @@ export default {
 
     answerDropCall() {
       this.$store.dispatch('requestAnswerDropCall', [
-        this.$store.getters.getPrimaryCall.ucid,
+        this.call.ucid,
         CALL_TYPES.PRIMARY
       ])
     },
     holdUnholdCall() {
       this.$store.dispatch('requestHoldUnholdCall', [
-        this.$store.getters.getPrimaryCall.ucid,
+        this.call.ucid,
         CALL_TYPES.PRIMARY
       ])
     },
@@ -207,9 +207,9 @@ export default {
     },
     answerButtonColor() {
       if (this.isCallRinging) {
-        return { 'btn-success': true }
+        return { 'btn-green': true }
       } else if (this.isCallActive) {
-        return { 'btn-deep-orange': true }
+        return { 'btn-red': true }
       } else {
         return { 'blue-grey': true }
       }
@@ -231,6 +231,9 @@ export default {
 
     callStatusText() {
       return CALL_STATES.Text[this.callStatus]
+    },
+    isCallDropped() {
+      return this.callStatus === CALL_STATES.DROPPED
     }
   },
   watch: {
@@ -263,7 +266,7 @@ export default {
   background: rgba(0, 0, 0, 0.2);
 }
 .fl_well_text {
-  color: rgba(255, 255, 255, 0.75);
+  color: black;
   padding-right: 10px;
   padding-left: 10px;
   font-family: 'Unica One', sans-serif;

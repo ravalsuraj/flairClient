@@ -100,7 +100,7 @@ import {
   mdbTbl,
   mdbInput
 } from 'mdbvue'
-import WebSocketIndicator from '@/components/util/WebSocketIndicator.vue'
+import WebSocketIndicator from '@/components/agc/WebSocketIndicator.vue'
 import { SOCKET_EVENTS } from '@/defines.js'
 
 export default {
