@@ -148,24 +148,24 @@ export default {
 
         },
 
-        SOCKET_CONCALLRING({ dispatch }, payload) {
+        SOCKET_OUTCALLRING({ dispatch }, payload) {
             console.log('Received event: ' + 'CONCALLRING' + JSON.stringify(payload))
 
             dispatch('setConsultedCallStateRinging', payload)
         },
 
-        SOCKET_CONCALLTALK({ dispatch }, payload) {
+        SOCKET_OUTCALLTALK({ dispatch }, payload) {
             console.log('Received event: ' + 'CONCALLTALK' + JSON.stringify(payload))
 
             dispatch('setConsultedCallStateTalking', payload)
         },
 
-        SOCKET_CONCALLDISC({ dispatch }, payload) {
+        SOCKET_OUTCALLDISC({ dispatch }, payload) {
             console.log('Received event: ' + 'CONCALLDISC' + JSON.stringify(payload))
             dispatch('setConsultedCallStateDropped', payload)
         },
 
-        SOCKET_CONCALLHLD({ dispatch }, payload) {
+        SOCKET_OUTCALLHLD({ dispatch }, payload) {
             console.log('Received event: ' + 'CONCALLHOLD' + JSON.stringify(payload))
             dispatch('setConsultedCallStateHeld', payload)
         },
