@@ -85,19 +85,7 @@ export default {
             if (getters.getCallIndex(payload.ucid) !== null) {
                 dispatch('setCallStateTalking', payload)
             }
-
-            if (getters.getPrimaryCall.ucid == payload.ucid) {
-
-                console.log('SOCKET_ICALLTALK: called for primary call')
-                dispatch('setCallStateTalking', payload)
-
-            } else if (getters.getConsultedCall.ucid == payload.ucid) {
-
-                console.log('SOCKET_ICALLTALK: called for consultedCall call')
-                dispatch('setConsultedCallStateTalking', payload)
-
-            } else {
-
+            else {
                 console.log('SOCKET_ICALLTALK: not identified for call OR conf call')
             }
         },
@@ -109,20 +97,6 @@ export default {
             } else {
                 console.log("SOCKET_ICALLDISC(): no calls found for UCID:" + payload.ucid)
             }
-
-            if (getters.getPrimaryCall.ucid == payload.ucid) {
-
-                console.log('SOCKET_ICALLDISC(): called for primary call')
-                dispatch('setCallStateDropped', payload)
-
-            } else if (getters.getConsultedCall.ucid == payload.ucid) {
-
-                console.log('SOCKET_ICALLDISC(): called for consultedCall call')
-                dispatch('setConsultedCallStateDropped', payload)
-
-            } else {
-                console.log('SOCKET_ICALLDISC(): not identified for call OR conf call')
-            }
         },
 
         SOCKET_ICALLHLD({ dispatch, getters }, payload) {
@@ -130,17 +104,7 @@ export default {
             if (getters.getCallIndex(payload.ucid) !== null) {
                 dispatch('setCallStateHeld', payload)
             }
-            if (getters.getPrimaryCall.ucid == payload.ucid) {
-
-                console.log('SOCKET_ICALLHLD: called for primary call')
-                dispatch('setCallStateHeld', payload)
-
-            } else if (getters.getConsultedCall.ucid == payload.ucid) {
-
-                console.log('ISOCKET_ICALLHLD:  called for consultedCall call')
-                dispatch('setConsultedCallStateHeld', payload)
-
-            } else {
+            else {
 
                 console.log('ICALLHOLD not identified for call OR conf call')
             }
@@ -155,7 +119,7 @@ export default {
         },
 
         SOCKET_OUTCALLTALK({ dispatch }, payload) {
-            console.log('Received event: ' + 'CONCALLTALK' + JSON.stringify(payload))
+            console.log('Received event: ' + 'OUTCALLTALK' + JSON.stringify(payload))
 
             dispatch('setConsultedCallStateTalking', payload)
         },

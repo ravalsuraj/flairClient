@@ -1,24 +1,28 @@
 <template>
   <div>
-    <widget :title="callingAddress" v-if="!isCallDropped">
+    <widget :title="callTypeText" v-if="!isCallDropped" :color="widgetColor">
       <template v-slot:body>
         <mdb-container>
-          <mdb-row>
+          <mdb-row class="no-gutters">
+            <mdb-col col="md-12" class="mb-4 d-flex" >
+              <span strong class="fl_well_text big ">{{callingAddress}}</span>
+            </mdb-col>
+
             <mdb-col col="md-6" class="mb-4">
-              <up-timer name="callStateTimer" class="fl_well_text" :class="{'onHold':isCallHeld}"></up-timer>
+              <span class="fl_well_text">{{callStatusText}}</span>
             </mdb-col>
             <mdb-col col="md-6" class="mb-4">
-              <span>{{callStatusText}}</span>
+              <up-timer name="callStateTimer" class="fl_well_text" :class="{'onHold':isCallHeld}"></up-timer>
             </mdb-col>
           </mdb-row>
           <mdb-row>
             <!--START: Inbound Call Controls-->
-            <mdb-col col="md-6">
+            <mdb-col col="md-4">
               <!-- START: Answer/Drop Button -->
               <transition name="fade">
                 <button
                   type="button"
-                  class="btn btn-block btn-rounded"
+                  class="btn btn-circle"
                   @click="answerDropCall"
                   :disabled="isCallIdle"
                   :class="[{iconGlow:isCallRinging}, answerButtonColor]"
@@ -31,12 +35,12 @@
               </transition>
               <!-- END: Answer/Drop Button -->
             </mdb-col>
-            <mdb-col col="md-6">
+            <mdb-col col="md-4">
               <!-- START: Hold Button -->
               <transition name="fade">
                 <button
                   type="checkbox"
-                  class="btn btn-block"
+                  class="btn btn-circle"
                   :disabled="!isCallActive"
                   @click="holdUnholdCall"
                   :class="holdButtonColor"
@@ -46,11 +50,37 @@
               </transition>
               <!--END: Hold Button-->
             </mdb-col>
+            <mdb-col col="md-4">
+              <!-- START: Hold Button -->
+              <transition name="fade">
+                <mdb-dropdown :class="{'fl_disabledWidget':!isCallActive}">
+                  <button type="checkbox" class="btn red lighten-1 btn-circle" slot="toggle">
+                    <mdb-icon icon="users" style="font-size:1.5em" />
+                  </button>
+                  <mdb-modal size="sm">
+                    <mdb-modal-header>
+                      <mdb-modal-title>Consult Call</mdb-modal-title>
+                    </mdb-modal-header>
+                    <mdb-modal-body>
+                      <consult-dialer></consult-dialer>
+                    </mdb-modal-body>
+                    <!-- <mdb-modal-footer>
+                      <mdb-btn color="secondary" @click.native="modal = false">Close</mdb-btn>
+                      <mdb-btn color="primary">Save changes</mdb-btn>
+                    </mdb-modal-footer>-->
+                  </mdb-modal>
+                  <!-- 
+                  <mdb-dropdown-menu color="primary" style="width:280px">
+                    <consult-dialer></consult-dialer>
+                  </mdb-dropdown-menu>-->
+                </mdb-dropdown>
+              </transition>
+              <!--END: Hold Button-->
+            </mdb-col>
           </mdb-row>
         </mdb-container>
       </template>
     </widget>
-    <call-disposition v-else></call-disposition>
   </div>
 </template>
 
@@ -148,13 +178,13 @@ export default {
     answerDropCall() {
       this.$store.dispatch('requestAnswerDropCall', [
         this.call.ucid,
-        CALL_TYPES.PRIMARY
+        CALL_TYPES.INBOUND
       ])
     },
     holdUnholdCall() {
       this.$store.dispatch('requestHoldUnholdCall', [
         this.call.ucid,
-        CALL_TYPES.PRIMARY
+        CALL_TYPES.INBOUND
       ])
     },
 
@@ -205,6 +235,16 @@ export default {
         return '-'
       }
     },
+    widgetColor() {
+      switch (this.callType) {
+        case CALL_TYPES.INBOUND:
+          return 'success-color text-white'
+        case CALL_TYPES.OUTBOUND:
+          return 'primary-color text-white'
+        case CALL_TYPES.CONSULTED:
+          return 'info-color text-white'
+      }
+    },
     answerButtonColor() {
       if (this.isCallRinging) {
         return { 'btn-green': true }
@@ -222,10 +262,27 @@ export default {
       }
     },
     callingAddress() {
-      if (this.isCallRinging || this.isCallActive) {
-        return this.call.callingAddress
-      } else {
-        return '-'
+      switch (this.callType) {
+        case CALL_TYPES.INBOUND:
+          return this.call.callingAddress
+        case CALL_TYPES.OUTBOUND:
+          return this.call.calledAddress
+        case CALL_TYPES.CONSULTED:
+          return this.call.calledAddress
+      }
+    },
+
+    callType() {
+      return this.call.type
+    },
+    callTypeText() {
+      switch (this.callType) {
+        case CALL_TYPES.INBOUND:
+          return 'Inbound Call'
+        case CALL_TYPES.OUTBOUND:
+          return 'Outbound Call'
+        case CALL_TYPES.CONSULTED:
+          return 'Consulted Call'
       }
     },
 
@@ -275,6 +332,12 @@ export default {
 
 .fl_well_text.sm {
   font-size: 1em;
+}
+
+.fl_well_text.big {
+  font-size: 1.5em;
+  font-weight: bold;
+  align-self: center
 }
 
 .onHold {

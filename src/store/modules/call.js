@@ -2,7 +2,9 @@ import { CALL_STATES, CALL_TYPES, SOCKET_EVENTS, AGENT_STATES } from '@/defines.
 function initialState() {
     return {
         calls: [],
-        callIndices: [],
+        activeCallList: [],
+        outboundCallList: [],
+        consultedCallList: [],
         primary: {
             ucid: '0',
             callId: '',
@@ -25,8 +27,11 @@ const getters = {
     getCalls(state) {
         return state.calls
     },
+    getConsultedCallList(state) {
+        return state.consultedCallList
+    },
     getCallByUcid: (state) => (ucid) => {
-        return state.calls[state.callIndices.indexOf(ucid)]
+        return state.calls[state.activeCallList.indexOf(ucid)]
     },
 
     getCallByIndex: (state) => (index) => {
@@ -34,9 +39,9 @@ const getters = {
     },
 
     getCallIndex: (state) => (ucid) => {
-        console.log("getCallIndex():ucid=" + ucid + ", callindices=" + JSON.stringify(state.callIndices))
-        console.log("getCallIndex(): returning index=" + state.callIndices.indexOf(ucid))
-        return state.callIndices.indexOf(ucid)
+        console.log("getCallIndex():ucid=" + ucid + ", activeCallList=" + JSON.stringify(state.activeCallList))
+        console.log("getCallIndex(): returning index=" + state.activeCallList.indexOf(ucid))
+        return state.activeCallList.indexOf(ucid)
     }
 
 }
@@ -44,10 +49,13 @@ const getters = {
 const actions = {
     addCallToActiveCalls({ commit, getters }, call) {
         let existingCall = getters.getCallByUcid(call.ucid);
-        console.log("addCallToActiveCalls(): existingCall=" + JSON.stringify(existingCall))
+        console.log("addCallToActiveCalls(): check if call exists. if existingcall is undefined, this call is a new call. existingCall=" + JSON.stringify(existingCall))
         if (!existingCall) {
             let newCall = call;
             newCall.status = CALL_STATES.CREATED
+            newCall.type = CALL_TYPES.INBOUND
+            //http://jsfiddle.net/pdmrL1gq/1/
+            newCall.startTime = new Date()
             commit('ADD_CALL', newCall)
         } else {
             console.log("addCallToActiveCalls(): skipping ADD_CALL mutation since the call already exists")
@@ -55,19 +63,23 @@ const actions = {
 
     },
 
-    removeCallFromActiveCalls({ commit }, ucid) {
-        commit('REMOVE_CALL', ucid)
+    removeCallFromActiveCalls({ commit, getters }, ucid) {
+        commit('REMOVE_CALL', getters.getCallIndex(ucid))
+        commit('REMOVE_CALL_FROM_OUTBOUND_CALL_LIST', ucid)
+        commit('REMOVE_CALL_FROM_CONSULTED_CALL_LIST', ucid)
+
     },
     setCallState({ commit, getters }, [ucid, newStatus]) {
 
-        console.log("setCallState(): ucid=" + ucid)
+        console.log("setCallState(): ucid=" + ucid + ", newStatus=" + newStatus)
         let index = getters.getCallIndex(ucid);
         console.log("setCallState(): index=" + index)
         commit('SET_CALL_STATE', [index, newStatus])
     },
+
     setCallStateRinging({ commit, dispatch, getters }, payload) {
         dispatch('addCallToActiveCalls', payload)
-        commit('SET_CALL_STATE_RINGING', payload)
+        // commit('SET_CALL_STATE_RINGING', payload)
         commit('SET_CALL_ARR_STATE_RINGING', getters.getCallIndex(payload.ucid))
         let uui = {
             cli: payload.callingAddress,
@@ -78,8 +90,8 @@ const actions = {
     },
 
     setCallStateDialing({ commit, dispatch, getters }, payload) {
-        commit('SET_CALL_STATE_DIALING', payload)
-        commit('SET_CALL_ARR_STATE_DIALING', getters.getCallIndex(payload.ucid))
+        // commit('SET_CALL_STATE_DIALING', payload)
+        // commit('SET_CALL_ARR_STATE_DIALING', getters.getCallIndex(payload.ucid))
 
         let uui = {
             cli: payload.callingAddress,
@@ -90,24 +102,38 @@ const actions = {
     },
 
     setCallStateTalking({ commit, getters }, payload) {
-        commit('SET_CALL_STATE_TALKING', payload)
+        // commit('SET_CALL_STATE_TALKING', payload)
         commit('SET_CALL_ARR_STATE_TALKING', getters.getCallIndex(payload.ucid))
     },
     setCallStateHeld({ commit, getters }, payload) {
-        commit('SET_CALL_STATE_HELD', payload)
+        // commit('SET_CALL_STATE_HELD', payload)
         commit('SET_CALL_ARR_STATE_HELD', getters.getCallIndex(payload.ucid))
     },
 
     setCallStateDropped({ commit, dispatch, getters }, payload) {
-        commit('SET_CALL_STATE_DROPPED', payload)
+        // commit('SET_CALL_STATE_DROPPED', payload)
         commit('SET_CALL_ARR_STATE_DROPPED', getters.getCallIndex(payload.ucid))
-        dispatch('setAgentAuxCode', {
-            label: 'After Call Work',
-            state: AGENT_STATES.WORK_NOT_READY,
-            userSelectable: true,
-            reasonCode: 3
-        })
+        // dispatch('setAgentAuxCode', {
+        //     label: 'After Call Work',
+        //     state: AGENT_STATES.WORK_NOT_READY,
+        //     userSelectable: true,
+        //     reasonCode: 3
+        // })
         dispatch('removeCallFromActiveCalls', payload.ucid)
+    },
+
+    addConsultedCall({ commit, getters }, payload) {
+        let index = getters.getCallIndex(payload.ucid)
+        commit('ADD_CALL_TO_CONSULTED_CALL_LIST', payload.ucid)
+        commit('SET_CALL_TYPE_CONSULTED', index)
+    },
+    removeConultedCall() {
+        commit('REMOVE_CALL_FROM_CONSULTED_CALL_LIST', payload.ucid)
+    },
+    setCallStateOutbound({ commit, getters }, payload) {
+        let index = getters.getCallIndex(payload.ucid)
+        commit('ADD_CALL_TO_OUTBOUND_CALL_LIST', payload.ucid)
+        commit('SET_CALL_TYPE_OUTBOUND', index)
     },
 
     resetCallState({ commit }) {
@@ -242,7 +268,7 @@ const mutations = {
 
     ADD_CALL(state, call) {
         state.calls.push(call)
-        state.callIndices.push(call.ucid)
+        state.activeCallList.push(call.ucid)
     },
 
     SET_CALL_STATE(state, [index, newStatus]) {
@@ -295,9 +321,43 @@ const mutations = {
         state.calls[index].status = CALL_STATES.DROPPED
     },
 
+    SET_CALL_TYPE_CONSULTED(state, index) {
+        state.calls[index].type = CALL_TYPES.CONSULTED
+    },
+
+    SET_CALL_TYPE_OUTBOUND(state, index) {
+        state.calls[index].type = CALL_TYPES.OUTBOUND
+    },
+
+    ADD_CALL_TO_CONSULTED_CALL_LIST(state, ucid) {
+        //Check if the consulted call list has the ucid. If not, push it
+        if (!state.consultedCallList.includes(ucid)) {
+            state.consultedCallList.push(ucid)
+        }
+    },
+
+    REMOVE_CALL_FROM_CONSULTED_CALL_LIST(state, ucid) {
+        if (state.consultedCallList.includes(ucid)) {
+            state.consultedCallList.splice(ucid)
+        }
+    },
+    ADD_CALL_TO_OUTBOUND_CALL_LIST(state, ucid) {
+        //Check if the consulted call list has the ucid. If not, push it
+        if (!state.outboundCallList.includes(ucid)) {
+            state.outboundCallList.push(ucid)
+        }
+    },
+    REMOVE_CALL_FROM_OUTBOUND_CALL_LIST(state, ucid) {
+        //Check if the consulted call list has the ucid. If not, push it
+        if (state.outboundCallList.includes(ucid)) {
+            state.outboundCallList.splice(ucid)
+        }
+    },
+
+
     REMOVE_CALL(state, index) {
-        delete state.callIndices[index]
-        delete state.calls[index]
+        state.activeCallList.splice(index)
+        state.calls.splice(index)
     },
 
     RESET_CALL_STATUS(state) {

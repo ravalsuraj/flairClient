@@ -88,7 +88,7 @@ export default {
       this.disposeCall()
     },
     disposeCall() {
-      this.$store.dispatch('resetCallState', this.ucid)
+      this.$store.dispatch('removeCallFromActiveCalls', this.ucid)
       this.$store.dispatch('setAgentAuxCode', {
         label: 'Ready',
         state: AGENT_STATES.READY,

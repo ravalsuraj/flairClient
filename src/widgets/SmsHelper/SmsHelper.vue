@@ -1,7 +1,7 @@
 <template>
   <widget title="SMS Helper">
     <template v-slot:body>
-      <mdb-container fluid :class="{'disableWidget': !isCallAvailable}">
+      <mdb-container fluid :class="{'fl_disabledWidget': !isCallAvailable}">
         <div v-if="cli">
           <label>The SMS will be sent to:</label>
           <span v-if="cli.length>0">{{cli}}</span>

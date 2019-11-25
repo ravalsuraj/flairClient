@@ -4,7 +4,8 @@
       <mdb-row>
         <mdb-col col="3" v-for="call in myCalls" :key="call.ucid">
           <!-- {{call.ucid}} -->
-          <call-control-card :ucid="call.ucid"></call-control-card>
+          <call-control-card v-if="!isCallDropped(call)" :ucid="call.ucid" ></call-control-card>
+          <call-disposition v-else :ucid="call.ucid" ></call-disposition>
         </mdb-col>
       </mdb-row>
     </mdb-container>
@@ -17,6 +18,8 @@
 <script>
 import AgentControl from '@/widgets/AgentControl/AgentControl.vue'
 import CallControlCard from '@/widgets/CallControl/CallControlCard.vue'
+import CallDisposition from '@/widgets/CallDisposition/CallDisposition'
+import { CALL_STATES } from '@/defines.js'
 import {
   mdbRow,
   mdbCol,
@@ -43,6 +46,7 @@ export default {
   components: {
     AgentControl,
     CallControlCard,
+    CallDisposition,
     mdbRow,
     mdbCol,
     mdbContainer,
@@ -75,6 +79,9 @@ export default {
   methods: {
     toggleDevMode() {
       this.$store.commit('TOGGLE_DEV_MODE')
+    },
+    isCallDropped(call) {
+      return call.status === CALL_STATES.DROPPED
     }
   },
   computed: {

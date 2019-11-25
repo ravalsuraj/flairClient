@@ -226,18 +226,18 @@ footer {
 
 /************   Utility Styles   *******************/
 
-.disableWidget {
+.fl_disabledWidget {
   pointer-events: none;
   opacity: 0.5;
 }
 .btn-circle {
-  width: 30px;
-  height: 30px;
+  width: 45px;
+  height: 45px;
   text-align: center;
   padding: 6px 0;
-  font-size: 12px;
+  
   line-height: 1.428571429;
-  border-radius: 15px;
+  border-radius: 50%;
 }
 .btn-circle.btn-lg {
   width: 50px;

@@ -49,7 +49,7 @@
         <transition name="fade">
           <mdb-btn
             class="mdb-color mx-2 w-100"
-            v-if="isConsultCallIdle"
+            v-if="!isConsultedCallActive"
             @click="onConsultButtonClicked"
             @click.stop
           >
@@ -58,7 +58,7 @@
           </mdb-btn>
         </transition>
         <transition name="fade">
-          <div class="btn-group w-100 pb-2" v-if="!isConsultCallIdle">
+          <div class="btn-group w-100 pb-2" v-if="isConsultedCallActive">
             <mdb-btn
               class="btn-deep-orange mx-2 px-2 w-100"
               @click="onConfDropButtonClicked"
@@ -71,7 +71,7 @@
           </div>
         </transition>
         <transition name="fade">
-          <div class="btn-group w-100" v-if="!isConsultCallIdle">
+          <div class="btn-group w-100" v-if="isConsultedCallActive">
             <mdb-btn class="mdb-color mx-2 px-2 w-50" @click="onTransferButtonClicked">Trans</mdb-btn>
             <mdb-btn class="mdb-color mx-2 px-2 w-50" @click="onConferenceButtonClicked">Conf</mdb-btn>
             <!-- <mdb-btn class="mdb-color mx-2 px-2" @click="onRejoinButtonClicked">Rejoin</mdb-btn> -->
@@ -273,14 +273,8 @@ export default {
     }
   },
   computed: {
-    credentials() {
-      return this.$store.getters.getAgentCredentials
-    },
-    callStatus() {
-      return this.$store.getters.getPrimaryCall.status
-    },
-    isAgentStateHeld() {
-      return this.$store.getters.getAgentState === AGENT_STATES.HELD
+    isConsultedCallActive(){
+      return this.$store.getters.getConsultedCallList.length>0
     },
     isConsultCallIdle() {
       return (

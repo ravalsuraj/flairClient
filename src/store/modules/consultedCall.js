@@ -46,32 +46,25 @@ export default {
         },
 
         setConsultedCallStateRinging({ commit, dispatch }, payload) {
-            //dispatch('addCallToActiveCalls', payload)
-            commit('SET_CONF_STATE_RINGING', payload)
-            
             dispatch('setCallState', [payload.ucid, CALL_STATES.RINGING])
-
-
         },
         setConsultedCallStateTalking({ commit, dispatch }, payload) {
             dispatch('addCallToActiveCalls', payload)
-            commit('SET_CONF_STATE_TALKING', payload)
             dispatch('setCallState', [payload.ucid, CALL_STATES.TALKING])
         },
         setConsultedCallStateHeld({ commit, dispatch }, payload) {
-            commit('SET_CONF_STATE_HELD', payload)
+
             dispatch('setCallState', [payload.ucid, CALL_STATES.HELD])
         },
         setConsultedCallStateDropped({ commit, dispatch }, payload) {
-            commit('SET_CONF_STATE_DROPPED', payload)
             dispatch('setCallState', [payload.ucid, CALL_STATES.DROPPED])
-            commit('RESET_CONSULTED_CALL_MODULE')
+            dispatch('removeConsultedCall', payload.ucid)
+
         },
 
         requestConsultCall({ getters, commit, dispatch }) {
             return new Promise((resolve, reject) => {
                 try {
-
 
                     let request = {
                         sessionId: getters['session/getSessionId'],
@@ -86,9 +79,9 @@ export default {
                         request,
                         resp => {
                             console.log("requestConsultCall(): resp=" + JSON.stringify(resp));
-                            if (resp.responseCode === '0') {
+                            if (resp.responseCode == '0') {
                                 commit('SET_CONF_STATE_CONSULTED', resp)
-                                //dispatch('addCallToActiveCalls', resp)
+                                dispatch('addConsultedCall', resp)
                                 resolve(resp)
 
                             } else {
@@ -167,10 +160,7 @@ export default {
             state.call.confereceMode = true
         },
 
-        SET_CONF_STATE_RINGING(state, payload) {
 
-            state.consultedCall.status = CALL_STATES.RINGING
-        },
 
         SET_CONF_STATE_TALKING(state, payload) {
             state.consultedCall.status = CALL_STATES.TALKING

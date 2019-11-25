@@ -2,9 +2,9 @@
   <div class="fl_container_callControl d-flex align-items-center">
     <mdb-container fluid>
       <mdb-row class>
-        {{/*Call Display Well*/}}
-        <mdb-col col="md-5" class="fl_well_container w-100 px-0">
-          {{/*Primary Call Status*/}}
+        {{/*START: Call Display Well*/}}
+        <!-- <mdb-col col="md-5" class="fl_well_container w-100 px-0">
+          {{/*START: Primary Call Status*/}}
           <mdb-row class="p-1 mx-1 no-gutters">
             <mdb-col
               col="5"
@@ -16,7 +16,8 @@
             </mdb-col>
             <mdb-col col="2" class="fl_well_text" :class="{'onHold':isCallHeld}">{{callStatusText}}</mdb-col>
           </mdb-row>
-          {{/*Conference Call Status*/}}
+          {{/*END: Primary Call Status*/}}
+          {{/*START: Conference Call Status*/}}
           <mdb-row class="p-1 mx-1 no-gutters" v-if="!isConfCallIdle">
             <mdb-col
               col="md-4"
@@ -26,10 +27,12 @@
             <mdb-col col="3"></mdb-col>
             <mdb-col col="2" class="fl_well_text">{{conferenceCallStatusText}}</mdb-col>
           </mdb-row>
+          {{/*END: Conference Call Status*/}}
         </mdb-col>
-
-        <!--START: Inbound Call Controls-->
+        {{/*END: Call Display Well*/}} -->
+        {{/*START: Inbound Call Controls*/}}
         <mdb-col col="md-7">
+          <!-- {{/* START: Answer/Drop Button */}}
           <transition name="fade">
             <button
               type="button"
@@ -44,9 +47,8 @@
               </transition>
             </button>
           </transition>
-          <!-- END: Answer/Drop Button -->
-
-          <!-- START: Hold Button -->
+          {{/* START: Answer/Drop Button */}}
+          {{/* START: Hold Button */}}
           <transition name="fade">
             <button
               type="checkbox"
@@ -58,11 +60,10 @@
               <mdb-icon :icon="isCallHeld?'play':'pause'" style="font-size:1.5em" />
             </button>
           </transition>
-          <!--END: Hold Button-->
-
-          <!-- START: Conference Dialer Toggle -->
+          {{/* END: Hold Button */}}
+          {{/* START: Conference Dialer Toggle */}}
           <transition name="fade">
-            <mdb-dropdown :class="{'disableWidget':!isCallActive}">
+            <mdb-dropdown :class="{'fl_disabledWidget':!isCallActive}">
               <button type="checkbox" class="btn red lighten-1" slot="toggle">
                 <mdb-icon icon="users" style="font-size:1.5em" />
               </button>
@@ -71,11 +72,9 @@
               </mdb-dropdown-menu>
             </mdb-dropdown>
           </transition>
-
-          <!-- END: Conference Dialer Toggle -->
-
-          <!-- START: Transfer TO IVR -->
-          <!-- <button
+          {{/* END: Conference Dialer Toggle */}} -->
+          {{/* START: Transfer TO IVR */}}
+          <button
             type="button"
             class="btn mdb-color"
             :disabled="!isCallActive"
@@ -83,26 +82,17 @@
           >
             <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
             <span>Transfer To IVR</span>
-          </button>-->
-          <!-- END: Transfer TO IVR -->
-
-          <!-- START: Outbound Dialer -->
+          </button>
+          {{/* END: Transfer TO IVR */}}
+          {{/* START: Outbound Dialer */}}
           <mdb-dropdown multiLevel class="fl_btn_dropdown">
-            <button
-              type="checkbox"
-              class="btn btn-blue-grey"
-              slot="toggle"
-              
-            >
-              Make Call
-              <!-- <mdb-icon icon="users" style="font-size:1.5em" /> -->
-            </button>
+            <button type="checkbox" class="btn btn-blue-grey" slot="toggle">Make Call</button>
 
             <mdb-dropdown-menu color style="width:280px">
               <outbound-dialer @click.stop></outbound-dialer>
             </mdb-dropdown-menu>
           </mdb-dropdown>
-          <!-- END: Outbound Dialer -->
+          {{/* END: Outbound Dialer */}}
         </mdb-col>
       </mdb-row>
     </mdb-container>

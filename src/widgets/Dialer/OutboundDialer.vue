@@ -48,19 +48,23 @@
       <form @click.stop>
         <mdb-row class @click.stop>
           <transition name="fade">
-            <mdb-btn color="success" class="mx-2 btn-block" @click="onMakeCallButtonClicked">
+            <mdb-btn
+              color="success"
+              class="mx-2 btn-block"
+              @click="onMakeCallButtonClicked"
+           
+            >
               <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
               <span>Call</span>
             </mdb-btn>
           </transition>
           <transition name="fade">
             <div class="btn-group w-50 pb-2" v-if="!isCallIdle">
-              <mdb-btn class="btn-red mx-2 px-2 w-100" @click="onCallDropBtnClicked">
+              <mdb-btn class="btn-red mx-2 px-2 w-100" @click="onCallDropBtnClicked" @click.stop>
                 <span>Drop</span>
               </mdb-btn>
             </div>
           </transition>
-
         </mdb-row>
       </form>
     </mdb-container>
@@ -229,8 +233,9 @@ export default {
       this.$store.dispatch('requestOutboundCall').then(resp => {
         console.log('onMakeCallButtonClicked(): resp=' + JSON.stringify(resp))
         this.hideSpinner()
-        if (resp.responseCode === 0) {
-          dispatch('setCallStateDialed', resp)
+        if (resp.responseCode === '0') {
+          this.$store.dispatch('setCallStateDialing', resp)
+          this.$store.dispatch('setCallStateOutbound', resp)
         }
       })
     },

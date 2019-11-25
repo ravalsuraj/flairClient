@@ -3,7 +3,7 @@
     <a class="dropdown-toggle-a unique-color-text" slot="toggle">
       <strong>
         <mdb-icon icon="user" class="mr-2" size="1x" />
-        <span class="h6">Suraj Raval</span>
+        <span class="h6">Agent {{agentCredentials.agentId}}</span>
       </strong>
     </a>
     <mdb-dropdown-menu right>
@@ -20,11 +20,11 @@
                 <div class="mb-2 d-flex justify-content-around">
                   <span class="text-left fl_agentProfile_details mb-3">
                     Agent:
-                    <strong>{{credentials.agentId}}</strong>
+                    <strong>{{agentCredentials.agentId}}</strong>
                   </span>
                   <span class="text-left fl_agentProfile_details">
                     Station:
-                    <strong>{{credentials.deviceId}}</strong>
+                    <strong>{{agentCredentials.deviceId}}</strong>
                   </span>
                 </div>
                 <!-- <span class="text-left">
@@ -50,7 +50,7 @@
               </div>
             </div>
           </div>
-        </li> -->
+        </li>-->
       </mdb-dropdown-item>
     </mdb-dropdown-menu>
   </mdb-dropdown>
@@ -108,7 +108,7 @@ export default {
     }
   },
   computed: {
-    credentials() {
+    agentCredentials() {
       return this.$store.getters.getAgentCredentials
     },
     socketRequest() {
