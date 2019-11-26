@@ -1,8 +1,7 @@
 <template>
   <mdb-navbar
-    class="special-color white-text flexible-navbar"
+    class="special-color white-text flexible-navbar fl_topNav"
     position="top"
-    scrolling
     navIconClass="white-text"
   >
     <mdb-navbar-brand href="/" target="_blank">
@@ -17,15 +16,40 @@
     </mdb-navbar-brand>
     <!-- <mdb-navbar-toggler>
     </mdb-navbar-toggler>-->
-    <mdb-navbar-nav left>
+    <!-- <mdb-navbar-nav left>
       <call-control></call-control>
-    </mdb-navbar-nav>
+    </mdb-navbar-nav>-->
     <mdb-navbar-nav right class="pr-5">
+      <!-- <div class="light-color" style="opacity:1">
+        <img
+          src="@/assets/flair_logo_white.png"
+          class="mx-5"
+          alt="Responsive image"
+          style="width: 75px; opacity:1 !important"
+        />
+      </div> -->
       <agent-control></agent-control>
     </mdb-navbar-nav>
   </mdb-navbar>
 </template>
 <style>
+.fl_topNav {
+  /*width: fit-content;*/
+}
+.fl_topNav::after {
+  content: '';
+  line-height: 0;
+  font-size: 0;
+  width: 0;
+  height: 0;
+  border-top: 45px solid #37474f;
+  border-bottom: 45px solid transparent;
+  border-left: 0px solid transparent;
+  border-right: 50px solid transparent;
+  position: absolute;
+  top: 0;
+  right: -50px;
+}
 .navbar-login {
   width: 305px;
   padding: 10px;

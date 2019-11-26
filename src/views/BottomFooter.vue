@@ -5,9 +5,9 @@
     <web-socket-indicator class="white-text mr-4 pr-4"></web-socket-indicator>
     <span class="white-text">SessionID: {{sessionId}}</span>
 
-    <mdb-navbar-nav right>
+    <!-- <mdb-navbar-nav right>
       <mdb-nav-item href="#" class>Dialer</mdb-nav-item>
-    </mdb-navbar-nav>
+    </mdb-navbar-nav> -->
   </mdb-navbar>
 </template>
 <style>

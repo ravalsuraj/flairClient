@@ -51,10 +51,12 @@ export default {
         setConsultedCallStateTalking({ commit, dispatch }, payload) {
             dispatch('addCallToActiveCalls', payload)
             dispatch('setCallState', [payload.ucid, CALL_STATES.TALKING])
+            commit('SET_ACTIVE_CALL', payload.ucid)
         },
         setConsultedCallStateHeld({ commit, dispatch }, payload) {
 
             dispatch('setCallState', [payload.ucid, CALL_STATES.HELD])
+            commit('RESET_ACTIVE_CALL', payload.ucid)
         },
         setConsultedCallStateDropped({ commit, dispatch }, payload) {
             dispatch('setCallState', [payload.ucid, CALL_STATES.DROPPED])

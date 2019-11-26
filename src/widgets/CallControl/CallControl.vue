@@ -73,7 +73,7 @@
             </mdb-dropdown>
           </transition>
           {{/* END: Conference Dialer Toggle */}} -->
-          {{/* START: Transfer TO IVR */}}
+          <!-- {{/* START: Transfer TO IVR */}}
           <button
             type="button"
             class="btn mdb-color"
@@ -83,8 +83,8 @@
             <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
             <span>Transfer To IVR</span>
           </button>
-          {{/* END: Transfer TO IVR */}}
-          {{/* START: Outbound Dialer */}}
+          {{/* END: Transfer TO IVR */}} -->
+          <!-- {{/* START: Outbound Dialer */}}
           <mdb-dropdown multiLevel class="fl_btn_dropdown">
             <button type="checkbox" class="btn btn-blue-grey" slot="toggle">Make Call</button>
 
@@ -92,7 +92,7 @@
               <outbound-dialer @click.stop></outbound-dialer>
             </mdb-dropdown-menu>
           </mdb-dropdown>
-          {{/* END: Outbound Dialer */}}
+          {{/* END: Outbound Dialer */}} -->
         </mdb-col>
       </mdb-row>
     </mdb-container>
@@ -209,10 +209,10 @@ export default {
       ])
     },
     holdUnholdCall() {
-      this.$store.dispatch('requestHoldUnholdCall', [
+      this.$store.dispatch('requestHoldUnholdCall', 
         this.$store.getters.getPrimaryCall.ucid,
-        CALL_TYPES.PRIMARY
-      ])
+    
+      )
     }
   },
   computed: {

@@ -161,7 +161,7 @@ export default {
 
                     if (resp.agentState) {
                         commit('SET_AGENT_STATE', resp.agentState)
-                        dispatch('setDefaultAuxCode', resp)
+                        dispatch('setInitialAuxCode', resp)
                     }
 
                     return resp
@@ -217,18 +217,24 @@ export default {
             commit('SET_AGENT_AUX_CODE', selectedAuxCode)
         },
 
-        setDefaultAuxCode({ getters, commit }, payload) {
+        setInitialAuxCode({ getters, commit }, payload) {
 
-            console.log("getAgentAuxState is null, so setting default aux code for the state received from the login request")
+            console.log("setting the initial aux code upon login. Payload=" + JSON.stringify(payload))
             //for the text value, find the default aux code from the config file
-            let defaultAgentAuxCode = config.defaultAuxCodes[payload.agentState];
-            switch (payload.agentState) {
-                case AGENT_STATES.READY:
-                case AGENT_STATES.NOT_READY:
-                case AGENT_STATES.BUSY:
-                    commit('SET_AGENT_AUX_CODE', defaultAgentAuxCode);
-
+            let initialAgentAuxCode = config.defaultAuxCodes[payload.agentState];
+            if (initialAgentAuxCode) {
+                commit('SET_AGENT_AUX_CODE', initialAgentAuxCode);
+            } else {
+                console.log("could not retreive a value for initialAgentAuxCode")
             }
+
+            // switch (payload.agentState) {
+            //     case AGENT_STATES.READY:
+            //     case AGENT_STATES.NOT_READY:
+            //     case AGENT_STATES.BUSY:
+
+
+            // }
 
         },
 

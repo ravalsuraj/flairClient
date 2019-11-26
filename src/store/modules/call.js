@@ -2,7 +2,10 @@ import { CALL_STATES, CALL_TYPES, SOCKET_EVENTS, AGENT_STATES } from '@/defines.
 function initialState() {
     return {
         calls: [],
-        activeCallList: [],
+        activeCall: {
+            ucid: ''
+        },
+        totalCallList: [],
         outboundCallList: [],
         consultedCallList: [],
         primary: {
@@ -30,8 +33,11 @@ const getters = {
     getConsultedCallList(state) {
         return state.consultedCallList
     },
+    getActiveCall(state) {
+        return state.activeCall.ucid
+    },
     getCallByUcid: (state) => (ucid) => {
-        return state.calls[state.activeCallList.indexOf(ucid)]
+        return state.calls[state.totalCallList.indexOf(ucid)]
     },
 
     getCallByIndex: (state) => (index) => {
@@ -39,9 +45,9 @@ const getters = {
     },
 
     getCallIndex: (state) => (ucid) => {
-        console.log("getCallIndex():ucid=" + ucid + ", activeCallList=" + JSON.stringify(state.activeCallList))
-        console.log("getCallIndex(): returning index=" + state.activeCallList.indexOf(ucid))
-        return state.activeCallList.indexOf(ucid)
+        console.log("getCallIndex():ucid=" + ucid + ", totalCallList=" + JSON.stringify(state.totalCallList))
+        console.log("getCallIndex(): returning index=" + state.totalCallList.indexOf(ucid))
+        return state.totalCallList.indexOf(ucid)
     }
 
 }
@@ -55,7 +61,7 @@ const actions = {
             newCall.status = CALL_STATES.CREATED
             newCall.type = CALL_TYPES.INBOUND
             //http://jsfiddle.net/pdmrL1gq/1/
-            newCall.startTime = new Date()
+            newCall.startTime = new Date().getTime()
             commit('ADD_CALL', newCall)
         } else {
             console.log("addCallToActiveCalls(): skipping ADD_CALL mutation since the call already exists")
@@ -104,15 +110,20 @@ const actions = {
     setCallStateTalking({ commit, getters }, payload) {
         // commit('SET_CALL_STATE_TALKING', payload)
         commit('SET_CALL_ARR_STATE_TALKING', getters.getCallIndex(payload.ucid))
+        commit('SET_ACTIVE_CALL', payload.ucid)
     },
     setCallStateHeld({ commit, getters }, payload) {
         // commit('SET_CALL_STATE_HELD', payload)
         commit('SET_CALL_ARR_STATE_HELD', getters.getCallIndex(payload.ucid))
+        commit('RESET_ACTIVE_CALL', payload.ucid)
     },
 
     setCallStateDropped({ commit, dispatch, getters }, payload) {
         // commit('SET_CALL_STATE_DROPPED', payload)
         commit('SET_CALL_ARR_STATE_DROPPED', getters.getCallIndex(payload.ucid))
+        if (payload.ucid === getters.getActiveCall.ucid) {
+            commit('RESET_ACTIVE_CALL', payload.ucid)
+        }
         // dispatch('setAgentAuxCode', {
         //     label: 'After Call Work',
         //     state: AGENT_STATES.WORK_NOT_READY,
@@ -211,8 +222,8 @@ const actions = {
         }
     },
 
-    requestHoldUnholdCall({ getters, dispatch }, [requestedUcid, callType]) {
-        console.log("requestHoldUnholdCall(): action entered")
+    requestHoldUnholdCall({ getters, dispatch }, requestedUcid) {
+        console.log("requestHoldUnholdCall(): action entered" + getters['getActiveCall'])
 
         let request = {
             sessionId: getters['session/getSessionId'],
@@ -225,7 +236,18 @@ const actions = {
 
         switch (callStatus) {
             case CALL_STATES.HELD:
-                dispatch('requestUnholdCall', request)
+                let currentActiveUcid = getters['getActiveCall']
+                console.log("" + currentActiveUcid)
+                if (currentActiveUcid) {
+                    dispatch('requestHoldCall', currentActiveUcid).then(() => {
+                        dispatch('requestUnholdCall', request)
+                    })
+                } else {
+                    console.log("else " + currentActiveUcid)
+                    dispatch('requestUnholdCall', request)
+                }
+
+
                 break
             default:
                 dispatch('requestHoldCall', request)
@@ -234,16 +256,24 @@ const actions = {
     },
 
     requestHoldCall({ dispatch }, request) {
-        console.log('requestHoldCall():  request=' + JSON.stringify(request))
+        return new Promise((resolve, reject) => {
+            console.log('requestHoldCall():  request=' + JSON.stringify(request))
 
-        this._vm.$socket.emit(SOCKET_EVENTS.HOLD_CALL, request, (response) => {
-            console.log('requestHoldCall(): response=' + JSON.stringify(response))
-            if (response.responseCode === '0') {
-                // dispatch('setCallStateHeld')
-            } else {
-                dispatch('showErrorBanner', ['Hold Call Failed', JSON.stringify(response)])
-            }
+
+
+            this._vm.$socket.emit(SOCKET_EVENTS.HOLD_CALL, request, (response) => {
+                console.log('requestHoldCall(): response=' + JSON.stringify(response))
+                if (response.responseCode === '0') {
+                    resolve(response)
+                } else {
+                    dispatch('showErrorBanner', ['Hold Call Failed', JSON.stringify(response)])
+                    reject(response)
+                }
+            })
+        }).catch((err) => {
+            console.error('requestHoldCall(): ', err)
         })
+
     },
     requestUnholdCall({ dispatch }, request) {
         console.log('requestUnholdCall():  request=' + JSON.stringify(request))
@@ -268,7 +298,7 @@ const mutations = {
 
     ADD_CALL(state, call) {
         state.calls.push(call)
-        state.activeCallList.push(call.ucid)
+        state.totalCallList.push(call.ucid)
     },
 
     SET_CALL_STATE(state, [index, newStatus]) {
@@ -276,6 +306,14 @@ const mutations = {
         state.calls[index].status = newStatus
     },
 
+    SET_ACTIVE_CALL(state, ucid) {
+        state.activeCall.ucid = ucid
+    },
+    RESET_ACTIVE_CALL(state, ucid) {
+        if (state.activeCall.ucid === ucid) {
+            state.activeCall.ucid = null
+        }
+    },
     SET_CALL_STATE_RINGING(state, payload) {
 
         state.primary.status = CALL_STATES.RINGING
@@ -356,7 +394,7 @@ const mutations = {
 
 
     REMOVE_CALL(state, index) {
-        state.activeCallList.splice(index)
+        state.totalCallList.splice(index)
         state.calls.splice(index)
     },
 

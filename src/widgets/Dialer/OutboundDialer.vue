@@ -48,12 +48,7 @@
       <form @click.stop>
         <mdb-row class @click.stop>
           <transition name="fade">
-            <mdb-btn
-              color="success"
-              class="mx-2 btn-block"
-              @click="onMakeCallButtonClicked"
-           
-            >
+            <mdb-btn color="success" class="mx-2 btn-block" @click="onMakeCallButtonClicked">
               <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
               <span>Call</span>
             </mdb-btn>
@@ -247,10 +242,10 @@ export default {
       ])
     },
     onConfHoldBtnClicked() {
-      this.$store.dispatch('requestHoldUnholdCall', [
-        this.$store.getters.getConsultedCall.ucid,
-        CALL_TYPES.CONSULTED
-      ])
+      this.$store.dispatch(
+        'requestHoldUnholdCall',
+        this.$store.getters.getConsultedCall.ucid
+      )
     }
   },
   computed: {

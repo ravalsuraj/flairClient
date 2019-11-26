@@ -24,7 +24,7 @@
             <span class="float-left pl-4">Login</span>
           </p>
           <mdb-card-body class="p-4">
-            <div class="grey-text">
+            <form class="grey-text" @click.stop>
               <mdb-input
                 required
                 label="Agent ID"
@@ -46,7 +46,7 @@
                 type="password"
                 v-model="credentials.password"
               />
-            </div>
+            </form>
 
             <div class="d-flex justify-content-center mb-1">
               <div class="custom-control custom-radio custom-control-inline mr-5">
@@ -132,10 +132,10 @@ export default {
         show: false
       },
       credentials: {
-        agentId: 1505,
-        deviceId: 2101,
-        password: 1234,
-        workMode: 'auto'
+        agentId: '',
+        deviceId:'',
+        password:'' ,
+        workMode: ''
       },
       spinner: {
         show: false

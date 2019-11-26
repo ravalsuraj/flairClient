@@ -9,14 +9,26 @@ export const config = {
 
     defaultAuxCodes: {
         3: {
+            label: 'Not Ready',
+            state: AGENT_STATES.NOT_READY,
+            userSelectable: true,
+            reasonCode: 0
+        },
+        4: {
             label: 'Ready',
             state: AGENT_STATES.READY,
             userSelectable: true,
             reasonCode: 0
         },
-        4: {
-            label: 'Not Ready',
-            state: AGENT_STATES.NOT_READY,
+        5: {
+            label: 'After Call Work',
+            state: AGENT_STATES.WORK_NOT_READY,
+            userSelectable: true,
+            reasonCode: 0
+        },
+        6: {
+            label: 'Work Ready',
+            state: AGENT_STATES.WORK_READY,
             userSelectable: true,
             reasonCode: 0
         },
@@ -69,22 +81,13 @@ export const config = {
 
 
     leftComponents: {
-        width: "2p5",
+        width: "0",
         widgets: [
-            {
-                name: 'call-details'
-            },
-            {
-                name: 'menu-traversal'
-            },
-            {
-                name: 'quick-links'
-            },
 
         ],
     },
     middleComponents: {
-        width: "7",
+        width: "12",
         widgets: [
             {
                 name: 'crm-frame'
@@ -96,15 +99,9 @@ export const config = {
     ,
     rightComponents:
     {
-        width: "2p5",
+        width: "0",
         widgets: [
-            {
-                name: 'sms-helper'
-            },
 
-            {
-                name: 'agent-call-statistics'
-            }
         ],
     }
 

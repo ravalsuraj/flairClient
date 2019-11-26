@@ -45,7 +45,7 @@
         </mdb-col>
       </mdb-row>
 
-      <mdb-row class="">
+      <mdb-row class>
         <transition name="fade">
           <mdb-btn
             class="mdb-color mx-2 w-100"
@@ -266,15 +266,15 @@ export default {
       ])
     },
     onConfHoldBtnClicked() {
-      this.$store.dispatch('requestHoldUnholdCall', [
-        this.$store.getters.getConsultedCall.ucid,
-        CALL_TYPES.CONSULTED
-      ])
+      this.$store.dispatch(
+        'requestHoldUnholdCall',
+        this.$store.getters.getConsultedCall.ucid
+      )
     }
   },
   computed: {
-    isConsultedCallActive(){
-      return this.$store.getters.getConsultedCallList.length>0
+    isConsultedCallActive() {
+      return this.$store.getters.getConsultedCallList.length > 0
     },
     isConsultCallIdle() {
       return (

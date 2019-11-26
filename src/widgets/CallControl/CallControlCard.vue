@@ -4,8 +4,8 @@
       <template v-slot:body>
         <mdb-container>
           <mdb-row class="no-gutters">
-            <mdb-col col="md-12" class="mb-4 d-flex" >
-              <span strong class="fl_well_text big ">{{callingAddress}}</span>
+            <mdb-col col="md-12" class="mb-4 d-flex">
+              <span strong class="fl_well_text big">{{callingAddress}}</span>
             </mdb-col>
 
             <mdb-col col="md-6" class="mb-4">
@@ -21,6 +21,7 @@
               <!-- START: Answer/Drop Button -->
               <transition name="fade">
                 <button
+                  v-if="!isCallHeld"
                   type="button"
                   class="btn btn-circle"
                   @click="answerDropCall"
@@ -54,7 +55,12 @@
               <!-- START: Hold Button -->
               <transition name="fade">
                 <mdb-dropdown :class="{'fl_disabledWidget':!isCallActive}">
-                  <button type="checkbox" class="btn red lighten-1 btn-circle" slot="toggle">
+                  <button
+                    type="checkbox"
+                    class="btn red lighten-1 btn-circle"
+                    slot="toggle"
+                    v-if="!isCallHeld"
+                  >
                     <mdb-icon icon="users" style="font-size:1.5em" />
                   </button>
                   <mdb-modal size="sm">
@@ -182,10 +188,7 @@ export default {
       ])
     },
     holdUnholdCall() {
-      this.$store.dispatch('requestHoldUnholdCall', [
-        this.call.ucid,
-        CALL_TYPES.INBOUND
-      ])
+      this.$store.dispatch('requestHoldUnholdCall', this.call.ucid)
     },
 
     disposeCall() {
@@ -236,13 +239,10 @@ export default {
       }
     },
     widgetColor() {
-      switch (this.callType) {
-        case CALL_TYPES.INBOUND:
-          return 'success-color text-white'
-        case CALL_TYPES.OUTBOUND:
-          return 'primary-color text-white'
-        case CALL_TYPES.CONSULTED:
-          return 'info-color text-white'
+      if (this.isCallHeld === false) {
+        return 'success-color text-white'
+      } else {
+        return 'mdb-color text-white'
       }
     },
     answerButtonColor() {
@@ -337,7 +337,7 @@ export default {
 .fl_well_text.big {
   font-size: 1.5em;
   font-weight: bold;
-  align-self: center
+  align-self: center;
 }
 
 .onHold {
