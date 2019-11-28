@@ -1,8 +1,8 @@
 {
-  "name": "mdbvue",
-  "version": "5.1.0",
-  "description": "Vue Bootstrap with Material Design",
-  "author": "MDBootstrap <support@mdbootstrap.com>",
+  "name": "flair-aws",
+  "version": "9.0.0",
+  "description": "AGC Flair Agent Workstation",
+  "author": "AGC Networks",
   "license": "MIT",
   "main": "src/index.js",
   "scripts": {

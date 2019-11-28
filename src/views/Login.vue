@@ -120,7 +120,9 @@ export default {
     mdbTbl,
     mdbInput
   },
-  mounted() {},
+  mounted() {
+    this.credentials = this.$store.getters.getAgentCredentials
+  },
   props: {},
 
   data() {
@@ -133,8 +135,8 @@ export default {
       },
       credentials: {
         agentId: '',
-        deviceId:'',
-        password:'' ,
+        deviceId: '',
+        password: '',
         workMode: ''
       },
       spinner: {

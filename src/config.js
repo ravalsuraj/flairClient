@@ -2,8 +2,9 @@ import { AGENT_STATES } from "./defines";
 
 export const config = {
     WebSocketUrl: "http://localhost:9092",
-
+    
     crmBaseUrl: 'http://andrewreifman.com/se7en/',
+    CRM_TIMEOUT_MS: 10000,
     crmUrl: 'http://localhost:9527/#/dashboard',
     sugarCrmUrl: "https://auth.sugarcrm.com/",
 

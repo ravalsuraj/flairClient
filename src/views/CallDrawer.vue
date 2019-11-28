@@ -1,11 +1,17 @@
 <template>
   <section class="mt-lg-5">
-    <mdb-container>
+    <mdb-container fluid>
       <mdb-row>
-        <mdb-col col="3" v-for="call in myCalls" :key="call.ucid">
-          <!-- {{call.ucid}} -->
-          <call-control-card v-if="!isCallDropped(call)" :ucid="call.ucid" ></call-control-card>
-          <call-disposition v-else :ucid="call.ucid" ></call-disposition>
+        <mdb-col :col="cardWidth" v-for="call in myCalls" :key="call.ucid">
+          <call-card-inbound
+            v-if="!isCallDropped(call) && isCallTypeInbound(call)"
+            :ucid="call.ucid"
+          ></call-card-inbound>
+          <call-card-outbound
+            v-if="!isCallDropped(call) && isCallTypeOutbound(call)"
+            :ucid="call.ucid"
+          ></call-card-outbound>
+          <!-- <call-disposition v-if="isCallDropped(call)" :ucid="call.ucid"></call-disposition> -->
         </mdb-col>
       </mdb-row>
     </mdb-container>
@@ -17,9 +23,10 @@
 
 <script>
 import AgentControl from '@/widgets/AgentControl/AgentControl.vue'
-import CallControlCard from '@/widgets/CallControl/CallControlCard.vue'
+import CallCardInbound from '@/widgets/CallControl/CallCardInbound.vue'
+import CallCardOutbound from '@/widgets/CallControl/CallCardOutbound.vue'
 import CallDisposition from '@/widgets/CallDisposition/CallDisposition'
-import { CALL_STATES } from '@/defines.js'
+import { CALL_STATES, CALL_TYPES } from '@/defines.js'
 import {
   mdbRow,
   mdbCol,
@@ -45,7 +52,8 @@ export default {
   name: 'CallDrawer',
   components: {
     AgentControl,
-    CallControlCard,
+    CallCardInbound,
+    CallCardOutbound,
     CallDisposition,
     mdbRow,
     mdbCol,
@@ -82,11 +90,20 @@ export default {
     },
     isCallDropped(call) {
       return call.status === CALL_STATES.DROPPED
+    },
+    isCallTypeInbound(call) {
+      return call.type === CALL_TYPES.INBOUND
+    },
+    isCallTypeOutbound(call) {
+      return call.type !== CALL_TYPES.INBOUND
     }
   },
   computed: {
     myCalls() {
       return this.$store.getters.getCalls
+    },
+    cardWidth() {
+      return this.myCalls.length > 2 ? 'md-3' : 'md-6'
     }
   },
   watch: {

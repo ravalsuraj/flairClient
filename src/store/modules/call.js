@@ -70,9 +70,10 @@ const actions = {
     },
 
     removeCallFromActiveCalls({ commit, getters }, ucid) {
-        commit('REMOVE_CALL', getters.getCallIndex(ucid))
+        commit('RESET_ACTIVE_CALL', ucid)
         commit('REMOVE_CALL_FROM_OUTBOUND_CALL_LIST', ucid)
         commit('REMOVE_CALL_FROM_CONSULTED_CALL_LIST', ucid)
+        commit('REMOVE_CALL', getters.getCallIndex(ucid))
 
     },
     setCallState({ commit, getters }, [ucid, newStatus]) {
@@ -124,12 +125,7 @@ const actions = {
         if (payload.ucid === getters.getActiveCall.ucid) {
             commit('RESET_ACTIVE_CALL', payload.ucid)
         }
-        // dispatch('setAgentAuxCode', {
-        //     label: 'After Call Work',
-        //     state: AGENT_STATES.WORK_NOT_READY,
-        //     userSelectable: true,
-        //     reasonCode: 3
-        // })
+
         dispatch('removeCallFromActiveCalls', payload.ucid)
     },
 
@@ -225,32 +221,40 @@ const actions = {
     requestHoldUnholdCall({ getters, dispatch }, requestedUcid) {
         console.log("requestHoldUnholdCall(): action entered" + getters['getActiveCall'])
 
-        let request = {
+
+        let callStatus = getters.getCallByUcid(requestedUcid).status;
+        let primaryRequest = {
             sessionId: getters['session/getSessionId'],
             agentId: getters['getAgentCredentials'].agentId,
             deviceId: getters['getAgentCredentials'].deviceId,
             ucid: requestedUcid,
         }
-        console.log("requestHoldUnholdCall(): request=", request)
-        let callStatus = getters.getCallByUcid(requestedUcid).status;
-
+        console.log("requestHoldUnholdCall(): primaryRequest=", primaryRequest)
         switch (callStatus) {
             case CALL_STATES.HELD:
-                let currentActiveUcid = getters['getActiveCall']
-                console.log("" + currentActiveUcid)
-                if (currentActiveUcid) {
-                    dispatch('requestHoldCall', currentActiveUcid).then(() => {
-                        dispatch('requestUnholdCall', request)
+                let currentActiveCallUcid = getters['getActiveCall']
+
+                if (currentActiveCallUcid) {
+                    let holdActiveCallRequest = {
+                        sessionId: getters['session/getSessionId'],
+                        agentId: getters['getAgentCredentials'].agentId,
+                        deviceId: getters['getAgentCredentials'].deviceId,
+                        ucid: currentActiveCallUcid,
+                    }
+
+                    console.log("requestHoldUnholdCall(): holdActiveCallRequest=", primaryRequest)
+                    dispatch('requestHoldCall', holdActiveCallRequest).then(() => {
+                        dispatch('requestUnholdCall', primaryRequest)
                     })
                 } else {
-                    console.log("else " + currentActiveUcid)
-                    dispatch('requestUnholdCall', request)
+                    console.log("requestHoldUnholdCall(): no active calls, so sending unhold request " + currentActiveCallUcid)
+                    dispatch('requestUnholdCall', primaryRequest)
                 }
 
 
                 break
             default:
-                dispatch('requestHoldCall', request)
+                dispatch('requestHoldCall', primaryRequest)
                 break
         }
     },
@@ -376,19 +380,25 @@ const mutations = {
 
     REMOVE_CALL_FROM_CONSULTED_CALL_LIST(state, ucid) {
         if (state.consultedCallList.includes(ucid)) {
-            state.consultedCallList.splice(ucid)
+            state.consultedCallList.splice(state.consultedCallList.indexOf(ucid))
+        } else {
+            console.log("REMOVE_CALL_FROM_CONSULTED_CALL_LIST(): ucid does not exist in consultedCallList")
         }
     },
     ADD_CALL_TO_OUTBOUND_CALL_LIST(state, ucid) {
         //Check if the consulted call list has the ucid. If not, push it
         if (!state.outboundCallList.includes(ucid)) {
             state.outboundCallList.push(ucid)
+        } else {
+            console.log("ADD_CALL_TO_OUTBOUND_CALL_LIST(): ucid does not exist in outboundCallList")
         }
     },
     REMOVE_CALL_FROM_OUTBOUND_CALL_LIST(state, ucid) {
         //Check if the consulted call list has the ucid. If not, push it
         if (state.outboundCallList.includes(ucid)) {
-            state.outboundCallList.splice(ucid)
+            state.outboundCallList.splice(state.outboundCallList.indexOf(ucid))
+        } else {
+            console.log("REMOVE_CALL_FROM_OUTBOUND_CALL_LIST(): ucid does not exist in outboundCallList")
         }
     },
 

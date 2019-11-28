@@ -2,7 +2,7 @@
   <mdb-container fluid class="mx-2 px-0 pt-2">
     <mdb-row class="mb-4 mx-0">
       <mdb-col col="12">
-        <call-drawer class="mx-5"></call-drawer>
+        <call-drawer class="mx-3"></call-drawer>
       </mdb-col>
     </mdb-row>
     <hr />

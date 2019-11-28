@@ -51,7 +51,7 @@
             class="mdb-color mx-2 w-100"
             v-if="!isConsultedCallActive"
             @click="onConsultButtonClicked"
-            @click.stop
+           
           >
             <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
             <span>Consult</span>
@@ -62,7 +62,7 @@
             <mdb-btn
               class="btn-deep-orange mx-2 px-2 w-100"
               @click="onConfDropButtonClicked"
-              @click.stop
+            
             >Drop</mdb-btn>
             <!-- <mdb-btn
               class="info-color mx-2 px-2 w-50"

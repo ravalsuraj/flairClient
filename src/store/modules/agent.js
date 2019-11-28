@@ -9,7 +9,8 @@ function initialState() {
         agentId: null,
         deviceId: null,
         password: null,
-        workMode: null
+        workMode: null,
+        rememberCredentials: true,
     }
 }
 
@@ -38,7 +39,8 @@ export default {
             return {
                 agentId: state.agentId,
                 deviceId: state.deviceId,
-                password: state.password
+                password: state.password,
+                workMode: state.workMode
             }
         }
     },
@@ -245,7 +247,21 @@ export default {
 
     mutations: {
         RESET_AGENT_MODULE(state) {
+
+            let agentCredentials = {
+                agentId: state.agentId,
+                deviceId: state.deviceId,
+                password: state.password,
+                workMode: state.workMode
+            }
             Object.assign(state, initialState())
+            if (state.rememberCredentials === true) {
+                state.agentId = agentCredentials.agentId;
+                state.deviceId = agentCredentials.deviceId;
+                state.password = agentCredentials.password;
+                state.workMode = agentCredentials.workMode;
+            }
+
         },
 
         SET_AGENT_LOGIN_CREDENTIALS(state, credentials) {

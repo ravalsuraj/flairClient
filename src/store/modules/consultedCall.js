@@ -58,7 +58,7 @@ export default {
             dispatch('setCallState', [payload.ucid, CALL_STATES.HELD])
             commit('RESET_ACTIVE_CALL', payload.ucid)
         },
-        setConsultedCallStateDropped({ commit, dispatch }, payload) {
+        setConsultedCallStateDropped({ dispatch }, payload) {
             dispatch('setCallState', [payload.ucid, CALL_STATES.DROPPED])
             dispatch('removeConsultedCall', payload.ucid)
 
@@ -98,12 +98,12 @@ export default {
 
         },
 
-        requestConferenceCall({ getters, dispatch }) {
+        requestConferenceCall({ getters, dispatch }, payload) {
 
             let request = {
                 sessionId: getters['session/getSessionId'],
-                primaryUcid: getters.getPrimaryCall.ucid,
-                consultedUcid: getters.getConsultedCall.ucid
+                primaryUcid: payload.ucidA,
+                consultedUcid: payload.ucidB
             }
 
             console.log("requestConferenceCall(): request=" + JSON.stringify(request));
@@ -119,12 +119,12 @@ export default {
             )
         },
 
-        requestTransferCall({ getters, dispatch }) {
+        requestTransferCall({ getters, dispatch }, payload) {
 
             let request = {
                 sessionId: getters['session/getSessionId'],
-                primaryUcid: getters.getPrimaryCall.ucid,
-                consultedUcid: getters.getConsultedCall.ucid
+                primaryUcid: payload.ucidA,
+                consultedUcid: payload.ucidB
             }
 
             console.log("requestTransferCall(): request=" + JSON.stringify(request));
