@@ -3,10 +3,6 @@
 * *******************************/
 export default {
 
-
-    /*Usage example*/
-
-
     async getIpAddressForClient() {
         console.log("getIpAddressForClient() function entered")
         try {
@@ -14,10 +10,10 @@ export default {
         } catch (err) {
             throw err
         }
+    },
 
-
-
+    getTimerName(timerId, timerType) {
+        return (timerType + "_" + timerId)
     }
 
-    
 }

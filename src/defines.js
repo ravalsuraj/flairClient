@@ -34,6 +34,12 @@ export const TIMER_DIRECTIONS = Object.freeze({
   UP: "UP",
   DOWN: "DOWN"
 })
+
+
+export const TIMER_TYPES = Object.freeze({
+  CALL_TIMER: 'CT',
+  IN_STATE_TIMER: 'ST'
+})
 // States according to Avaya: [Login, Ready, Not Ready, Wrap-Up, Pending States]
 export const CALL_STATES = Object.freeze({
   IDLE: '96',

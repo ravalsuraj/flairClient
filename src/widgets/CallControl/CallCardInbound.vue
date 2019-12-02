@@ -9,13 +9,17 @@
                 <mdb-col col="md-6" class="mb-3 d-flex">
                   <span strong class="fl_well_text big mx-auto">{{callingAddress}}</span>
                 </mdb-col>
-
                 <mdb-col col="md-6" class="mb-3 text-center">
-                  <up-timer
-                    name="callStateTimer"
-                    class="fl_well_text big"
-                    :class="{'onHold':isCallHeld}"
-                  ></up-timer>
+                  <persist-timer :timerName="callTimerName" class="fl_well_text big"></persist-timer>
+                </mdb-col>
+              </mdb-row>
+
+              <mdb-row>
+                <mdb-col col="md-6" class="mb-3 d-flex">
+                  <span strong class="fl_well_text big mx-auto">{{callStatusText}}</span>
+                </mdb-col>
+                <mdb-col col="md-6" class="mb-3 text-center">
+                  <persist-timer :timerName="inStateTimerName" class="fl_well_text big"></persist-timer>
                 </mdb-col>
               </mdb-row>
             </mdb-col>
@@ -94,10 +98,15 @@
 <script>
 import ConsultDialer from '@/widgets/Dialer/ConsultDialer'
 import CallDisposition from '@/widgets/CallDisposition/CallDisposition'
-import UpTimer from '@/components/agc/UpTimer'
-import DownTimer from '@/components/agc/DownTimer'
+import PersistTimer from '@/components/agc/PersistTimer.vue'
 import Widget from '@/components/agc/Widget'
-import { CALL_STATES, CALL_TYPES, SOCKET_EVENTS } from '@/defines.js'
+import Utils from '@/services/Utils'
+import {
+  CALL_STATES,
+  CALL_TYPES,
+  SOCKET_EVENTS,
+  TIMER_TYPES
+} from '@/defines.js'
 
 import {
   mdbContainer,
@@ -130,7 +139,7 @@ export default {
   name: 'CallCardInbound',
   components: {
     Widget,
-    UpTimer,
+    PersistTimer,
     ConsultDialer,
     CallDisposition,
 
@@ -159,11 +168,7 @@ export default {
     mdbDropdownItem,
     mdbDropdownMenu
   },
-  mounted() {
-    if (this.callStatus === CALL_STATES.RINGING) {
-      this.$store.dispatch('resetTimer', 'callStateTimer')
-    }
-  },
+  mounted() {},
   props: {
     ucid: String
   },
@@ -198,6 +203,12 @@ export default {
     }
   },
   computed: {
+    callTimerName() {
+      return TIMER_TYPES.CALL_TIMER + '_' + this.ucid
+    },
+    inStateTimerName() {
+      return TIMER_TYPES.IN_STATE_TIMER + '_' + this.ucid
+    },
     cardWidth() {
       return this.$store.getters.getCalls.length > 2 ? 'md-12' : 'md-6'
     },
@@ -315,36 +326,16 @@ export default {
         case CALL_STATES.UNKNOWN:
           break
         case CALL_STATES.RINGING:
-        case CALL_STATES.TALKING:
-          // this.$store.dispatch('stopTimer', 'callStateTimer')
-          if (oldCallStatus !== CALL_STATES.HELD) {
-            this.$store.dispatch('resetTimer', 'callStateTimer')
-          }
-
+          this.$store.dispatch('startTimer', this.callTimerName)
           break
+        case CALL_STATES.TALKING:
         case CALL_STATES.HELD:
+          this.$store.dispatch('startTimer', this.inStateTimerName)
           break
         default:
-          this.$store.dispatch('stopTimer', 'callStateTimer')
+          this.$store.dispatch('stopTimer', this.callTimerName)
+          this.$store.dispatch('stopTimer', this.inStateTimerName)
       }
-
-      // switch (oldCallStatus) {
-      //   case CALL_STATES.IDLE:
-      //   case CALL_STATES.UNKNOWN:
-      //     break
-      //   case CALL_STATES.RINGING:
-      //     if (newCallStatus === CALL_STATES.TALKING) {
-      //       this.$store.dispatch('startTimer', 'callStateTimer')
-      //     }
-      //   default:
-      //     if (
-      //       newCallStatus === CALL_STATES.IDLE ||
-      //       newCallStatus === CALL_STATES.UNKNOWN ||
-      //       newCallStatus === CALL_STATES.DROPPED
-      //     ) {
-      //       this.$store.dispatch('stopTimer', 'callStateTimer')
-      //     }
-      // }
     }
   }
 }

@@ -11,11 +11,7 @@
                 </mdb-col>
 
                 <mdb-col col="md-6" class="mb-3 text-center">
-                  <up-timer
-                    name="callStateTimer"
-                    class="fl_well_text big"
-                    :class="{'onHold':isCallHeld}"
-                  ></up-timer>
+                  <persist-timer :timerName="ucid" class="fl_well_text big"></persist-timer>
                 </mdb-col>
               </mdb-row>
             </mdb-col>
@@ -115,8 +111,7 @@
 import ConsultDialer from '@/widgets/Dialer/ConsultDialer'
 import OutboundDialer from '@/widgets/Dialer/OutboundDialer'
 import CallDisposition from '@/widgets/CallDisposition/CallDisposition'
-import UpTimer from '@/components/agc/UpTimer'
-import DownTimer from '@/components/agc/DownTimer'
+import PersistTimer from '@/components/agc/PersistTimer.vue'
 import Widget from '@/components/agc/Widget'
 import { CALL_STATES, CALL_TYPES, SOCKET_EVENTS } from '@/defines.js'
 
@@ -151,7 +146,7 @@ export default {
   name: 'CallCardOutbound',
   components: {
     Widget,
-    UpTimer,
+    PersistTimer,
     ConsultDialer,
     CallDisposition,
 
@@ -354,37 +349,23 @@ export default {
   },
   watch: {
     callStatus(newCallStatus, oldCallStatus) {
-      // switch (oldCallStatus) {
-      //   case CALL_STATES.IDLE:
-      //   case CALL_STATES.UNKNOWN:
-      //     break
-      //   case CALL_STATES.RINGING:
-      //     if (newCallStatus === CALL_STATES.TALKING) {
-      //       this.$store.dispatch('startTimer', 'callStateTimer')
-      //     }
-      //   default:
-      //     if (
-      //       newCallStatus === CALL_STATES.IDLE ||
-      //       newCallStatus === CALL_STATES.UNKNOWN ||
-      //       newCallStatus === CALL_STATES.DROPPED
-      //     ) {
-      //       this.$store.dispatch('stopTimer', 'callStateTimer')
-      //     }
-      // }
-
+      console.log(
+        'CallCardInbound/watch/callStatus(): newCallStatus=' +
+          newCallStatus +
+          ', oldCallStatus=' +
+          oldCallStatus
+      )
       switch (newCallStatus) {
         case CALL_STATES.IDLE:
         case CALL_STATES.UNKNOWN:
           break
         case CALL_STATES.RINGING:
         case CALL_STATES.TALKING:
-          // this.$store.dispatch('stopTimer', 'callStateTimer')
-          this.$store.dispatch('startTimer', 'callStateTimer')
-          break
         case CALL_STATES.HELD:
+          this.$store.dispatch('startTimer', this.ucid)
           break
         default:
-          this.$store.dispatch('stopTimer', 'callStateTimer')
+          this.$store.dispatch('stopTimer', this.ucid)
       }
     }
   }

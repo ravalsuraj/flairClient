@@ -20,7 +20,7 @@ export default {
     return {}
   },
   mounted() {
-    this.$store.dispatch('startTimer', 'agentTimerInstate')
+    //TODO: add agent state timer
   },
   destroyed() {},
   computed: {
@@ -37,7 +37,7 @@ export default {
           newAgentStatus
       )
       if (newAgentStatus !== AGENT_STATES.LOG_OUT) {
-        this.$store.dispatch('resetTimer', 'agentTimerInstate')
+        this.$store.dispatch('startTimer', '','agentTimerInstate')
       } else {
         this.$store.dispatch('stopTimer', 'agentTimerInstate')
       }

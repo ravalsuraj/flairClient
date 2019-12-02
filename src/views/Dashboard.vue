@@ -90,7 +90,6 @@ import CallControl from '@/widgets/CallControl/CallControl.vue'
 import AgentControl from '@/widgets/AgentControl/AgentControl.vue'
 import AgentCallStatistics from '@/widgets/AgentCallStatistics/AgentCallStatistics.vue'
 import TestBench from '@/widgets/TestBench.vue'
-import TimerTest from '@/widgets/TimerTest.vue'
 import ConsultDialer from '@/widgets/Dialer/ConsultDialer.vue'
 import CallDisposition from '@/widgets/CallDisposition/CallDisposition.vue'
 import CrmFrame from '@/widgets/CrmFrame/CrmFrame.vue'
@@ -101,7 +100,6 @@ import CallDrawer from '@/views/CallDrawer.vue'
 export default {
   name: 'Dashboard',
   components: {
-    TimerTest,
     draggable,
     ConsultDialer,
     CrmFrame,

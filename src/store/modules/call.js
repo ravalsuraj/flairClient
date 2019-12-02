@@ -1,4 +1,5 @@
-import { CALL_STATES, CALL_TYPES, SOCKET_EVENTS, AGENT_STATES } from '@/defines.js'
+import { CALL_STATES, CALL_TYPES, SOCKET_EVENTS, TIMER_TYPES } from '@/defines.js'
+import Utils from '@/services/Utils';
 function initialState() {
     return {
         calls: [],
@@ -53,10 +54,14 @@ const getters = {
 }
 
 const actions = {
-    addCallToActiveCalls({ commit, getters }, call) {
+    addCallToActiveCalls({ commit, getters, dispatch }, call) {
         let existingCall = getters.getCallByUcid(call.ucid);
-        console.log("addCallToActiveCalls(): check if call exists. if existingcall is undefined, this call is a new call. existingCall=" + JSON.stringify(existingCall))
+
+        //check if call exists. if existingcall is undefined, this call is a new call, so add it
+        console.log("addCallToActiveCalls(): existingCall=" + JSON.stringify(existingCall))
         if (!existingCall) {
+
+            dispatch('addCallTimers', call.ucid)
             let newCall = call;
             newCall.status = CALL_STATES.CREATED
             newCall.type = CALL_TYPES.INBOUND
@@ -69,11 +74,13 @@ const actions = {
 
     },
 
-    removeCallFromActiveCalls({ commit, getters }, ucid) {
+    removeCallFromActiveCalls({ commit, getters, dispatch }, ucid) {
         commit('RESET_ACTIVE_CALL', ucid)
         commit('REMOVE_CALL_FROM_OUTBOUND_CALL_LIST', ucid)
         commit('REMOVE_CALL_FROM_CONSULTED_CALL_LIST', ucid)
         commit('REMOVE_CALL', getters.getCallIndex(ucid))
+        dispatch('removeTimer', Utils.getTimerName(ucid, TIMER_TYPES.CALL_TIMER))
+        dispatch('removeTimer', Utils.getTimerName(ucid, TIMER_TYPES.IN_STATE_TIMER))
 
     },
     setCallState({ commit, getters }, [ucid, newStatus]) {
@@ -82,6 +89,16 @@ const actions = {
         let index = getters.getCallIndex(ucid);
         console.log("setCallState(): index=" + index)
         commit('SET_CALL_STATE', [index, newStatus])
+    },
+
+    addCallTimers({ dispatch }, ucid) {
+
+        //Create the timer for the call, and then start the timer
+        dispatch('addUpTimer', Utils.getTimerName(ucid, TIMER_TYPES.CALL_TIMER))
+        dispatch('addUpTimer', Utils.getTimerName(ucid, TIMER_TYPES.IN_STATE_TIMER))
+
+        dispatch('startTimer', Utils.getTimerName(ucid, TIMER_TYPES.CALL_TIMER))
+        dispatch('startTimer', Utils.getTimerName(ucid, TIMER_TYPES.IN_STATE_TIMER))
     },
 
     setCallStateRinging({ commit, dispatch, getters }, payload) {

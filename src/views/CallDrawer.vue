@@ -1,6 +1,10 @@
 <template>
   <section class="mt-lg-5">
     <mdb-container fluid>
+      <!-- <mdb-row>
+        <timer-test></timer-test>
+      </mdb-row> -->
+
       <mdb-row>
         <mdb-col :col="cardWidth" v-for="call in myCalls" :key="call.ucid">
           <call-card-inbound
@@ -26,6 +30,8 @@ import AgentControl from '@/widgets/AgentControl/AgentControl.vue'
 import CallCardInbound from '@/widgets/CallControl/CallCardInbound.vue'
 import CallCardOutbound from '@/widgets/CallControl/CallCardOutbound.vue'
 import CallDisposition from '@/widgets/CallDisposition/CallDisposition'
+import TimerTest from '@/components/agc/TimerTest.vue'
+
 import { CALL_STATES, CALL_TYPES } from '@/defines.js'
 import {
   mdbRow,
@@ -55,6 +61,8 @@ export default {
     CallCardInbound,
     CallCardOutbound,
     CallDisposition,
+
+    TimerTest,
     mdbRow,
     mdbCol,
     mdbContainer,

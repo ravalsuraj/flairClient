@@ -11,17 +11,16 @@
         </a>
       </mdb-card-header>
       <mdb-card-body class="px-1" v-show-slide="showWidget" :class="{'p-0': !showWidget}">
-        <demo-timer :timerName="timerName"></demo-timer>
+        <persist-timer timerName="timerA"></persist-timer>
         <button class="btn btn-primary" @click="startTimer">Start</button>
         <button class="btn btn-danger" @click="stopTimer">Stop</button>
-        <button class="btn btn-info" @click="togglePauseResumeTimer">Pause</button>
       </mdb-card-body>
     </mdb-card>
   </mdb-container>
 </template>
 
 <script>
-import DemoTimer from '@/widgets/DemoTimer.vue'
+import PersistTimer from '@/components/agc/PersistTimer.vue'
 import {
   mdbContainer,
   mdbRow,
@@ -39,7 +38,7 @@ import { AGENT_STATES, CALL_STATES } from '@/defines.js'
 export default {
   name: 'TimerTest',
   components: {
-    DemoTimer,
+    PersistTimer,
     mdbContainer,
     mdbRow,
     mdbCol,
@@ -57,7 +56,7 @@ export default {
   data() {
     return {
       showWidget: true,
-      timerName: 'demo'
+      timerName: 'timerA'
     }
   },
 
@@ -72,9 +71,9 @@ export default {
       this.$store.dispatch('stopTimer', this.timerName)
     },
 
-    togglePauseResumeTimer() {
-      this.$store.dispatch('togglePauseResumeTimer', this.timerName)
-    }
+    // togglePauseResumeTimer() {
+    //   this.$store.dispatch('togglePauseResumeTimer', this.timerName)
+    // }
   },
   computed: {
     devMode() {
