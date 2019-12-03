@@ -230,7 +230,7 @@ export default {
         this.hideSpinner()
         if (resp.responseCode === '0') {
           this.$store.dispatch('setCallStateDialing', resp)
-          this.$store.dispatch('setCallStateOutbound', resp)
+          this.$store.dispatch('processNewOutboundCall', resp)
         }
       })
     },

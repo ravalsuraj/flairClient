@@ -175,10 +175,17 @@ export default {
           if (resp.sessionId) {
             sendAgentLoginRequest()
           } else {
-            this.$store.dispatch('showErrorBanner', [
-              'Agent Login Failed',
-              'COuld not retrieve session ID from the server'
-            ])
+            if (resp.responseCode === '05') {
+              this.$store.dispatch('showErrorBanner', [
+                'Agent Login Failed',
+                resp.responseMessage
+              ])
+            } else {
+              this.$store.dispatch('showErrorBanner', [
+                'Agent Login Failed',
+                'COuld not retrieve session ID from the server'
+              ])
+            }
           }
         })
       } else {

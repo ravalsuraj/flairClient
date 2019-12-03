@@ -13,7 +13,7 @@
           />
         </div>
         <iframe
-          :src="crmUrl"
+          :src="CRM_URL"
           class="w-100 fl_crm_window"
           @error="iframeError"
           :class="{'error': iframeError}"
@@ -96,7 +96,7 @@ export default {
       return this.manualShowWidget || this.autoShowWidget
     },
 
-    crmUrl() {
+    CRM_URL() {
       //return this.$store.getters.getComputedCrmUrl
       if (this.callingAddress) {
         return (

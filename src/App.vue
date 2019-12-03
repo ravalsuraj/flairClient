@@ -183,6 +183,10 @@ footer {
   color: #0097a7;
 }
 
+/* Hides the element */
+.fl_hidden {
+  display: none;
+}
 .fl-color-agc {
   background: rgba(204, 0, 0, 1);
   background: -moz-linear-gradient(
@@ -235,7 +239,7 @@ footer {
   height: 45px;
   text-align: center;
   padding: 6px 0;
-  
+
   line-height: 1.428571429;
   border-radius: 50%;
 }

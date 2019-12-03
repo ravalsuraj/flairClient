@@ -13,13 +13,13 @@ const development = {
 };
 
 const production = {
-    publicPath: 'https://cticonnector.oberoirealty.com/softphone',
+    publicPath: 'https://localhost:9091',
     devServer: {
         open: process.platform === 'darwin',
         port: 9091, // CHANGE YOUR PORT HERE!
         https: false,
         disableHostCheck: true,
-        proxy: 'https://cticonnector.oberoirealty.com/softphone'
+        proxy: 'https://localhost:9091'
     },
 }
 

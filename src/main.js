@@ -44,7 +44,7 @@ Vue.directive('longclick', longClickInstance)
 Vue.use(
   new VueSocketIO({
     debug: true,
-    connection: config.WebSocketUrl,
+    connection: config.FLAIR_SERVER_URL,
     vuex: {
       store,
       actionPrefix: 'SOCKET_',

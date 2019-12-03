@@ -7,6 +7,7 @@ function initialState() {
             ucid: ''
         },
         totalCallList: [],
+        inboundCallList: [],
         outboundCallList: [],
         consultedCallList: [],
         primary: {
@@ -34,6 +35,9 @@ const getters = {
     getConsultedCallList(state) {
         return state.consultedCallList
     },
+    getInboundCallList(state) {
+        return state.inboundCallList
+    },
     getActiveCall(state) {
         return state.activeCall.ucid
     },
@@ -55,22 +59,27 @@ const getters = {
 
 const actions = {
     addCallToActiveCalls({ commit, getters, dispatch }, call) {
-        let existingCall = getters.getCallByUcid(call.ucid);
+        return new Promise((resolve) => {
+            let existingCall = getters.getCallByUcid(call.ucid);
 
-        //check if call exists. if existingcall is undefined, this call is a new call, so add it
-        console.log("addCallToActiveCalls(): existingCall=" + JSON.stringify(existingCall))
-        if (!existingCall) {
+            //check if call exists. if existingcall is undefined, this call is a new call, so add it
+            console.log("addCallToActiveCalls(): existingCall=" + JSON.stringify(existingCall))
+            if (!existingCall) {
 
-            dispatch('addCallTimers', call.ucid)
-            let newCall = call;
-            newCall.status = CALL_STATES.CREATED
-            newCall.type = CALL_TYPES.INBOUND
-            //http://jsfiddle.net/pdmrL1gq/1/
-            newCall.startTime = new Date().getTime()
-            commit('ADD_CALL', newCall)
-        } else {
-            console.log("addCallToActiveCalls(): skipping ADD_CALL mutation since the call already exists")
-        }
+                dispatch('addCallTimers', call.ucid)
+                let newCall = call;
+                newCall.status = CALL_STATES.CREATED
+                newCall.type = CALL_TYPES.INBOUND
+                //http://jsfiddle.net/pdmrL1gq/1/
+                newCall.startTime = new Date().getTime()
+                commit('ADD_CALL', newCall)
+                resolve()
+            } else {
+                console.log("addCallToActiveCalls(): skipping ADD_CALL mutation since the call already exists")
+                resolve()
+            }
+
+        })
 
     },
 
@@ -78,6 +87,7 @@ const actions = {
         commit('RESET_ACTIVE_CALL', ucid)
         commit('REMOVE_CALL_FROM_OUTBOUND_CALL_LIST', ucid)
         commit('REMOVE_CALL_FROM_CONSULTED_CALL_LIST', ucid)
+        commit('REMOVE_CALL_FROM_INBOUND_CALL_LIST', ucid)
         commit('REMOVE_CALL', getters.getCallIndex(ucid))
         dispatch('removeTimer', Utils.getTimerName(ucid, TIMER_TYPES.CALL_TIMER))
         dispatch('removeTimer', Utils.getTimerName(ucid, TIMER_TYPES.IN_STATE_TIMER))
@@ -102,15 +112,15 @@ const actions = {
     },
 
     setCallStateRinging({ commit, dispatch, getters }, payload) {
-        dispatch('addCallToActiveCalls', payload)
+
         // commit('SET_CALL_STATE_RINGING', payload)
         commit('SET_CALL_ARR_STATE_RINGING', getters.getCallIndex(payload.ucid))
         let uui = {
             cli: payload.callingAddress,
             ucid: payload.ucid
         }
-        dispatch('setUui', uui)
-        dispatch('setCallerData', uui)
+        // dispatch('setUui', uui)
+        // dispatch('setCallerData', uui)
     },
 
     setCallStateDialing({ commit, dispatch, getters }, payload) {
@@ -146,15 +156,37 @@ const actions = {
         dispatch('removeCallFromActiveCalls', payload.ucid)
     },
 
-    addConsultedCall({ commit, getters }, payload) {
+    // addInboundCall({ commit, getters, dispatch }, payload) {
+    //     let index = getters.getCallIndex(payload.ucid)
+    //     dispatch('setCallStateRinging', payload)
+    //     commit('ADD_CALL_TO_INBOUND_CALL_LIST', payload.ucid)
+    //     commit('SET_CALL_TYPE_INBOUND', index)
+    // },
+
+    //Called when the first call event arrives (call state ringing)
+    async processNewInboundCall({ commit, getters, dispatch }, payload) {
+
+        await dispatch('addCallToActiveCalls', payload)
+
+        dispatch('setCallStateRinging', payload)
+        commit('ADD_CALL_TO_INBOUND_CALL_LIST', payload.ucid)
         let index = getters.getCallIndex(payload.ucid)
+        commit('SET_CALL_TYPE_INBOUND', index)
+    },
+
+    //Called when the consult call request is made
+    processNewConsultedCall({ commit, getters, dispatch }, payload) {
+
+        dispatch('addCallToActiveCalls', payload)
+        dispatch('addConsultedCallDetailsToPrimary', payload)
+        dispatch('setConsultedCallStateTalking', payload)
         commit('ADD_CALL_TO_CONSULTED_CALL_LIST', payload.ucid)
+        let index = getters.getCallIndex(payload.ucid)
         commit('SET_CALL_TYPE_CONSULTED', index)
     },
-    removeConultedCall() {
-        commit('REMOVE_CALL_FROM_CONSULTED_CALL_LIST', payload.ucid)
-    },
-    setCallStateOutbound({ commit, getters }, payload) {
+
+    //Called when the outbound call request is made
+    processNewOutboundCall({ commit, getters, dispatch }, payload) {
         let index = getters.getCallIndex(payload.ucid)
         commit('ADD_CALL_TO_OUTBOUND_CALL_LIST', payload.ucid)
         commit('SET_CALL_TYPE_OUTBOUND', index)
@@ -164,6 +196,15 @@ const actions = {
         commit('RESET_CALL_STATUS')
         commit('RESET_CRM_DATA')
     },
+
+    addConsultedCallDetailsToPrimary({ commit, getters }, payload) {
+        let inboundCallList = getters.getInboundCallList
+        if (inboundCallList && inboundCallList.length === 1) {
+            let callIndex = getters.getCallIndex(inboundCallList[0])
+            commit('ADD_CONSULTED_CALL_TO_PRIMARY', [callIndex, payload])
+        }
+    },
+
 
     requestAnswerDropCall({ getters, dispatch }, [requestedUcid]) {
         let request = {
@@ -380,12 +421,35 @@ const mutations = {
         state.calls[index].status = CALL_STATES.DROPPED
     },
 
+    SET_CALL_TYPE_INBOUND(state, index) {
+        state.calls[index].type = CALL_TYPES.INBOUND
+    },
+
     SET_CALL_TYPE_CONSULTED(state, index) {
         state.calls[index].type = CALL_TYPES.CONSULTED
     },
 
     SET_CALL_TYPE_OUTBOUND(state, index) {
         state.calls[index].type = CALL_TYPES.OUTBOUND
+    },
+    ADD_CONSULTED_CALL_TO_PRIMARY(state, [index, payload]) {
+        state.calls[index].consultedCall = payload
+    },
+
+    ADD_CALL_TO_INBOUND_CALL_LIST(state, ucid) {
+        //Check if the inbound call list has the ucid. If not, push it
+        if (!state.inboundCallList.includes(ucid)) {
+            state.inboundCallList.push(ucid)
+        } else {
+            console.log("ADD_CALL_TO_INBOUND_CALL_LIST(): ucid does not exist in outboundCallList")
+        }
+    },
+    REMOVE_CALL_FROM_INBOUND_CALL_LIST(state, ucid) {
+        if (state.inboundCallList.includes(ucid)) {
+            state.inboundCallList.splice(state.inboundCallList.indexOf(ucid))
+        } else {
+            console.log("REMOVE_CALL_FROM_INBOUND_CALL_LIST(): ucid does not exist in inboundCallList")
+        }
     },
 
     ADD_CALL_TO_CONSULTED_CALL_LIST(state, ucid) {
@@ -410,6 +474,7 @@ const mutations = {
             console.log("ADD_CALL_TO_OUTBOUND_CALL_LIST(): ucid does not exist in outboundCallList")
         }
     },
+
     REMOVE_CALL_FROM_OUTBOUND_CALL_LIST(state, ucid) {
         //Check if the consulted call list has the ucid. If not, push it
         if (state.outboundCallList.includes(ucid)) {

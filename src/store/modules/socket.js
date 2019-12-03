@@ -61,8 +61,8 @@ export default {
             console.log('Recieved event: ' + 'DEVEVENT' + JSON.stringify(payload))
         },
         SOCKET_ICALLRING({ dispatch, getters }, payload) {
-            console.log('SOCKET_ICALLRING: ' + 'ICALLRING' + JSON.stringify(payload))
-            dispatch('setCallStateRinging', payload)
+            console.log('SOCKET_ICALLRING: resp=' + JSON.stringify(payload))
+            dispatch('processNewInboundCall', payload)
 
             // if (getters.getPrimaryCall.ucid == payload.callId) {
 
@@ -81,7 +81,7 @@ export default {
         },
 
         SOCKET_ICALLTALK({ dispatch, getters }, payload) {
-            console.log('Received event: ' + 'ICALLTALK: ' + JSON.stringify(payload))
+            console.log('Received event: resp=' + JSON.stringify(payload))
             if (getters.getCallIndex(payload.ucid) !== null) {
                 dispatch('setCallStateTalking', payload)
             }
@@ -91,7 +91,7 @@ export default {
         },
 
         SOCKET_ICALLDISC({ dispatch, getters }, payload) {
-            console.log('SOCKET_ICALLDISC(): Received event: ' + 'ICALLDISC' + JSON.stringify(payload))
+            console.log('SOCKET_ICALLDISC(): Received event: resp=' + JSON.stringify(payload))
             if (getters.getCallIndex(payload.ucid) !== null) {
                 dispatch('setCallStateDropped', payload)
             } else {
@@ -100,7 +100,7 @@ export default {
         },
 
         SOCKET_ICALLHLD({ dispatch, getters }, payload) {
-            console.log('Recieved event: ' + 'ICALLHLD' + JSON.stringify(payload))
+            console.log('SOCKET_ICALLHLD(): Recieved event: resp=' + JSON.stringify(payload))
             if (getters.getCallIndex(payload.ucid) !== null) {
                 dispatch('setCallStateHeld', payload)
             }
@@ -108,20 +108,22 @@ export default {
 
                 console.log('ICALLHOLD not identified for call OR conf call')
             }
-
-
         },
 
-        SOCKET_OUTCALLRING({ dispatch }, payload) {
-            console.log('Received event: ' + 'OUTCALLRING' + JSON.stringify(payload))
-
-            dispatch('setConsultedCallStateRinging', payload)
+        SOCKET_CALLCONF({ dispatch, getters }, payload){
+            console.log('Recieved event: ' + 'CALLCONF' + JSON.stringify(payload))
         },
+
+        // SOCKET_OUTCALLRING({ dispatch }, payload) {
+        //     console.log('Received event: ' + 'OUTCALLRING' + JSON.stringify(payload))
+
+        //     dispatch('setConsultedCallStateRinging', payload)
+        // },
 
         SOCKET_OUTCALLTALK({ dispatch }, payload) {
             console.log('Received event: ' + 'OUTCALLTALK' + JSON.stringify(payload))
 
-            dispatch('setConsultedCallStateTalking', payload)
+            dispatch('processNewConsultedCall', payload)
         },
 
         SOCKET_OUTCALLDISC({ dispatch }, payload) {

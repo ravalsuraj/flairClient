@@ -9,9 +9,17 @@
                 <mdb-col col="md-6" class="mb-3 d-flex">
                   <span strong class="fl_well_text big mx-auto">{{callingAddress}}</span>
                 </mdb-col>
-
                 <mdb-col col="md-6" class="mb-3 text-center">
-                  <persist-timer :timerName="ucid" class="fl_well_text big"></persist-timer>
+                  <persist-timer :timerName="callTimerName" class="fl_well_text big"></persist-timer>
+                </mdb-col>
+              </mdb-row>
+
+              <mdb-row>
+                <mdb-col col="md-6" class="mb-3 d-flex">
+                  <span strong class="fl_well_text big mx-auto">{{callStatusText}}</span>
+                </mdb-col>
+                <mdb-col col="md-6" class="mb-3 text-center">
+                  <persist-timer :timerName="inStateTimerName" class="fl_well_text big"></persist-timer>
                 </mdb-col>
               </mdb-row>
             </mdb-col>
@@ -78,6 +86,7 @@
                       <select
                         class="browser-default custom-select mb-5"
                         v-model="callToBeConferenced"
+                        v-if="otherCalls.length>1"
                       >
                         <option selected disabled>Open this select menu</option>
                         <option
@@ -86,10 +95,23 @@
                           :key="call.id"
                         >{{call.callingAddress}}</option>
                       </select>
+                      <div class="mb-5 w-100">
+                        <!-- <mdb-input
+                          read-only
+                          input-class="fl_hidden"
+                          v-model="callToBeConferenced"
+                          :empty-value="otherCalls[0].ucid"
+                        /> -->
+                        <div class="text-center py-2">Call to Conference/ Transfer :</div>
+                        <h3 class="text-center">{{otherCalls[0].callingAddress}}</h3>
+                      </div>
                       <transition name="fade">
                         <div class="btn-group w-100">
-                          <mdb-btn class="mdb-color mx-2 px-2 w-50" @click="transferCall">Trans</mdb-btn>
-                          <mdb-btn class="mdb-color mx-2 px-2 w-50" @click="conferenceCall">Conf</mdb-btn>
+                          <mdb-btn class="mdb-color mx-2 px-2 w-50" @click="transferCall">Transfer</mdb-btn>
+                          <mdb-btn
+                            class="mdb-color mx-2 px-2 w-50"
+                            @click="conferenceCall"
+                          >Conference</mdb-btn>
                         </div>
                       </transition>
                     </mdb-modal-body>
@@ -113,7 +135,12 @@ import OutboundDialer from '@/widgets/Dialer/OutboundDialer'
 import CallDisposition from '@/widgets/CallDisposition/CallDisposition'
 import PersistTimer from '@/components/agc/PersistTimer.vue'
 import Widget from '@/components/agc/Widget'
-import { CALL_STATES, CALL_TYPES, SOCKET_EVENTS } from '@/defines.js'
+import {
+  CALL_STATES,
+  CALL_TYPES,
+  SOCKET_EVENTS,
+  TIMER_TYPES
+} from '@/defines.js'
 
 import {
   mdbContainer,
@@ -128,6 +155,7 @@ import {
   mdbCardText,
   mdbIcon,
   mdbTbl,
+  mdbInput,
   mdbListGroup,
   mdbListGroupItem,
   mdbBadge,
@@ -150,6 +178,7 @@ export default {
     ConsultDialer,
     CallDisposition,
 
+    mdbInput,
     mdbPopover,
     mdbContainer,
     mdbRow,
@@ -175,7 +204,13 @@ export default {
     mdbDropdownItem,
     mdbDropdownMenu
   },
-  mounted() {},
+  mounted() {
+    if (this.otherCalls.length === 1) {
+      this.callToBeConferenced = this.otherCalls[0].ucid
+    }else{
+      console.log("not setting calltobeconferenced")
+    }
+  },
   props: {
     ucid: String
   },
@@ -220,6 +255,13 @@ export default {
           ucidA: this.callToBeConferenced
         }
         this.$store.dispatch('requestTransferCall', transferRequest)
+      } else {
+        console.log(
+          'skipping transfer call. this.ucid=' +
+            this.ucid +
+            'callToBeConferenced=',
+          this.callToBeConferenced
+        )
       }
     },
     conferenceCall() {
@@ -229,6 +271,13 @@ export default {
           ucidA: this.callToBeConferenced
         }
         this.$store.dispatch('requestConferenceCall', transferRequest)
+      }else{
+        console.log(
+          'skipping conference call. this.ucid=' +
+            this.ucid +
+            'callToBeConferenced=',
+          this.callToBeConferenced
+        )
       }
     }
   },
@@ -236,6 +285,8 @@ export default {
     cardWidth() {
       return this.$store.getters.getCalls.length > 2 ? 'md-12' : 'md-6'
     },
+
+    //Find the list of calls other than this call. This is used to display the call list in the drop-down for consult call
     otherCalls() {
       let calls = this.$store.getters.getCalls
       let otherCalls = []
@@ -247,6 +298,14 @@ export default {
 
       return otherCalls
     },
+
+    callTimerName() {
+      return TIMER_TYPES.CALL_TIMER + '_' + this.ucid
+    },
+    inStateTimerName() {
+      return TIMER_TYPES.IN_STATE_TIMER + '_' + this.ucid
+    },
+
     call() {
       return this.$store.getters.getCallByUcid(this.ucid)
     },
@@ -360,12 +419,15 @@ export default {
         case CALL_STATES.UNKNOWN:
           break
         case CALL_STATES.RINGING:
+          this.$store.dispatch('startTimer', this.callTimerName)
+          break
         case CALL_STATES.TALKING:
         case CALL_STATES.HELD:
-          this.$store.dispatch('startTimer', this.ucid)
+          this.$store.dispatch('startTimer', this.inStateTimerName)
           break
         default:
-          this.$store.dispatch('stopTimer', this.ucid)
+          this.$store.dispatch('stopTimer', this.callTimerName)
+          this.$store.dispatch('stopTimer', this.inStateTimerName)
       }
     }
   }
@@ -390,7 +452,7 @@ export default {
 }
 
 .fl_well_text.big {
-  font-size: 1.6em;
+  font-size: 1.3em;
   font-weight: 300;
   align-self: center;
 }

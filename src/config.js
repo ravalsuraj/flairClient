@@ -1,13 +1,14 @@
 import { AGENT_STATES } from "./defines";
 
 export const config = {
-    WebSocketUrl: "http://localhost:9092",
-    
-    crmBaseUrl: 'http://andrewreifman.com/se7en/',
+    FLAIR_AWS_PORT: 8080,
+    FLAIR_SERVER_URL: "http://localhost:9092",
+    SERVER_TIMEOUT_MS: 20000,
+    CRM_URL: 'http://localhost:9527/#/dashboard',
     CRM_TIMEOUT_MS: 10000,
-    crmUrl: 'http://localhost:9527/#/dashboard',
-    sugarCrmUrl: "https://auth.sugarcrm.com/",
 
+    
+    //Admin Config. Do not modify
     defaultAuxCodes: {
         3: {
             label: 'Not Ready',
@@ -107,29 +108,3 @@ export const config = {
     }
 
 }
-
-/*
-            {
-                name: 'call-details'
-            },
-            {
-                name: 'menu-traversal'
-            },
-            {
-                name: 'call-details'
-            },
-            {
-                name: 'menu-traversal'
-            },
-            {
-                name: 'quick-links'
-            }
-
-{
-            name: 'call-disposition'
-        },
-        {
-            name: 'test-bench'
-        }
-
-*/

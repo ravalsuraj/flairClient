@@ -8,6 +8,11 @@
               <mdb-row>
                 <mdb-col col="md-6" class="mb-3 d-flex">
                   <span strong class="fl_well_text big mx-auto">{{callingAddress}}</span>
+                  <span
+                    v-if="isCallConferenced"
+                    strong
+                    class="fl_well_text big mx-auto"
+                  >{{conferencedCall.calledAddress}}</span>
                 </mdb-col>
                 <mdb-col col="md-6" class="mb-3 text-center">
                   <persist-timer :timerName="callTimerName" class="fl_well_text big"></persist-timer>
@@ -64,9 +69,9 @@
                 </mdb-col>
                 <!--END: Hold Button-->
 
-                <mdb-col col="md-4" v-if="!isCallConsulted">
+                <mdb-col col="md-4">
                   <transition name="fade">
-                    <mdb-dropdown :class="{'fl_disabledWidget':!isCallActive}">
+                    <mdb-dropdown :class="{'fl_disabledWidget':!isCallActive}" v-if="!isCallConferenced">
                       <button
                         type="checkbox"
                         class="btn red lighten-1 btn-circle"
@@ -246,8 +251,15 @@ export default {
       return this.callStatus === CALL_STATES.HELD
     },
 
-    isCallConsulted() {
-      return this.callType === CALL_TYPES.CONSULTED
+    conferencedCall() {
+      return this.call.consultedCall
+    },
+    isCallConferenced() {
+      if (this.call.consultedCall && this.call.consultedCall) {
+        return true
+      } else {
+        return false
+      }
     },
     answerButtonText() {
       if (this.callStatus === CALL_STATES.RINGING) {
@@ -298,7 +310,12 @@ export default {
     callTypeText() {
       switch (this.callType) {
         case CALL_TYPES.INBOUND:
-          return 'Inbound Call'
+          if (this.isCallConferenced) {
+            return 'Conference Call'
+          } else {
+            return 'Inbound Call'
+          }
+
         case CALL_TYPES.OUTBOUND:
           return 'Outbound Call'
         case CALL_TYPES.CONSULTED:
@@ -314,27 +331,34 @@ export default {
     }
   },
   watch: {
-    callStatus(newCallStatus, oldCallStatus) {
-      console.log(
-        'CallCardInbound/watch/callStatus(): newCallStatus=' +
-          newCallStatus +
-          ', oldCallStatus=' +
-          oldCallStatus
-      )
-      switch (newCallStatus) {
-        case CALL_STATES.IDLE:
-        case CALL_STATES.UNKNOWN:
-          break
-        case CALL_STATES.RINGING:
-          this.$store.dispatch('startTimer', this.callTimerName)
-          break
-        case CALL_STATES.TALKING:
-        case CALL_STATES.HELD:
-          this.$store.dispatch('startTimer', this.inStateTimerName)
-          break
-        default:
-          this.$store.dispatch('stopTimer', this.callTimerName)
-          this.$store.dispatch('stopTimer', this.inStateTimerName)
+    callStatus: {
+      immediate: true,
+      deep: true,
+      handler: function(newCallStatus, oldCallStatus) {
+        console.log(
+          'CallCardInbound/watch/callStatus(): newCallStatus=' +
+            newCallStatus +
+            ', oldCallStatus=' +
+            oldCallStatus
+        )
+        switch (newCallStatus) {
+          case CALL_STATES.IDLE:
+          case CALL_STATES.UNKNOWN:
+            break
+          case CALL_STATES.RINGING:
+            this.$store.dispatch('startTimer', this.callTimerName)
+            break
+          case CALL_STATES.TALKING:
+          case CALL_STATES.HELD:
+            console.log('calling stop and start timer for instateTimer')
+            // this.$store.dispatch('stopTimer', this.inStateTimerName)
+
+            this.$store.dispatch('startTimer', this.inStateTimerName)
+            break
+          default:
+            this.$store.dispatch('stopTimer', this.callTimerName)
+            this.$store.dispatch('stopTimer', this.inStateTimerName)
+        }
       }
     }
   }
@@ -359,7 +383,7 @@ export default {
 }
 
 .fl_well_text.big {
-  font-size: 1.6em;
+  font-size: 1.3em;
   font-weight: 300;
   align-self: center;
 }

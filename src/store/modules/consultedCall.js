@@ -49,10 +49,11 @@ export default {
             dispatch('setCallState', [payload.ucid, CALL_STATES.RINGING])
         },
         setConsultedCallStateTalking({ commit, dispatch }, payload) {
-            dispatch('addCallToActiveCalls', payload)
+
             dispatch('setCallState', [payload.ucid, CALL_STATES.TALKING])
             commit('SET_ACTIVE_CALL', payload.ucid)
         },
+        
         setConsultedCallStateHeld({ commit, dispatch }, payload) {
 
             dispatch('setCallState', [payload.ucid, CALL_STATES.HELD])
@@ -82,8 +83,8 @@ export default {
                         resp => {
                             console.log("requestConsultCall(): resp=" + JSON.stringify(resp));
                             if (resp.responseCode == '0') {
-                                commit('SET_CONF_STATE_CONSULTED', resp)
-                                dispatch('addConsultedCall', resp)
+                                // commit('SET_CONF_STATE_CONSULTED', resp)
+                                // dispatch('processNewConsultedCall', resp)
                                 resolve(resp)
 
                             } else {
@@ -148,13 +149,13 @@ export default {
             Object.assign(state, initialState())
         },
 
-        SET_CONF_STATE_CONSULTED(state, payload) {
-            state.consultedCall.callId = payload.callId
-            state.consultedCall.ucid = payload.ucid
-            state.consultedCall.status = CALL_STATES.CREATED
-            state.consultedCall.calledAddress = payload.calledAddress
-            state.consultedCall.callingAddress = payload.callingAddress
-        },
+        // SET_CONF_STATE_CONSULTED(state, payload) {
+        //     state.consultedCall.callId = payload.callId
+        //     state.consultedCall.ucid = payload.ucid
+        //     state.consultedCall.status = CALL_STATES.CREATED
+        //     state.consultedCall.calledAddress = payload.calledAddress
+        //     state.consultedCall.callingAddress = payload.callingAddress
+        // },
 
 
 
