@@ -18,10 +18,7 @@ export default {
     }
   },
   mounted() {
-    if (this.$store.getters.getTimers[this.timerName] === TIMER_STATES.START) {
-      Vue
-      this.startTicking()
-    }
+    if (this.timerState === TIMER_STATES.START) this.startTicking()
   },
   methods: {
     resetFormattedTime() {
@@ -51,42 +48,35 @@ export default {
     },
     padNumber(i) {
       return i < 10 ? '0' + i : i
+    },
+    setTimer(timer) {
+      this.timerState = timer.state
+      this.refTime = timer.refTime
     }
   },
   computed: {
     timer() {
-      console.log("timer computed called")
+      console.log('timer computed called')
       return this.$store.getters.getTimers[this.timerName]
     },
     timerState() {
       return this.timer.state
     },
-    refTime: {
-      get: function() {
-        return this.timer.refTime
-      },
-      set: function() {}
+    refTime() {
+      return this.timer.refTime
     }
   },
   watch: {
-    refTime: {
-      immediate: true,
-      deep: true,
-      handler: function() {
-        console.log('PersistTimer(): refTime watch() called')
-        this.resetFormattedTime()
-      }
+    refTime() {
+      console.log('PersistTimer(): refTime watch() called')
+      this.resetFormattedTime()
     },
-    timerState: {
-      immediate: true,
-      deep: true,
-      handler: function(newState, oldState) {
-        console.log('PersistTimer(): timerState watch() called')
-        if (newState === TIMER_STATES.START) {
-          this.startTicking()
-        } else if (newState === TIMER_STATES.STOP) {
-          this.stopTicking()
-        }
+    timer(newState, oldState) {
+      console.log('PersistTimer(): timerState watch() called')
+      if (newState === TIMER_STATES.START) {
+        this.startTicking()
+      } else if (newState === TIMER_STATES.STOP) {
+        this.stopTicking()
       }
     }
   }

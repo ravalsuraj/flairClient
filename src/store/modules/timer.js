@@ -41,7 +41,6 @@ export default {
 
         //Persist Timer Mutations:
         ADD_UP_TIMER(state, timerName) {
-
             if (!state.timers[timerName]) {
                 state.timers[timerName] = {};
                 state.timers[timerName] = {
@@ -53,7 +52,6 @@ export default {
         },
 
         ADD_DOWN_TIMER(state, timerName) {
-
             if (!state.timers[timerName]) {
                 state.timers[timerName] = {};
                 state.timers[timerName] = {
@@ -105,31 +103,6 @@ export default {
         stopTimer({ commit }, timerName) {
             commit("STOP_TIMER", timerName);
         },
-
-        // pauseTimer({ commit }, timerName) {
-        //     commit("PAUSE_TIMER", timerName);
-        // },
-
-        // restartTimer({ commit }, timerName) {
-        //     commit("RESTART_TIMER", timerName);
-        // },
-
-
-        // startTimer({ commit }, timerName) {
-        //     commit('SET_TIMER_STATE_START', timerName)
-        // },
-        // stopTimer({ commit }, timerName) {
-        //     commit('SET_TIMER_STATE_STOP', timerName)
-        // },
-
-        // pauseTimer({ commit }, timerName) {
-        //     commit('SET_TIMER_STATE_PAUSE', timerName)
-        // },
-        // resetTimer({ commit }, timerName) {
-        //     commit('SET_TIMER_STATE_RESET', timerName)
-        // },
-
-
     },
     getters: {
         getTimers(state) {
@@ -139,7 +112,6 @@ export default {
             console.log("getters.getTimerStatus=" + state[timerName].status)
             return state[timerName].status
         },
-
 
         getTimerExpiry: (state) => (timerName) => {
             console.log("getTimerExpiry, timerName=", timerName)

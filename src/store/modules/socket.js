@@ -1,8 +1,6 @@
 import {
-    AGENT_STATES,
-    CALL_STATES,
+    SOCKET_EVENTS,
     SOCKET_STATES,
-    TIMER_STATES
 } from '@/defines.js'
 
 function initialState() {
