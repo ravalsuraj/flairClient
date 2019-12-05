@@ -6,7 +6,7 @@
           <mdb-row class="no-gutters">
             <mdb-col :col="cardWidth">
               <mdb-row>
-                <mdb-col col="md-6" class="mb-3 d-flex">
+                <mdb-col col="6" class="mb-3 d-flex">
                   <span strong class="fl_well_text big mx-auto">{{callingAddress}}</span>
                   <span
                     v-if="isCallConferenced"
@@ -14,16 +14,16 @@
                     class="fl_well_text big mx-auto"
                   >{{conferencedCall.calledAddress}}</span>
                 </mdb-col>
-                <mdb-col col="md-6" class="mb-3 text-center">
+                <mdb-col col="6" class="mb-3 text-center">
                   <persist-timer :timerName="callTimerName" class="fl_well_text big"></persist-timer>
                 </mdb-col>
               </mdb-row>
 
               <mdb-row>
-                <mdb-col col="md-6" class="mb-3 d-flex">
+                <mdb-col col="6" class="mb-3 d-flex">
                   <span strong class="fl_well_text big mx-auto">{{callStatusText}}</span>
                 </mdb-col>
-                <mdb-col col="md-6" class="mb-3 text-center">
+                <mdb-col col="6" class="mb-3 text-center">
                   <persist-timer :timerName="inStateTimerName" class="fl_well_text big"></persist-timer>
                 </mdb-col>
               </mdb-row>
@@ -34,7 +34,7 @@
             <!-- START: Answer/Drop Button -->
             <mdb-col :col="cardWidth">
               <mdb-row>
-                <mdb-col col="md-4">
+                <mdb-col col="4">
                   <transition name="fade">
                     <button
                       v-if="!isCallHeld"
@@ -54,7 +54,7 @@
                 <!-- END: Answer/Drop Button -->
 
                 <!-- START: Hold Button -->
-                <mdb-col col="md-4">
+                <mdb-col col="4">
                   <transition name="fade">
                     <button
                       type="checkbox"
@@ -69,9 +69,12 @@
                 </mdb-col>
                 <!--END: Hold Button-->
 
-                <mdb-col col="md-4">
+                <mdb-col col="4">
                   <transition name="fade">
-                    <mdb-dropdown :class="{'fl_disabledWidget':!isCallActive}" v-if="!isCallConferenced">
+                    <mdb-dropdown
+                      :class="{'fl_disabledWidget':!isCallActive}"
+                      v-if="!isCallConferenced"
+                    >
                       <button
                         type="checkbox"
                         class="btn red lighten-1 btn-circle"
@@ -110,7 +113,8 @@ import {
   CALL_STATES,
   CALL_TYPES,
   SOCKET_EVENTS,
-  TIMER_TYPES
+  TIMER_TYPES,
+  MULTI_CALL_STATES
 } from '@/defines.js'
 
 import {
@@ -173,7 +177,9 @@ export default {
     mdbDropdownItem,
     mdbDropdownMenu
   },
-  mounted() {},
+  mounted() {
+    console.log('CallCardInbound(): mounted()')
+  },
   props: {
     ucid: String
   },
@@ -255,7 +261,10 @@ export default {
       return this.call.consultedCall
     },
     isCallConferenced() {
-      if (this.call.consultedCall && this.call.consultedCall) {
+      if (
+        this.call.consultedCall &&
+        this.call.multiCallState === MULTI_CALL_STATES.CONFERENCED
+      ) {
         return true
       } else {
         return false

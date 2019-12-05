@@ -1,5 +1,6 @@
 import { CALL_STATES, CALL_TYPES, SOCKET_EVENTS, TIMER_TYPES } from '@/defines.js'
 import Utils from '@/services/Utils';
+import { MULTI_CALL_STATES } from '../../defines';
 function initialState() {
     return {
         calls: [],
@@ -156,13 +157,6 @@ const actions = {
         dispatch('removeCallFromActiveCalls', payload.ucid)
     },
 
-    // addInboundCall({ commit, getters, dispatch }, payload) {
-    //     let index = getters.getCallIndex(payload.ucid)
-    //     dispatch('setCallStateRinging', payload)
-    //     commit('ADD_CALL_TO_INBOUND_CALL_LIST', payload.ucid)
-    //     commit('SET_CALL_TYPE_INBOUND', index)
-    // },
-
     //Called when the first call event arrives (call state ringing)
     async processNewInboundCall({ commit, getters, dispatch }, payload) {
 
@@ -180,6 +174,7 @@ const actions = {
         dispatch('addCallToActiveCalls', payload)
         dispatch('addConsultedCallDetailsToPrimary', payload)
         dispatch('setConsultedCallStateTalking', payload)
+
         commit('ADD_CALL_TO_CONSULTED_CALL_LIST', payload.ucid)
         let index = getters.getCallIndex(payload.ucid)
         commit('SET_CALL_TYPE_CONSULTED', index)
@@ -202,9 +197,14 @@ const actions = {
         if (inboundCallList && inboundCallList.length === 1) {
             let callIndex = getters.getCallIndex(inboundCallList[0])
             commit('ADD_CONSULTED_CALL_TO_PRIMARY', [callIndex, payload])
+
         }
     },
 
+    setMultiCallStateConferenced({ commit, getters }, payload) {
+        let callIndex = getters.getCallIndex(payload.ucid)
+        if (callIndex !== null) commit('SET_MULTI_CALL_STATE_CONFERENCED', callIndex)
+    },
 
     requestAnswerDropCall({ getters, dispatch }, [requestedUcid]) {
         let request = {
@@ -428,11 +428,15 @@ const mutations = {
     SET_CALL_TYPE_CONSULTED(state, index) {
         state.calls[index].type = CALL_TYPES.CONSULTED
     },
+    SET_MULTI_CALL_STATE_CONFERENCED(state, index) {
+        state.calls[index].multiCallState = MULTI_CALL_STATES.CONFERENCED
+    },
 
     SET_CALL_TYPE_OUTBOUND(state, index) {
         state.calls[index].type = CALL_TYPES.OUTBOUND
     },
     ADD_CONSULTED_CALL_TO_PRIMARY(state, [index, payload]) {
+        state.calls[index].multiCallState = MULTI_CALL_STATES.CONSULTED
         state.calls[index].consultedCall = payload
     },
 

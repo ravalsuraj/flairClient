@@ -17,8 +17,9 @@ export default {
       timerInterval: null
     }
   },
-  beforeMount() {
-    if (this.timerState === TIMER_STATES.START) {
+  mounted() {
+    if (this.$store.getters.getTimers[this.timerName] === TIMER_STATES.START) {
+      Vue
       this.startTicking()
     }
   },
@@ -54,31 +55,36 @@ export default {
   },
   computed: {
     timer() {
+      console.log("timer computed called")
       return this.$store.getters.getTimers[this.timerName]
     },
     timerState() {
       return this.timer.state
     },
-    refTime() {
-      return this.$store.getters.getTimers[this.timerName].refTime
+    refTime: {
+      get: function() {
+        return this.timer.refTime
+      },
+      set: function() {}
     }
   },
   watch: {
     refTime: {
       immediate: true,
+      deep: true,
       handler: function() {
+        console.log('PersistTimer(): refTime watch() called')
         this.resetFormattedTime()
       }
     },
     timerState: {
       immediate: true,
+      deep: true,
       handler: function(newState, oldState) {
-        if (oldState === TIMER_STATES.STOP && newState === TIMER_STATES.START) {
+        console.log('PersistTimer(): timerState watch() called')
+        if (newState === TIMER_STATES.START) {
           this.startTicking()
-        } else if (
-          oldState === TIMER_STATES.START &&
-          newState === TIMER_STATES.STOP
-        ) {
+        } else if (newState === TIMER_STATES.STOP) {
           this.stopTicking()
         }
       }

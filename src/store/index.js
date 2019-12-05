@@ -65,7 +65,9 @@ export default new Vuex.Store({
     },
 
     sockets: {
-      connect() { },
+      connect() {
+        
+       },
       connection_error() {
         this.state.socket.status = SOCKET_STATES.DISCONNECTED
       }

@@ -6,19 +6,19 @@
           <mdb-row class="no-gutters">
             <mdb-col :col="cardWidth">
               <mdb-row>
-                <mdb-col col="md-6" class="mb-3 d-flex">
+                <mdb-col col="6" class="mb-3 d-flex">
                   <span strong class="fl_well_text big mx-auto">{{callingAddress}}</span>
                 </mdb-col>
-                <mdb-col col="md-6" class="mb-3 text-center">
+                <mdb-col col="6" class="mb-3 text-center">
                   <persist-timer :timerName="callTimerName" class="fl_well_text big"></persist-timer>
                 </mdb-col>
               </mdb-row>
 
               <mdb-row>
-                <mdb-col col="md-6" class="mb-3 d-flex">
+                <mdb-col col="6" class="mb-3 d-flex">
                   <span strong class="fl_well_text big mx-auto">{{callStatusText}}</span>
                 </mdb-col>
-                <mdb-col col="md-6" class="mb-3 text-center">
+                <mdb-col col="6" class="mb-3 text-center">
                   <persist-timer :timerName="inStateTimerName" class="fl_well_text big"></persist-timer>
                 </mdb-col>
               </mdb-row>
@@ -28,7 +28,7 @@
             <!-- START: Answer/Drop Button -->
             <mdb-col :col="cardWidth">
               <mdb-row>
-                <mdb-col col="md-3">
+                <mdb-col col="3">
                   <transition name="fade">
                     <button
                       v-if="!isCallHeld"
@@ -48,7 +48,7 @@
                 <!-- END: Answer/Drop Button -->
 
                 <!-- START: Hold Button -->
-                <mdb-col col="md-3">
+                <mdb-col col="3">
                   <transition name="fade">
                     <button
                       type="checkbox"
@@ -64,7 +64,7 @@
                 <!--END: Hold Button-->
 
                 <!-- START: Conference Button -->
-                <mdb-col col="md-3">
+                <mdb-col col="3">
                   <!-- <transition name="fade"> -->
                   <button
                     type="checkbox"

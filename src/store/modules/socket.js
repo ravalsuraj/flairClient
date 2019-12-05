@@ -21,6 +21,7 @@ export default {
         /******************* SOCKETIO STATE MUTATIONS *********************/
         SET_SOCKET_STATE_CONNECTED(state) {
             state.status = SOCKET_STATES.CONNECTED
+
         },
         SET_SOCKET_STATE_DISCONNECTED(state) {
             state.status = SOCKET_STATES.DISCONNECTED
@@ -28,10 +29,23 @@ export default {
     },
     actions: {
 
-        setSocketStateConnected({ commit }, context) {
+        setSocketStateConnected({ commit, dispatch }) {
             commit('SET_SOCKET_STATE_CONNECTED')
+            dispatch('sendSessionRejoinEvent')
+
         },
 
+        sendSessionRejoinEvent({ getters }) {
+            let sessionId = getters['session/getSessionId']
+            if (sessionId) {
+                let request = {
+                    sessionId: sessionId
+                }
+                this._vm.$socket.emit(SOCKET_EVENTS.REJOIN_SESSION, request, (response) => {
+                    console.log('setSocketStateConnected(): response=' + JSON.stringify(response))
+                })
+            }
+        },
         setSocketStateDisconnected({ commit }, context) {
             commit('SET_SOCKET_STATE_DISCONNECTED')
         },
@@ -60,24 +74,12 @@ export default {
         SOCKET_DEVEVENT({ }, payload) {
             console.log('Recieved event: ' + 'DEVEVENT' + JSON.stringify(payload))
         },
+
         SOCKET_ICALLRING({ dispatch, getters }, payload) {
             console.log('SOCKET_ICALLRING: resp=' + JSON.stringify(payload))
             dispatch('processNewInboundCall', payload)
 
-            // if (getters.getPrimaryCall.ucid == payload.callId) {
 
-            //     console.log('SOCKET_ICALLRING: called for primary call')
-            //     dispatch('setCallStateRinging', payload)
-
-            // } else if (getters.getConsultedCall.ucid == payload.callId) {
-
-            //     console.log('SOCKET_ICALLRING: called for consultedCall call')
-            //     dispatch('setConsultedCallStateRinging', payload)
-
-            // } else {
-
-            //     console.log('SOCKET_ICALLRING: not identified for call OR conf call')
-            // }
         },
 
         SOCKET_ICALLTALK({ dispatch, getters }, payload) {
@@ -110,8 +112,9 @@ export default {
             }
         },
 
-        SOCKET_CALLCONF({ dispatch, getters }, payload){
+        SOCKET_CALLCONF({ dispatch, getters }, payload) {
             console.log('Recieved event: ' + 'CALLCONF' + JSON.stringify(payload))
+            dispatch('setMultiCallStateConferenced', payload)
         },
 
         // SOCKET_OUTCALLRING({ dispatch }, payload) {

@@ -68,7 +68,14 @@ export const CALL_TYPES = Object.freeze({
   INBOUND: '1',
   CONSULTED: '2',
   OUTBOUND: '3',
-  UNKNOWN: '99'
+  UNKNOWN: '99',
+})
+
+export const MULTI_CALL_STATES = Object.freeze({
+  SINGLE: '1',
+  CONSULTED: '2',
+  TRANSFERED: '3',
+  CONFERENCED: '4'
 })
 
 
@@ -93,6 +100,8 @@ export const SOCKET_EVENTS = Object.freeze({
   GET_SESSION: 'GETSESSION',
   END_SESSION: 'ENDSESSION',
   CHECK_SESSION: 'CHECKSESSION',
+
+  REJOIN_SESSION: 'REJOINSESSION',
 
   MONITOR_STATION: 'MONDEV',
   MONITOR_END: 'MONEND',

@@ -20,15 +20,16 @@
           <a
             class="black-text align-self-baseline mr-3 fl_btn_btnIcon"
             @click="deleteSingleDigit"
+            v-longclick="() => clearDigits()"
             @click.stop
           >
             <mdb-icon icon="backspace" size="1p5x" />
           </a>
 
           <!--Delete All Digits-->
-          <a class="black-text align-self-baseline fl_btn_btnIcon" @click="clearDigits" @click.stop>
+          <!-- <a class="black-text align-self-baseline fl_btn_btnIcon" @click="clearDigits" @click.stop>
             <mdb-icon icon="trash" size="1p5x" />
-          </a>
+          </a> -->
         </mdb-row>
       </form>
       <mdb-row>
@@ -51,7 +52,6 @@
             class="mdb-color mx-2 w-100"
             v-if="!isConsultedCallActive"
             @click="onConsultButtonClicked"
-           
           >
             <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
             <span>Consult</span>
@@ -59,11 +59,7 @@
         </transition>
         <transition name="fade">
           <div class="btn-group w-100 pb-2" v-if="isConsultedCallActive">
-            <mdb-btn
-              class="btn-deep-orange mx-2 px-2 w-100"
-              @click="onConfDropButtonClicked"
-            
-            >Drop</mdb-btn>
+            <mdb-btn class="btn-deep-orange mx-2 px-2 w-100" @click="onConfDropButtonClicked">Drop</mdb-btn>
             <!-- <mdb-btn
               class="info-color mx-2 px-2 w-50"
               @click="onConfHoldBtnClicked"
