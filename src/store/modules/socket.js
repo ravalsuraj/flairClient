@@ -39,8 +39,10 @@ export default {
                 let request = {
                     sessionId: sessionId
                 }
+                console.log('sendSessionRejoinEvent(): request=' + JSON.stringify(request))
+
                 this._vm.$socket.emit(SOCKET_EVENTS.REJOIN_SESSION, request, (response) => {
-                    console.log('setSocketStateConnected(): response=' + JSON.stringify(response))
+                    console.log('sendSessionRejoinEvent(): response=' + JSON.stringify(response))
                 })
             }
         },
@@ -113,6 +115,11 @@ export default {
         SOCKET_CALLCONF({ dispatch, getters }, payload) {
             console.log('Recieved event: ' + 'CALLCONF' + JSON.stringify(payload))
             dispatch('setMultiCallStateConferenced', payload)
+        },
+        SOCKET_CONFCALLDISC({ dispatch, getters }, payload) {
+            console.log('Recieved event: ' + 'CONFCALLDISC' + JSON.stringify(payload))
+            dispatch('removeConferenceCallFromPrimary', payload)
+
         },
 
         // SOCKET_OUTCALLRING({ dispatch }, payload) {

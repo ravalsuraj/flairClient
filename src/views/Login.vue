@@ -46,37 +46,41 @@
                 type="password"
                 v-model="credentials.password"
               />
+              <div class="d-flex justify-content-center mb-1">
+                <div class="custom-control custom-radio custom-control-inline mr-5">
+                  <input
+                    type="radio"
+                    class="custom-control-input"
+                    id="auto-in"
+                    name="login-type"
+                    value="auto"
+                    v-model="credentials.workMode"
+                    checked
+                  />
+                  <label class="custom-control-label" for="auto-in">Auto-in</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input
+                    type="radio"
+                    class="custom-control-input"
+                    id="manual-in"
+                    name="login-type"
+                    value="manual"
+                    v-model="credentials.workMode"
+                  />
+                  <label class="custom-control-label" for="manual-in">Manual-in</label>
+                </div>
+              </div>
+              <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
+              <div class="btn-group text-center my-3 w-100">
+                <mdb-btn
+                  class="btn white-text unique-color mr-3"
+                  @click="agentLoginBtnClicked"
+                  @keydown="agentLoginBtnClicked"
+                  
+                >Log in</mdb-btn>
+              </div>
             </form>
-
-            <div class="d-flex justify-content-center mb-1">
-              <div class="custom-control custom-radio custom-control-inline mr-5">
-                <input
-                  type="radio"
-                  class="custom-control-input"
-                  id="auto-in"
-                  name="login-type"
-                  value="auto"
-                  v-model="credentials.workMode"
-                  checked
-                />
-                <label class="custom-control-label" for="auto-in">Auto-in</label>
-              </div>
-              <div class="custom-control custom-radio custom-control-inline">
-                <input
-                  type="radio"
-                  class="custom-control-input"
-                  id="manual-in"
-                  name="login-type"
-                  value="manual"
-                  v-model="credentials.workMode"
-                />
-                <label class="custom-control-label" for="manual-in">Manual-in</label>
-              </div>
-            </div>
-            <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
-            <div class="btn-group text-center my-3 w-100">
-              <mdb-btn class="btn white-text unique-color mr-3" @click="agentLoginBtnClicked">Log in</mdb-btn>
-            </div>
           </mdb-card-body>
           <mdb-alert :color="loginAlert.color" v-if="loginAlert.show">{{loginAlert.message}}</mdb-alert>
         </mdb-card>

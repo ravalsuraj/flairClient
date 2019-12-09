@@ -29,7 +29,7 @@
           <!--Delete All Digits-->
           <!-- <a class="black-text align-self-baseline fl_btn_btnIcon" @click="clearDigits" @click.stop>
             <mdb-icon icon="trash" size="1p5x" />
-          </a> -->
+          </a>-->
         </mdb-row>
       </form>
       <mdb-row>
@@ -48,32 +48,24 @@
 
       <mdb-row class>
         <transition name="fade">
-          <mdb-btn
-            class="mdb-color mx-2 w-100"
-            v-if="!isConsultedCallActive"
-            @click="onConsultButtonClicked"
-          >
+          <mdb-btn class="mdb-color mx-2 w-100" @click="onConsultButtonClicked">
             <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
             <span>Consult</span>
           </mdb-btn>
         </transition>
-        <transition name="fade">
+        <!-- <transition name="fade">
           <div class="btn-group w-100 pb-2" v-if="isConsultedCallActive">
             <mdb-btn class="btn-deep-orange mx-2 px-2 w-100" @click="onConfDropButtonClicked">Drop</mdb-btn>
-            <!-- <mdb-btn
-              class="info-color mx-2 px-2 w-50"
-              @click="onConfHoldBtnClicked"
-            >{{confHoldText}}</mdb-btn>-->
+
           </div>
-        </transition>
-        <transition name="fade">
+        </transition>-->
+        <!-- <transition name="fade">
           <div class="btn-group w-100" v-if="isConsultedCallActive">
             <mdb-btn class="mdb-color mx-2 px-2 w-50" @click="onTransferButtonClicked">Trans</mdb-btn>
             <mdb-btn class="mdb-color mx-2 px-2 w-50" @click="onConferenceButtonClicked">Conf</mdb-btn>
-            <!-- <mdb-btn class="mdb-color mx-2 px-2" @click="onRejoinButtonClicked">Rejoin</mdb-btn> -->
-            <!-- <mdb-btn class="mdb-color mx-2 px-2" @click="onSwitchButtonClicked">Switch</mdb-btn> -->
+
           </div>
-        </transition>
+        </transition>-->
 
         <!-- <mdb-btn class="unique-color">Conf</mdb-btn> -->
       </mdb-row>
@@ -123,7 +115,7 @@ export default {
 
   data() {
     return {
-      dialedDigits: '08879708222',
+      dialedDigits: '2101',
 
       digits: [
         {

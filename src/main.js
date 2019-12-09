@@ -45,7 +45,7 @@ const longClickInstance = longClickDirective({ delay: 400, interval: 50 })
 Vue.directive('longclick', longClickInstance)
 Vue.use(
   new VueSocketIO({
-    debug: true,
+    debug: false,
     connection: config.FLAIR_SERVER_URL,
     vuex: {
       store,

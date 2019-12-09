@@ -27,7 +27,9 @@ export default {
         updateDialedDigits({ commit }, inpDigits) {
             commit('UPDATE_DIALED_DIGITS', inpDigits)
         },
-        async requestOutboundCall({ getters, dispatch }) {
+
+
+        async requestOutboundCall({ getters, dispatch }, payload) {
             return new Promise((resolve, reject) => {
                 if (!getters.getDialedDigits) {
                     dispatch('showErrorBanner', ['Outbound Call Not Made', 'Please enter a valid number'])
@@ -35,7 +37,8 @@ export default {
 
                     let request = {
                         sessionId: getters['session/getSessionId'],
-                        dialedDigits: getters.getDialedDigits
+                        
+                        dialedNumber: getters.getDialedDigits,
                     }
 
                     console.log("requestOutboundCall(): request=" + JSON.stringify(request));

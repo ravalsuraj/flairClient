@@ -5,28 +5,9 @@ import {
 
 function initialState() {
     return {
-        timers: {
-            timerA: {
-                refTime: null,
-                direction: TIMER_DIRECTIONS.UP,
-                state: 0
-            },
-        },
-        demo: 0,
-        callStateTimer: {
-            status: TIMER_STATES.STOP,
-        },
-
-        acwTimer: {
-            status: TIMER_STATES.STOP,
-            expiry: 60
-        },
-        callTimerInstate: {
-            status: TIMER_STATES.STOP
-        },
-        agentTimerInstate: {
-            status: TIMER_STATES.STOP
-        }
+        timers: [
+        ],
+        timerList: [],
 
     }
 }
@@ -41,49 +22,69 @@ export default {
 
         //Persist Timer Mutations:
         ADD_UP_TIMER(state, timerName) {
-            if (!state.timers[timerName]) {
-                state.timers[timerName] = {};
-                state.timers[timerName] = {
-                    state: TIMER_STATES.STOP,
-                    direction: TIMER_DIRECTIONS.UP,
-                    refTime: null
-                };
-            }
+            let newTimer = {
+                state: TIMER_STATES.STOP,
+                direction: TIMER_DIRECTIONS.UP,
+                refTime: new Date().getTime()
+            };
+            state.timerList.push(timerName)
+            state.timers.push(newTimer)
+
         },
 
         ADD_DOWN_TIMER(state, timerName) {
-            if (!state.timers[timerName]) {
-                state.timers[timerName] = {};
-                state.timers[timerName] = {
-                    state: TIMER_STATES.STOP,
-                    direction: TIMER_DIRECTIONS.DOWN,
-                    refTime: null
-                };
-            }
+            let newTimer = {
+                state: TIMER_STATES.STOP,
+                direction: TIMER_DIRECTIONS.DOWN,
+                refTime: new Date().getTime()
+            };
+            state.timerList.push(timerName)
+            state.timers.push(newTimer)
+
         },
 
         REMOVE_TIMER(state, timerName) {
-            if (state.timers[timerName]) {
-                delete state.timers[timerName]
+            let index = state.timerList.indexOf(timerName)
+            if (index != -1) {
+                state.timers.splice(index, 1)
+                state.timerList.splice(index, 1)
             }
 
         },
         STOP_TIMER(state, timerName) {
-            state.timers[timerName].state = 0;
-            state.timers[timerName].refTime = null;
+            let index = state.timerList.indexOf(timerName)
+            if (index != -1) {
+                state.timers[index].state = 0;
+                state.timers[index].refTime = null;
+
+            } else {
+                console.log("STOP_TIMER(): skipping, since timer does not exist in state. timerName=" + timerName)
+            }
         },
 
         START_TIMER(state, timerName) {
-            state.timers[timerName].refTime = new Date().getTime();
-            state.timers[timerName].state = 1;
+
+            let index = state.timerList.indexOf(timerName)
+            console.log("START_TIMER mutation called for index=" + index + ", timerName=" + timerName)
+            if (index != -1) {
+                state.timers[index].refTime = new Date().getTime();
+                state.timers[index].state = 1;
+            } else {
+                console.log("START_TIMER(): skipping, since timer does not exist in state. timerName=" + timerName)
+            }
+
         },
 
         PAUSE_TIMER(state, timerName) {
-            state.timers[timerName].state = 2;
+            let index = state.timerList.indexOf(timerName)
+            state.timers[index].refTime = new Date().getTime();
+            state.timers[index].state = 2;
         },
         RESTART_TIMER(state, timerName) {
-            state.timers[timerName].state = 3;
-            state.timers[timerName].refTime = new Date().getTime();
+            let index = state.timerList.indexOf(timerName)
+            state.timers[index].refTime = new Date().getTime();
+            state.timers[index].state = 3;
+            state.timers[index].refTime = new Date().getTime();
         }
     },
     actions: {
@@ -107,6 +108,13 @@ export default {
     getters: {
         getTimers(state) {
             return state.timers;
+        },
+        getTimer: (state) => (timerName) => {
+            let index = state.timerList.indexOf(timerName)
+            return state.timers[index]
+        },
+        getTimerIndex: (state) => (timerName) => {
+            return state.timerList.indexOf(timerName)
         },
         getTimerStatus: (state) => (timerName) => {
             console.log("getters.getTimerStatus=" + state[timerName].status)

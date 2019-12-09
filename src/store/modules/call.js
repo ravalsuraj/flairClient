@@ -54,6 +54,9 @@ const getters = {
         console.log("getCallIndex():ucid=" + ucid + ", totalCallList=" + JSON.stringify(state.totalCallList))
         console.log("getCallIndex(): returning index=" + state.totalCallList.indexOf(ucid))
         return state.totalCallList.indexOf(ucid)
+    },
+    getMultiCallState: (state) => (ucid) => {
+        return state.calls[state.totalCallList.indexOf(ucid)].multiCallState
     }
 
 }
@@ -120,13 +123,10 @@ const actions = {
             cli: payload.callingAddress,
             ucid: payload.ucid
         }
-        // dispatch('setUui', uui)
-        // dispatch('setCallerData', uui)
+
     },
 
     setCallStateDialing({ commit, dispatch, getters }, payload) {
-        // commit('SET_CALL_STATE_DIALING', payload)
-        // commit('SET_CALL_ARR_STATE_DIALING', getters.getCallIndex(payload.ucid))
 
         let uui = {
             cli: payload.callingAddress,
@@ -137,18 +137,18 @@ const actions = {
     },
 
     setCallStateTalking({ commit, getters }, payload) {
-        // commit('SET_CALL_STATE_TALKING', payload)
+
         commit('SET_CALL_ARR_STATE_TALKING', getters.getCallIndex(payload.ucid))
         commit('SET_ACTIVE_CALL', payload.ucid)
     },
     setCallStateHeld({ commit, getters }, payload) {
-        // commit('SET_CALL_STATE_HELD', payload)
+
         commit('SET_CALL_ARR_STATE_HELD', getters.getCallIndex(payload.ucid))
         commit('RESET_ACTIVE_CALL', payload.ucid)
     },
 
     setCallStateDropped({ commit, dispatch, getters }, payload) {
-        // commit('SET_CALL_STATE_DROPPED', payload)
+
         commit('SET_CALL_ARR_STATE_DROPPED', getters.getCallIndex(payload.ucid))
         if (payload.ucid === getters.getActiveCall.ucid) {
             commit('RESET_ACTIVE_CALL', payload.ucid)
@@ -201,9 +201,24 @@ const actions = {
         }
     },
 
+    removeConferenceCallFromPrimary({ commit, getters }, payload) {
+        let inboundCallList = getters.getInboundCallList
+        if (inboundCallList && inboundCallList.length === 1) {
+            let callIndex = getters.getCallIndex(inboundCallList[0])
+            commit('REMOVE_CONSULTED_CALL_FROM_PRIMARY', [callIndex])
+
+        }
+    },
     setMultiCallStateConferenced({ commit, getters }, payload) {
+        console.log("setMultiCallStateConferenced(): action entered: payload" + JSON.stringify(payload))
         let callIndex = getters.getCallIndex(payload.ucid)
-        if (callIndex !== null) commit('SET_MULTI_CALL_STATE_CONFERENCED', callIndex)
+        if (callIndex !== null) {
+            console.log("setMultiCallStateConferenced(): commiting mutation. callIndex=" + callIndex)
+            commit('SET_MULTI_CALL_STATE_CONFERENCED', callIndex)
+            commit('DUMMY_MUTATION')
+        } else {
+            console.log("setMultiCallStateConferenced(): skiping mutation. callIndex=" + callIndex)
+        }
     },
 
     requestAnswerDropCall({ getters, dispatch }, [requestedUcid]) {
@@ -270,7 +285,6 @@ const actions = {
     processDropCallResponse({ dispatch }, response) {
         console.log('processDropCallResponse(): response=' + JSON.stringify(response))
         if (response.responseCode === '0') {
-            //dispatch('setCallStateDropped')
         } else {
             dispatch('showErrorBanner', ['Call Drop Failed', response.responseMessage])
         }
@@ -353,7 +367,9 @@ const actions = {
 }
 
 const mutations = {
+    DUMMY_MUTATION(state) {
 
+    },
     RESET_CALL_MODULE(state) {
         Object.assign(state, initialState())
     },
@@ -361,6 +377,7 @@ const mutations = {
     ADD_CALL(state, call) {
         state.calls.push(call)
         state.totalCallList.push(call.ucid)
+
     },
 
     SET_CALL_STATE(state, [index, newStatus]) {
@@ -383,6 +400,7 @@ const mutations = {
         state.primary.callId = payload.callId
         state.primary.calledAddress = payload.calledAddress
         state.primary.callingAddress = payload.callingAddress
+
     },
 
     SET_CALL_STATE_DIALING(state, payload) {
@@ -405,6 +423,7 @@ const mutations = {
 
     SET_CALL_ARR_STATE_RINGING(state, index) {
         state.calls[index].status = CALL_STATES.RINGING
+        state.calls[index].multiCallState = MULTI_CALL_STATES.SINGLE
     },
 
     SET_CALL_ARR_STATE_DIALING(state, index) {
@@ -418,7 +437,10 @@ const mutations = {
         state.calls[index].status = CALL_STATES.HELD
     },
     SET_CALL_ARR_STATE_DROPPED(state, index) {
-        state.calls[index].status = CALL_STATES.DROPPED
+        if (index != null && index != -1 && state.calls[index]) {
+            state.calls[index].status = CALL_STATES.DROPPED
+        }
+
     },
 
     SET_CALL_TYPE_INBOUND(state, index) {
@@ -439,7 +461,10 @@ const mutations = {
         state.calls[index].multiCallState = MULTI_CALL_STATES.CONSULTED
         state.calls[index].consultedCall = payload
     },
-
+    REMOVE_CONSULTED_CALL_FROM_PRIMARY(state, index) {
+        state.calls[index].multiCallState = MULTI_CALL_STATES.SINGLE
+        delete state.calls[index].consultedCall
+    },
     ADD_CALL_TO_INBOUND_CALL_LIST(state, ucid) {
         //Check if the inbound call list has the ucid. If not, push it
         if (!state.inboundCallList.includes(ucid)) {
@@ -449,8 +474,10 @@ const mutations = {
         }
     },
     REMOVE_CALL_FROM_INBOUND_CALL_LIST(state, ucid) {
-        if (state.inboundCallList.includes(ucid)) {
-            state.inboundCallList.splice(state.inboundCallList.indexOf(ucid))
+        let index = state.inboundCallList.indexOf(ucid)
+        if (index != -1) {
+
+            state.inboundCallList.splice(index, 1)
         } else {
             console.log("REMOVE_CALL_FROM_INBOUND_CALL_LIST(): ucid does not exist in inboundCallList")
         }
@@ -464,8 +491,9 @@ const mutations = {
     },
 
     REMOVE_CALL_FROM_CONSULTED_CALL_LIST(state, ucid) {
-        if (state.consultedCallList.includes(ucid)) {
-            state.consultedCallList.splice(state.consultedCallList.indexOf(ucid))
+        let index = state.consultedCallList.indexOf(ucid);
+        if (index != -1) {
+            state.consultedCallList.splice(index, 1)
         } else {
             console.log("REMOVE_CALL_FROM_CONSULTED_CALL_LIST(): ucid does not exist in consultedCallList")
         }
@@ -480,9 +508,10 @@ const mutations = {
     },
 
     REMOVE_CALL_FROM_OUTBOUND_CALL_LIST(state, ucid) {
-        //Check if the consulted call list has the ucid. If not, push it
-        if (state.outboundCallList.includes(ucid)) {
-            state.outboundCallList.splice(state.outboundCallList.indexOf(ucid))
+        //Check if the outbound call list has the ucid. If not, push it
+        let index = state.outboundCallList.indexOf(ucid);
+        if (index != -1) {
+            state.outboundCallList.splice(index, 1)
         } else {
             console.log("REMOVE_CALL_FROM_OUTBOUND_CALL_LIST(): ucid does not exist in outboundCallList")
         }
@@ -490,8 +519,11 @@ const mutations = {
 
 
     REMOVE_CALL(state, index) {
-        state.totalCallList.splice(index)
-        state.calls.splice(index)
+        if (index != -1) {
+            state.totalCallList.splice(index, 1)
+            state.calls.splice(index, 1)
+        }
+
     },
 
     RESET_CALL_STATUS(state) {

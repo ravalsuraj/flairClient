@@ -105,6 +105,7 @@
 
 <script>
 import ConsultDialer from '@/widgets/Dialer/ConsultDialer'
+import OutboundDialer from '@/widgets/Dialer/OutboundDialer'
 import CallDisposition from '@/widgets/CallDisposition/CallDisposition'
 import PersistTimer from '@/components/agc/PersistTimer.vue'
 import Widget from '@/components/agc/Widget'
@@ -151,7 +152,7 @@ export default {
     PersistTimer,
     ConsultDialer,
     CallDisposition,
-
+    OutboundDialer,
     mdbPopover,
     mdbContainer,
     mdbRow,
@@ -188,7 +189,8 @@ export default {
     return {
       spinner: {
         show: false
-      }
+      },
+      multiCallState: null
     }
   },
   methods: {
@@ -198,7 +200,9 @@ export default {
     hideSpinner() {
       this.spinner.show = false
     },
-
+    updateMultiCallState() {
+      this.multiCallState = this.$store.getters.getMultiCallState(this.ucid)
+    },
     answerDropCall() {
       this.$store.dispatch('requestAnswerDropCall', [
         this.call.ucid,
@@ -224,8 +228,18 @@ export default {
       return this.$store.getters.getCalls.length > 2 ? 'md-12' : 'md-6'
     },
 
+    allOngoingCalls() {
+      return this.$store.getters.getCalls
+    },
+    currentCallIndex() {
+      return this.$store.getters.getCallIndex(this.ucid)
+    },
     call() {
       return this.$store.getters.getCallByUcid(this.ucid)
+    },
+
+    callIndex() {
+      return this.$store.getters.getCallIndex(this.ucid)
     },
     callStatus() {
       return this.call.status
@@ -260,10 +274,14 @@ export default {
     conferencedCall() {
       return this.call.consultedCall
     },
+
+    // multiCallState() {
+    //   return this.$store.getters.getMultiCallState(this.ucid)
+    // },
     isCallConferenced() {
       if (
         this.call.consultedCall &&
-        this.call.multiCallState === MULTI_CALL_STATES.CONFERENCED
+        this.multiCallState === MULTI_CALL_STATES.CONFERENCED
       ) {
         return true
       } else {
@@ -340,28 +358,61 @@ export default {
     }
   },
   watch: {
+    allOngoingCalls: {
+      immediate: false,
+      deep: true,
+      handler: function(newState, oldState) {
+        console.log(
+          'allOngoingCalls(): watch - currentCallIndex = ' +
+            this.currentCallIndex
+        )
+        if (this.currentCallIndex != null) {
+          console.log(
+            'allOngoingCalls(): watch- newState[this.currentCallIndex]=' +
+              JSON.stringify(newState[this.currentCallIndex])
+          )
+          console.log(
+            'allOngoingCalls(): watch - oldState[this.currentCallIndex]=' +
+              JSON.stringify(oldState[this.currentCallIndex])
+          )
+        } else {
+          console.log(
+            'allOngoingCalls(): watch- newState=' + JSON.stringify(newState)
+          )
+          console.log(
+            'allOngoingCalls(): watch - oldState=' + JSON.stringify(oldState)
+          )
+        }
+
+        // if (
+        //   oldState[this.currentCallIndex].multiCallState !==
+        //   newState[this.currentCallIndex].multiCallState
+        // ) {
+        //   console.log(
+        //     'multi call state changed oldState.multiCallState=' +
+        //       oldState[this.currentCallIndex].multiCallState +
+        //       ', newState.multiCallState=' +
+        //       newState[this.currentCallIndex].multiCallState
+        //   )
+        // }
+      }
+    },
     callStatus: {
       immediate: true,
       deep: true,
       handler: function(newCallStatus, oldCallStatus) {
-        console.log(
-          'CallCardInbound/watch/callStatus(): newCallStatus=' +
-            newCallStatus +
-            ', oldCallStatus=' +
-            oldCallStatus
-        )
+        this.updateMultiCallState()
+
         switch (newCallStatus) {
           case CALL_STATES.IDLE:
           case CALL_STATES.UNKNOWN:
             break
           case CALL_STATES.RINGING:
             this.$store.dispatch('startTimer', this.callTimerName)
+            this.$store.dispatch('startTimer', this.inStateTimerName)
             break
           case CALL_STATES.TALKING:
           case CALL_STATES.HELD:
-            console.log('calling stop and start timer for instateTimer')
-            // this.$store.dispatch('stopTimer', this.inStateTimerName)
-
             this.$store.dispatch('startTimer', this.inStateTimerName)
             break
           default:

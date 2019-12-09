@@ -101,7 +101,7 @@
                           input-class="fl_hidden"
                           v-model="callToBeConferenced"
                           :empty-value="otherCalls[0].ucid"
-                        /> -->
+                        />-->
                         <div class="text-center py-2">Call to Conference/ Transfer :</div>
                         <h3 class="text-center">{{otherCalls[0].callingAddress}}</h3>
                       </div>
@@ -207,8 +207,8 @@ export default {
   mounted() {
     if (this.otherCalls.length === 1) {
       this.callToBeConferenced = this.otherCalls[0].ucid
-    }else{
-      console.log("not setting calltobeconferenced")
+    } else {
+      console.log('not setting calltobeconferenced')
     }
   },
   props: {
@@ -271,7 +271,7 @@ export default {
           ucidA: this.callToBeConferenced
         }
         this.$store.dispatch('requestConferenceCall', transferRequest)
-      }else{
+      } else {
         console.log(
           'skipping conference call. this.ucid=' +
             this.ucid +
@@ -407,27 +407,35 @@ export default {
     }
   },
   watch: {
-    callStatus(newCallStatus, oldCallStatus) {
-      console.log(
-        'CallCardInbound/watch/callStatus(): newCallStatus=' +
-          newCallStatus +
-          ', oldCallStatus=' +
-          oldCallStatus
-      )
-      switch (newCallStatus) {
-        case CALL_STATES.IDLE:
-        case CALL_STATES.UNKNOWN:
-          break
-        case CALL_STATES.RINGING:
-          this.$store.dispatch('startTimer', this.callTimerName)
-          break
-        case CALL_STATES.TALKING:
-        case CALL_STATES.HELD:
-          this.$store.dispatch('startTimer', this.inStateTimerName)
-          break
-        default:
-          this.$store.dispatch('stopTimer', this.callTimerName)
-          this.$store.dispatch('stopTimer', this.inStateTimerName)
+    callStatus: {
+      immediate: true,
+      deep: true,
+      handler: function(newCallStatus, oldCallStatus) {
+        console.log(
+          'CallCardOutbound(): watcher - callStatus: newCallStatus=' +
+            newCallStatus +
+            ', oldCallStatus=' +
+            oldCallStatus
+        )
+        switch (newCallStatus) {
+          case CALL_STATES.IDLE:
+          case CALL_STATES.UNKNOWN:
+            break
+          case CALL_STATES.RINGING:
+            this.$store.dispatch('startTimer', this.callTimerName)
+            this.$store.dispatch('startTimer', this.inStateTimerName)
+            break
+          case CALL_STATES.TALKING:
+          case CALL_STATES.HELD:
+            console.log('CallCardOutbound(): watcher - callStatus:  calling stop and start timer for instateTimer')
+            // this.$store.dispatch('stopTimer', this.inStateTimerName)
+            // this.$store.dispatch('startTimer', this.callTimerName)
+            this.$store.dispatch('startTimer', this.inStateTimerName)
+            break
+          default:
+            this.$store.dispatch('stopTimer', this.callTimerName)
+            this.$store.dispatch('stopTimer', this.inStateTimerName)
+        }
       }
     }
   }
