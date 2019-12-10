@@ -122,11 +122,11 @@ export default {
 
         },
 
-        // SOCKET_OUTCALLRING({ dispatch }, payload) {
-        //     console.log('Received event: ' + 'OUTCALLRING' + JSON.stringify(payload))
+        SOCKET_OUTCALLRING({ dispatch }, payload) {
+            console.log('Received event: ' + 'OUTCALLRING' + JSON.stringify(payload))
 
-        //     dispatch('setConsultedCallStateRinging', payload)
-        // },
+            dispatch('setConsultedCallStateRinging', payload)
+        },
 
         SOCKET_OUTCALLTALK({ dispatch }, payload) {
             console.log('Received event: ' + 'OUTCALLTALK' + JSON.stringify(payload))
