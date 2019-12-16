@@ -2,7 +2,7 @@
   <widget title="CRM">
     <template v-slot:body>
       <div class="wrapper">
-        <div class="fallback px-5 py-5 mx-auto w-100 d-flex align-items-center">
+        <!-- <div class="fallback px-5 py-5 mx-auto w-100 d-flex align-items-center">
           <h1
             class="blue-text py-3 my-5 text-center"
           >The CRM could not be loaded. Please ensure that your CRM is accesible</h1>
@@ -11,11 +11,11 @@
             class="img-fluid ml-5 pl-5"
             src="https://mdbootstrap.com/img/Others/grafika404-bf.png"
           />
-        </div>
+        </div>-->
         <iframe
           :src="CRM_URL"
           class="w-100 fl_crm_window"
-          @error="iframeError"
+          @error="iframeError=true"
           :class="{'error': iframeError}"
         ></iframe>
       </div>
@@ -37,7 +37,7 @@ export default {
   data() {
     return {
       manualShowWidget: true,
-      iframeError: true
+      iframeError: false
     }
   },
   methods: {
@@ -63,31 +63,18 @@ export default {
       )
     },
     activeCall() {
-      let activeCall = {
-        responseCode: '0',
-        responseMessage: 'Success',
-        callId: 0,
-        ucid: '',
-        callingAddress: '',
-        calledAddress: '',
-        status: '',
-        type: '',
-        startTime: 1574832886343
-      }
+   
+      let ucid = this.$store.getters.getActiveCall
 
-      if (this.$store.getters.getActiveCall) {
-        let ucid = this.$store.getters.getActiveCall.ucid
-        if (this.$store.getters.getCallByUcid(ucid)) {
-          activeCall = this.$store.getters.getCallByUcid(ucid)
-        }
-      }
-      return activeCall
+      return this.$store.getters.getCallByUcid(ucid)
     },
     callingAddress() {
-      return this.activeCall.callingAddress
+
+      return this.activeCall?this.activeCall.callingAddress:null
     },
     calledAddress() {
-      return this.activeCall.calledAddress
+      return  this.activeCall?this.activeCall.calledAddress:null
+     
     },
     agentCredentials() {
       return this.$store.getters.getAgentCredentials
@@ -97,7 +84,6 @@ export default {
     },
 
     CRM_URL() {
-      //return this.$store.getters.getComputedCrmUrl
       if (this.callingAddress) {
         return (
           this.$store.getters.getCrmUrl +
@@ -105,10 +91,10 @@ export default {
           this.callingAddress +
           '&dnis=' +
           this.calledAddress +
-          '&agentId=' +
-          this.agentCredentials.agentId +
-          '&deviceId=' +
-          this.agentCredentials.deviceId
+          '&ucid=' +
+          this.activeCall.ucid +
+          '&callId=' +
+          this.activeCall.callId
         )
       } else {
         return this.$store.getters.getCrmUrl

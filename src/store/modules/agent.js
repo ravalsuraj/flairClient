@@ -71,19 +71,25 @@ export default {
             }
             console.log('sendAgentLoginRequest(): request: ' + JSON.stringify(request))
 
-            this._vm.$socket.emit(SOCKET_EVENTS.AGENT_LOGIN, request, (resp) => {
 
-                console.log('sendAgentLoginRequest(): response: ' + JSON.stringify(resp))
+            try {
 
-                if (resp.responseCode === '0') {
-                    dispatch('processAgentLogin')
+
+                this._vm.$socket.emit(SOCKET_EVENTS.AGENT_LOGIN, request, (resp) => {
+
+                    console.log('sendAgentLoginRequest(): response: ' + JSON.stringify(resp))
+
+                    if (resp.responseCode === '0') {
+                        dispatch('processAgentLogin')
+                        return resp
+                    } else {
+                        dispatch('showErrorBanner', ['Agent Login failed:', resp.responseMessage])
+                    }
                     return resp
-                } else {
-                    dispatch('showErrorBanner', ['Agent Login failed:', resp.responseMessage])
-                }
-                return resp
+                })
+            } catch (error) {
+                console.error(error)
             }
-            )
         },
 
         async sendAgentLogoutRequest({ commit, dispatch, getters }) {

@@ -4,7 +4,7 @@
     <div ref="topNavBar">
       <top-navbar v-if="isAgentLoggedIn" class></top-navbar>
     </div>
-    <main class="d-flex flex-fill main-body pt-5">
+    <main class="d-flex flex-fill main-body pt-5 mt-md-5 mt-lg-0">
       <router-view v-if="isAgentLoggedIn" class></router-view>
       <login-page v-else class="flex-fill pt-4"></login-page>
     </main>

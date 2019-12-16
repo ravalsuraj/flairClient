@@ -158,7 +158,7 @@ export default {
       return state.crm.computedUrl
     },
     getCrmUrl(state) {
-      return "http://localhost:9527/#/dashboard"
+      return "http://localhost:4000"
     }
   }
 }

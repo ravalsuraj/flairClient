@@ -55,30 +55,7 @@ export const config = {
             userSelectable: true,
             reasonCode: 0
         },
-        {
-            label: 'Break',
-            state: AGENT_STATES.NOT_READY,
-            userSelectable: true,
-            reasonCode: 1
-        },
-        {
-            label: 'Lunch',
-            state: AGENT_STATES.NOT_READY,
-            userSelectable: true,
-            reasonCode: 2
-        },
-        {
-            label: 'Dinner',
-            state: AGENT_STATES.NOT_READY,
-            userSelectable: true,
-            reasonCode: 3
-        },
-        {
-            label: 'After Call Work',
-            state: AGENT_STATES.WORK_NOT_READY,
-            userSelectable: true,
-            reasonCode: 3
-        },
+
     ],
 
 
@@ -108,3 +85,31 @@ export const config = {
     }
 
 }
+
+/*
+
+        {
+            label: 'Break',
+            state: AGENT_STATES.NOT_READY,
+            userSelectable: true,
+            reasonCode: 1
+        },
+        {
+            label: 'Lunch',
+            state: AGENT_STATES.NOT_READY,
+            userSelectable: true,
+            reasonCode: 2
+        },
+        {
+            label: 'Dinner',
+            state: AGENT_STATES.NOT_READY,
+            userSelectable: true,
+            reasonCode: 3
+        },
+        {
+            label: 'After Call Work',
+            state: AGENT_STATES.WORK_NOT_READY,
+            userSelectable: true,
+            reasonCode: 3
+        },
+*/
