@@ -39,7 +39,7 @@ const getters = {
     getInboundCallList(state) {
         return state.inboundCallList
     },
-    getActiveCall(state) {
+    getActiveCallUcid(state) {
         return state.activeCall.ucid
     },
     getCallByUcid: (state) => (ucid) => {
@@ -152,7 +152,7 @@ const actions = {
     setCallStateDropped({ commit, dispatch, getters }, payload) {
 
         commit('SET_CALL_ARR_STATE_DROPPED', getters.getCallIndex(payload.ucid))
-        if (payload.ucid === getters.getActiveCall.ucid) {
+        if (payload.ucid === getters.getActiveCallUcid) {
             commit('RESET_ACTIVE_CALL', payload.ucid)
         }
 
@@ -302,7 +302,7 @@ const actions = {
     },
 
     requestHoldUnholdCall({ getters, dispatch }, requestedUcid) {
-        console.log("requestHoldUnholdCall(): action entered" + getters['getActiveCall'])
+        console.log("requestHoldUnholdCall(): action entered" + getters['getActiveCallUcid'])
 
 
         let callStatus = getters.getCallByUcid(requestedUcid).status;
@@ -315,7 +315,7 @@ const actions = {
         console.log("requestHoldUnholdCall(): primaryRequest=", primaryRequest)
         switch (callStatus) {
             case CALL_STATES.HELD:
-                let currentActiveCallUcid = getters['getActiveCall']
+                let currentActiveCallUcid = getters['getActiveCallUcid']
 
                 if (currentActiveCallUcid) {
                     let holdActiveCallRequest = {

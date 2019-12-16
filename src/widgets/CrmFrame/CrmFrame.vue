@@ -64,7 +64,7 @@ export default {
     },
     activeCall() {
    
-      let ucid = this.$store.getters.getActiveCall
+      let ucid = this.$store.getters.getActiveCallUcid
 
       return this.$store.getters.getCallByUcid(ucid)
     },
