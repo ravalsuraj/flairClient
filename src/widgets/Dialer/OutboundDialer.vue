@@ -238,7 +238,7 @@ export default {
     onCallDropBtnClicked() {
       this.$store.dispatch('requestAnswerDropCall', [
         this.$store.getters.getPrimaryCall.ucid,
-        CALL_TYPES.PRIMARY
+        CALL_TYPES.OUTBOUND
       ])
     },
     onConfHoldBtnClicked() {

@@ -118,7 +118,7 @@ export default {
         },
         SOCKET_CONFCALLDISC({ dispatch, getters }, payload) {
             console.log('Recieved event: ' + 'CONFCALLDISC' + JSON.stringify(payload))
-            dispatch('removeConferenceCallFromPrimary', payload)
+            dispatch('processConferenceConnectionDisconnect', payload)
 
         },
 

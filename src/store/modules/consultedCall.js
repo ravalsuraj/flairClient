@@ -29,7 +29,7 @@ export default {
         checkCallTypePrimaryConsulted({ getters }, ucid) {
 
             if (ucid === getters.getPrimaryCall.ucid) {
-                return CALL_TYPES.PRIMARY
+                return CALL_TYPES.INBOUND
             } else if (ucid === getters.getConsultedCall.ucid) {
                 return CALL_TYPES.CONSULTED
             } else {
@@ -53,7 +53,7 @@ export default {
             dispatch('setCallState', [payload.ucid, CALL_STATES.TALKING])
             commit('SET_ACTIVE_CALL', payload.ucid)
         },
-        
+
         setConsultedCallStateHeld({ commit, dispatch }, payload) {
 
             dispatch('setCallState', [payload.ucid, CALL_STATES.HELD])

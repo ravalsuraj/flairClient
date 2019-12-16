@@ -189,8 +189,7 @@ export default {
     return {
       spinner: {
         show: false
-      },
-      multiCallState: null
+      }
     }
   },
   methods: {
@@ -200,9 +199,7 @@ export default {
     hideSpinner() {
       this.spinner.show = false
     },
-    updateMultiCallState() {
-      this.multiCallState = this.$store.getters.getMultiCallState(this.ucid)
-    },
+
     answerDropCall() {
       this.$store.dispatch('requestAnswerDropCall', [
         this.call.ucid,
@@ -275,9 +272,9 @@ export default {
       return this.call.consultedCall
     },
 
-    // multiCallState() {
-    //   return this.$store.getters.getMultiCallState(this.ucid)
-    // },
+    multiCallState() {
+      return this.$store.getters.getMultiCallState(this.ucid)
+    },
     isCallConferenced() {
       if (
         this.call.consultedCall &&
@@ -383,26 +380,12 @@ export default {
             'allOngoingCalls(): watch - oldState=' + JSON.stringify(oldState)
           )
         }
-
-        // if (
-        //   oldState[this.currentCallIndex].multiCallState !==
-        //   newState[this.currentCallIndex].multiCallState
-        // ) {
-        //   console.log(
-        //     'multi call state changed oldState.multiCallState=' +
-        //       oldState[this.currentCallIndex].multiCallState +
-        //       ', newState.multiCallState=' +
-        //       newState[this.currentCallIndex].multiCallState
-        //   )
-        // }
       }
     },
     callStatus: {
       immediate: true,
       deep: true,
       handler: function(newCallStatus, oldCallStatus) {
-        this.updateMultiCallState()
-
         switch (newCallStatus) {
           case CALL_STATES.IDLE:
           case CALL_STATES.UNKNOWN:

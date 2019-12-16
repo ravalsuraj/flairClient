@@ -56,6 +56,7 @@ const getters = {
         return state.totalCallList.indexOf(ucid)
     },
     getMultiCallState: (state) => (ucid) => {
+        console.log("getMultiCallState called. call[x]=", state.calls[state.totalCallList.indexOf(ucid)])
         return state.calls[state.totalCallList.indexOf(ucid)].multiCallState
     }
 
@@ -72,6 +73,7 @@ const actions = {
 
                 dispatch('addCallTimers', call.ucid)
                 let newCall = call;
+                newCall.multiCallState = MULTI_CALL_STATES.SINGLE
                 newCall.status = CALL_STATES.CREATED
                 newCall.type = CALL_TYPES.INBOUND
                 //http://jsfiddle.net/pdmrL1gq/1/
@@ -187,6 +189,11 @@ const actions = {
         commit('SET_CALL_TYPE_OUTBOUND', index)
     },
 
+    processConferenceConnectionDisconnect({ commit, getters, dispatch }, payload){
+        
+        dispatch('removeConferenceCallFromPrimary', payload)
+    },
+
     resetCallState({ commit }) {
         commit('RESET_CALL_STATUS')
         commit('RESET_CRM_DATA')
@@ -221,27 +228,31 @@ const actions = {
         }
     },
 
-    requestAnswerDropCall({ getters, dispatch }, [requestedUcid]) {
+    requestAnswerDropCall({ getters, dispatch }, [requestedUcid, callType]) {
         let request = {
             sessionId: getters['session/getSessionId'],
             ucid: requestedUcid
         }
         console.log("requestAnswerDropCall(): request=", request)
-        let callStatus = getters.getCallByUcid(requestedUcid).status
-        // callStatus = getters.getCallStatus
-        switch (callStatus) {
-            case CALL_STATES.RINGING:
-                console.log('AnswerDropCall(): calling answerCall()')
-                dispatch('requestAnswerCall', request)
-                break
-            case CALL_STATES.TALKING:
-                console.log('AnswerDropCall(): calling dropCall()')
-                dispatch('requestDropCall', request)
+        if (callType === CALL_TYPES.INBOUND) {
+            let callStatus = getters.getCallByUcid(requestedUcid).status
+    
+            switch (callStatus) {
+                case CALL_STATES.RINGING:
+                    console.log('AnswerDropCall(): calling answerCall()')
+                    dispatch('requestAnswerCall', request)
+                    break
+                case CALL_STATES.TALKING:
+                    console.log('AnswerDropCall(): calling dropCall()')
+                    dispatch('requestDropCall', request)
 
-                break
-            default:
-                console.log('AnswerDropCall(): skipping answer or drop because call state is: ' + CALL_STATES.Text[callStatus])
-                dispatch('showErrorBanner', ['Cannot Disconnect', 'Please remove the call from hold, before attempting to disconnect'])
+                    break
+                default:
+                    console.log('AnswerDropCall(): skipping answer or drop because call state is: ' + CALL_STATES.Text[callStatus])
+                    dispatch('showErrorBanner', ['Cannot Disconnect', 'Please remove the call from hold, before attempting to disconnect'])
+            }
+        } else if (callType === CALL_TYPES.OUTBOUND) {
+            dispatch('requestDropCall', request)
         }
 
     },
@@ -423,7 +434,7 @@ const mutations = {
 
     SET_CALL_ARR_STATE_RINGING(state, index) {
         state.calls[index].status = CALL_STATES.RINGING
-        state.calls[index].multiCallState = MULTI_CALL_STATES.SINGLE
+        // state.calls[index].multiCallState = MULTI_CALL_STATES.SINGLE
     },
 
     SET_CALL_ARR_STATE_DIALING(state, index) {

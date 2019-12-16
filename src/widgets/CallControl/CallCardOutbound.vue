@@ -33,10 +33,9 @@
                     <button
                       v-if="!isCallHeld"
                       type="button"
-                      class="btn btn-circle"
+                      class="btn btn-circle btn-red"
                       @click="answerDropCall"
                       :disabled="isCallIdle"
-                      :class="[{iconGlow:isCallRinging}, answerButtonColor]"
                     >
                       <transition name="fade">
                         <mdb-icon icon="phone" style="font-size:1.5em" v-if="isCallRinging" />
@@ -65,12 +64,11 @@
 
                 <!-- START: Conference Button -->
                 <mdb-col col="3">
-                  <!-- <transition name="fade"> -->
                   <button
                     type="checkbox"
                     class="btn red lighten-1 btn-circle"
                     @click="showConferenceModal=true"
-                    v-if="!isCallHeld"
+                    v-if="!isCallHeld && !isCallRinging"
                   >
                     <mdb-icon icon="users" style="font-size:1.5em" />
                   </button>
@@ -96,12 +94,6 @@
                         >{{call.callingAddress}}</option>
                       </select>
                       <div class="mb-5 w-100">
-                        <!-- <mdb-input
-                          read-only
-                          input-class="fl_hidden"
-                          v-model="callToBeConferenced"
-                          :empty-value="otherCalls[0].ucid"
-                        />-->
                         <div class="text-center py-2">Call to Conference/ Transfer :</div>
                         <h3 class="text-center">{{otherCalls[0].callingAddress}}</h3>
                       </div>
@@ -116,7 +108,6 @@
                       </transition>
                     </mdb-modal-body>
                   </mdb-modal>
-                  <!-- </transition> -->
                 </mdb-col>
 
                 <!--END: Conference Button-->
@@ -237,9 +228,10 @@ export default {
     answerDropCall() {
       this.$store.dispatch('requestAnswerDropCall', [
         this.call.ucid,
-        CALL_TYPES.INBOUND
+        CALL_TYPES.OUTBOUND
       ])
     },
+
     holdUnholdCall() {
       this.$store.dispatch('requestHoldUnholdCall', this.call.ucid)
     },
@@ -427,7 +419,9 @@ export default {
             break
           case CALL_STATES.TALKING:
           case CALL_STATES.HELD:
-            console.log('CallCardOutbound(): watcher - callStatus:  calling stop and start timer for instateTimer')
+            console.log(
+              'CallCardOutbound(): watcher - callStatus:  calling stop and start timer for instateTimer'
+            )
             // this.$store.dispatch('stopTimer', this.inStateTimerName)
             // this.$store.dispatch('startTimer', this.callTimerName)
             this.$store.dispatch('startTimer', this.inStateTimerName)

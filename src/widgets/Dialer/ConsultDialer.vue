@@ -250,7 +250,7 @@ export default {
     onConfDropButtonClicked() {
       this.$store.dispatch('requestAnswerDropCall', [
         this.$store.getters.getConsultedCall.ucid,
-        CALL_TYPES.CONSULTED
+        CALL_TYPES.OUTBOUND
       ])
     },
     onConfHoldBtnClicked() {
