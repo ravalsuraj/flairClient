@@ -212,7 +212,10 @@ const actions = {
         let inboundCallList = getters.getInboundCallList
         if (inboundCallList && inboundCallList.length === 1) {
             let callIndex = getters.getCallIndex(inboundCallList[0])
-            commit('REMOVE_CONSULTED_CALL_FROM_PRIMARY', [callIndex])
+            if (payload.callingAddress === getters.getCallByIndex(callIndex).callingAddress){
+                commit('SWITCH_PRIMARY_CONSULTED_CALL_ADDRESS', [callIndex])
+            }
+                commit('REMOVE_CONSULTED_CALL_FROM_PRIMARY', [callIndex])  
 
         }
     },
@@ -448,6 +451,10 @@ const mutations = {
     REMOVE_CONSULTED_CALL_FROM_PRIMARY(state, index) {
         state.calls[index].multiCallState = MULTI_CALL_STATES.SINGLE
         delete state.calls[index].consultedCall
+    },
+
+    SWITCH_PRIMARY_CONSULTED_CALL_ADDRESS(state, index){
+        state.calls[index].callingAddress = state.calls[index].consultedCall.calledAddress
     },
     ADD_CALL_TO_INBOUND_CALL_LIST(state, ucid) {
         //Check if the inbound call list has the ucid. If not, push it

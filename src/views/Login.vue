@@ -46,7 +46,7 @@
                 type="password"
                 v-model="credentials.password"
               />
-              <div class="d-flex justify-content-center mb-1">
+              <!-- <div class="d-flex justify-content-center mb-1">
                 <div class="custom-control custom-radio custom-control-inline mr-5">
                   <input
                     type="radio"
@@ -70,7 +70,7 @@
                   />
                   <label class="custom-control-label" for="manual-in">Manual-in</label>
                 </div>
-              </div>
+              </div> -->
               <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
               <div class="btn-group text-center my-3 w-100">
                 <mdb-btn
@@ -141,7 +141,7 @@ export default {
         agentId: '',
         deviceId: '',
         password: '',
-        workMode: ''
+        workMode: 'auto'
       },
       spinner: {
         show: false
