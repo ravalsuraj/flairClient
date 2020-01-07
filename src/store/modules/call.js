@@ -120,7 +120,7 @@ const actions = {
     setCallStateRinging({ commit, dispatch, getters }, payload) {
 
         // commit('SET_CALL_STATE_RINGING', payload)
-        commit('SET_CALL_ARR_STATE_RINGING', getters.getCallIndex(payload.ucid))
+        commit('SET_CALL_STATE_RINGING', getters.getCallIndex(payload.ucid))
         let uui = {
             cli: payload.callingAddress,
             ucid: payload.ucid
@@ -140,18 +140,18 @@ const actions = {
 
     setCallStateTalking({ commit, getters }, payload) {
 
-        commit('SET_CALL_ARR_STATE_TALKING', getters.getCallIndex(payload.ucid))
+        commit('SET_CALL_STATE_TALKING', getters.getCallIndex(payload.ucid))
         commit('SET_ACTIVE_CALL', payload.ucid)
     },
     setCallStateHeld({ commit, getters }, payload) {
 
-        commit('SET_CALL_ARR_STATE_HELD', getters.getCallIndex(payload.ucid))
+        commit('SET_CALL_STATE_HELD', getters.getCallIndex(payload.ucid))
         commit('RESET_ACTIVE_CALL', payload.ucid)
     },
 
     setCallStateDropped({ commit, dispatch, getters }, payload) {
 
-        commit('SET_CALL_ARR_STATE_DROPPED', getters.getCallIndex(payload.ucid))
+        commit('SET_CALL_STATE_DROPPED', getters.getCallIndex(payload.ucid))
         if (payload.ucid === getters.getActiveCallUcid) {
             commit('RESET_ACTIVE_CALL', payload.ucid)
         }
@@ -404,50 +404,23 @@ const mutations = {
             state.activeCall.ucid = null
         }
     },
-    SET_CALL_STATE_RINGING(state, payload) {
 
-        state.primary.status = CALL_STATES.RINGING
-        state.primary.ucid = payload.ucid
-        state.primary.callId = payload.callId
-        state.primary.calledAddress = payload.calledAddress
-        state.primary.callingAddress = payload.callingAddress
-
-    },
-
-    SET_CALL_STATE_DIALING(state, payload) {
-        state.primary.status = CALL_STATES.DIALING
-        state.primary.ucid = payload.ucid
-        state.primary.callId = payload.callId
-        state.primary.calledAddress = payload.calledAddress
-        state.primary.callingAddress = payload.callingAddress
-    },
-
-    SET_CALL_STATE_TALKING(state, payload) {
-        state.primary.status = CALL_STATES.TALKING
-    },
-    SET_CALL_STATE_HELD(state, payload) {
-        state.primary.status = CALL_STATES.HELD
-    },
-    SET_CALL_STATE_DROPPED(state, payload) {
-        state.primary.status = CALL_STATES.DROPPED
-    },
-
-    SET_CALL_ARR_STATE_RINGING(state, index) {
+    SET_CALL_STATE_RINGING(state, index) {
         state.calls[index].status = CALL_STATES.RINGING
         // state.calls[index].multiCallState = MULTI_CALL_STATES.SINGLE
     },
 
-    SET_CALL_ARR_STATE_DIALING(state, index) {
+    SET_CALL_STATE_DIALING(state, index) {
         state.calls[index].status = CALL_STATES.DIALING
     },
 
-    SET_CALL_ARR_STATE_TALKING(state, index) {
+    SET_CALL_STATE_TALKING(state, index) {
         state.calls[index].status = CALL_STATES.TALKING
     },
-    SET_CALL_ARR_STATE_HELD(state, index) {
+    SET_CALL_STATE_HELD(state, index) {
         state.calls[index].status = CALL_STATES.HELD
     },
-    SET_CALL_ARR_STATE_DROPPED(state, index) {
+    SET_CALL_STATE_DROPPED(state, index) {
         if (index != null && index != -1 && state.calls[index]) {
             state.calls[index].status = CALL_STATES.DROPPED
         }
