@@ -9,7 +9,7 @@ function initialState() {
         agentId: null,
         deviceId: null,
         password: null,
-        workMode: null,
+        workMode: 'auto',
         rememberCredentials: true,
     }
 }
