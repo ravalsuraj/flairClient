@@ -145,7 +145,7 @@ export default {
 /* @import url('/static/fonts.css'); */
 
 html {
-  font-size: 100%;
+  font-size: 62.5%;
   color: rgba(0, 0, 0, 0.45);
 }
 .main-body {

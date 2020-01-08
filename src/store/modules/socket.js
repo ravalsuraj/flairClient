@@ -122,10 +122,16 @@ export default {
 
         },
 
-        SOCKET_OUTCALLRING({ dispatch }, payload) {
+        SOCKET_OUTCALLRING({ dispatch, getters }, payload) {
             console.log('Received event: ' + 'OUTCALLRING' + JSON.stringify(payload))
+            if (getters.getCallIndex(payload.ucid) < 0) {
+                dispatch('processNewConsultedCall', payload).then(() => {
+                    dispatch('setConsultedCallStateRinging', payload)
+                })
+            } else {
+                dispatch('setConsultedCallStateRinging', payload)
+            }
 
-            dispatch('setConsultedCallStateRinging', payload)
         },
 
         SOCKET_OUTCALLTALK({ dispatch }, payload) {
