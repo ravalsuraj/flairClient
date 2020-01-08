@@ -177,7 +177,7 @@ export default {
                     if (resp.responseCode === "04" && resp.agentState === AGENT_STATES.LOG_OUT) {
                         commit('SET_AGENT_STATE', resp.agentState)
                     }
-                    dispatch('showErrorBanner', ['Agent Login failed:', resp.responseMessage])
+                    //dispatch('showErrorBanner', ['Could not fetch agent state:', resp.responseMessage])
                 }
                 return resp
             }

@@ -115,7 +115,7 @@ export default {
 
   data() {
     return {
-      dialedDigits: '2101',
+      dialedDigits: '',
 
       digits: [
         {
