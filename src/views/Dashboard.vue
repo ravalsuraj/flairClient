@@ -86,7 +86,7 @@ import {
 import CallHistory from '@/widgets/CallHistory/CallHistory.vue'
 import CallDetails from '@/widgets/CallDetails/CallDetails.vue'
 import MenuTraversal from '@/widgets/MenuTraversal/MenuTraversal.vue'
-import CallControl from '@/widgets/CallControl/CallControl.vue'
+
 import AgentControl from '@/widgets/AgentControl/AgentControl.vue'
 import AgentCallStatistics from '@/widgets/AgentCallStatistics/AgentCallStatistics.vue'
 import TestBench from '@/widgets/TestBench.vue'
@@ -107,7 +107,6 @@ export default {
     CallDisposition,
     AgentCallStatistics,
     MenuTraversal,
-    CallControl,
     TestBench,
     AgentControl,
     CallDetails,

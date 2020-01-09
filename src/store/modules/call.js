@@ -4,31 +4,27 @@ import { MULTI_CALL_STATES } from '../../defines';
 function initialState() {
     return {
         calls: [],
-        activeCall: {
-            ucid: ''
-        },
-        totalCallList: [],
+        call_list_ucids: [],
+        call_list_call_ids:[],
         inboundCallList: [],
         outboundCallList: [],
         consultedCallList: [],
-        primary: {
-            ucid: '0',
-            callId: '',
-            status: CALL_STATES.IDLE,
-            calledAddress: '',
-            callingAddress: ''
+        activeCall: {
+            ucid: '',
+            callId: ''
         },
+
     }
 }
 const state = initialState()
 
 const getters = {
     getCallStatus(state) {
-        return state.primary.status
+        return null
     },
 
     getPrimaryCall(state) {
-        return state.primary
+        return null
     },
     getCalls(state) {
         return state.calls
@@ -43,7 +39,11 @@ const getters = {
         return state.activeCall.ucid
     },
     getCallByUcid: (state) => (ucid) => {
-        return state.calls[state.totalCallList.indexOf(ucid)]
+        return state.calls[state.call_list_ucids.indexOf(ucid)]
+    },
+
+    getCallbyCallId: (state) => (callId) => {
+        return state.calls[state.call_list_call_ids.indexOf(callId)]
     },
 
     getCallByIndex: (state) => (index) => {
@@ -51,13 +51,13 @@ const getters = {
     },
 
     getCallIndex: (state) => (ucid) => {
-        console.log("getCallIndex():ucid=" + ucid + ", totalCallList=" + JSON.stringify(state.totalCallList))
-        console.log("getCallIndex(): returning index=" + state.totalCallList.indexOf(ucid))
-        return state.totalCallList.indexOf(ucid)
+        console.log("getCallIndex():ucid=" + ucid + ", call_list_ucids=" + JSON.stringify(state.call_list_ucids))
+        console.log("getCallIndex(): returning index=" + state.call_list_ucids.indexOf(ucid))
+        return state.call_list_ucids.indexOf(ucid)
     },
     getMultiCallState: (state) => (ucid) => {
-        console.log("getMultiCallState called. call[x]=", state.calls[state.totalCallList.indexOf(ucid)])
-        return state.calls[state.totalCallList.indexOf(ucid)].multiCallState
+        console.log("getMultiCallState called. call[x]=", state.calls[state.call_list_ucids.indexOf(ucid)])
+        return state.calls[state.call_list_ucids.indexOf(ucid)].multiCallState
     }
 
 }
@@ -139,12 +139,11 @@ const actions = {
     },
 
     setCallStateTalking({ commit, getters }, payload) {
-
         commit('SET_CALL_STATE_TALKING', getters.getCallIndex(payload.ucid))
         commit('SET_ACTIVE_CALL', payload.ucid)
     },
-    setCallStateHeld({ commit, getters }, payload) {
 
+    setCallStateHeld({ commit, getters }, payload) {
         commit('SET_CALL_STATE_HELD', getters.getCallIndex(payload.ucid))
         commit('RESET_ACTIVE_CALL', payload.ucid)
     },
@@ -172,7 +171,6 @@ const actions = {
 
     //Called when the consult call request is made
     processNewConsultedCall({ commit, getters, dispatch }, payload) {
-
         dispatch('addCallToActiveCalls', payload)
         dispatch('addConsultedCallDetailsToPrimary', payload)
         dispatch('setConsultedCallStateTalking', payload)
@@ -189,8 +187,7 @@ const actions = {
         commit('SET_CALL_TYPE_OUTBOUND', index)
     },
 
-    processConferenceConnectionDisconnect({ commit, getters, dispatch }, payload){
-        
+    processConferenceConnectionDisconnect({ commit, getters, dispatch }, payload) {
         dispatch('removeConferenceCallFromPrimary', payload)
     },
 
@@ -212,10 +209,10 @@ const actions = {
         let inboundCallList = getters.getInboundCallList
         if (inboundCallList && inboundCallList.length === 1) {
             let callIndex = getters.getCallIndex(inboundCallList[0])
-            if (payload.callingAddress === getters.getCallByIndex(callIndex).callingAddress){
+            if (payload.callingAddress === getters.getCallByIndex(callIndex).callingAddress) {
                 commit('SWITCH_PRIMARY_CONSULTED_CALL_ADDRESS', [callIndex])
             }
-                commit('REMOVE_CONSULTED_CALL_FROM_PRIMARY', [callIndex])  
+            commit('REMOVE_CONSULTED_CALL_FROM_PRIMARY', [callIndex])
 
         }
     },
@@ -239,7 +236,7 @@ const actions = {
         console.log("requestAnswerDropCall(): request=", request)
         if (callType === CALL_TYPES.INBOUND) {
             let callStatus = getters.getCallByUcid(requestedUcid).status
-    
+
             switch (callStatus) {
                 case CALL_STATES.RINGING:
                     console.log('AnswerDropCall(): calling answerCall()')
@@ -349,8 +346,6 @@ const actions = {
         return new Promise((resolve, reject) => {
             console.log('requestHoldCall():  request=' + JSON.stringify(request))
 
-
-
             this._vm.$socket.emit(SOCKET_EVENTS.HOLD_CALL, request, (response) => {
                 console.log('requestHoldCall(): response=' + JSON.stringify(response))
                 if (response.responseCode === '0') {
@@ -377,7 +372,6 @@ const actions = {
             }
         })
     },
-
 }
 
 const mutations = {
@@ -390,12 +384,12 @@ const mutations = {
 
     ADD_CALL(state, call) {
         state.calls.push(call)
-        state.totalCallList.push(call.ucid)
+        state.call_list_ucids.push(call.ucid)
+        state.call_list_call_ids.push(call.callId)
 
     },
 
     SET_CALL_STATE(state, [index, newStatus]) {
-
         state.calls[index].status = newStatus
     },
 
@@ -427,7 +421,6 @@ const mutations = {
         if (index != null && index != -1 && state.calls[index]) {
             state.calls[index].status = CALL_STATES.DROPPED
         }
-
     },
 
     SET_CALL_TYPE_INBOUND(state, index) {
@@ -453,7 +446,7 @@ const mutations = {
         delete state.calls[index].consultedCall
     },
 
-    SWITCH_PRIMARY_CONSULTED_CALL_ADDRESS(state, index){
+    SWITCH_PRIMARY_CONSULTED_CALL_ADDRESS(state, index) {
         state.calls[index].callingAddress = state.calls[index].consultedCall.calledAddress
     },
     ADD_CALL_TO_INBOUND_CALL_LIST(state, ucid) {
@@ -511,7 +504,8 @@ const mutations = {
 
     REMOVE_CALL(state, index) {
         if (index != -1) {
-            state.totalCallList.splice(index, 1)
+            state.call_list_ucids.splice(index, 1)
+            state.call_list_call_ids.splice(index, 1)
             state.calls.splice(index, 1)
         }
 

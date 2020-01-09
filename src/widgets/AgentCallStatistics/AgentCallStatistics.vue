@@ -82,18 +82,12 @@ import {
   mdbIcon
 } from 'mdbvue'
 
-import UpTimer from '@/components/agc/UpTimer.vue'
-import CallTimerInstate from '@/widgets/AgentCallStatistics/CallTimerInstate.vue'
-import AgentTimerInstate from '@/widgets/AgentCallStatistics/AgentTimerInstate.vue'
 import Widget from '@/components/agc/Widget'
 
 export default {
   name: 'AgentCallStats',
   components: {
     Widget,
-    UpTimer,
-    CallTimerInstate,
-    AgentTimerInstate,
     mdbRow,
     mdbCol,
     mdbContainer,

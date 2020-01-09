@@ -110,7 +110,6 @@ main {
 
 <script>
 import AgentControl from '@/widgets/AgentControl/AgentControl.vue'
-import CallControl from '@/widgets/CallControl/CallControl.vue'
 import {
   mdbRow,
   mdbCol,
@@ -135,7 +134,7 @@ export default {
   name: 'TopNavbar',
   components: {
     AgentControl,
-    CallControl,
+
     mdbRow,
     mdbCol,
     mdbContainer,

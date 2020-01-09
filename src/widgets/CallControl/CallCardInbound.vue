@@ -28,8 +28,7 @@
                 </mdb-col>
               </mdb-row>
             </mdb-col>
-            <!-- </mdb-row>
-            <mdb-row>-->
+ 
             <!--START: Inbound Call Controls-->
             <!-- START: Answer/Drop Button -->
             <mdb-col :col="cardWidth">
@@ -343,7 +342,7 @@ export default {
         case CALL_TYPES.OUTBOUND:
           return 'Outbound Call'
         case CALL_TYPES.CONSULTED:
-          return 'Consulted Call'
+          return 'Outbound Call'
       }
     },
 

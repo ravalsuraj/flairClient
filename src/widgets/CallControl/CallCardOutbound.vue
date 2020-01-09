@@ -387,7 +387,7 @@ export default {
         case CALL_TYPES.OUTBOUND:
           return 'Outbound Call'
         case CALL_TYPES.CONSULTED:
-          return 'Consulted Call'
+          return 'Outbound Call'
       }
     },
 
