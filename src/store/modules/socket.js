@@ -78,13 +78,11 @@ export default {
         SOCKET_ICALLRING({ dispatch, getters }, payload) {
             console.log('SOCKET_ICALLRING: resp=' + JSON.stringify(payload))
             dispatch('processNewInboundCall', payload)
-
-
         },
 
         SOCKET_ICALLTALK({ dispatch, getters }, payload) {
             console.log('Received event: resp=' + JSON.stringify(payload))
-            if (getters.getCallIndex(payload.ucid) !== null) {
+            if (getCallIndexByCallId(payload.ucid) !== null) {
                 dispatch('setCallStateTalking', payload)
             }
             else {
@@ -94,7 +92,7 @@ export default {
 
         SOCKET_ICALLDISC({ dispatch, getters }, payload) {
             console.log('SOCKET_ICALLDISC(): Received event: resp=' + JSON.stringify(payload))
-            if (getters.getCallIndex(payload.ucid) !== null) {
+            if (getCallIndexByCallId(payload.ucid) !== null) {
                 dispatch('setCallStateDropped', payload)
             } else {
                 console.log("SOCKET_ICALLDISC(): no calls found for UCID:" + payload.ucid)
@@ -103,7 +101,7 @@ export default {
 
         SOCKET_ICALLHLD({ dispatch, getters }, payload) {
             console.log('SOCKET_ICALLHLD(): Recieved event: resp=' + JSON.stringify(payload))
-            if (getters.getCallIndex(payload.ucid) !== null) {
+            if (getCallIndexByCallId(payload.ucid) !== null) {
                 dispatch('setCallStateHeld', payload)
             }
             else {
@@ -124,7 +122,7 @@ export default {
 
         SOCKET_OUTCALLRING({ dispatch, getters }, payload) {
             console.log('Received event: ' + 'OUTCALLRING' + JSON.stringify(payload))
-            if (getters.getCallIndex(payload.ucid) < 0) {
+            if (getCallIndexByCallId(payload.ucid) < 0) {
                 dispatch('processNewConsultedCall', payload).then(() => {
                     dispatch('setConsultedCallStateRinging', payload)
                 })

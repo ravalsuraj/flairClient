@@ -9,11 +9,11 @@
         <mdb-col :col="cardWidth" v-for="call in myCalls" :key="call.ucid">
           <call-card-inbound
             v-if="!isCallDropped(call) && isCallTypeInbound(call)"
-            :ucid="call.ucid"
+            :ucid="call.ucid" :callId="call.callId"
           ></call-card-inbound>
           <call-card-outbound
             v-if="!isCallDropped(call) && isCallTypeOutbound(call)"
-            :ucid="call.ucid"
+            :ucid="call.ucid" :callId="call.callId"
           ></call-card-outbound>
           <!-- <call-disposition v-if="isCallDropped(call)" :ucid="call.ucid"></call-disposition> -->
         </mdb-col>

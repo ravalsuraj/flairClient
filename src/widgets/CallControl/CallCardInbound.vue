@@ -181,7 +181,8 @@ export default {
     console.log('CallCardInbound(): mounted()')
   },
   props: {
-    ucid: String
+    ucid: String,
+    callId: String
   },
 
   data() {
@@ -228,14 +229,14 @@ export default {
       return this.$store.getters.getCalls
     },
     currentCallIndex() {
-      return this.$store.getters.getCallIndex(this.ucid)
+      return this.$store.getCallIndexByCallId(this.ucid)
     },
     call() {
       return this.$store.getters.getCallByUcid(this.ucid)
     },
 
     callIndex() {
-      return this.$store.getters.getCallIndex(this.ucid)
+      return this.$store.getCallIndexByCallId(this.ucid)
     },
     callStatus() {
       return this.call.status
@@ -272,7 +273,7 @@ export default {
     },
 
     multiCallState() {
-      return this.$store.getters.getMultiCallState(this.ucid)
+      return this.$store.getters.getMultiCallState(this.callId)
     },
     isCallConferenced() {
       if (

@@ -203,7 +203,8 @@ export default {
     }
   },
   props: {
-    ucid: String
+    ucid: String,
+    callId: String
   },
 
   data() {
