@@ -111,7 +111,10 @@ export default {
     mdbIcon
   },
   mounted() {},
-  props: {},
+  props: {
+    ucid: String,
+    callId: Number
+  },
 
   data() {
     return {
@@ -189,14 +192,7 @@ export default {
       }
     }
   },
-  // sockets: {
-  //   connect: function () {
-  //       console.log('socket connected')
-  //   },
-  //   customEmit: function (data) {
-  //       console.log('this method was fired by the socket server. eg: io.emit("customEmit", data)')
-  //   }
-  // },
+
   methods: {
     showSpinner() {
       this.spinner.show = true
@@ -231,7 +227,7 @@ export default {
     onConsultButtonClicked() {
       this.$store.dispatch('updateDialedDigits', this.dialedDigits)
       this.showSpinner()
-      this.$store.dispatch('requestConsultCall').then(resp => {
+      this.$store.dispatch('requestConsultCall', this.ucid).then(resp => {
         this.hideSpinner()
       })
     },

@@ -87,7 +87,7 @@
                           <mdb-modal-title>Consult Call</mdb-modal-title>
                         </mdb-modal-header>
                         <mdb-modal-body>
-                          <consult-dialer></consult-dialer>
+                          <consult-dialer :ucid=ucid :callId=callId ></consult-dialer>
                         </mdb-modal-body>
                       </mdb-modal>
                     </mdb-dropdown>
@@ -182,7 +182,7 @@ export default {
   },
   props: {
     ucid: String,
-    callId: String
+    callId: Number
   },
 
   data() {
@@ -216,10 +216,10 @@ export default {
   },
   computed: {
     callTimerName() {
-      return TIMER_TYPES.CALL_TIMER + '_' + this.ucid
+      return TIMER_TYPES.CALL_TIMER + '_' + this.callId
     },
     inStateTimerName() {
-      return TIMER_TYPES.IN_STATE_TIMER + '_' + this.ucid
+      return TIMER_TYPES.IN_STATE_TIMER + '_' + this.callId
     },
     cardWidth() {
       return this.$store.getters.getCalls.length > 2 ? 'md-12' : 'md-6'
@@ -229,14 +229,14 @@ export default {
       return this.$store.getters.getCalls
     },
     currentCallIndex() {
-      return this.$store.getCallIndexByCallId(this.ucid)
+      return this.$store.getters.getCallIndexByCallId(this.callId)
     },
     call() {
-      return this.$store.getters.getCallByUcid(this.ucid)
+      return this.$store.getters.getCallByCallId(this.callId)
     },
 
     callIndex() {
-      return this.$store.getCallIndexByCallId(this.ucid)
+      return this.$store.getters.getCallIndexByCallId(this.callId)
     },
     callStatus() {
       return this.call.status

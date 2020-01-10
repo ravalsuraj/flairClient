@@ -26,16 +26,8 @@ export default {
     },
 
     actions: {
-        checkCallTypePrimaryConsulted({ getters }, ucid) {
 
-            if (ucid === getters.getPrimaryCall.ucid) {
-                return CALL_TYPES.INBOUND
-            } else if (ucid === getters.getConsultedCall.ucid) {
-                return CALL_TYPES.CONSULTED
-            } else {
-                return CALL_TYPES.UNKNOWN
-            }
-        },
+        //Called after Call transfer socket request is successful
         processCallTransferDone({ commit }) {
             commit('RESET_CALL_MODULE')
             commit('RESET_CONSULTED_CALL_MODULE')
@@ -45,33 +37,31 @@ export default {
 
         },
 
-        setConsultedCallStateRinging({ commit, dispatch }, payload) {
-            dispatch('setCallState', [payload.ucid, CALL_STATES.RINGING])
-        },
-        setConsultedCallStateTalking({ commit, dispatch }, payload) {
+        //Called upon Socket event: OUTCALLRING
+        // setConsultedCallStateRinging({ commit, dispatch }, payload) {
+        //     dispatch('setCallState', [payload.callId, CALL_STATES.RINGING])
+        // },
 
-            dispatch('setCallState', [payload.ucid, CALL_STATES.TALKING])
-            commit('SET_ACTIVE_CALL', [payload.ucid, payload.callId])
-        },
+        //Called when transfer request is successful (From processTransferDone)
+        // setConsultedCallStateTalking({ commit, dispatch }, payload) {
+        //     dispatch('setCallState', [payload.callId, CALL_STATES.TALKING])
+        //     commit('SET_ACTIVE_CALL', [payload.ucid, payload.callId])
+        // },
 
-        setConsultedCallStateHeld({ commit, dispatch }, payload) {
+        // setConsultedCallStateHeld({ commit, dispatch }, payload) {
+        //     dispatch('setCallState', [payload.callId, CALL_STATES.HELD])
+        //     commit('RESET_ACTIVE_CALL', [payload.ucid, payload.callId])
+        // },
 
-            dispatch('setCallState', [payload.ucid, CALL_STATES.HELD])
-            commit('RESET_ACTIVE_CALL', [payload.ucid, payload.callId])
-        },
-        setConsultedCallStateDropped({ dispatch }, payload) {
-            dispatch('setCallState', [payload.ucid, CALL_STATES.DROPPED])
-            dispatch('removeConsultedCall', payload.ucid)
 
-        },
 
-        requestConsultCall({ getters, commit, dispatch }) {
+        requestConsultCall({ getters, commit, dispatch }, ucid) {
             return new Promise((resolve, reject) => {
                 try {
 
                     let request = {
                         sessionId: getters['session/getSessionId'],
-                        primaryUcid: getters.getPrimaryCall.ucid,
+                        primaryUcid: ucid,
                         dialedNumber: getters.getDialedDigits,
                     }
 
@@ -149,39 +139,6 @@ export default {
             Object.assign(state, initialState())
         },
 
-        // SET_CONF_STATE_CONSULTED(state, payload) {
-        //     state.consultedCall.callId = payload.callId
-        //     state.consultedCall.ucid = payload.ucid
-        //     state.consultedCall.status = CALL_STATES.CREATED
-        //     state.consultedCall.calledAddress = payload.calledAddress
-        //     state.consultedCall.callingAddress = payload.callingAddress
-        // },
-
-
-
-        SET_CONF_MODE_INITIATED(state) {
-            state.call.confereceMode = true
-        },
-
-
-
-        SET_CONF_STATE_TALKING(state, payload) {
-            state.consultedCall.status = CALL_STATES.TALKING
-
-        },
-
-        SET_CONF_STATE_HELD(state, payload) {
-            state.consultedCall.status = CALL_STATES.HELD
-
-        },
-
-        SET_CONF_STATE_DROPPED(state, payload) {
-            state.consultedCall.status = CALL_STATES.IDLE
-            state.consultedCall.calledAddress = ''
-            state.consultedCall.callingAddress = ''
-            state.consultedCall.ucid = ''
-            state.consultedCall.callId = ''
-        },
     }
 }
 

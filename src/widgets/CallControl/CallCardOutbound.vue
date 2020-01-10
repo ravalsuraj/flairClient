@@ -8,6 +8,7 @@
               <mdb-row>
                 <mdb-col col="6" class="mb-3 d-flex">
                   <span strong class="fl_well_text big mx-auto">{{callingAddress}}</span>
+                  
                 </mdb-col>
                 <mdb-col col="6" class="mb-3 text-center">
                   <persist-timer :timerName="callTimerName" class="fl_well_text big"></persist-timer>
@@ -204,7 +205,7 @@ export default {
   },
   props: {
     ucid: String,
-    callId: String
+    callId: Number
   },
 
   data() {
@@ -293,14 +294,14 @@ export default {
     },
 
     callTimerName() {
-      return TIMER_TYPES.CALL_TIMER + '_' + this.ucid
+      return TIMER_TYPES.CALL_TIMER + '_' + this.callId
     },
     inStateTimerName() {
-      return TIMER_TYPES.IN_STATE_TIMER + '_' + this.ucid
+      return TIMER_TYPES.IN_STATE_TIMER + '_' + this.callId
     },
 
     call() {
-      return this.$store.getters.getCallByUcid(this.ucid)
+      return this.$store.getters.getCallByCallId(this.callId)
     },
     callStatus() {
       return this.call.status

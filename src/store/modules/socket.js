@@ -58,6 +58,7 @@ export default {
                 if (resp.responseCode === "0" && (getters['session/getSessionId'].length)) {
                     console.log("processSocketConnected(): sending request for sendQueryAgentStateRequest")
                     dispatch('sendQueryAgentStateRequest', { root: true })
+                    dispatch('sendQueryCallStateRequest', { root: true })
                 } else {
                     console.log("processSocketConnected(): skipping request for sendQueryAgentStateRequest")
                 }
@@ -72,27 +73,27 @@ export default {
         *  INCOMING SOCKET REQUESTS
         **********************************/
         SOCKET_DEVEVENT({ }, payload) {
-            console.log('Recieved event: ' + 'DEVEVENT' + JSON.stringify(payload))
+            console.log('SOCKET_DEVEVENT(): Received event: ' + JSON.stringify(payload))
         },
 
         SOCKET_ICALLRING({ dispatch, getters }, payload) {
-            console.log('SOCKET_ICALLRING: resp=' + JSON.stringify(payload))
+            console.log('SOCKET_ICALLRING(): Received event: ' + JSON.stringify(payload))
             dispatch('processNewInboundCall', payload)
         },
 
         SOCKET_ICALLTALK({ dispatch, getters }, payload) {
-            console.log('Received event: resp=' + JSON.stringify(payload))
-            if (getCallIndexByCallId(payload.ucid) !== null) {
+            console.log('SOCKET_ICALLTALK(): Received event: ' + JSON.stringify(payload))
+            if (getters.getCallIndexByCallId(payload.callId) !== null) {
                 dispatch('setCallStateTalking', payload)
             }
             else {
-                console.log('SOCKET_ICALLTALK: not identified for call OR conf call')
+                console.log('SOCKET_ICALLTALK(): not identified for call OR conf call')
             }
         },
 
         SOCKET_ICALLDISC({ dispatch, getters }, payload) {
-            console.log('SOCKET_ICALLDISC(): Received event: resp=' + JSON.stringify(payload))
-            if (getCallIndexByCallId(payload.ucid) !== null) {
+            console.log('SOCKET_ICALLDISC(): Received event: ' + JSON.stringify(payload))
+            if (getters.getCallIndexByCallId(payload.callId) !== null) {
                 dispatch('setCallStateDropped', payload)
             } else {
                 console.log("SOCKET_ICALLDISC(): no calls found for UCID:" + payload.ucid)
@@ -100,55 +101,61 @@ export default {
         },
 
         SOCKET_ICALLHLD({ dispatch, getters }, payload) {
-            console.log('SOCKET_ICALLHLD(): Recieved event: resp=' + JSON.stringify(payload))
-            if (getCallIndexByCallId(payload.ucid) !== null) {
+            console.log('SOCKET_ICALLHLD(): Received event: ' + JSON.stringify(payload))
+            if (getters.getCallIndexByCallId(payload.callId) !== null) {
                 dispatch('setCallStateHeld', payload)
             }
             else {
 
-                console.log('ICALLHOLD not identified for call OR conf call')
+                console.log('SOCKET_ICALLHLD() call ID not found in list of calls')
             }
         },
 
         SOCKET_CALLCONF({ dispatch, getters }, payload) {
-            console.log('Recieved event: ' + 'CALLCONF' + JSON.stringify(payload))
+            console.log('SOCKET_CALLCONF(): Received event: ' + JSON.stringify(payload))
             dispatch('setMultiCallStateConferenced', payload)
         },
         SOCKET_CONFCALLDISC({ dispatch, getters }, payload) {
-            console.log('Recieved event: ' + 'CONFCALLDISC' + JSON.stringify(payload))
+            console.log('SOCKET_CONFCALLDISC(): Received event: ' + JSON.stringify(payload))
             dispatch('processConferenceConnectionDisconnect', payload)
 
         },
 
         SOCKET_OUTCALLRING({ dispatch, getters }, payload) {
-            console.log('Received event: ' + 'OUTCALLRING' + JSON.stringify(payload))
-            if (getCallIndexByCallId(payload.ucid) < 0) {
+            console.log('SOCKET_OUTCALLRING(): Received event: ' + JSON.stringify(payload))
+            if (getters.getCallIndexByCallId(payload.callId) < 0) {
                 dispatch('processNewConsultedCall', payload).then(() => {
-                    dispatch('setConsultedCallStateRinging', payload)
+                    dispatch('setCallStateRinging', payload)
                 })
             } else {
-                dispatch('setConsultedCallStateRinging', payload)
+                dispatch('setCallStateRinging', payload)
             }
 
         },
 
-        SOCKET_OUTCALLTALK({ dispatch }, payload) {
-            console.log('Received event: ' + 'OUTCALLTALK' + JSON.stringify(payload))
+        SOCKET_OUTCALLTALK({ dispatch, getters }, payload) {
+            console.log('SOCKET_OUTCALLTALK(): Received event: ' + JSON.stringify(payload))
+            if (getters.getCallIndexByCallId(payload.callId) < 0) {
+                dispatch('processNewConsultedCall', payload).then(() => {
+                    dispatch('setCallStateTalking', payload)
+                })
+            } else {
+                dispatch('setCallStateTalking', payload)
+            }
 
-            dispatch('processNewConsultedCall', payload)
         },
 
         SOCKET_OUTCALLDISC({ dispatch }, payload) {
-            console.log('Received event: ' + 'OUTCALLDISC' + JSON.stringify(payload))
+            console.log('SOCKET_OUTCALLDISC(): Received event: ' + JSON.stringify(payload))
             dispatch('setCallStateDropped', payload)
         },
 
         SOCKET_OUTCALLHLD({ dispatch }, payload) {
-            console.log('Received event: ' + 'OUTCALLHLD' + JSON.stringify(payload))
-            dispatch('setConsultedCallStateHeld', payload)
+            console.log('SOCKET_OUTCALLHLD(): Received event: ' + JSON.stringify(payload))
+            dispatch('setCallStateHeld', payload)
         },
         SOCKET_AGTUPDATED({ dispatch }, payload) {
-            console.log('Received event: ' + 'AGTUPDATED' + JSON.stringify(payload))
+            console.log('SOCKET_AGTUPDATED(): Received event: ' + JSON.stringify(payload))
             dispatch('setAgentState', payload.agentState)
         }
     },
