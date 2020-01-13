@@ -53,21 +53,7 @@
             <span>Consult</span>
           </mdb-btn>
         </transition>
-        <!-- <transition name="fade">
-          <div class="btn-group w-100 pb-2" v-if="isConsultedCallActive">
-            <mdb-btn class="btn-deep-orange mx-2 px-2 w-100" @click="onConfDropButtonClicked">Drop</mdb-btn>
-
-          </div>
-        </transition>-->
-        <!-- <transition name="fade">
-          <div class="btn-group w-100" v-if="isConsultedCallActive">
-            <mdb-btn class="mdb-color mx-2 px-2 w-50" @click="onTransferButtonClicked">Trans</mdb-btn>
-            <mdb-btn class="mdb-color mx-2 px-2 w-50" @click="onConferenceButtonClicked">Conf</mdb-btn>
-
-          </div>
-        </transition>-->
-
-        <!-- <mdb-btn class="unique-color">Conf</mdb-btn> -->
+       2
       </mdb-row>
     </mdb-container>
   </div>
@@ -231,46 +217,10 @@ export default {
         this.hideSpinner()
       })
     },
-
-    onConferenceButtonClicked() {
-      this.$store.dispatch('requestConferenceCall')
-    },
-
-    onTransferButtonClicked() {
-      this.$store.dispatch('requestTransferCall')
-    },
-
-    onRejoinButtonClicked() {},
-    onSwitchButtonClicked() {},
-
-    onConfDropButtonClicked() {
-      this.$store.dispatch('requestAnswerDropCall', [
-        this.$store.getters.getConsultedCall.ucid,
-        CALL_TYPES.OUTBOUND
-      ])
-    },
-    onConfHoldBtnClicked() {
-      this.$store.dispatch(
-        'requestHoldUnholdCall',
-        this.$store.getters.getConsultedCall.ucid
-      )
-    }
+    
   },
   computed: {
-    isConsultedCallActive() {
-      return this.$store.getters.getConsultedCallList.length > 0
-    },
-    isConsultCallIdle() {
-      return (
-        this.$store.getters.getConsultedCallStatus === CALL_STATES.IDLE ||
-        this.$store.getters.getConsultedCallStatus === CALL_STATES.DROPPED
-      )
-    },
-    confHoldText() {
-      return this.$store.getters.consultedCallStatus === CALL_STATES.HELD
-        ? 'UNHOLD'
-        : 'HOLD'
-    }
+    
   }
 }
 </script>

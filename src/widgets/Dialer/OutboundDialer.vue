@@ -241,12 +241,7 @@ export default {
         CALL_TYPES.OUTBOUND
       ])
     },
-    onConfHoldBtnClicked() {
-      this.$store.dispatch(
-        'requestHoldUnholdCall',
-        this.$store.getters.getConsultedCall.ucid
-      )
-    }
+  
   },
   computed: {
     credentials() {

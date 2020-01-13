@@ -1,126 +1,85 @@
 import { CALL_STATES, SOCKET_EVENTS, CALL_TYPES } from '@/defines.js'
 function initialState() {
-    return {
-        consultedCall: {
-            ucid: null,
-            callId: null,
-            status: CALL_STATES.IDLE,
-            calledAddress: null,
-            callingAddress: null
-        }
-    }
+  return {}
 }
 export default {
+  state: initialState,
 
-    state: initialState,
+  getters: {},
 
-    getters: {
+  actions: {
+    //Called after Call transfer socket request is successful
+    processCallTransferDone({ commit }) {
+      commit('RESET_CALL_MODULE')
+      commit('RESET_CONSULTED_CALL_MODULE')
+    },
 
-        getConsultedCallStatus(state) {
-            return state.consultedCall.status
-        },
+    processCallConferenceDone({ commit }) {},
 
-        getConsultedCall(state) {
-            return state.consultedCall
+    requestConsultCall({ getters, commit, dispatch }, callId) {
+      return new Promise((resolve, reject) => {
+        try {
+          let request = {
+            sessionId: getters['session/getSessionId'],
+            primaryCallId: callId,
+            dialedNumber: getters.getDialedDigits
+          }
+
+          console.log(
+            'requestConsultCall(): request=' + JSON.stringify(request)
+          )
+          this._vm.$socket.emit(SOCKET_EVENTS.CONSULT_CALL, request, resp => {
+            console.log('requestConsultCall(): resp=' + JSON.stringify(resp))
+            if (resp.responseCode == '0') {
+              // commit('SET_CONF_STATE_CONSULTED', resp)
+              // dispatch('processNewConsultedCall', resp)
+              resolve(resp)
+            } else {
+              resolve(resp)
+            }
+          })
+        } catch (err) {
+          reject(err)
         }
+      })
     },
 
-    actions: {
+    requestConferenceCall({ getters, dispatch }, payload) {
+      let request = {
+        sessionId: getters['session/getSessionId'],
+        primaryCallId: payload.callIdA,
+        consultedCallId: payload.callIdB
+      }
 
-        //Called after Call transfer socket request is successful
-        processCallTransferDone({ commit }) {
-            commit('RESET_CALL_MODULE')
-            commit('RESET_CONSULTED_CALL_MODULE')
-        },
-
-        processCallConferenceDone({ commit }) {
-
-        },
-
-        requestConsultCall({ getters, commit, dispatch }, callId) {
-            return new Promise((resolve, reject) => {
-                try {
-
-                    let request = {
-                        sessionId: getters['session/getSessionId'],
-                        primaryCallId: callId,
-                        dialedNumber: getters.getDialedDigits,
-                    }
-
-
-                    console.log("requestConsultCall(): request=" + JSON.stringify(request));
-                    this._vm.$socket.emit(
-                        SOCKET_EVENTS.CONSULT_CALL,
-                        request,
-                        resp => {
-                            console.log("requestConsultCall(): resp=" + JSON.stringify(resp));
-                            if (resp.responseCode == '0') {
-                                // commit('SET_CONF_STATE_CONSULTED', resp)
-                                // dispatch('processNewConsultedCall', resp)
-                                resolve(resp)
-
-                            } else {
-                                resolve(resp)
-                            }
-                        }
-                    )
-                } catch (err) {
-                    reject(err)
-                }
-            })
-
-        },
-
-        requestConferenceCall({ getters, dispatch }, payload) {
-
-            let request = {
-                sessionId: getters['session/getSessionId'],
-                primaryCallId: payload.callIdA,
-                consultedCallId: payload.callIdB
-            }
-
-            console.log("requestConferenceCall(): request=" + JSON.stringify(request));
-            this._vm.$socket.emit(
-                SOCKET_EVENTS.CONFERENCE_CALL,
-                request,
-                resp => {
-                    console.log("requestConferenceCall(): resp=" + JSON.stringify(resp));
-                    if (resp.responseCode === '0') {
-                        dispatch('processCallConferenceDone', resp)
-                    }
-                }
-            )
-        },
-
-        requestTransferCall({ getters, dispatch }, payload) {
-
-            let request = {
-                sessionId: getters['session/getSessionId'],
-                primaryCallId: payload.callIdA,
-                consultedCallId: payload.callIdB
-            }
-
-            console.log("requestTransferCall(): request=" + JSON.stringify(request));
-            this._vm.$socket.emit(
-                SOCKET_EVENTS.TRANSFER_CALL,
-                request,
-                resp => {
-                    console.log("requestTransferCall(): resp=" + JSON.stringify(resp));
-                    if (resp.responseCode === '0') {
-                        dispatch('processCallTransferDone', resp)
-                    }
-                }
-            )
-        },
-
+      console.log('requestConferenceCall(): request=' + JSON.stringify(request))
+      this._vm.$socket.emit(SOCKET_EVENTS.CONFERENCE_CALL, request, resp => {
+        console.log('requestConferenceCall(): resp=' + JSON.stringify(resp))
+        if (resp.responseCode === '0') {
+          dispatch('processCallConferenceDone', resp)
+        }
+      })
     },
 
-    mutations: {
+    requestTransferCall({ getters, dispatch }, payload) {
+      let request = {
+        sessionId: getters['session/getSessionId'],
+        primaryCallId: payload.callIdA,
+        consultedCallId: payload.callIdB
+      }
 
-        RESET_CONSULTED_CALL_MODULE(state) {
-            Object.assign(state, initialState())
-        },
-
+      console.log('requestTransferCall(): request=' + JSON.stringify(request))
+      this._vm.$socket.emit(SOCKET_EVENTS.TRANSFER_CALL, request, resp => {
+        console.log('requestTransferCall(): resp=' + JSON.stringify(resp))
+        if (resp.responseCode === '0') {
+          dispatch('processCallTransferDone', resp)
+        }
+      })
     }
-}
+  },
 
+  mutations: {
+    RESET_CONSULTED_CALL_MODULE(state) {
+      Object.assign(state, initialState())
+    }
+  }
+}

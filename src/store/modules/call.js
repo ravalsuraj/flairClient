@@ -61,9 +61,9 @@ const getters = {
   getCallIndex: state => ucid => {
     console.log(
       'getCallIndex():ucid=' +
-      ucid +
-      ', call_list_ucids=' +
-      JSON.stringify(state.call_list_ucids)
+        ucid +
+        ', call_list_ucids=' +
+        JSON.stringify(state.call_list_ucids)
     )
     console.log(
       'getCallIndex(): returning index=' + state.call_list_ucids.indexOf(ucid)
@@ -74,13 +74,13 @@ const getters = {
   getCallIndexByCallId: state => callId => {
     console.log(
       'getCallIndex():callId=' +
-      callId +
-      ', call_list_callIds=' +
-      JSON.stringify(state.call_list_callIds)
+        callId +
+        ', call_list_callIds=' +
+        JSON.stringify(state.call_list_callIds)
     )
     console.log(
       'getCallIndex(): returning index=' +
-      state.call_list_callIds.indexOf(callId)
+        state.call_list_callIds.indexOf(callId)
     )
     return state.call_list_callIds.indexOf(callId)
   },
@@ -134,6 +134,7 @@ const actions = {
         newCall.status = CALL_STATES.CREATED
         newCall.type = CALL_TYPES.INBOUND
         newCall.thirdAddress = null
+        newCall.linkedCallId = null
         //http://jsfiddle.net/pdmrL1gq/1/
         newCall.startTime = new Date().getTime()
         commit('ADD_CALL', newCall)
@@ -231,6 +232,7 @@ const actions = {
   processNewConsultedCall({ commit, getters, dispatch }, payload) {
     dispatch('addCallToActiveCalls', payload)
     dispatch('addConsultedCallDetailsToPrimary', payload)
+    dispatch('linkPrimaryAndConsultedCall', payload)
 
     commit('ADD_CALL_TO_CONSULTED_CALL_LIST', payload.callId)
     let index = getters.getCallIndexByCallId(payload.callId)
@@ -255,6 +257,20 @@ const actions = {
   resetCallState({ commit }) {
     commit('RESET_CALL_STATUS')
     commit('RESET_CRM_DATA')
+  },
+  linkPrimaryAndConsultedCall({ commit, getters }, payload) {
+    let inboundCallList = getters.getInboundCallList
+    if (inboundCallList && inboundCallList.length === 1) {
+      //assumes that there is only one inbound call, and removes the consulted call from that call
+      let linkCallRequest = {
+        primaryCallIndex: getters.getCallIndexByCallId(inboundCallList[0]),
+        consultedCallIndex: getters.getCallIndexByCallId(payload.callId),
+        primaryCallId: inboundCallList[0],
+        consultedCallId: payload.callId
+      }
+
+      commit('LINK_PRIMARY_CONSULTED_CALL', linkCallRequest)
+    }
   },
 
   addConsultedCallDetailsToPrimary({ commit, getters }, payload) {
@@ -528,12 +544,40 @@ const mutations = {
     state.calls[index].multiCallState = MULTI_CALL_STATES.CONFERENCED
     state.calls[index].calledAddress = payload.calledAddress
     state.calls[index].callingAddress = payload.callingAddress
-    state.calls[index].thirdAddress = payload.thirdAddress
+    let linkedCallId = state.calls[index].linkedCallId
+
+    if (linkedCallId) {
+      let linkedCall = getters.getCallByCallId(linkedCallId)
+      //check the common address between the primary and consulted call,
+      // and then use the other address as the third address
+      if (
+        state.calls[index].calledAddress === linkedCall.callingAddress ||
+        state.calls[index].callingAddress === linkedCall.callingAddress
+      ) {
+        state.calls[index].thirdAddress = linkedCall.calledAddress
+      } else if (
+        state.calls[index].calledAddress === linkedCall.calledAddress ||
+        state.calls[index].callingAddress === linkedCall.calledAddress
+      ) {
+        state.calls[index].thirdAddress = linkedCall.callingAddress
+      }
+    }
   },
 
   SET_CALL_TYPE_OUTBOUND(state, index) {
     state.calls[index].type = CALL_TYPES.OUTBOUND
   },
+
+  LINK_PRIMARY_CONSULTED_CALL(state, payload) {
+    state.calls[payload.primaryCallIndex].multiCallState =
+      MULTI_CALL_STATES.CONSULTED
+    state.calls[payload.consultedCallIndex].multiCallState =
+      MULTI_CALL_STATES.CONSULTED
+
+    state.calls[payload.primaryCallIndex].linkedCallId = payload.consultedCallId
+    state.calls[payload.consultedCallIndex].linkedCallId = payload.primaryCallId
+  },
+
   ADD_CONSULTED_CALL_TO_PRIMARY(state, [index, payload]) {
     state.calls[index].multiCallState = MULTI_CALL_STATES.CONSULTED
     state.calls[index].consultedCall = payload
@@ -545,11 +589,11 @@ const mutations = {
 
   REMOVE_ADDRESS_FROM_CALL(state, [index, address]) {
     state.calls[index].multiCallState = MULTI_CALL_STATES.SINGLE
-    if (address = state.calls[index].callingAddress) {
+    if ((address = state.calls[index].callingAddress)) {
       state.calls[index].callingAddress = null
-    } else if (address = state.calls[index].calledAddress) {
+    } else if ((address = state.calls[index].calledAddress)) {
       state.calls[index].calledAddress = null
-    } else if (address = state.calls[index].thirdAddress) {
+    } else if ((address = state.calls[index].thirdAddress)) {
       state.calls[index].thirdAddress = null
     }
   },
