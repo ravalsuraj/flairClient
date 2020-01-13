@@ -12,7 +12,7 @@
                     v-if="isCallConferenced"
                     strong
                     class="fl_well_text big mx-auto"
-                  >{{conferencedCall.calledAddress}}</span>
+                  >{{thirdAddress}}</span>
                 </mdb-col>
                 <mdb-col col="6" class="mb-3 text-center">
                   <persist-timer :timerName="callTimerName" class="fl_well_text big"></persist-timer>
@@ -28,7 +28,7 @@
                 </mdb-col>
               </mdb-row>
             </mdb-col>
- 
+
             <!--START: Inbound Call Controls-->
             <!-- START: Answer/Drop Button -->
             <mdb-col :col="cardWidth">
@@ -87,7 +87,7 @@
                           <mdb-modal-title>Consult Call</mdb-modal-title>
                         </mdb-modal-header>
                         <mdb-modal-body>
-                          <consult-dialer :ucid=ucid :callId=callId ></consult-dialer>
+                          <consult-dialer :ucid="ucid" :callId="callId"></consult-dialer>
                         </mdb-modal-body>
                       </mdb-modal>
                     </mdb-dropdown>
@@ -276,10 +276,7 @@ export default {
       return this.$store.getters.getMultiCallState(this.callId)
     },
     isCallConferenced() {
-      if (
-        this.call.consultedCall &&
-        this.multiCallState === MULTI_CALL_STATES.CONFERENCED
-      ) {
+      if (this.call.consultedCall) {
         return true
       } else {
         return false
@@ -328,6 +325,17 @@ export default {
       }
     },
 
+    thirdAddress() {
+      switch (this.callType) {
+        case CALL_TYPES.INBOUND:
+          return this.call.thirdAddress
+        case CALL_TYPES.OUTBOUND:
+          return this.call.thirdAddress
+        case CALL_TYPES.CONSULTED:
+          return this.call.thirdAddress
+      }
+    },
+
     callType() {
       return this.call.type
     },
@@ -355,33 +363,33 @@ export default {
     }
   },
   watch: {
-    allOngoingCalls: {
-      immediate: false,
-      deep: true,
-      handler: function(newState, oldState) {
-        console.log(
-          'allOngoingCalls(): watch - currentCallIndex = ' +
-            this.currentCallIndex
-        )
-        if (this.currentCallIndex != null) {
-          console.log(
-            'allOngoingCalls(): watch- newState[this.currentCallIndex]=' +
-              JSON.stringify(newState[this.currentCallIndex])
-          )
-          console.log(
-            'allOngoingCalls(): watch - oldState[this.currentCallIndex]=' +
-              JSON.stringify(oldState[this.currentCallIndex])
-          )
-        } else {
-          console.log(
-            'allOngoingCalls(): watch- newState=' + JSON.stringify(newState)
-          )
-          console.log(
-            'allOngoingCalls(): watch - oldState=' + JSON.stringify(oldState)
-          )
-        }
-      }
-    },
+    // allOngoingCalls: {
+    //   immediate: false,
+    //   deep: true,
+    //   handler: function(newState, oldState) {
+    //     console.log(
+    //       'allOngoingCalls(): watch - currentCallIndex = ' +
+    //         this.currentCallIndex
+    //     )
+    //     if (this.currentCallIndex != null) {
+    //       console.log(
+    //         'allOngoingCalls(): watch- newState[this.currentCallIndex]=' +
+    //           JSON.stringify(newState[this.currentCallIndex])
+    //       )
+    //       console.log(
+    //         'allOngoingCalls(): watch - oldState[this.currentCallIndex]=' +
+    //           JSON.stringify(oldState[this.currentCallIndex])
+    //       )
+    //     } else {
+    //       console.log(
+    //         'allOngoingCalls(): watch- newState=' + JSON.stringify(newState)
+    //       )
+    //       console.log(
+    //         'allOngoingCalls(): watch - oldState=' + JSON.stringify(oldState)
+    //       )
+    //     }
+    //   }
+    // },
     callStatus: {
       immediate: true,
       deep: true,

@@ -226,10 +226,7 @@ const actions = {
     commit('SET_CALL_TYPE_OUTBOUND', index)
   },
 
-  processConferenceConnectionDisconnect(
-    { commit, getters, dispatch },
-    payload
-  ) {
+  processConferenceConnectionDisconnect({ commit, getters, dispatch }, payload) {
     dispatch('removeConferenceCallFromPrimary', payload)
   },
 
@@ -248,18 +245,23 @@ const actions = {
   },
 
   removeConferenceCallFromPrimary({ commit, getters }, payload) {
-    let inboundCallList = getters.getInboundCallList
-    if (inboundCallList && inboundCallList.length === 1) {
-      //assumes that there is only one inbound call, and removes the consulted call from that call
-      let callIndex = getters.getCallIndexByCallId(inboundCallList[0])
-      if (
-        payload.callingAddress ===
-        getters.getCallByIndex(callIndex).callingAddress
-      ) {
-        commit('SWITCH_PRIMARY_CONSULTED_CALL_ADDRESS', [callIndex])
-      }
-      commit('REMOVE_CONSULTED_CALL_FROM_PRIMARY', [callIndex])
+    let index = getters.getCallIndexByCallId(payload.callId);
+
+    if (index > -1) {
+      commit('REMOVE_ADDRESS_FROM_CALL', [index, payload.callingAddress])
     }
+    // let inboundCallList = getters.getInboundCallList
+    // if (inboundCallList && inboundCallList.length === 1) {
+    //   //assumes that there is only one inbound call, and removes the consulted call from that call
+    //   let callIndex = getters.getCallIndexByCallId(inboundCallList[0])
+    //   if (
+    //     payload.callingAddress ===
+    //     getters.getCallByIndex(callIndex).callingAddress
+    //   ) {
+    //     commit('SWITCH_PRIMARY_CONSULTED_CALL_ADDRESS', [callIndex])
+    //   }
+    //   commit('REMOVE_CONSULTED_CALL_FROM_PRIMARY', [callIndex])
+    // }
   },
   setMultiCallStateConferenced({ commit, getters }, payload) {
     console.log(
@@ -528,6 +530,17 @@ const mutations = {
   REMOVE_CONSULTED_CALL_FROM_PRIMARY(state, index) {
     state.calls[index].multiCallState = MULTI_CALL_STATES.SINGLE
     delete state.calls[index].consultedCall
+  },
+
+  REMOVE_ADDRESS_FROM_CALL(state, [index, address]) {
+    state.calls[index].multiCallState = MULTI_CALL_STATES.SINGLE
+    if (address = state.calls[index].callingAddress) {
+      state.calls[index].callingAddress = null
+    } else if (address = state.calls[index].calledAddress) {
+      state.calls[index].calledAddress = null
+    } else if (address = state.calls[index].thirdAddress) {
+      state.calls[index].thirdAddress = null
+    }
   },
 
   SWITCH_PRIMARY_CONSULTED_CALL_ADDRESS(state, index) {
