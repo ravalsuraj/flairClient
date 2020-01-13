@@ -84,12 +84,12 @@
                     <mdb-modal-body>
                       <select
                         class="browser-default custom-select mb-5"
-                        v-model="callToBeConferenced"
+                        v-model="callIdToBeConferenced"
                         v-if="otherCalls.length>1"
                       >
                         <option selected disabled>Open this select menu</option>
                         <option
-                          :value="call.ucid"
+                          :value="call.callId"
                           v-for="call in otherCalls"
                           :key="call.id"
                         >{{call.callingAddress}}</option>
@@ -198,9 +198,9 @@ export default {
   },
   mounted() {
     if (this.otherCalls.length === 1) {
-      this.callToBeConferenced = this.otherCalls[0].ucid
+      this.callIdToBeConferenced = this.otherCalls[0].callId
     } else {
-      console.log('not setting calltobeconferenced')
+      console.log('not setting callIdToBeConferenced')
     }
   },
   props: {
@@ -212,7 +212,7 @@ export default {
     return {
       showConsultDialer: false,
       showOutboundDialer: false,
-      callToBeConferenced: null,
+      callIdToBeConferenced: null,
       spinner: {
         show: false
       },
@@ -229,13 +229,13 @@ export default {
 
     answerDropCall() {
       this.$store.dispatch('requestAnswerDropCall', [
-        this.call.ucid,
+        this.call.callId,
         CALL_TYPES.OUTBOUND
       ])
     },
 
     holdUnholdCall() {
-      this.$store.dispatch('requestHoldUnholdCall', this.call.ucid)
+      this.$store.dispatch('requestHoldUnholdCall', this.call.callId)
     },
 
     disposeCall() {
@@ -243,34 +243,34 @@ export default {
     },
 
     transferCall() {
-      if (this.callToBeConferenced && this.ucid) {
+      if (this.callIdToBeConferenced && this.callId) {
         let transferRequest = {
-          ucidB: this.ucid,
-          ucidA: this.callToBeConferenced
+          callIdB: this.callId,
+          callIdA: this.callIdToBeConferenced
         }
         this.$store.dispatch('requestTransferCall', transferRequest)
       } else {
         console.log(
-          'skipping transfer call. this.ucid=' +
-            this.ucid +
-            'callToBeConferenced=',
-          this.callToBeConferenced
+          'skipping transfer call. this.callId=' +
+            this.callId +
+            'callIdToBeConferenced=',
+          this.callIdToBeConferenced
         )
       }
     },
     conferenceCall() {
-      if (this.callToBeConferenced && this.ucid) {
+      if (this.callIdToBeConferenced && this.callId) {
         let transferRequest = {
-          ucidB: this.ucid,
-          ucidA: this.callToBeConferenced
+          callIdB: this.callId,
+          callIdA: this.callIdToBeConferenced
         }
         this.$store.dispatch('requestConferenceCall', transferRequest)
       } else {
         console.log(
-          'skipping conference call. this.ucid=' +
-            this.ucid +
-            'callToBeConferenced=',
-          this.callToBeConferenced
+          'skipping conference call. this.callId=' +
+            this.callId +
+            'callIdToBeConferenced=',
+          this.callIdToBeConferenced
         )
       }
     }
@@ -287,7 +287,7 @@ export default {
 
       //iterate through all calls, and remove the call that belongs to this call card. Show only other calls.
       for (let i = 0; i < calls.length; i++) {
-        if (calls[i].ucid !== this.ucid) otherCalls.push(calls[i])
+        if (calls[i].callId !== this.callId) otherCalls.push(calls[i])
       }
 
       return otherCalls
@@ -313,12 +313,7 @@ export default {
         this.callStatus === CALL_STATES.DROPPED
       )
     },
-    isConfCallIdle() {
-      return (
-        this.conferenceCallStatus === CALL_STATES.IDLE ||
-        this.conferenceCallStatus === CALL_STATES.DROPPED
-      )
-    },
+    
     isCallRinging() {
       return this.callStatus === CALL_STATES.RINGING
     },

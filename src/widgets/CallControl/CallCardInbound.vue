@@ -202,12 +202,12 @@ export default {
 
     answerDropCall() {
       this.$store.dispatch('requestAnswerDropCall', [
-        this.call.ucid,
+        this.call.callId,
         CALL_TYPES.INBOUND
       ])
     },
     holdUnholdCall() {
-      this.$store.dispatch('requestHoldUnholdCall', this.call.ucid)
+      this.$store.dispatch('requestHoldUnholdCall', this.call.callId)
     },
 
     disposeCall() {
@@ -268,15 +268,11 @@ export default {
       return this.callStatus === CALL_STATES.HELD
     },
 
-    conferencedCall() {
-      return this.call.consultedCall
-    },
-
     multiCallState() {
       return this.$store.getters.getMultiCallState(this.callId)
     },
     isCallConferenced() {
-      if (this.call.consultedCall) {
+      if (this.multiCallState === MULTI_CALL_STATES.CONFERENCED) {
         return true
       } else {
         return false

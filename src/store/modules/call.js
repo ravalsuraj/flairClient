@@ -43,7 +43,7 @@ const getters = {
     return state.activeCall.ucid
   },
 
-  getActiveCallId(state) {
+  getActiveCallCallId(state) {
     return state.activeCall.callId
   },
   getCallByUcid: state => ucid => {
@@ -95,19 +95,21 @@ const getters = {
 }
 
 const actions = {
-
+  //To be invoked whenever page is refreshed or connectivity is restored. Restores the Call State
   sendQueryCallStateRequest({ getters, commit, dispatch }) {
-
-    let sessionId = getters['session/getSessionId'];
-    console.log("sendQueryCallStateRequest(): sessionId=", sessionId)
+    let sessionId = getters['session/getSessionId']
+    console.log('sendQueryCallStateRequest(): sessionId=', sessionId)
     let request = {
-      sessionId: sessionId,
+      sessionId: sessionId
     }
-    console.log('sendQueryCallStateRequest(): request: ' + JSON.stringify(request))
+    console.log(
+      'sendQueryCallStateRequest(): request: ' + JSON.stringify(request)
+    )
 
-    this._vm.$socket.emit(SOCKET_EVENTS.QUERY_CALL_STATE, request, (resp) => {
-
-      console.log('sendQueryCallStateRequest(): response: ' + JSON.stringify(resp))
+    this._vm.$socket.emit(SOCKET_EVENTS.GET_ACTIVE_CALLS, request, resp => {
+      console.log(
+        'sendQueryCallStateRequest(): response: ' + JSON.stringify(resp)
+      )
 
       if (resp.responseCode === '0') {
         commit('SET_ASYNC_CALL_STATE', resp.agentState)
@@ -115,6 +117,8 @@ const actions = {
       return resp
     })
   },
+
+  //Called whenever a new call arrives
   addCallToActiveCalls({ commit, getters, dispatch }, call) {
     return new Promise(resolve => {
       let existingCall = getters.getCallByCallId(call.callId)
@@ -143,6 +147,7 @@ const actions = {
     })
   },
 
+  //Called once a call has ended
   removeCallFromActiveCalls({ commit, getters, dispatch }, [ucid, callId]) {
     commit('RESET_ACTIVE_CALL', [ucid, callId])
     commit('REMOVE_CALL_FROM_OUTBOUND_CALL_LIST', callId)
@@ -155,6 +160,7 @@ const actions = {
       Utils.getTimerName(callId, TIMER_TYPES.IN_STATE_TIMER)
     )
   },
+
   setCallState({ commit, getters }, [callId, newStatus]) {
     console.log('setCallState(): callId=' + callId + ', newStatus=' + newStatus)
     let index = getters.getCallIndexByCallId(callId)
@@ -162,26 +168,36 @@ const actions = {
     commit('SET_CALL_STATE', [index, newStatus])
   },
 
+  //creates and starts the instate timer as well as call timer to store.
   addCallTimers({ dispatch }, callId) {
     //Create the timer for the call, and then start the timer
     dispatch('addUpTimer', Utils.getTimerName(callId, TIMER_TYPES.CALL_TIMER))
-    dispatch('addUpTimer', Utils.getTimerName(callId, TIMER_TYPES.IN_STATE_TIMER))
+    dispatch(
+      'addUpTimer',
+      Utils.getTimerName(callId, TIMER_TYPES.IN_STATE_TIMER)
+    )
 
     dispatch('startTimer', Utils.getTimerName(callId, TIMER_TYPES.CALL_TIMER))
-    dispatch('startTimer', Utils.getTimerName(callId, TIMER_TYPES.IN_STATE_TIMER))
+    dispatch(
+      'startTimer',
+      Utils.getTimerName(callId, TIMER_TYPES.IN_STATE_TIMER)
+    )
   },
 
   setCallStateRinging({ commit, dispatch, getters }, payload) {
-    // commit('SET_CALL_STATE_RINGING', payload)
-    commit('SET_CALL_STATE_RINGING', getters.getCallIndexByCallId(payload.callId))
+    commit(
+      'SET_CALL_STATE_RINGING',
+      getters.getCallIndexByCallId(payload.callId)
+    )
   },
 
-  setCallStateDialing({ commit, dispatch, getters }, payload) {
-
-  },
+  setCallStateDialing({ commit, dispatch, getters }, payload) {},
 
   setCallStateTalking({ commit, getters }, payload) {
-    commit('SET_CALL_STATE_TALKING', getters.getCallIndexByCallId(payload.callId))
+    commit(
+      'SET_CALL_STATE_TALKING',
+      getters.getCallIndexByCallId(payload.callId)
+    )
     commit('SET_ACTIVE_CALL', [payload.ucid, payload.callId])
   },
 
@@ -191,8 +207,11 @@ const actions = {
   },
 
   setCallStateDropped({ commit, dispatch, getters }, payload) {
-    commit('SET_CALL_STATE_DROPPED', getters.getCallIndexByCallId(payload.callId))
-    if (payload.callId === getters.getActiveCallId) {
+    commit(
+      'SET_CALL_STATE_DROPPED',
+      getters.getCallIndexByCallId(payload.callId)
+    )
+    if (payload.callId === getters.getActiveCallCallId) {
       commit('RESET_ACTIVE_CALL', [payload.ucid, payload.callId])
     }
     dispatch('removeCallFromActiveCalls', [payload.ucid, payload.callId])
@@ -213,7 +232,6 @@ const actions = {
     dispatch('addCallToActiveCalls', payload)
     dispatch('addConsultedCallDetailsToPrimary', payload)
 
-
     commit('ADD_CALL_TO_CONSULTED_CALL_LIST', payload.callId)
     let index = getters.getCallIndexByCallId(payload.callId)
     commit('SET_CALL_TYPE_CONSULTED', index)
@@ -226,7 +244,11 @@ const actions = {
     commit('SET_CALL_TYPE_OUTBOUND', index)
   },
 
-  processConferenceConnectionDisconnect({ commit, getters, dispatch }, payload) {
+  //called when one ore more conference call parties leave the call
+  processConferenceConnectionDisconnect(
+    { commit, getters, dispatch },
+    payload
+  ) {
     dispatch('removeConferenceCallFromPrimary', payload)
   },
 
@@ -245,52 +267,41 @@ const actions = {
   },
 
   removeConferenceCallFromPrimary({ commit, getters }, payload) {
-    let index = getters.getCallIndexByCallId(payload.callId);
+    let index = getters.getCallIndexByCallId(payload.callId)
 
     if (index > -1) {
       commit('REMOVE_ADDRESS_FROM_CALL', [index, payload.callingAddress])
     }
-    // let inboundCallList = getters.getInboundCallList
-    // if (inboundCallList && inboundCallList.length === 1) {
-    //   //assumes that there is only one inbound call, and removes the consulted call from that call
-    //   let callIndex = getters.getCallIndexByCallId(inboundCallList[0])
-    //   if (
-    //     payload.callingAddress ===
-    //     getters.getCallByIndex(callIndex).callingAddress
-    //   ) {
-    //     commit('SWITCH_PRIMARY_CONSULTED_CALL_ADDRESS', [callIndex])
-    //   }
-    //   commit('REMOVE_CONSULTED_CALL_FROM_PRIMARY', [callIndex])
-    // }
   },
+
   setMultiCallStateConferenced({ commit, getters }, payload) {
     console.log(
       'setMultiCallStateConferenced(): action entered: payload' +
-      JSON.stringify(payload)
+        JSON.stringify(payload)
     )
     let callIndex = getters.getCallIndexByCallId(payload.callId)
     if (callIndex !== null) {
       console.log(
         'setMultiCallStateConferenced(): commiting mutation. callIndex=' +
-        callIndex
+          callIndex
       )
       commit('SET_MULTI_CALL_STATE_CONFERENCED', [callIndex, payload])
     } else {
       console.log(
         'setMultiCallStateConferenced(): skiping mutation. callIndex=' +
-        callIndex
+          callIndex
       )
     }
   },
 
-  requestAnswerDropCall({ getters, dispatch }, [requestedUcid, callType]) {
+  requestAnswerDropCall({ getters, dispatch }, [requestedCallId, callType]) {
     let request = {
       sessionId: getters['session/getSessionId'],
-      ucid: requestedUcid
+      callId: requestedCallId
     }
     console.log('requestAnswerDropCall(): request=', request)
     if (callType === CALL_TYPES.INBOUND) {
-      let callStatus = getters.getCallByUcid(requestedUcid).status
+      let callStatus = getters.getCallByCallId(requestedCallId).status
 
       switch (callStatus) {
         case CALL_STATES.RINGING:
@@ -305,7 +316,7 @@ const actions = {
         default:
           console.log(
             'AnswerDropCall(): skipping answer or drop because call state is: ' +
-            CALL_STATES.Text[callStatus]
+              CALL_STATES.Text[callStatus]
           )
           dispatch('showErrorBanner', [
             'Cannot Disconnect',
@@ -376,29 +387,29 @@ const actions = {
     }
   },
 
-  requestHoldUnholdCall({ getters, dispatch }, requestedUcid) {
+  requestHoldUnholdCall({ getters, dispatch }, requestedCallId) {
     console.log(
-      'requestHoldUnholdCall(): action entered' + getters['getActiveCallUcid']
+      'requestHoldUnholdCall(): action entered' + getters.getCallByCallId
     )
 
-    let callStatus = getters.getCallByUcid(requestedUcid).status
+    let callStatus = getters.getCallByCallId(requestedCallId).status
     let primaryRequest = {
       sessionId: getters['session/getSessionId'],
       agentId: getters['getAgentCredentials'].agentId,
       deviceId: getters['getAgentCredentials'].deviceId,
-      ucid: requestedUcid
+      callId: requestedCallId
     }
     console.log('requestHoldUnholdCall(): primaryRequest=', primaryRequest)
     switch (callStatus) {
       case CALL_STATES.HELD:
-        let currentActiveCallUcid = getters['getActiveCallUcid']
+        let currentActiveCallCallId = getters.getActiveCallCallId
 
-        if (currentActiveCallUcid) {
+        if (currentActiveCallCallId) {
           let holdActiveCallRequest = {
             sessionId: getters['session/getSessionId'],
             agentId: getters['getAgentCredentials'].agentId,
             deviceId: getters['getAgentCredentials'].deviceId,
-            ucid: currentActiveCallUcid
+            callId: currentActiveCallCallId
           }
 
           console.log(
@@ -411,7 +422,7 @@ const actions = {
         } else {
           console.log(
             'requestHoldUnholdCall(): no active calls, so sending unhold request ' +
-            currentActiveCallUcid
+              currentActiveCallCallId
           )
           dispatch('requestUnholdCall', primaryRequest)
         }

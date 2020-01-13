@@ -37,31 +37,13 @@ export default {
 
         },
 
-        //Called upon Socket event: OUTCALLRING
-        // setConsultedCallStateRinging({ commit, dispatch }, payload) {
-        //     dispatch('setCallState', [payload.callId, CALL_STATES.RINGING])
-        // },
-
-        //Called when transfer request is successful (From processTransferDone)
-        // setConsultedCallStateTalking({ commit, dispatch }, payload) {
-        //     dispatch('setCallState', [payload.callId, CALL_STATES.TALKING])
-        //     commit('SET_ACTIVE_CALL', [payload.ucid, payload.callId])
-        // },
-
-        // setConsultedCallStateHeld({ commit, dispatch }, payload) {
-        //     dispatch('setCallState', [payload.callId, CALL_STATES.HELD])
-        //     commit('RESET_ACTIVE_CALL', [payload.ucid, payload.callId])
-        // },
-
-
-
         requestConsultCall({ getters, commit, dispatch }, ucid) {
             return new Promise((resolve, reject) => {
                 try {
 
                     let request = {
                         sessionId: getters['session/getSessionId'],
-                        primaryUcid: ucid,
+                        primaryCallId: callId,
                         dialedNumber: getters.getDialedDigits,
                     }
 
@@ -93,8 +75,8 @@ export default {
 
             let request = {
                 sessionId: getters['session/getSessionId'],
-                primaryUcid: payload.ucidA,
-                consultedUcid: payload.ucidB
+                primaryCallId: payload.callIdA,
+                consultedCallId: payload.callIdB
             }
 
             console.log("requestConferenceCall(): request=" + JSON.stringify(request));
@@ -114,8 +96,8 @@ export default {
 
             let request = {
                 sessionId: getters['session/getSessionId'],
-                primaryUcid: payload.ucidA,
-                consultedUcid: payload.ucidB
+                primaryCallId: payload.callIdA,
+                consultedCallId: payload.callIdB
             }
 
             console.log("requestTransferCall(): request=" + JSON.stringify(request));
