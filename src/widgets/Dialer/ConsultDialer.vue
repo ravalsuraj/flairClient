@@ -227,7 +227,7 @@ export default {
     onConsultButtonClicked() {
       this.$store.dispatch('updateDialedDigits', this.dialedDigits)
       this.showSpinner()
-      this.$store.dispatch('requestConsultCall', this.ucid).then(resp => {
+      this.$store.dispatch('requestConsultCall', this.callId).then(resp => {
         this.hideSpinner()
       })
     },

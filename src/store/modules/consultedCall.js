@@ -37,7 +37,7 @@ export default {
 
         },
 
-        requestConsultCall({ getters, commit, dispatch }, ucid) {
+        requestConsultCall({ getters, commit, dispatch }, callId) {
             return new Promise((resolve, reject) => {
                 try {
 
