@@ -2,6 +2,7 @@ import {
     SOCKET_EVENTS,
     SOCKET_STATES,
 } from '@/defines.js'
+import { MULTI_CALL_STATES } from '../../defines'
 
 function initialState() {
     return {
@@ -93,10 +94,17 @@ export default {
 
         SOCKET_ICALLDISC({ dispatch, getters }, payload) {
             console.log('SOCKET_ICALLDISC(): Received event: ' + JSON.stringify(payload))
-            if (getters.getCallIndexByCallId(payload.callId) !== null) {
-                dispatch('setCallStateDropped', payload)
-            } else {
-                console.log("SOCKET_ICALLDISC(): no calls found for UCID:" + payload.ucid)
+            let callIndex = getters.getCallIndexByCallId(payload.callId);
+            if (callIndex >-1) {
+                if (getters.getMultiCallState(payload.callId) === MULTI_CALL_STATES.CONFERENCED) {
+                    console.log("SOCKET_ICALLDISC(): conf call, so dropping single connection")
+                    dispatch('processConferenceConnectionDisconnect', payload)
+                } else {
+                    console.log("SOCKET_ICALLDISC(): regular call, so dropping entire call")
+                    dispatch('setCallStateDropped', payload)
+                }
+            }else{
+                console.log("SOCKET_ICALLDISC(): no call found, so skipping call drop process")
             }
         },
 
@@ -106,7 +114,6 @@ export default {
                 dispatch('setCallStateHeld', payload)
             }
             else {
-
                 console.log('SOCKET_ICALLHLD() call ID not found in list of calls')
             }
         },
@@ -145,9 +152,18 @@ export default {
 
         },
 
-        SOCKET_OUTCALLDISC({ dispatch }, payload) {
+        SOCKET_OUTCALLDISC({ dispatch, getters }, payload) {
             console.log('SOCKET_OUTCALLDISC(): Received event: ' + JSON.stringify(payload))
-            dispatch('setCallStateDropped', payload)
+            let callIndex = getters.getCallIndexByCallId(payload.callId);
+            if (callIndex>-1) {
+                if (getters.getMultiCallState(payload.callId) === MULTI_CALL_STATES.CONFERENCED) {
+                    dispatch('processConferenceConnectionDisconnect', payload)
+                } else {
+                    dispatch('setCallStateDropped', payload)
+                }
+
+            }
+
         },
 
         SOCKET_OUTCALLHLD({ dispatch }, payload) {
