@@ -3,7 +3,7 @@
   <mdb-card-body class="p-2 mb-1">-->
   <div class="fl_container_dialer">
     <mdb-container fluid>
-      <form @click.stop>
+      <form @click.stop @keyup.enter="onConsultButtonClicked">
         <mdb-row class="px-3 py-4" @click.stop>
           <mdb-col class="d-flex align-items-baseline">
             <!--Input Textbox for digits-->
@@ -53,7 +53,6 @@
             <span>Consult</span>
           </mdb-btn>
         </transition>
-       2
       </mdb-row>
     </mdb-container>
   </div>
@@ -180,6 +179,11 @@ export default {
   },
 
   methods: {
+    handleEnterKey(e) {
+      if (e.keyCode === 13) {
+        this.onConsultButtonClicked()
+      }
+    },
     showSpinner() {
       this.spinner.show = true
     },
@@ -216,12 +220,9 @@ export default {
       this.$store.dispatch('requestConsultCall', this.callId).then(resp => {
         this.hideSpinner()
       })
-    },
-    
+    }
   },
-  computed: {
-    
-  }
+  computed: {}
 }
 </script>
 
