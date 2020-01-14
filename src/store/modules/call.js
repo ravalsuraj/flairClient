@@ -61,9 +61,9 @@ const getters = {
   getCallIndex: state => ucid => {
     console.log(
       'getCallIndex():ucid=' +
-        ucid +
-        ', call_list_ucids=' +
-        JSON.stringify(state.call_list_ucids)
+      ucid +
+      ', call_list_ucids=' +
+      JSON.stringify(state.call_list_ucids)
     )
     console.log(
       'getCallIndex(): returning index=' + state.call_list_ucids.indexOf(ucid)
@@ -74,13 +74,13 @@ const getters = {
   getCallIndexByCallId: state => callId => {
     console.log(
       'getCallIndex():callId=' +
-        callId +
-        ', call_list_callIds=' +
-        JSON.stringify(state.call_list_callIds)
+      callId +
+      ', call_list_callIds=' +
+      JSON.stringify(state.call_list_callIds)
     )
     console.log(
       'getCallIndex(): returning index=' +
-        state.call_list_callIds.indexOf(callId)
+      state.call_list_callIds.indexOf(callId)
     )
     return state.call_list_callIds.indexOf(callId)
   },
@@ -192,7 +192,7 @@ const actions = {
     )
   },
 
-  setCallStateDialing({ commit, dispatch, getters }, payload) {},
+  setCallStateDialing({ commit, dispatch, getters }, payload) { },
 
   setCallStateTalking({ commit, getters }, payload) {
     commit(
@@ -247,10 +247,7 @@ const actions = {
   },
 
   //called when one ore more conference call parties leave the call
-  processConferenceConnectionDisconnect(
-    { commit, getters, dispatch },
-    payload
-  ) {
+  processConferenceConnectionDisconnect({ commit, getters, dispatch }, payload) {
     dispatch('removeConferenceCallFromPrimary', payload)
   },
 
@@ -260,16 +257,24 @@ const actions = {
   },
   linkPrimaryAndConsultedCall({ commit, getters }, payload) {
     let inboundCallList = getters.getInboundCallList
-    if (inboundCallList && inboundCallList.length === 1) {
+    if (inboundCallList && inboundCallList.length > 0) {
       //assumes that there is only one inbound call, and removes the consulted call from that call
+      let primaryCallIndex = getters.getCallIndexByCallId(inboundCallList[0])
+      let primaryCall = getters.getCallByCallId(inboundCallList[0])
+      let consultedCallIndex = getters.getCallIndexByCallId(payload.callId)
+      let consultedCall = getters.getCallByCallId(payload.callId)
       let linkCallRequest = {
-        primaryCallIndex: getters.getCallIndexByCallId(inboundCallList[0]),
-        consultedCallIndex: getters.getCallIndexByCallId(payload.callId),
+        primaryCallIndex: primaryCallIndex,
+        consultedCallIndex: consultedCallIndex,
         primaryCallId: inboundCallList[0],
-        consultedCallId: payload.callId
+        consultedCallId: payload.callId,
+        primaryCall: primaryCall,
+        consultedCall: consultedCall
       }
 
       commit('LINK_PRIMARY_CONSULTED_CALL', linkCallRequest)
+      commit('ADD_THIRD_ADDRESS_TO_CALL', [primaryCallIndex, consultedCall])
+      commit('ADD_THIRD_ADDRESS_TO_CALL', [consultedCallIndex, primaryCall])
     }
   },
 
@@ -287,25 +292,26 @@ const actions = {
 
     if (index > -1) {
       commit('REMOVE_ADDRESS_FROM_CALL', [index, payload.callingAddress])
+      //commit('REMOVE_THIRD_ADDRESS_FROM_CALL')
     }
   },
 
   setMultiCallStateConferenced({ commit, getters }, payload) {
     console.log(
       'setMultiCallStateConferenced(): action entered: payload' +
-        JSON.stringify(payload)
+      JSON.stringify(payload)
     )
     let callIndex = getters.getCallIndexByCallId(payload.callId)
     if (callIndex !== null) {
       console.log(
         'setMultiCallStateConferenced(): commiting mutation. callIndex=' +
-          callIndex
+        callIndex
       )
       commit('SET_MULTI_CALL_STATE_CONFERENCED', [callIndex, payload])
     } else {
       console.log(
         'setMultiCallStateConferenced(): skiping mutation. callIndex=' +
-          callIndex
+        callIndex
       )
     }
   },
@@ -332,7 +338,7 @@ const actions = {
         default:
           console.log(
             'AnswerDropCall(): skipping answer or drop because call state is: ' +
-              CALL_STATES.Text[callStatus]
+            CALL_STATES.Text[callStatus]
           )
           dispatch('showErrorBanner', [
             'Cannot Disconnect',
@@ -438,7 +444,7 @@ const actions = {
         } else {
           console.log(
             'requestHoldUnholdCall(): no active calls, so sending unhold request ' +
-              currentActiveCallCallId
+            currentActiveCallCallId
           )
           dispatch('requestUnholdCall', primaryRequest)
         }
@@ -542,26 +548,38 @@ const mutations = {
   },
   SET_MULTI_CALL_STATE_CONFERENCED(state, [index, payload]) {
     state.calls[index].multiCallState = MULTI_CALL_STATES.CONFERENCED
-    state.calls[index].calledAddress = payload.calledAddress
-    state.calls[index].callingAddress = payload.callingAddress
-    let linkedCallId = state.calls[index].linkedCallId
 
-    if (linkedCallId) {
-      let linkedCall = getters.getCallByCallId(linkedCallId)
-      //check the common address between the primary and consulted call,
-      // and then use the other address as the third address
-      if (
-        state.calls[index].calledAddress === linkedCall.callingAddress ||
-        state.calls[index].callingAddress === linkedCall.callingAddress
-      ) {
-        state.calls[index].thirdAddress = linkedCall.calledAddress
-      } else if (
-        state.calls[index].calledAddress === linkedCall.calledAddress ||
-        state.calls[index].callingAddress === linkedCall.calledAddress
-      ) {
-        state.calls[index].thirdAddress = linkedCall.callingAddress
-      }
+  },
+
+  ADD_THIRD_ADDRESS_TO_CALL(state, [index, payload]) {
+
+    let linkedCall = payload
+    if (linkedCall.callDirection == CALL_TYPES.INBOUND){
+      console.log("ADD_THIRD_ADDRESS_TO_CALL(): condition for call direction inbound. callDirection=" + linkedCall.callDirection + ", index=" + index + ", payload=" + JSON.stringify(payload))
+      state.calls[index].thirdAddress = linkedCall.callingAddress
+    }else{
+      console.log("ADD_THIRD_ADDRESS_TO_CALL(): condition for call direction outbound. callDirection="+linkedCall.callDirection+", index=" + index + ", payload=" + JSON.stringify(payload))
+      state.calls[index].thirdAddress = linkedCall.calledAddress
     }
+    
+    //check the common address between the primary and consulted call,
+    // and then use the other address as the third address
+    // if (
+    //   state.calls[index].calledAddress === linkedCall.callingAddress ||
+    //   state.calls[index].callingAddress === linkedCall.callingAddress
+    // ) {
+    //   console.log("ADD_THIRD_ADDRESS_TO_CALL(): setting third address as calledAddress. index=" + index + "payload" + JSON.stringify(payload))
+    //   state.calls[index].thirdAddress = linkedCall.calledAddress
+    // } else if (
+    //   state.calls[index].calledAddress === linkedCall.calledAddress ||
+    //   state.calls[index].callingAddress === linkedCall.calledAddress
+    // ) {
+    //   console.log("ADD_THIRD_ADDRESS_TO_CALL(): setting third address as callingAddress. index=" + index + "payload" + JSON.stringify(payload))
+    //   state.calls[index].thirdAddress = linkedCall.callingAddress
+    // } else {
+    //   console.log("ADD_THIRD_ADDRESS_TO_CALL(): no conditions matched")
+    // }
+
   },
 
   SET_CALL_TYPE_OUTBOUND(state, index) {
@@ -589,14 +607,20 @@ const mutations = {
 
   REMOVE_ADDRESS_FROM_CALL(state, [index, address]) {
     state.calls[index].multiCallState = MULTI_CALL_STATES.SINGLE
-    if ((address = state.calls[index].callingAddress)) {
-      state.calls[index].callingAddress = null
-    } else if ((address = state.calls[index].calledAddress)) {
-      state.calls[index].calledAddress = null
-    } else if ((address = state.calls[index].thirdAddress)) {
+    if ((address === state.calls[index].callingAddress)) {
+      state.calls[index].callingAddress = state.calls[index].thirdAddress
+      state.calls[index].thirdAddress = null
+    } else if ((address === state.calls[index].calledAddress)) {
+      state.calls[index].calledAddress = state.calls[index].thirdAddress
+      state.calls[index].thirdAddress = null
+    } else if ((address === state.calls[index].thirdAddress)) {
       state.calls[index].thirdAddress = null
     }
   },
+
+  // REMOVE_THIRD_ADDRESS_FROM_CALL(state, [index, payload]){
+  //   state.calls[index].thirdAddress = null
+  // },
 
   SWITCH_PRIMARY_CONSULTED_CALL_ADDRESS(state, index) {
     state.calls[index].callingAddress =
