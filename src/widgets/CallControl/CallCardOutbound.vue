@@ -8,7 +8,11 @@
               <mdb-row>
                 <mdb-col col="6" class="mb-3 d-flex">
                   <span strong class="fl_well_text big mx-auto">{{callingAddress}}</span>
-                  
+                  <span
+                    v-if="isCallConferenced"
+                    strong
+                    class="fl_well_text big mx-auto"
+                  >{{thirdAddress}}</span>
                 </mdb-col>
                 <mdb-col col="6" class="mb-3 text-center">
                   <persist-timer :timerName="callTimerName" class="fl_well_text big"></persist-timer>
@@ -131,7 +135,8 @@ import {
   CALL_STATES,
   CALL_TYPES,
   SOCKET_EVENTS,
-  TIMER_TYPES
+  TIMER_TYPES,
+  MULTI_CALL_STATES
 } from '@/defines.js'
 
 import {
@@ -313,7 +318,7 @@ export default {
         this.callStatus === CALL_STATES.DROPPED
       )
     },
-    
+
     isCallRinging() {
       return this.callStatus === CALL_STATES.RINGING
     },
@@ -326,6 +331,17 @@ export default {
 
     isCallHeld() {
       return this.callStatus === CALL_STATES.HELD
+    },
+
+    multiCallState() {
+      return this.$store.getters.getMultiCallState(this.callId)
+    },
+    isCallConferenced() {
+      if (this.multiCallState === MULTI_CALL_STATES.CONFERENCED) {
+        return true
+      } else {
+        return false
+      }
     },
 
     isCallConsulted() {
@@ -385,6 +401,17 @@ export default {
           return 'Outbound Call'
         case CALL_TYPES.CONSULTED:
           return 'Outbound Call'
+      }
+    },
+
+    thirdAddress() {
+      switch (this.callType) {
+        case CALL_TYPES.INBOUND:
+          return this.call.thirdAddress
+        case CALL_TYPES.OUTBOUND:
+          return this.call.thirdAddress
+        case CALL_TYPES.CONSULTED:
+          return this.call.thirdAddress
       }
     },
 

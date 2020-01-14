@@ -72,11 +72,11 @@
                 </div>
               </div> -->
               <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
-              <div class="btn-group text-center my-3 w-100">
+              <div class="btn-group text-center my-3 w-100 pl-4 ml-3">
                 <mdb-btn
                   class="btn white-text unique-color mr-3"
                   @click="agentLoginBtnClicked"
-                  @keydown="agentLoginBtnClicked"
+                  @keydown="handleEnterKeyForLogin"
                  
                 >Log in</mdb-btn>
               </div>
