@@ -92,7 +92,6 @@ export default {
       this.$store.dispatch('setAgentAuxCode', {
         label: 'Ready',
         state: AGENT_STATES.READY,
-        userSelectable: true,
         reasonCode: null
       })
       this.$store.dispatch('resetDummyData')

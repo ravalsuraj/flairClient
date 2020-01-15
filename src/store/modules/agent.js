@@ -5,12 +5,17 @@ function initialState() {
     return {
         agentState: AGENT_STATES.UNKNOWN,
         reasonCode: 0,
-        reasonCodeLabel: '-',
+        displayLabel: '-',
         agentId: null,
         deviceId: null,
         password: null,
         workMode: 'auto',
         rememberCredentials: true,
+        monitorAgentInterval: null,
+
+        fullAuxCodeList: config.defaultAuxCodes,
+        agentStateDisplayLabelMap: null,
+        agentReasonCodeDisplayLabelMap: null
     }
 }
 
@@ -31,7 +36,7 @@ export default {
             return {
                 state: state.agentState,
                 reasonCode: state.reasonCode,
-                label: state.reasonCodeLabel
+                label: state.displayLabel
 
             }
         },
@@ -42,10 +47,47 @@ export default {
                 password: state.password,
                 workMode: state.workMode
             }
+        },
+        getFullAuxCodeList(state) {
+            return state.fullAuxCodeList
+        },
+        getMonitorAgentHandle(state) {
+            return state.monitorAgentInterval
         }
     },
 
     actions: {
+        initializeReasonCodes({ commit }) {
+
+            commit('UPDATE_FULL_AUX_CODE_LIST')
+
+            let reasonCodeArray = config.agentReasonCodeList
+            var reasonCodeMap = reasonCodeArray.reduce(function (map, obj) {
+                map[obj.reasonCode] = obj.reasonLabel;
+                return map;
+            }, {});
+
+            let auxArray = config.defaultAuxCodes
+            var auxMap = auxArray.reduce(function (map, obj) {
+                map[obj.state] = obj.label;
+                return map;
+            }, {});
+
+            commit('SET_DISPLAY_LABELS', [auxMap, reasonCodeMap])
+        },
+        startAgentStateMonitoring({ commit, dispatch }) {
+
+            let monitorAgentInterval = setInterval(() => {
+                //console.log("startAgentStateMonitoring(): querying agent state")
+                dispatch('sendQueryAgentStateRequest')
+            }, 3000)
+            commit('SET_MONITOR_AGENT_INTERVAL_HANDLE', monitorAgentInterval)
+        },
+
+        stopAgentStateMonitoring({ commit }) {
+            clearInterval(getters.getMonitorAgentHandle)
+            commit('RESET_MONITOR_AGENT_INTERVAL_HANDLE')
+        },
 
         setAgentState({ commit }, agentState) {
             commit('SET_AGENT_STATE', agentState)
@@ -73,7 +115,6 @@ export default {
 
 
             try {
-
 
                 this._vm.$socket.emit(SOCKET_EVENTS.AGENT_LOGIN, request, (resp) => {
 
@@ -153,23 +194,27 @@ export default {
         sendQueryAgentStateRequest({ getters, commit, dispatch }) {
             let agent = getters.getAgent;
             let sessionId = getters['session/getSessionId'];
-            console.log("sendQueryAgentStateRequest(): sessionId=", sessionId)
+            //console.log("sendQueryAgentStateRequest(): sessionId=", sessionId)
             let request = {
                 sessionId: sessionId,
                 agentId: agent.agentId,
                 deviceId: agent.deviceId
             }
-            console.log('sendQueryAgentStateRequest(): request: ' + JSON.stringify(request))
+            //console.log('sendQueryAgentStateRequest(): request: ' + JSON.stringify(request))
 
             this._vm.$socket.emit(SOCKET_EVENTS.QUERY_AGENT_STATE, request, (resp) => {
 
-                console.log('sendQueryAgentStateRequest(): response: ' + JSON.stringify(resp))
+                //console.log('sendQueryAgentStateRequest(): response: ' + JSON.stringify(resp))
 
                 if (resp.responseCode === '0') {
 
                     if (resp.agentState) {
                         commit('SET_AGENT_STATE', resp.agentState)
-                        dispatch('setInitialAuxCode', resp)
+                        //dispatch('setInitialAuxCode', resp)
+                        dispatch('setAgentAuxCode', {
+                            state: resp.agentState,
+                            reasonCode: resp.reasonCode
+                        })
                     }
 
                     return resp
@@ -190,10 +235,12 @@ export default {
         processAgentLogin({ commit, dispatch }) {
             commit('SET_AGENT_STATE_LOGIN')
             dispatch('sendQueryAgentStateRequest')
+            dispatch('initializeReasonCodes')
         },
         processAgentLogout({ dispatch, commit }) {
             dispatch('resetAllModules')
             commit('SET_AGENT_STATE_LOGOUT')
+            dispatch('stopAgentStateMonitoring')
 
         },
         /********************************* */
@@ -225,26 +272,26 @@ export default {
             commit('SET_AGENT_AUX_CODE', selectedAuxCode)
         },
 
-        setInitialAuxCode({ getters, commit }, payload) {
+        // setInitialAuxCode({ getters, commit }, payload) {
 
-            console.log("setting the initial aux code upon login. Payload=" + JSON.stringify(payload))
-            //for the text value, find the default aux code from the config file
-            let initialAgentAuxCode = config.defaultAuxCodes[payload.agentState];
-            if (initialAgentAuxCode) {
-                commit('SET_AGENT_AUX_CODE', initialAgentAuxCode);
-            } else {
-                console.log("could not retreive a value for initialAgentAuxCode")
-            }
+        //     console.log("setting the initial aux code upon login. Payload=" + JSON.stringify(payload))
+        //     //for the text value, find the default aux code from the config file
+        //     let initialAgentAuxCode = config.defaultAuxCodes[payload.agentState];
+        //     if (initialAgentAuxCode) {
+        //         commit('SET_AGENT_AUX_CODE', initialAgentAuxCode);
+        //     } else {
+        //         console.log("could not retreive a value for initialAgentAuxCode")
+        //     }
 
-            // switch (payload.agentState) {
-            //     case AGENT_STATES.READY:
-            //     case AGENT_STATES.NOT_READY:
-            //     case AGENT_STATES.BUSY:
+        //     // switch (payload.agentState) {
+        //     //     case AGENT_STATES.READY:
+        //     //     case AGENT_STATES.NOT_READY:
+        //     //     case AGENT_STATES.BUSY:
 
 
-            // }
+        //     // }
 
-        },
+        // },
 
 
     },
@@ -270,6 +317,22 @@ export default {
 
         },
 
+        UPDATE_FULL_AUX_CODE_LIST(state) {
+            const agentReasonCodeList = config.agentReasonCodeList
+            for (let i = 0; i < agentReasonCodeList.length; i++) {
+                state.fullAuxCodeList.push({
+                    label: agentReasonCodeList[i].reasonLabel,
+                    state: AGENT_STATES.NOT_READY,
+                    reasonCode: agentReasonCodeList[i].reasonCode,
+                    userSelectable: true
+                })
+            }
+        },
+        SET_DISPLAY_LABELS(state, [auxMap, reasonCodeMap]) {
+            console.log("auxCodes" + JSON.stringify(auxMap))
+            state.agentStateDisplayLabelMap = auxMap
+            state.agentReasonCodeDisplayLabelMap = reasonCodeMap
+        },
         SET_AGENT_LOGIN_CREDENTIALS(state, credentials) {
             state.agentId = credentials.agentId
             state.deviceId = credentials.deviceId
@@ -292,7 +355,17 @@ export default {
         SET_AGENT_AUX_CODE(state, payload) {
             state.reasonCode = payload.reasonCode
             state.agentState = payload.state
-            state.reasonCodeLabel = payload.label
+            if (payload.state === AGENT_STATES.NOT_READY) {
+                state.displayLabel = state.agentReasonCodeDisplayLabelMap[payload.reasonCode]
+            } else {
+                state.displayLabel = state.agentStateDisplayLabelMap[payload.state]
+            }
+        },
+        SET_MONITOR_AGENT_INTERVAL_HANDLE(state, handle) {
+            state.monitorAgentInterval = handle
+        },
+        RESET_MONITOR_AGENT_INTERVAL_HANDLE(state) {
+            state.monitorAgentInterval = null
         }
     }
 }

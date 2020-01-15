@@ -216,6 +216,7 @@ const actions = {
       commit('RESET_ACTIVE_CALL', [payload.ucid, payload.callId])
     }
     dispatch('removeCallFromActiveCalls', [payload.ucid, payload.callId])
+ 
   },
 
   //Called when the first call event arrives (call state ringing)

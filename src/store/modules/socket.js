@@ -46,12 +46,15 @@ export default {
                 })
             }
         },
-        setSocketStateDisconnected({ commit }, context) {
+        setSocketStateDisconnected({ commit, dispatch }) {
             commit('SET_SOCKET_STATE_DISCONNECTED')
+            dispatch('stopAgentStateMonitoring')
         },
 
         processSocketConnected({ getters, dispatch }) {
             dispatch('setSocketStateConnected')
+            dispatch('startAgentStateMonitoring')
+
             dispatch('session/fetchExistingSessionFromServer', { root: true }).then(resp => {
                 console.log("processSocketConnected(): response received from fetchExistingSessionFromServer: resp=" + JSON.stringify(resp))
                 console.log("responseCode " + (resp.responseCode === 0 ? "Not " : "is ") + "zero. sessionID not retreived. sessionId=" + getters['session/getSessionId'])

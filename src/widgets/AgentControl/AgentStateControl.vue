@@ -15,10 +15,14 @@
         <!--List of all possible agent states-->
         <mdb-dropdown-item
           class="p-0 fl_dropdown_item"
-          :key="auxCodes.id"
-          v-for="(auxCode,i) in auxCodes"
+          :key="auxCodesV2.id"
+          v-for="(auxCode,i) in auxCodesV2"
         >
-          <div @click="onAgentStateDropDownChanged(auxCode)" class="p-2">
+          <div
+            @click="onAgentStateDropDownChanged(auxCode)"
+            class="p-2"
+            v-if="auxCode.userSelectable===true"
+          >
             <!-- Round Icon to indicate the color of the agent's state-->
             <mdb-icon icon="circle" class="mr-1" :class="agentStateIndicatorColor(auxCode.state)" />
             <!-- Actual Agent State-->
@@ -70,9 +74,12 @@ export default {
   props: {},
   data() {
     return {
-      auxCodes: config.agentAuxCodes
+      auxCodes: config.agentAuxCodes,
+      agentReasonCodeList: config.agentReasonCodeList,
+      auxCodesV2: this.$store.getters.getFullAuxCodeList
     }
   },
+
   methods: {
     //This Method is called whenever the Agent Dropdown option is changed
     onAgentStateDropDownChanged(selectedAuxCode) {
@@ -98,7 +105,7 @@ export default {
     },
     agentStateIndicatorColor(state) {
       if (state) {
-         //console.log('agentStateIndicatorColor(): state=', state)
+        //console.log('agentStateIndicatorColor(): state=', state)
         switch (state) {
           case AGENT_STATES.READY:
             return 'green-text'
