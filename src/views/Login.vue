@@ -24,7 +24,7 @@
             <span class="float-left pl-4">Login</span>
           </p>
           <mdb-card-body class="p-4">
-            <form class="grey-text" @click.stop>
+            <div class="grey-text" @click.stop>
               <mdb-input
                 required
                 label="Agent ID"
@@ -80,7 +80,7 @@
                  
                 >Log in</mdb-btn>
               </div>
-            </form>
+            </div>
           </mdb-card-body>
           <mdb-alert :color="loginAlert.color" v-if="loginAlert.show">{{loginAlert.message}}</mdb-alert>
         </mdb-card>

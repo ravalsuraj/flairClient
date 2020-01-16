@@ -13,7 +13,7 @@ function initialState() {
         rememberCredentials: true,
         monitorAgentInterval: null,
 
-        fullAuxCodeList: config.defaultAuxCodes,
+        fullAuxCodeList: [],
         agentStateDisplayLabelMap: null,
         agentReasonCodeDisplayLabelMap: null
     }
@@ -59,8 +59,12 @@ export default {
     actions: {
         initializeReasonCodes({ commit }) {
 
-            commit('UPDATE_FULL_AUX_CODE_LIST')
-
+            /*************************************************************
+             * Fetching the agent reason code and default agent state list
+             * from config file. COnverting the list into a searchable Map
+             * and storing it into the store. This allows us to search the 
+             * object by keys instead of index
+            ***********************************************/
             let reasonCodeArray = config.agentReasonCodeList
             var reasonCodeMap = reasonCodeArray.reduce(function (map, obj) {
                 map[obj.reasonCode] = obj.reasonLabel;
@@ -73,6 +77,10 @@ export default {
                 return map;
             }, {});
 
+            //Update the full agent aux code list, which is fetched and displayed in the dropdown
+            commit('UPDATE_FULL_AUX_CODE_LIST')
+
+            //Set the list of labels to be displayed for the agent state as well as reason code
             commit('SET_DISPLAY_LABELS', [auxMap, reasonCodeMap])
         },
         startAgentStateMonitoring({ commit, dispatch }) {
@@ -80,11 +88,11 @@ export default {
             let monitorAgentInterval = setInterval(() => {
                 //console.log("startAgentStateMonitoring(): querying agent state")
                 dispatch('sendQueryAgentStateRequest')
-            }, 3000)
+            }, 500000)
             commit('SET_MONITOR_AGENT_INTERVAL_HANDLE', monitorAgentInterval)
         },
 
-        stopAgentStateMonitoring({ commit }) {
+        stopAgentStateMonitoring({ commit, getters }) {
             clearInterval(getters.getMonitorAgentHandle)
             commit('RESET_MONITOR_AGENT_INTERVAL_HANDLE')
         },
@@ -112,8 +120,6 @@ export default {
                 workMode: agent.workMode
             }
             console.log('sendAgentLoginRequest(): request: ' + JSON.stringify(request))
-
-
             try {
 
                 this._vm.$socket.emit(SOCKET_EVENTS.AGENT_LOGIN, request, (resp) => {
@@ -233,14 +239,16 @@ export default {
         },
 
         processAgentLogin({ commit, dispatch }) {
+            dispatch('initializeReasonCodes')
             commit('SET_AGENT_STATE_LOGIN')
             dispatch('sendQueryAgentStateRequest')
-            dispatch('initializeReasonCodes')
+
         },
         processAgentLogout({ dispatch, commit }) {
             dispatch('resetAllModules')
             commit('SET_AGENT_STATE_LOGOUT')
             dispatch('stopAgentStateMonitoring')
+
 
         },
         /********************************* */
@@ -266,36 +274,11 @@ export default {
                         //console.log("aux code failed for i=" + i)
                     }
                 }
-
             }
             console.log("setUpdatedAuxCode(): about to commit aux code. selectedAuxCode=", selectedAuxCode)
             commit('SET_AGENT_AUX_CODE', selectedAuxCode)
         },
-
-        // setInitialAuxCode({ getters, commit }, payload) {
-
-        //     console.log("setting the initial aux code upon login. Payload=" + JSON.stringify(payload))
-        //     //for the text value, find the default aux code from the config file
-        //     let initialAgentAuxCode = config.defaultAuxCodes[payload.agentState];
-        //     if (initialAgentAuxCode) {
-        //         commit('SET_AGENT_AUX_CODE', initialAgentAuxCode);
-        //     } else {
-        //         console.log("could not retreive a value for initialAgentAuxCode")
-        //     }
-
-        //     // switch (payload.agentState) {
-        //     //     case AGENT_STATES.READY:
-        //     //     case AGENT_STATES.NOT_READY:
-        //     //     case AGENT_STATES.BUSY:
-
-
-        //     // }
-
-        // },
-
-
     },
-
 
 
     mutations: {
@@ -315,10 +298,22 @@ export default {
                 state.workMode = agentCredentials.workMode;
             }
 
+            state.agentState = AGENT_STATES.UNKNOWN
+            state.reasonCode = 0
+            state.displayLabel = '-'
+            state.monitorAgentInterval = null
+            state.fullAuxCodeList.length = 0
+            state.agentStateDisplayLabelMap = null
+            state.agentReasonCodeDisplayLabelMap = null
+
+
         },
 
         UPDATE_FULL_AUX_CODE_LIST(state) {
             const agentReasonCodeList = config.agentReasonCodeList
+            for (let i = 0; i < config.defaultAuxCodes.length; i++) {
+                state.fullAuxCodeList.push(config.defaultAuxCodes[i])
+            }
             for (let i = 0; i < agentReasonCodeList.length; i++) {
                 state.fullAuxCodeList.push({
                     label: agentReasonCodeList[i].reasonLabel,

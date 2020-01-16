@@ -48,7 +48,7 @@ export default {
         },
         setSocketStateDisconnected({ commit, dispatch }) {
             commit('SET_SOCKET_STATE_DISCONNECTED')
-            dispatch('stopAgentStateMonitoring')
+
         },
 
         processSocketConnected({ getters, dispatch }) {
@@ -77,6 +77,13 @@ export default {
         **********************************/
         SOCKET_DEVEVENT({ }, payload) {
             console.log('SOCKET_DEVEVENT(): Received event: ' + JSON.stringify(payload))
+        },
+
+        SOCKET_TEST_CONN_DROPPED({ }, payload) {
+            console.log('SOCKET_TEST_CONN_DROPPED(): Received event: ' + JSON.stringify(payload))
+        },
+        SOCKET_TEST_TERM_CONN_DROPPED({ }, payload) {
+            console.log('SOCKET_TEST_TERM_CONN_DROPPED(): Received event: ' + JSON.stringify(payload))
         },
 
         SOCKET_ICALLRING({ dispatch, getters }, payload) {
