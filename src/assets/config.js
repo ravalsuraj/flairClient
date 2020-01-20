@@ -1,6 +1,25 @@
-import { AGENT_STATES } from "./defines";
+const AGENT_STATES = Object.freeze({
+  UNKNOWN: 0,
+  LOG_IN: 1,
+  LOG_OUT: 2,
+  NOT_READY: 3,
+  READY: 4,
+  WORK_NOT_READY: 5,
+  WORK_READY: 6,
+  BUSY: 7,
+  Text: {
+    '0': 'UNKNOWN',
+    '1': 'LOG_IN',
+    '2': 'LOG_OUT',
+    '3': 'NOT_READY',
+    '4': 'READY',
+    '5': 'WORK_NOT_READY',
+    '6': 'WORK_READY',
+    '7': 'BUSY'
+  }
+})
 
-export const config = {
+export default {
   FLAIR_AWS_PORT: 8080,
   FLAIR_SERVER_URL: 'http://localhost:9092',
   SERVER_TIMEOUT_MS: 20000,

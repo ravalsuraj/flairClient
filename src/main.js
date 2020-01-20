@@ -18,12 +18,9 @@ import VueCookies from 'vue-cookies'
 import Notifications from 'vue-notification'
 import { longClickDirective } from 'vue-long-click'
 
-import VueConfig from 'vue-configuration';
-import appConfig from './config.js'
-
+import config from './assets/config'
 
 import 'x-frame-bypass'
-import { config } from '@/config'
 Vue.use(Notifications)
 Vue.use(Vuex)
 
@@ -34,8 +31,6 @@ Vue.use(Vuebar)
 Vue.use(VueCookies)
 // set default config
 VueCookies.config('1d')
-
-
 
 // set global cookie
 VueCookies.set('theme', 'default')

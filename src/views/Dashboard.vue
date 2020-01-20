@@ -69,7 +69,7 @@
 
 <script>
 import draggable from 'vuedraggable'
-import { config } from '@/config.js'
+import config from '@/assets/config.js'
 import {
   mdbContainer,
   mdbRow,

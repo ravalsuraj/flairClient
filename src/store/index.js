@@ -13,10 +13,7 @@ import timer from './modules/timer'
 import data from './modules/data'
 
 import {
-  AGENT_STATES,
-  CALL_STATES,
   SOCKET_STATES,
-  TIMER_STATES
 } from '@/defines.js'
 
 
@@ -27,16 +24,10 @@ const vuexPersist = new VuexPersist({
 
 })
 
-// const vuexCookie = new VuexPersist({
-//   restoreState: (key, storage) => Cookies.getJSON(key),
-//   saveState: (key, state, storage) =>
-//     Cookies.set(key, state, {
-//       expires: 1
-//     }),
-//   modules: ['session']
-// })
-
 Vue.use(Vuex)
+
+import config from '@/assets/config'
+
 export default new Vuex.Store({
   strict: false, //important: this is set to false to comply with Vuex-persist
   modules: {
@@ -66,14 +57,15 @@ export default new Vuex.Store({
 
     sockets: {
       connect() {
-        
-       },
+
+      },
       connection_error() {
         this.state.socket.status = SOCKET_STATES.DISCONNECTED
       }
     },
   },
   actions: {
+
     showErrorBanner(context, [title, message]) {
       Vue.notify({
         group: 'error',
@@ -100,7 +92,7 @@ export default new Vuex.Store({
    ******************************************************************/
 
   mutations: {
-
+   
     TOGGLE_DEV_MODE(state) {
       state.devMode = !state.devMode
     },

@@ -52,7 +52,7 @@ import {
   mdbTbl
 } from 'mdbvue'
 import { AGENT_STATES } from '@/defines'
-import { config } from '@/config'
+import config from '@/assets/config'
 export default {
   name: 'AgentStateControl',
   components: {

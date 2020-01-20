@@ -113,6 +113,7 @@ export default {
           JSON.stringify(this.$refs.topNavBar.clientHeight)
       )
     }
+    this.$store.dispatch('loadConfigurations')
   },
   methods: {},
   computed: {

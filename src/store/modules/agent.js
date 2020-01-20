@@ -1,5 +1,5 @@
 import { AGENT_STATES, SOCKET_EVENTS } from '@/defines'
-import { config } from '@/config'
+import config from '@/assets/config'
 
 function initialState() {
     return {

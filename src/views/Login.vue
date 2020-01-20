@@ -6,7 +6,7 @@
         <!--Logout button only for testing. Remove it for production-->
         <a class="text-white" @click="agentLogoutBtnClicked">Logout</a>
         <mdb-card>
-          <div class="pt-3 mx-auto">
+          <div class="pt-3 d-flex justify-content-around">
             <img
               src="@/assets/flair_logo.png"
               class="ml-2 mr-5"
@@ -70,14 +70,13 @@
                   />
                   <label class="custom-control-label" for="manual-in">Manual-in</label>
                 </div>
-              </div> -->
+              </div>-->
               <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
               <div class="btn-group text-center my-3 w-100 pl-4 ml-3">
                 <mdb-btn
                   class="btn white-text unique-color mr-3"
                   @click="agentLoginBtnClicked"
                   @keydown="handleEnterKeyForLogin"
-                 
                 >Log in</mdb-btn>
               </div>
             </div>
@@ -157,18 +156,19 @@ export default {
       }
     },
     async agentLoginBtnClicked(state) {
+      this.showSpinner()
       let sendAgentLoginRequest = () => {
         this.$store.dispatch('sendAgentLoginRequest').then(resp => {
-          this.hideSpinner()
           if (resp && response.responseCode && resp.responseCode === '0') {
             this.$store.dispatch('showErrorBanner', [
               'Welcome',
               'You are successfully logged in'
             ])
+            this.hideSpinner()
           }
         })
       }
-      this.showSpinner()
+
       this.$store.dispatch('setAgentLoginCredentials', this.credentials)
       console.log('agentLoginBtnClicked(): login button clicked')
 
