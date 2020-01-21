@@ -26,7 +26,6 @@
 <script>
 import { mdbRow } from 'mdbvue'
 import { CALL_STATES } from '@/defines'
-import config from '@/assets/config.js'
 import Widget from '@/components/agc/Widget'
 export default {
   name: 'CrmFrame',

@@ -12,21 +12,24 @@ import socket from './modules/socket'
 import timer from './modules/timer'
 import data from './modules/data'
 
-import {
-  SOCKET_STATES,
-} from '@/defines.js'
-
+import { SOCKET_STATES } from '@/defines.js'
 
 const vuexPersist = new VuexPersist({
   key: 'flair',
   storage: sessionStorage,
-  modules: ['agent', 'call', 'consultedCall', 'dialer', 'socket', 'timer', 'data', 'session'],
-
+  modules: [
+    'agent',
+    'call',
+    'consultedCall',
+    'dialer',
+    'socket',
+    'timer',
+    'data',
+    'session'
+  ]
 })
 
 Vue.use(Vuex)
-
-import config from '@/assets/config'
 
 export default new Vuex.Store({
   strict: false, //important: this is set to false to comply with Vuex-persist
@@ -43,7 +46,6 @@ export default new Vuex.Store({
   plugins: [vuexPersist.plugin],
 
   state: {
-
     timer: {
       demo: 0,
       callStateTimer: 0
@@ -51,18 +53,14 @@ export default new Vuex.Store({
 
     confStarted: false,
     devMode: false,
-    socket: {
-
-    },
+    socket: {},
 
     sockets: {
-      connect() {
-
-      },
+      connect() {},
       connection_error() {
         this.state.socket.status = SOCKET_STATES.DISCONNECTED
       }
-    },
+    }
   },
   actions: {
 
@@ -85,14 +83,12 @@ export default new Vuex.Store({
       //commit('RESET_SOCKET_MODULE')
       commit('RESET_TIMER_MODULE')
     }
-
   },
   /*******************************************************************
    * Mutations
    ******************************************************************/
 
   mutations: {
-   
     TOGGLE_DEV_MODE(state) {
       state.devMode = !state.devMode
     },
@@ -114,8 +110,6 @@ export default new Vuex.Store({
         consultedUcid: '',
         consultedCallId: ''
       }
-
-    },
+    }
   }
-
 })

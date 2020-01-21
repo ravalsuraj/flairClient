@@ -109,31 +109,3 @@ export default {
     widgets: []
   }
 }
-
-/*
-
-        {
-            label: 'Break',
-            state: AGENT_STATES.NOT_READY,
-
-            reasonCode: 1
-        },
-        {
-            label: 'Lunch',
-            state: AGENT_STATES.NOT_READY,
-
-            reasonCode: 2
-        },
-        {
-            label: 'Dinner',
-            state: AGENT_STATES.NOT_READY,
-
-            reasonCode: 3
-        },
-        {
-            label: 'After Call Work',
-            state: AGENT_STATES.WORK_NOT_READY,
-
-            reasonCode: 3
-        },
-*/

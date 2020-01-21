@@ -4,7 +4,7 @@
     <div ref="topNavBar">
       <top-navbar v-if="isAgentLoggedIn" class></top-navbar>
     </div>
-    <main class="d-flex flex-fill main-body pt-5 mt-md-5 mt-lg-0">
+    <main class="d-flex flex-fill main-body pt-5 mt-5">
       <router-view v-if="isAgentLoggedIn" class></router-view>
       <login-page v-else class="flex-fill pt-4"></login-page>
     </main>
@@ -113,7 +113,7 @@ export default {
           JSON.stringify(this.$refs.topNavBar.clientHeight)
       )
     }
-    this.$store.dispatch('loadConfigurations')
+    this.$store.dispatch('session/loadConfigurations')
   },
   methods: {},
   computed: {
@@ -146,7 +146,7 @@ export default {
 /* @import url('/static/fonts.css'); */
 
 html {
-  font-size: 62.5%;
+  font-size: 75%;
   color: rgba(0, 0, 0, 0.45);
 }
 .main-body {

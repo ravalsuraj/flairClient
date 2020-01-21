@@ -15,8 +15,8 @@
         <!--List of all possible agent states-->
         <mdb-dropdown-item
           class="p-0 fl_dropdown_item"
-          :key="auxCodesV2.id"
-          v-for="(auxCode,i) in auxCodesV2"
+          :key="auxCodes.id"
+          v-for="(auxCode,i) in auxCodes"
         >
           <div
             @click="onAgentStateDropDownChanged(auxCode)"
@@ -52,7 +52,7 @@ import {
   mdbTbl
 } from 'mdbvue'
 import { AGENT_STATES } from '@/defines'
-import config from '@/assets/config'
+
 export default {
   name: 'AgentStateControl',
   components: {
@@ -74,9 +74,7 @@ export default {
   props: {},
   data() {
     return {
-      auxCodes: config.agentAuxCodes,
-      agentReasonCodeList: config.agentReasonCodeList,
-      auxCodesV2: this.$store.getters.getFullAuxCodeList
+      auxCodes: this.$store.getters.getFullAuxCodeList
     }
   },
 
