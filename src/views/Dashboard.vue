@@ -69,7 +69,7 @@
 
 <script>
 import draggable from 'vuedraggable'
-import config from '@/assets/config.js'
+
 import {
   mdbContainer,
   mdbRow,
@@ -144,39 +144,42 @@ export default {
     }
   },
   computed: {
+    config() {
+      return this.$store.getters['session/getConfig']
+    },
     myGhost() {
       return { 'my-ghost': true }
     },
     leftComponentWidgets: {
       get() {
-        return config.leftComponents.widgets
+        return this.config.leftComponents.widgets
       }
     },
     leftComponentWidth: {
       get() {
-        return config.leftComponents.width
+        return this.config.leftComponents.width
       }
     },
     middleComponentWidgets: {
       get() {
-        return config.middleComponents.widgets
+        return this.config.middleComponents.widgets
       }
     },
     middleComponentWidth: {
       get() {
-        return config.middleComponents.width
+        return this.config.middleComponents.width
       }
     },
 
     rightComponentWidgets: {
       get() {
-        return config.rightComponents.widgets
+        return this.config.rightComponents.widgets
       }
     },
 
     rightComponentWidth: {
       get() {
-        return config.rightComponents.width
+        return this.config.rightComponents.width
       }
     },
     isDevMode() {

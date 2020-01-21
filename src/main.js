@@ -18,12 +18,10 @@ import VueCookies from 'vue-cookies'
 import Notifications from 'vue-notification'
 import { longClickDirective } from 'vue-long-click'
 
-import config from './assets/config'
-
+import config from './../static/settings.json'
 import 'x-frame-bypass'
 Vue.use(Notifications)
 Vue.use(Vuex)
-
 Vue.use(VShowSlide)
 Vue.use(Vuedraggable)
 Vue.use(Vuebar)
