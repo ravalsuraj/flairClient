@@ -27,11 +27,114 @@
           alt="Responsive image"
           style="width: 75px; opacity:1 !important"
         />
-      </div> -->
+      </div>-->
+      <mdb-btn
+        color="default"
+        class="mr-5"
+        @click.native="showOutboundDialerModal = true"
+      >Place Call</mdb-btn>
+      <mdb-modal size="sm" v-if="showOutboundDialerModal" @close="showOutboundDialerModal = false">
+        <mdb-modal-header  class="black-text">
+          <mdb-modal-title>Consult Call</mdb-modal-title>
+        </mdb-modal-header>
+        <mdb-modal-body>
+          <outbound-dialer></outbound-dialer>
+        </mdb-modal-body>
+      </mdb-modal>
+
+      <!-- <mdb-modal
+        frame
+        removeBackdrop
+        position="top"
+        v-if="showOutboundDialerModal"
+        @close="showOutboundDialerModal = false"
+      >
+        <mdb-modal-body class="text-center">
+          <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Impedit nisi quo provident fugiat reprehenderit nostrum quos...</span>
+          <mdb-btn color="secondary" @click.native="showOutboundDialerModal = false">Close</mdb-btn>
+          <mdb-btn color="primary">Save changes</mdb-btn>
+        </mdb-modal-body>
+      </mdb-modal>-->
       <agent-control></agent-control>
     </mdb-navbar-nav>
   </mdb-navbar>
 </template>
+
+
+<script>
+import AgentControl from '@/widgets/AgentControl/AgentControl.vue'
+import OutboundDialer from '@/widgets/Dialer/OutboundDialer.vue'
+import {
+  mdbRow,
+  mdbCol,
+  mdbContainer,
+  mdbCard,
+  mdbCardHeader,
+  mdbCardText,
+  mdbNavbar,
+  mdbNavbarBrand,
+  mdbNavItem,
+  mdbNavbarNav,
+  mdbNavbarToggler,
+  mdbBtn,
+  mdbIcon,
+  mdbListGroup,
+  mdbListGroupItem,
+  mdbCardBody,
+  mdbFooter,
+  mdbModal,
+  mdbModalHeader,
+  mdbModalTitle,
+  mdbModalBody,
+  mdbModalFooter,
+  waves
+} from 'mdbvue'
+export default {
+  name: 'TopNavbar',
+  components: {
+    AgentControl,
+    OutboundDialer,
+    mdbRow,
+    mdbCol,
+    mdbContainer,
+    mdbCard,
+    mdbCardHeader,
+    mdbCardText,
+    mdbNavbar,
+    mdbNavbarBrand,
+    mdbNavItem,
+    mdbNavbarNav,
+    mdbNavbarToggler,
+    mdbBtn,
+    mdbIcon,
+    mdbListGroup,
+    mdbListGroupItem,
+    mdbCardBody,
+    mdbFooter,
+    mdbModal,
+    mdbModalHeader,
+    mdbModalTitle,
+    mdbModalBody,
+    mdbModalFooter,
+    waves,
+    ftr: mdbFooter
+  },
+
+  props: {},
+
+  data() {
+    return {
+      showOutboundDialerModal: false
+    }
+  },
+  methods: {
+    toggleDevMode() {
+      this.$store.commit('TOGGLE_DEV_MODE')
+    }
+  }
+}
+</script>
+
 <style>
 .fl_topNav {
   /*width: fit-content;*/
@@ -83,18 +186,6 @@ main {
   padding-bottom: 4px !important;
 }
 
-.sidebar-fixed {
-  left: 0;
-  top: 0;
-  height: 100vh;
-  width: 170px;
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
-  z-index: 1050;
-  background-color: #fff;
-  padding: 0rem;
-  padding-top: 0;
-}
-
 @media (max-width: 1199.98px) {
   .sidebar-fixed {
     display: none;
@@ -107,64 +198,3 @@ main {
   }
 }
 </style>
-
-<script>
-import AgentControl from '@/widgets/AgentControl/AgentControl.vue'
-import {
-  mdbRow,
-  mdbCol,
-  mdbContainer,
-  mdbCard,
-  mdbCardHeader,
-  mdbCardText,
-  mdbNavbar,
-  mdbNavbarBrand,
-  mdbNavItem,
-  mdbNavbarNav,
-  mdbNavbarToggler,
-  mdbBtn,
-  mdbIcon,
-  mdbListGroup,
-  mdbListGroupItem,
-  mdbCardBody,
-  mdbFooter,
-  waves
-} from 'mdbvue'
-export default {
-  name: 'TopNavbar',
-  components: {
-    AgentControl,
-
-    mdbRow,
-    mdbCol,
-    mdbContainer,
-    mdbCard,
-    mdbCardHeader,
-    mdbCardText,
-    mdbNavbar,
-    mdbNavbarBrand,
-    mdbNavItem,
-    mdbNavbarNav,
-    mdbNavbarToggler,
-    mdbBtn,
-    mdbIcon,
-    mdbListGroup,
-    mdbListGroupItem,
-    mdbCardBody,
-    mdbFooter,
-    waves,
-    ftr: mdbFooter
-  },
-
-  props: {},
-
-  data() {
-    return {}
-  },
-  methods: {
-    toggleDevMode() {
-      this.$store.commit('TOGGLE_DEV_MODE')
-    }
-  }
-}
-</script>

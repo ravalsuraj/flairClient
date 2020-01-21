@@ -38,7 +38,7 @@ export default {
                     let request = {
                         sessionId: getters['session/getSessionId'],
                         
-                        dialedNumber: getters.getDialedDigits,
+                        dialedDigits: getters.getDialedDigits,
                     }
 
                     console.log("requestOutboundCall(): request=" + JSON.stringify(request));

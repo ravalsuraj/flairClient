@@ -1,7 +1,7 @@
 <template>
   <!-- <mdb-card class="mb-0" color="special-color">
   <mdb-card-body class="p-2 mb-1">-->
-  <div class="fl_container_dialer">
+  <div class="fl_container_dialer black-text" >
     <mdb-container fluid>
       <form @click.stop>
         <mdb-row class="px-3 py-4" @click.stop>
@@ -48,7 +48,7 @@
       <form @click.stop>
         <mdb-row class @click.stop>
           <transition name="fade">
-            <mdb-btn color="success" class="mx-2 btn-block" @click="onMakeCallButtonClicked">
+            <mdb-btn color="default" class="mx-2 btn-block" @click="onMakeCallButtonClicked">
               <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
               <span>Call</span>
             </mdb-btn>
@@ -240,24 +240,33 @@ export default {
         this.$store.getters.getPrimaryCall.ucid,
         CALL_TYPES.OUTBOUND
       ])
-    },
-  
+    }
   },
   computed: {
     credentials() {
       return this.$store.getters.getAgentCredentials
     },
     callStatus() {
-      return this.$store.getters.getPrimaryCall.status
+      let callId = this.$store.getters.getActiveCallCallId
+      let call = this.$store.getters.getCallByCallId(callId)
+      if (call) {
+        return call.status
+      } else {
+        return null
+      }
     },
     isAgentStateHeld() {
       return this.$store.getters.getAgentState === AGENT_STATES.HELD
     },
     isCallIdle() {
-      return (
-        this.callStatus === CALL_STATES.IDLE ||
-        this.callStatus === CALL_STATES.DROPPED
-      )
+      if (this.callStatus) {
+        return (
+          this.callStatus === CALL_STATES.IDLE ||
+          this.callStatus === CALL_STATES.DROPPED
+        )
+      } else {
+        return CALL_STATES.UNKNOWN
+      }
     }
   }
 }
@@ -302,7 +311,7 @@ export default {
 
 .fl_inp_dialedDigits input {
   font-size: 2em;
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(0, 0, 0, 0.75);
 }
 
 .fl_button_dialerDigit {
