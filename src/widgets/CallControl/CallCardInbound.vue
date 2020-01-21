@@ -30,9 +30,9 @@
             </mdb-col>
 
             <!--START: Inbound Call Controls-->
-            <!-- START: Answer/Drop Button -->
             <mdb-col :col="cardWidth">
               <mdb-row>
+                <!-- START: Answer/Drop Button -->
                 <mdb-col col="4">
                   <transition name="fade">
                     <button
@@ -68,6 +68,7 @@
                 </mdb-col>
                 <!--END: Hold Button-->
 
+                <!--START: Consult Call Button-->
                 <mdb-col col="4">
                   <transition name="fade">
                     <mdb-dropdown
@@ -82,6 +83,7 @@
                       >
                         <mdb-icon icon="users" style="font-size:1.5em" />
                       </button>
+                      <!--START: Consult Call Dialer Modal-->
                       <mdb-modal size="sm">
                         <mdb-modal-header>
                           <mdb-modal-title>Consult Call</mdb-modal-title>
@@ -90,9 +92,11 @@
                           <consult-dialer :ucid="ucid" :callId="callId"></consult-dialer>
                         </mdb-modal-body>
                       </mdb-modal>
+                      <!--END: Consult Call Dialer Modal-->
                     </mdb-dropdown>
                   </transition>
                 </mdb-col>
+                <!--END: Consult Call Button-->
               </mdb-row>
             </mdb-col>
           </mdb-row>

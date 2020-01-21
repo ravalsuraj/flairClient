@@ -77,6 +77,7 @@
                   >
                     <mdb-icon icon="users" style="font-size:1.5em" />
                   </button>
+
                   <mdb-modal
                     size="sm"
                     v-if="showConferenceModal"
@@ -86,31 +87,37 @@
                       <mdb-modal-title>Consult Call</mdb-modal-title>
                     </mdb-modal-header>
                     <mdb-modal-body>
-                      <select
-                        class="browser-default custom-select mb-5"
-                        v-model="callIdToBeConferenced"
-                        v-if="otherCalls.length>1"
-                      >
-                        <option selected disabled>Open this select menu</option>
-                        <option
-                          :value="call.callId"
-                          v-for="call in otherCalls"
-                          :key="call.id"
-                        >{{call.callingAddress}}</option>
-                      </select>
-                      <div class="mb-5 w-100">
-                        <div class="text-center py-2">Call to Conference/ Transfer :</div>
-                        <h3 class="text-center">{{otherCalls[0].callingAddress}}</h3>
+                      <div v-if="!isCallConsulted">
+                        <consult-dialer :ucid="ucid" :callId="callId"></consult-dialer>
                       </div>
-                      <transition name="fade">
-                        <div class="btn-group w-100">
-                          <mdb-btn class="mdb-color mx-2 px-2 w-50" @click="transferCall">Transfer</mdb-btn>
-                          <mdb-btn
-                            class="mdb-color mx-2 px-2 w-50"
-                            @click="conferenceCall"
-                          >Conference</mdb-btn>
+
+                      <div v-else>
+                        <select
+                          class="browser-default custom-select mb-5"
+                          v-model="callIdToBeConferenced"
+                          v-if="otherCalls"
+                        >
+                          <option selected disabled>Open this select menu</option>
+                          <option
+                            :value="call.callId"
+                            v-for="call in otherCalls"
+                            :key="call.id"
+                          >{{call.callingAddress}}</option>
+                        </select>
+                        <div class="mb-5 w-100">
+                          <div class="text-center py-2">Call to Conference/ Transfer :</div>
+                          <h3 class="text-center">{{otherCalls[0].callingAddress}}</h3>
                         </div>
-                      </transition>
+                        <transition name="fade">
+                          <div class="btn-group w-100">
+                            <mdb-btn class="mdb-color mx-2 px-2 w-50" @click="transferCall">Transfer</mdb-btn>
+                            <mdb-btn
+                              class="mdb-color mx-2 px-2 w-50"
+                              @click="conferenceCall"
+                            >Conference</mdb-btn>
+                          </div>
+                        </transition>
+                      </div>
                     </mdb-modal-body>
                   </mdb-modal>
                 </mdb-col>
