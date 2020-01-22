@@ -3,7 +3,7 @@
   <mdb-card-body class="p-2 mb-1">-->
   <div class="fl_container_dialer black-text" >
     <mdb-container fluid>
-      <form @click.stop>
+      <div @click.stop>
         <mdb-row class="px-3 py-4" @click.stop>
           <mdb-col class="d-flex align-items-baseline">
             <!--Input Textbox for digits-->
@@ -30,7 +30,7 @@
             <mdb-icon icon="trash" size="1p5x" />
           </a>
         </mdb-row>
-      </form>
+      </div>
 
       <mdb-row>
         <!--For Loop for cycling through array of digits to for a grid of dialpad digits-->
@@ -45,7 +45,7 @@
           </div>
         </mdb-col>
       </mdb-row>
-      <form @click.stop>
+      <div @click.stop>
         <mdb-row class @click.stop>
           <transition name="fade">
             <mdb-btn color="default" class="mx-2 btn-block" @click="onMakeCallButtonClicked">
@@ -61,7 +61,7 @@
             </div>
           </transition>
         </mdb-row>
-      </form>
+      </div>
     </mdb-container>
   </div>
 
