@@ -105,40 +105,42 @@ export default {
     setAgentAuxCode({ commit }, auxCodeObj) {
       commit('SET_AGENT_AUX_CODE', auxCodeObj)
     },
-    async sendAgentLoginRequest({ commit, dispatch, getters }) {
-      let agent = getters.getAgent
-      let sessionId = getters['session/getSessionId']
-      console.log('sendAgentLoginRequest(): sessionId=', sessionId)
-      let request = {
-        sessionId: sessionId,
-        agentId: agent.agentId,
-        deviceId: agent.deviceId,
-        password: agent.password,
-        workMode: agent.workMode
-      }
-      console.log(
-        'sendAgentLoginRequest(): request: ' + JSON.stringify(request)
-      )
-      try {
-        this._vm.$socket.emit(SOCKET_EVENTS.AGENT_LOGIN, request, resp => {
-          console.log(
-            'sendAgentLoginRequest(): response: ' + JSON.stringify(resp)
-          )
+    sendAgentLoginRequest({ dispatch, getters }) {
+      return new Promise((resolve, reject) => {
+        let agent = getters.getAgent
+        let sessionId = getters['session/getSessionId']
+        console.log('sendAgentLoginRequest(): sessionId=', sessionId)
+        let request = {
+          sessionId: sessionId,
+          agentId: agent.agentId,
+          deviceId: agent.deviceId,
+          password: agent.password,
+          workMode: agent.workMode
+        }
+        console.log(
+          'sendAgentLoginRequest(): request: ' + JSON.stringify(request)
+        )
+        try {
+          this._vm.$socket.emit(SOCKET_EVENTS.AGENT_LOGIN, request, resp => {
+            console.log(
+              'sendAgentLoginRequest(): response: ' + JSON.stringify(resp)
+            )
 
-          if (resp.responseCode === '0') {
-            dispatch('processAgentLogin')
-            return resp
-          } else {
-            dispatch('showErrorBanner', [
-              'Agent Login failed:',
-              resp.responseMessage
-            ])
-          }
-          return resp
-        })
-      } catch (error) {
-        console.error(error)
-      }
+            if (resp.responseCode === '0') {
+              dispatch('processAgentLogin')
+              resolve(resp)
+            } else {
+              dispatch('showErrorBanner', [
+                'Agent Login failed:',
+                resp.responseMessage
+              ])
+              resolve(resp)
+            }
+          })
+        } catch (error) {
+          resolve(error)
+        }
+      })
     },
 
     async sendAgentLogoutRequest({ commit, dispatch, getters }) {
@@ -239,12 +241,11 @@ export default {
     },
     queryAgentState() {},
 
-   async processAgentLogin({ commit, dispatch }) {
+    async processAgentLogin({ commit, dispatch }) {
       await dispatch('session/loadConfigurations')
-        dispatch('initializeReasonCodes')
-        commit('SET_AGENT_STATE_LOGIN')
-        dispatch('sendQueryAgentStateRequest')
-    
+      dispatch('initializeReasonCodes')
+      commit('SET_AGENT_STATE_LOGIN')
+      dispatch('sendQueryAgentStateRequest')
     },
     processAgentLogout({ dispatch, commit }) {
       dispatch('resetAllModules')

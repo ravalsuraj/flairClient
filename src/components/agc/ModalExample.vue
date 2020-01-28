@@ -195,10 +195,6 @@ import { mdbRow, mdbCol, mdbBtn, mdbCard, mdbCardBody, mdbCardHeader, mdbCardTex
 export default {
   name: 'ModalExample',
   components: {
-    CallControl,
-    AgentControl,
-    CallerProfile,
-    CallHistory,
     mdbRow,
     mdbCol,
     mdbBtn,
