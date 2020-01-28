@@ -1,12 +1,12 @@
 <template>
-  <form @submit.prevent class="form form-inline d-flex align-items-center">
-    <mdb-dropdown class="mr-5">
+  <form @submit.prevent class="form form-inline d-flex align-items-center" id="fl_agent_state_dropdown">
+    <mdb-dropdown class="mx-auto">
       <!--Selected State-->
       <a class="dropdown-toggle-a primary-text" slot="toggle">
         <mdb-icon
           icon="circle"
           :class="agentStateIndicatorColor(currentAgentAuxState.state)"
-          class="mr-1"
+          class="mr-2"
         />
         {{currentAgentAuxState.label}}
       </a>
@@ -128,6 +128,9 @@ export default {
 </script>
 
 <style scoped>
+#fl_agent_state_dropdown{
+  min-width: 150px;
+}
 .fl_dropdown_item {
   font-size: 1rem !important;
 }

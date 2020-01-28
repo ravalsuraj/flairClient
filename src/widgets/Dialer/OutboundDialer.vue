@@ -21,6 +21,7 @@
             class="black-text align-self-baseline mr-3 fl_btn_btnIcon"
             @click="deleteSingleDigit"
             @click.stop
+            v-longclick="() => clearDigits()"
           >
             <mdb-icon icon="backspace" size="1p5x" />
           </a>
@@ -54,19 +55,14 @@
             </mdb-btn>
           </transition>
           <transition name="fade">
-            <div class="btn-group w-50 pb-2" v-if="!isCallIdle">
-              <mdb-btn class="btn-red mx-2 px-2 w-100" @click="onCallDropBtnClicked" @click.stop>
-                <span>Drop</span>
-              </mdb-btn>
-            </div>
+          
           </transition>
         </mdb-row>
       </div>
     </mdb-container>
   </div>
 
-  <!-- </mdb-card-body>
-  </mdb-card>-->
+
 </template>
 
 <script>
@@ -183,14 +179,7 @@ export default {
       }
     }
   },
-  // sockets: {
-  //   connect: function () {
-  //       console.log('socket connected')
-  //   },
-  //   customEmit: function (data) {
-  //       console.log('this method was fired by the socket server. eg: io.emit("customEmit", data)')
-  //   }
-  // },
+
   methods: {
     showSpinner() {
       this.spinner.show = true
@@ -234,40 +223,9 @@ export default {
         }
       })
     },
-
-    onCallDropBtnClicked() {
-      this.$store.dispatch('requestAnswerDropCall', [
-        this.$store.getters.getPrimaryCall.ucid,
-        CALL_TYPES.OUTBOUND
-      ])
-    }
   },
   computed: {
-    credentials() {
-      return this.$store.getters.getAgentCredentials
-    },
-    callStatus() {
-      let callId = this.$store.getters.getActiveCallCallId
-      let call = this.$store.getters.getCallByCallId(callId)
-      if (call) {
-        return call.status
-      } else {
-        return null
-      }
-    },
-    isAgentStateHeld() {
-      return this.$store.getters.getAgentState === AGENT_STATES.HELD
-    },
-    isCallIdle() {
-      if (this.callStatus) {
-        return (
-          this.callStatus === CALL_STATES.IDLE ||
-          this.callStatus === CALL_STATES.DROPPED
-        )
-      } else {
-        return CALL_STATES.UNKNOWN
-      }
-    }
+
   }
 }
 </script>

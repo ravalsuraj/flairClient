@@ -3,7 +3,7 @@
   <mdb-card-body class="p-2 mb-1">-->
   <div class="fl_container_dialer">
     <mdb-container fluid>
-      <form @click.stop @keyup.enter="onConsultButtonClicked">
+      <form @submit.prevent @click.stop @keyup.enter="onConsultButtonClicked">
         <mdb-row class="px-3 py-4" @click.stop>
           <mdb-col class="d-flex align-items-baseline">
             <!--Input Textbox for digits-->

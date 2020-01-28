@@ -104,7 +104,7 @@ const getters = {
       return refCall.calledAddress
     } else if (referenceAddress === refCall.thirdAddressReference) {
       return refCall.thirdAddress
-    }else{
+    } else {
       return referenceAddress
     }
   }
@@ -209,6 +209,7 @@ const actions = {
       'SET_CALL_STATE_RINGING',
       getters.getCallIndexByCallId(payload.callId)
     )
+    commit('SET_ACTIVE_CALL', [payload.ucid, payload.callId])
   },
 
   setCallStateDialing({ commit, dispatch, getters }, payload) {},
@@ -467,37 +468,34 @@ const actions = {
       callId: requestedCallId
     }
     console.log('requestHoldUnholdCall(): primaryRequest=', primaryRequest)
-    switch (callStatus) {
-      case CALL_STATES.HELD:
-        let currentActiveCallCallId = getters.getActiveCallCallId
 
-        if (currentActiveCallCallId) {
-          let holdActiveCallRequest = {
-            sessionId: getters['session/getSessionId'],
-            agentId: getters['getAgentCredentials'].agentId,
-            deviceId: getters['getAgentCredentials'].deviceId,
-            callId: currentActiveCallCallId
-          }
+    if (callStatus === CALL_STATES.HELD) {
+      let currentActiveCallCallId = getters.getActiveCallCallId
 
-          console.log(
-            'requestHoldUnholdCall(): holdActiveCallRequest=',
-            primaryRequest
-          )
-          dispatch('requestHoldCall', holdActiveCallRequest).then(() => {
-            dispatch('requestUnholdCall', primaryRequest)
-          })
-        } else {
-          console.log(
-            'requestHoldUnholdCall(): no active calls, so sending unhold request ' +
-              currentActiveCallCallId
-          )
-          dispatch('requestUnholdCall', primaryRequest)
+      if (currentActiveCallCallId) {
+        let holdActiveCallRequest = {
+          sessionId: getters['session/getSessionId'],
+          agentId: getters['getAgentCredentials'].agentId,
+          deviceId: getters['getAgentCredentials'].deviceId,
+          callId: currentActiveCallCallId
         }
 
-        break
-      default:
-        dispatch('requestHoldCall', primaryRequest)
-        break
+        console.log(
+          'requestHoldUnholdCall(): holdActiveCallRequest=',
+          primaryRequest
+        )
+        dispatch('requestHoldCall', holdActiveCallRequest).then(() => {
+          dispatch('requestUnholdCall', primaryRequest)
+        })
+      } else {
+        console.log(
+          'requestHoldUnholdCall(): no active calls, so sending unhold request ' +
+            currentActiveCallCallId
+        )
+        dispatch('requestUnholdCall', primaryRequest)
+      }
+    } else {
+      dispatch('requestHoldCall', primaryRequest)
     }
   },
 
@@ -675,12 +673,14 @@ const mutations = {
 
     if (address === state.calls[index].callingAddress) {
       state.calls[index].callingAddress = state.calls[index].thirdAddress
-      state.calls[index].callingAddressReference = state.calls[index].thirdAddressReference
+      state.calls[index].callingAddressReference =
+        state.calls[index].thirdAddressReference
       state.calls[index].thirdAddress = null
       state.calls[index].thirdAddressReference = null
     } else if (address === state.calls[index].calledAddress) {
       state.calls[index].calledAddress = state.calls[index].thirdAddress
-      state.calls[index].calledAddressReference = state.calls[index].thirdAddressReference
+      state.calls[index].calledAddressReference =
+        state.calls[index].thirdAddressReference
       state.calls[index].thirdAddress = null
       state.calls[index].thirdAddressReference = null
     } else if (address === state.calls[index].thirdAddress) {

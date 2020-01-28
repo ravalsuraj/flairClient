@@ -14,48 +14,32 @@
         />
       </div>
     </mdb-navbar-brand>
-    <!-- <mdb-navbar-toggler>
-    </mdb-navbar-toggler>-->
-    <!-- <mdb-navbar-nav left>
-      <call-control></call-control>
-    </mdb-navbar-nav>-->
     <mdb-navbar-nav right class="pr-5">
-      <!-- <div class="light-color" style="opacity:1">
-        <img
-          src="@/assets/flair_logo_white.png"
-          class="mx-5"
-          alt="Responsive image"
-          style="width: 75px; opacity:1 !important"
-        />
-      </div>-->
-      <mdb-btn
-        color="default"
-        class="mr-5"
-        @click.native="showOutboundDialerModal = true"
-      >Place Call</mdb-btn>
-      <mdb-modal size="sm" v-if="showOutboundDialerModal" @close="showOutboundDialerModal = false">
-        <mdb-modal-header  class="black-text">
-          <mdb-modal-title>Consult Call</mdb-modal-title>
-        </mdb-modal-header>
-        <mdb-modal-body>
-          <outbound-dialer></outbound-dialer>
-        </mdb-modal-body>
-      </mdb-modal>
-
-      <!-- <mdb-modal
-        frame
-        removeBackdrop
-        position="top"
-        v-if="showOutboundDialerModal"
-        @close="showOutboundDialerModal = false"
-      >
-        <mdb-modal-body class="text-center">
-          <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Impedit nisi quo provident fugiat reprehenderit nostrum quos...</span>
-          <mdb-btn color="secondary" @click.native="showOutboundDialerModal = false">Close</mdb-btn>
-          <mdb-btn color="primary">Save changes</mdb-btn>
-        </mdb-modal-body>
-      </mdb-modal>-->
-      <agent-control></agent-control>
+      <span class="fl_navbar_item">
+        <mdb-btn
+          color="default"
+          class="mr-5"
+          @click.native="showOutboundDialerModal = true"
+        >Place Call</mdb-btn>
+        <mdb-modal
+          size="sm"
+          v-if="showOutboundDialerModal"
+          @close="showOutboundDialerModal = false"
+        >
+          <mdb-modal-header class="black-text">
+            <mdb-modal-title>Consult Call</mdb-modal-title>
+          </mdb-modal-header>
+          <mdb-modal-body>
+            <outbound-dialer></outbound-dialer>
+          </mdb-modal-body>
+        </mdb-modal>
+      </span>
+      <span class="fl_navbar_item">
+        <agent-state-control></agent-state-control>
+      </span>
+      <span class="fl_navbar_item">
+        <agent-profile></agent-profile>
+      </span>
     </mdb-navbar-nav>
   </mdb-navbar>
 </template>
@@ -63,6 +47,8 @@
 
 <script>
 import AgentControl from '@/widgets/AgentControl/AgentControl.vue'
+import AgentStateControl from '@/widgets/AgentControl/AgentStateControl.vue'
+import AgentProfile from '@/widgets/AgentControl/AgentProfile.vue'
 import OutboundDialer from '@/widgets/Dialer/OutboundDialer.vue'
 import {
   mdbRow,
@@ -92,7 +78,8 @@ import {
 export default {
   name: 'TopNavbar',
   components: {
-    AgentControl,
+    AgentProfile,
+    AgentStateControl,
     OutboundDialer,
     mdbRow,
     mdbCol,
@@ -138,6 +125,29 @@ export default {
 <style>
 .fl_topNav {
   /*width: fit-content;*/
+}
+.fl_navbar_item {
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.fl_navbar_item::after {
+  content: ' ';
+  margin: 3px -15px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: #2f3336;
+  box-shadow: 0 0 6px 0px rgba(255, 255, 255, 0.1);
+}
+.divider-vertical {
+  height: 50px;
+  margin: 0 9px;
+  border-left: 1px solid #f2f2f2;
+  border-right: 1px solid #fff;
 }
 .fl_topNav::after {
   content: '';

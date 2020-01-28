@@ -18,14 +18,14 @@ export default {
     }
   },
   mounted() {
-    if (this.timerState === TIMER_STATES.START) {
-      this.startTicking()
-    } else {
-      console.log(
-        'PersistTimer() mounted(): skipping startTicking(). this.timerState=' +
-          this.timerState
-      )
-    }
+    // if (this.timerState === TIMER_STATES.START) {
+    //   this.startTicking()
+    // } else {
+    //   console.log(
+    //     'PersistTimer() mounted(): skipping startTicking(). this.timerState=' +
+    //       this.timerState
+    //   )
+    // }
   },
   beforeDestroy() {
     this.stopTicking()
@@ -93,10 +93,6 @@ export default {
   },
   watch: {
     refTime(refTimeState) {
-      console.log('PersistTimer(): refTime watch() called')
-      // if (refTimeState) {
-      //   this.startTicking()
-      // }
 
       this.resetFormattedTime()
     },
@@ -104,11 +100,6 @@ export default {
       deep: true,
       immediate: true,
       handler: function(newState, oldState) {
-        console.log(
-          'PersistTimer(): timerState watch() called. newState=' +
-            JSON.stringify(newState)
-        )
-
         if (newState.state === TIMER_STATES.START) {
           this.startTicking()
         } else if (newState.state === TIMER_STATES.STOP) {

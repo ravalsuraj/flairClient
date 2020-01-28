@@ -80,6 +80,8 @@
     },
     "rightComponents": {
         "width": "0",
-        "widgets": []
+        "widgets": [
+
+        ]
     }
 }

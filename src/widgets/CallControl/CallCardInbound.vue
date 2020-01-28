@@ -391,7 +391,7 @@ export default {
     //   }
     // },
     callStatus: {
-      immediate: true,
+      immediate: false,
       deep: true,
       handler: function(newCallStatus, oldCallStatus) {
         switch (newCallStatus) {
