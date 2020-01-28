@@ -236,8 +236,8 @@ footer {
   opacity: 0.5;
 }
 .btn-circle {
-  width: 45px;
-  height: 45px;
+  width: 30px;
+  height: 30px;
   text-align: center;
   padding: 6px 0;
 
@@ -322,4 +322,5 @@ main {
 .fl_topSpacing {
   padding-top: 64px;
 }
+
 </style>
