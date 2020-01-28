@@ -4,7 +4,7 @@
     <mdb-row class="d-flex flex-fill justify-content-center">
       <mdb-col col="lg-6" class style>
         <!--Logout button only for testing. Remove it for production-->
-        <a class="text-white" @click="agentLogoutBtnClicked">Logout</a>
+        <a class="text-white" @click="forceLogoutButtonClicked">Logout</a>
         <mdb-card>
           <div class="pt-3 d-flex justify-content-around">
             <img
@@ -85,6 +85,16 @@
         </mdb-card>
       </mdb-col>
     </mdb-row>
+    <mdb-modal class="pt-5" v-if="showLogoutModal" @close="showLogoutModal = false" elegant>
+      <mdb-modal-header>
+        <mdb-modal-title>Modal title</mdb-modal-title>
+      </mdb-modal-header>
+      <mdb-modal-body>You are already logged-in as an agent. Would you like to logout from the previous session?</mdb-modal-body>
+      <mdb-modal-footer>
+        <mdb-btn color="secondary" @click.native="showLogoutModal = false">Cancel</mdb-btn>
+        <mdb-btn color="primary" @click.native="forceLogoutButtonClicked">Force Log-out</mdb-btn>
+      </mdb-modal-footer>
+    </mdb-modal>
   </mdb-container>
 </template>
 
@@ -101,15 +111,22 @@ import {
   mdbCardText,
   mdbIcon,
   mdbTbl,
-  mdbInput
+  mdbInput,
+  mdbModal,
+  mdbModalHeader,
+  mdbModalTitle,
+  mdbModalBody,
+  mdbModalFooter
 } from 'mdbvue'
 import WebSocketIndicator from '@/components/agc/WebSocketIndicator.vue'
+import ModalExample from '@/components/agc/ModalExample.vue'
 import { SOCKET_EVENTS } from '@/defines.js'
 
 export default {
   name: 'LoginPage',
   components: {
     WebSocketIndicator,
+    ModalExample,
     mdbAlert,
     mdbContainer,
     mdbRow,
@@ -121,7 +138,12 @@ export default {
     mdbCardText,
     mdbIcon,
     mdbTbl,
-    mdbInput
+    mdbInput,
+    mdbModal,
+    mdbModalHeader,
+    mdbModalTitle,
+    mdbModalBody,
+    mdbModalFooter
   },
   mounted() {
     this.credentials = this.$store.getters.getAgentCredentials
@@ -145,7 +167,8 @@ export default {
       spinner: {
         show: false
       },
-      ipAddress: ''
+      ipAddress: '',
+      showLogoutModal: false
     }
   },
   sockets: {},
@@ -159,12 +182,17 @@ export default {
       this.showSpinner()
       let sendAgentLoginRequest = () => {
         this.$store.dispatch('sendAgentLoginRequest').then(resp => {
-          if (resp && response.responseCode && resp.responseCode === '0') {
-            this.$store.dispatch('showErrorBanner', [
-              'Welcome',
-              'You are successfully logged in'
-            ])
-            this.hideSpinner()
+          console.log(resp)
+          this.hideSpinner()
+          if (resp && resp.responseCode) {
+            if (resp.responseCode === '0') {
+              this.$store.dispatch('showErrorBanner', [
+                'Welcome',
+                'You are successfully logged in'
+              ])
+            } else if (resp.responseCode === '35') {
+              this.showLogoutModal = true
+            }
           }
         })
       }
@@ -197,8 +225,8 @@ export default {
       }
     },
 
-    agentLogoutBtnClicked() {
-      console.log('Test Logout button clicked')
+    forceLogoutButtonClicked() {
+      this.showLogoutModal = false
       this.$store.dispatch('setAgentLoginCredentials', this.credentials)
       this.$store.dispatch('sendAgentLogoutRequest')
     },

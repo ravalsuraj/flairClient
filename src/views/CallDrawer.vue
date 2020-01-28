@@ -1,5 +1,5 @@
 <template>
-  <section class="">
+  <section>
     <mdb-container fluid>
       <!-- <mdb-row>
         <timer-test></timer-test>

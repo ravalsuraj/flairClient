@@ -1,6 +1,6 @@
 <template>
   <div>
-    <widget :title="callTypeText" v-if="!isCallDropped" :color="widgetColor">
+    <widget :title="cardTitle" v-if="!isCallDropped" :color="widgetColor">
       <template v-slot:body>
         <mdb-container>
           <mdb-row class="no-gutters">
@@ -400,6 +400,11 @@ export default {
     callType() {
       return this.call.type
     },
+
+    cardTitle() {
+      return this.callTypeText + ' (' + this.callId + ')'
+    },
+
     callTypeText() {
       switch (this.callType) {
         case CALL_TYPES.INBOUND:

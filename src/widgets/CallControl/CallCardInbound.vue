@@ -1,6 +1,6 @@
 <template>
   <div>
-    <widget :title="callTypeText" v-if="!isCallDropped" :color="widgetColor">
+    <widget :title="cardTitle" v-if="!isCallDropped" :color="widgetColor">
       <template v-slot:body>
         <mdb-container>
           <mdb-row class="no-gutters">
@@ -128,7 +128,7 @@ import {
   mdbBtn,
   mdbPopover,
   mdbCard,
-  mdbCardTitle,
+  mdbcardTitle,
   mdbCardBody,
   mdbCardHeader,
   mdbCardText,
@@ -162,7 +162,7 @@ export default {
     mdbCol,
     mdbBtn,
     mdbCard,
-    mdbCardTitle,
+    mdbcardTitle,
     mdbCardBody,
     mdbCardHeader,
     mdbCardText,
@@ -339,6 +339,9 @@ export default {
     callType() {
       return this.call.type
     },
+    cardTitle() {
+      return this.callTypeText + ' (' + this.callId + ')'
+    },
     callTypeText() {
       switch (this.callType) {
         case CALL_TYPES.INBOUND:
@@ -363,33 +366,6 @@ export default {
     }
   },
   watch: {
-    // allOngoingCalls: {
-    //   immediate: false,
-    //   deep: true,
-    //   handler: function(newState, oldState) {
-    //     console.log(
-    //       'allOngoingCalls(): watch - currentCallIndex = ' +
-    //         this.currentCallIndex
-    //     )
-    //     if (this.currentCallIndex != null) {
-    //       console.log(
-    //         'allOngoingCalls(): watch- newState[this.currentCallIndex]=' +
-    //           JSON.stringify(newState[this.currentCallIndex])
-    //       )
-    //       console.log(
-    //         'allOngoingCalls(): watch - oldState[this.currentCallIndex]=' +
-    //           JSON.stringify(oldState[this.currentCallIndex])
-    //       )
-    //     } else {
-    //       console.log(
-    //         'allOngoingCalls(): watch- newState=' + JSON.stringify(newState)
-    //       )
-    //       console.log(
-    //         'allOngoingCalls(): watch - oldState=' + JSON.stringify(oldState)
-    //       )
-    //     }
-    //   }
-    // },
     callStatus: {
       immediate: false,
       deep: true,
