@@ -170,6 +170,9 @@ footer {
 .fl-notification {
   /* margin-bottom: 70px; */
 }
+.navbar-nav{
+    flex-direction: row !important;
+}
 .fl_widget {
   margin-bottom: 10px !important;
 }

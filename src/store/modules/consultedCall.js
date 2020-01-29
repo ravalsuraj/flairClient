@@ -31,8 +31,7 @@ export default {
           this._vm.$socket.emit(SOCKET_EVENTS.CONSULT_CALL, request, resp => {
             console.log('requestConsultCall(): resp=' + JSON.stringify(resp))
             if (resp.responseCode == '0') {
-              // commit('SET_CONF_STATE_CONSULTED', resp)
-              // dispatch('processNewConsultedCall', resp)
+
               resolve(resp)
             } else {
               resolve(resp)

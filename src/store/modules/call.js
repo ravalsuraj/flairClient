@@ -250,7 +250,6 @@ const actions = {
 
   //Called when the consult call request is made
   processNewConsultedCall({ commit, getters, dispatch }, payload) {
-    dispatch('addCallToActiveCalls', payload)
     // dispatch('addConsultedCallDetailsToPrimary', payload)
     dispatch('linkPrimaryAndConsultedCall', payload)
 
@@ -262,8 +261,12 @@ const actions = {
   //Called when the outbound call request is made
   processNewOutboundCall({ commit, getters, dispatch }, payload) {
     let index = getters.getCallIndexByCallId(payload.callId)
-    commit('ADD_CALL_TO_OUTBOUND_CALL_LIST', payload.callId)
-    commit('SET_CALL_TYPE_OUTBOUND', index)
+    if (index > 0) {
+      dispatch('processNewConsultedCall', payload)
+    } else {
+      commit('ADD_CALL_TO_OUTBOUND_CALL_LIST', payload.callId)
+      commit('SET_CALL_TYPE_OUTBOUND', index)
+    }
   },
 
   //called when one ore more conference call parties leave the call

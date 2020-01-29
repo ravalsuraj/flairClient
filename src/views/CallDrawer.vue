@@ -111,7 +111,7 @@ export default {
       return this.$store.getters.getCalls
     },
     cardWidth() {
-      return this.myCalls.length > 2 ? 'md-3' : 'md-6'
+      return this.myCalls.length > 2 ? 'xl-3' : 'xl-6'
     }
   },
   watch: {
