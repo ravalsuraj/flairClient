@@ -124,7 +124,7 @@ import {
   mdbBtn,
   mdbPopover,
   mdbCard,
-  mdbcardTitle,
+  
   mdbCardBody,
   mdbCardHeader,
   mdbCardText,
@@ -158,7 +158,7 @@ export default {
     mdbCol,
     mdbBtn,
     mdbCard,
-    mdbcardTitle,
+    
     mdbCardBody,
     mdbCardHeader,
     mdbCardText,

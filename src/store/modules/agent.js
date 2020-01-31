@@ -81,11 +81,11 @@ export default {
       //Set the list of labels to be displayed for the agent state as well as reason code
       commit('SET_DISPLAY_LABELS', [auxMap, reasonCodeMap])
     },
-    startAgentStateMonitoring({ commit, dispatch }) {
+    startAgentStateMonitoring({ commit, dispatch, getters }) {
       let monitorAgentInterval = setInterval(() => {
         //console.log("startAgentStateMonitoring(): querying agent state")
         dispatch('sendQueryAgentStateRequest')
-      }, 500000)
+      }, getters['session/getConfig'].AGENT_STATE_POLLING_INTERVAL_MS)
       commit('SET_MONITOR_AGENT_INTERVAL_HANDLE', monitorAgentInterval)
     },
 
