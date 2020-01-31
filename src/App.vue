@@ -181,7 +181,7 @@ footer {
   color: #9e9e9e;
 }
 .fl_btn_btnIcon:hover i {
-  color: #00bcd4;
+  color: #03a9f4;
 }
 .fl_btn_btnIcon:active i {
   color: #0097a7;

@@ -88,7 +88,7 @@
                     </mdb-modal-header>
                     <mdb-modal-body>
                       <div v-if="!isCallConsulted">
-                        <consult-dialer :ucid="ucid" :callId="callId"></consult-dialer>
+                        <consult-dialer :ucid="ucid" :callId="callId" @close-self="showConferenceModal=false"></consult-dialer>
                       </div>
 
                       <div v-else>
@@ -222,8 +222,6 @@ export default {
 
   data() {
     return {
-      showConsultDialer: false,
-      showOutboundDialer: false,
       callIdToBeConferenced: null,
       spinner: {
         show: false

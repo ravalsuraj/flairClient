@@ -95,6 +95,7 @@ import CallDisposition from '@/widgets/CallDisposition/CallDisposition.vue'
 import CrmFrame from '@/widgets/CrmFrame/CrmFrame.vue'
 import QuickLinks from '@/widgets/QuickLinks/QuickLinks.vue'
 import SmsHelper from '@/widgets/SmsHelper/SmsHelper.vue'
+import AgsHelper from '@/widgets/AgsHelper/AgsHelper.vue'
 import CallDrawer from '@/views/CallDrawer.vue'
 
 export default {
@@ -112,6 +113,7 @@ export default {
     CallDetails,
     CallHistory,
     SmsHelper,
+    AgsHelper,
     CallDrawer,
 
     mdbContainer,

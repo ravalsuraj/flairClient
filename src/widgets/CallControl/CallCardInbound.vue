@@ -70,31 +70,34 @@
 
                 <!--START: Consult Call Button-->
                 <mdb-col col="4">
-                  <transition name="fade">
-                    <mdb-dropdown
-                      :class="{'fl_disabledWidget':!isCallActive}"
-                      v-if="!isCallConferenced"
-                    >
-                      <button
-                        type="checkbox"
-                        class="btn red lighten-1 btn-circle"
-                        slot="toggle"
-                        v-if="!isCallHeld"
-                      >
-                        <mdb-icon icon="users" style="font-size:1.5em" />
-                      </button>
-                      <!--START: Consult Call Dialer Modal-->
-                      <mdb-modal size="sm">
-                        <mdb-modal-header>
-                          <mdb-modal-title>Consult Call</mdb-modal-title>
-                        </mdb-modal-header>
-                        <mdb-modal-body>
-                          <consult-dialer :ucid="ucid" :callId="callId"></consult-dialer>
-                        </mdb-modal-body>
-                      </mdb-modal>
-                      <!--END: Consult Call Dialer Modal-->
-                    </mdb-dropdown>
-                  </transition>
+                  <mdb-btn
+                    type="checkbox"
+                    class="btn red lighten-1 btn-circle"
+                    v-if="!isCallConferenced"
+                    @click.native="showConferenceModal=true"
+                    :class="{'fl_disabledWidget':!isCallActive}"
+                  >
+                    <mdb-icon icon="users" style="font-size:1.5em" />
+                  </mdb-btn>
+
+                  <!--START: Consult Call Dialer Modal-->
+                  <mdb-modal
+                    size="sm"
+                    v-if="showConferenceModal"
+                    @close="showConferenceModal=false"
+                  >
+                    <mdb-modal-header>
+                      <mdb-modal-title>Consult Call</mdb-modal-title>
+                    </mdb-modal-header>
+                    <mdb-modal-body>
+                      <consult-dialer
+                        :ucid="ucid"
+                        :callId="callId"
+                        @close-self="showOutboundDialerModal = false"
+                      ></consult-dialer>
+                    </mdb-modal-body>
+                  </mdb-modal>
+                  <!--END: Consult Call Dialer Modal-->
                 </mdb-col>
                 <!--END: Consult Call Button-->
               </mdb-row>
@@ -128,7 +131,6 @@ import {
   mdbBtn,
   mdbPopover,
   mdbCard,
-  mdbcardTitle,
   mdbCardBody,
   mdbCardHeader,
   mdbCardText,
@@ -162,7 +164,6 @@ export default {
     mdbCol,
     mdbBtn,
     mdbCard,
-    mdbcardTitle,
     mdbCardBody,
     mdbCardHeader,
     mdbCardText,
@@ -193,7 +194,8 @@ export default {
     return {
       spinner: {
         show: false
-      }
+      },
+      showConferenceModal: false
     }
   },
   methods: {

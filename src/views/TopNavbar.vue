@@ -14,11 +14,11 @@
         />
       </div>
     </mdb-navbar-brand>
-    <mdb-navbar-nav right class="pr-5">
+    <mdb-navbar-nav right >
       <span class="fl_navbar_item">
         <mdb-btn
-          color="default"
-          class="mr-5"
+         class="light-blue"
+  
           @click.native="showOutboundDialerModal = true"
         >Place Call</mdb-btn>
         <mdb-modal
@@ -30,7 +30,7 @@
             <mdb-modal-title>Consult Call</mdb-modal-title>
           </mdb-modal-header>
           <mdb-modal-body>
-            <outbound-dialer></outbound-dialer>
+            <outbound-dialer @close-self="showOutboundDialerModal = false"></outbound-dialer>
           </mdb-modal-body>
         </mdb-modal>
       </span>
@@ -129,13 +129,15 @@ export default {
 .fl_navbar_item {
   display: flex;
   align-items: center;
+  justify-content: center;
   padding-left: 10px;
   padding-right: 10px;
+  min-width:160px;
 }
 
 .fl_navbar_item::after {
   content: ' ';
-  margin: 3px -15px;
+  margin: 3px -85px;
   position: absolute;
   top: 0;
   bottom: 0;

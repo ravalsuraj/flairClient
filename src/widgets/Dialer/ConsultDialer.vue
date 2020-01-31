@@ -218,6 +218,9 @@ export default {
       this.$store.dispatch('updateDialedDigits', this.dialedDigits)
       this.showSpinner()
       this.$store.dispatch('requestConsultCall', this.callId).then(resp => {
+        if (resp.responseCode === '0') {
+          this.$emit('close-self')
+        }
         this.hideSpinner()
       })
     }
@@ -289,7 +292,7 @@ export default {
 }
 
 .fl_button_dialerDigit:hover {
-  color: #00bcd4;
+  color: #03a9f4;
 
   background-color: rgba(240, 240, 240, 0.05);
 }

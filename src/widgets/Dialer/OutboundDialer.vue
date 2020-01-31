@@ -49,7 +49,7 @@
       <div @click.stop>
         <mdb-row class @click.stop>
           <transition name="fade">
-            <mdb-btn color="default" class="mx-2 btn-block" @click="onMakeCallButtonClicked">
+            <mdb-btn  class="mx-2 btn-block light-blue" @click="onMakeCallButtonClicked">
               <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
               <span>Call</span>
             </mdb-btn>
@@ -218,6 +218,7 @@ export default {
         console.log('onMakeCallButtonClicked(): resp=' + JSON.stringify(resp))
         this.hideSpinner()
         if (resp.responseCode === '0') {
+          this.$emit('close-self')
           this.$store.dispatch('setCallStateDialing', resp)
           this.$store.dispatch('processNewOutboundCall', resp)
         }
@@ -294,7 +295,7 @@ export default {
 }
 
 .fl_button_dialerDigit:hover {
-  color: #00bcd4;
+  color: #03a9f4;
 
   background-color: rgba(240, 240, 240, 0.05);
 }

@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import VuexPersist from 'vuex-persist'
-import Cookies from 'js-cookie'
 
 import agent from './modules/agent'
 import call from './modules/call'
@@ -11,6 +10,7 @@ import session from './modules/session'
 import socket from './modules/socket'
 import timer from './modules/timer'
 import data from './modules/data'
+import agsutil from './modules/ags/agsUtil'
 
 import { SOCKET_STATES } from '@/defines.js'
 
@@ -25,7 +25,8 @@ const vuexPersist = new VuexPersist({
     'socket',
     'timer',
     'data',
-    'session'
+    'session',
+    'agsutil'
   ]
 })
 
@@ -41,7 +42,8 @@ export default new Vuex.Store({
     timer,
     data,
     consultedCall,
-    dialer
+    dialer,
+    agsutil
   },
   plugins: [vuexPersist.plugin],
 
@@ -63,7 +65,6 @@ export default new Vuex.Store({
     }
   },
   actions: {
-
     showErrorBanner(context, [title, message]) {
       Vue.notify({
         group: 'error',
@@ -82,6 +83,7 @@ export default new Vuex.Store({
       commit('session/RESET_SESSION_MODULE')
       //commit('RESET_SOCKET_MODULE')
       commit('RESET_TIMER_MODULE')
+      commit('RESET_AGS_UTIL_MODULE')
     }
   },
   /*******************************************************************
@@ -91,8 +93,7 @@ export default new Vuex.Store({
   mutations: {
     TOGGLE_DEV_MODE(state) {
       state.devMode = !state.devMode
-    },
-
+    }
   },
   getters: {
     socketRequest() {

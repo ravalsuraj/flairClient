@@ -4,6 +4,12 @@
     "SERVER_TIMEOUT_MS": 20000,
     "CRM_URL": "http://localhost:9527/#/dashboard",
     "CRM_TIMEOUT_MS": 10000,
+    "AGS":{
+        "MIDDLEWARE":{
+            "URL": "http://localhost:9093",
+            "TIMEOUT": 15000
+        }
+    },
     "defaultAuxCodes": [
         {
             "label": "Ready",
@@ -66,22 +72,24 @@
             "reasonLabel": "Dinner"
         }
     ],
-    "leftComponents": {
-        "width": "0",
-        "widgets": []
+    "rightComponents": {
+        "width": "3",
+        "widgets": [
+            {
+                "name": "ags-helper"
+            }
+        ]
     },
     "middleComponents": {
-        "width": "12",
+        "width": "9",
         "widgets": [
             {
                 "name": "crm-frame"
             }
         ]
     },
-    "rightComponents": {
+    "leftComponents": {
         "width": "0",
-        "widgets": [
-
-        ]
+        "widgets": []
     }
 }
