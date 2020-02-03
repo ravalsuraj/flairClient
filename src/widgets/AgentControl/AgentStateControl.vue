@@ -89,6 +89,7 @@ export default {
       switch (selectedAuxCode.state) {
         case AGENT_STATES.READY:
         case AGENT_STATES.NOT_READY:
+        case AGENT_STATES.WORK_NOT_READY:
           this.$store
             .dispatch('sendAgentStateRequest', selectedAuxCode)
             .then(resp => {
