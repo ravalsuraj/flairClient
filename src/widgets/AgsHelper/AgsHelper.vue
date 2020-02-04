@@ -73,7 +73,7 @@ export default {
       if (this.call) {
         if (this.call.callDirection === 1) {
           return this.call.calledAddress
-        } else if (call.callDirection === 2) {
+        } else if (this.call.callDirection === 2) {
           return this.call.callingAddress
         }
       } else {

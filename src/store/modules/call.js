@@ -56,7 +56,6 @@ const getters = {
   getCallByCallId: state => callId => {
     return state.calls[state.call_list_callIds.indexOf(callId)]
   },
-
   getCallByIndex: state => index => {
     return state.calls[index]
   },
@@ -149,6 +148,8 @@ const actions = {
         newCall.multiCallState = MULTI_CALL_STATES.SINGLE
         newCall.status = CALL_STATES.CREATED
         newCall.type = CALL_TYPES.INBOUND
+        newCall.callStartTime = new Date()
+        newCall.callEndTime = null
         newCall.thirdAddress = null
         newCall.linkedCallId = null
         newCall.callingAddressReference = null
@@ -157,6 +158,7 @@ const actions = {
         //http://jsfiddle.net/pdmrL1gq/1/
         newCall.startTime = new Date().getTime()
         commit('ADD_CALL', newCall)
+        // dispatch('setCallStartTime', newCall.callId)
         resolve()
       } else {
         console.log(
@@ -179,13 +181,6 @@ const actions = {
       'removeTimer',
       Utils.getTimerName(callId, TIMER_TYPES.IN_STATE_TIMER)
     )
-  },
-
-  setCallState({ commit, getters }, [callId, newStatus]) {
-    console.log('setCallState(): callId=' + callId + ', newStatus=' + newStatus)
-    let index = getters.getCallIndexByCallId(callId)
-    console.log('setCallState(): index=' + index)
-    commit('SET_CALL_STATE', [index, newStatus])
   },
 
   //creates and starts the instate timer as well as call timer to store.
@@ -235,7 +230,9 @@ const actions = {
     if (payload.callId === getters.getActiveCallCallId) {
       commit('RESET_ACTIVE_CALL', [payload.ucid, payload.callId])
     }
-    dispatch('removeCallFromActiveCalls', [payload.ucid, payload.callId])
+    dispatch('setCallEndTime', payload.callId)
+
+    // dispatch('removeCallFromActiveCalls', [payload.ucid, payload.callId])
   },
 
   //Called when the first call event arrives (call state ringing)
@@ -288,6 +285,15 @@ const actions = {
     commit('RESET_CALL_STATUS')
     commit('RESET_CRM_DATA')
   },
+
+  setCallStartTime({ commit, getters }, callId) {
+    commit('SET_CALL_START_TIME', getters.getCallIndexByCallId(callId))
+  },
+
+  setCallEndTime({ commit, getters }, callId) {
+    commit('SET_CALL_END_TIME', getters.getCallIndexByCallId(callId))
+  },
+
   linkPrimaryAndConsultedCall({ commit, getters }, payload) {
     let callList = getters.getCallIdArray
     if (callList && callList.length > 0) {
@@ -562,6 +568,13 @@ const mutations = {
     if (state.activeCall.callId === callId) {
       state.activeCall.callId = null
     }
+  },
+
+  SET_CALL_START_TIME(state, index) {
+    state.calls[index].callStartTime = new Date()
+  },
+  SET_CALL_END_TIME(state, index) {
+    state.calls[index].callEndTime = new Date()
   },
 
   SET_CALL_STATE_RINGING(state, index) {

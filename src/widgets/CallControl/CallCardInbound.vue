@@ -217,7 +217,10 @@ export default {
     },
 
     disposeCall() {
-      this.$store.dispatch('removeCallFromActiveCalls')
+      this.$store.dispatch('removeCallFromActiveCalls', [
+        this.call.ucid,
+        this.call.callId
+      ])
     }
   },
   computed: {
