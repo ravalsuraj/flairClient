@@ -1,26 +1,25 @@
 <template>
   <widget title="Call Disposition">
     <template v-slot:body>
-      <!-- <mdb-card-text><strong>Test Bench</strong></mdb-card-text> -->
       <mdb-container fluid>
         <div v-if="isAgentInAcw">
-          <div class="h5 grey-text" v-if="showTimer">
+          <!-- <div class="h5 grey-text" v-if="showTimer">
             Time Left:
             <down-timer name="acwTimer" @timer-expired="onAcwTimerExpired"></down-timer>
             <hr />
-          </div>
+          </div>-->
 
           <!-- <label>Call Reason</label> -->
-          <select class="browser-default custom-select mb-3">
-            <option selected>Select Disposition Reason</option>
+          <select class="browser-default custom-select mb-3" v-model="disposition">
+            <option selected value="null"> Select Disposition Reason</option>
             <option value="1">Account Inquiry</option>
             <option value="2">Product Information</option>
             <option value="3">Technical Support</option>
           </select>
           <!-- <label class>Outcome</label> -->
 
-          <select class="browser-default custom-select mb-4">
-            <option selected>Select Outcome</option>
+          <select class="browser-default custom-select mb-4" v-model="sub_disposition">
+            <option selected value="null">Select Outcome</option>
             <option value="1">Successful</option>
             <option value="2">Transfered to IVR</option>
             <option value="3">Disconnected</option>
@@ -69,13 +68,16 @@ export default {
   },
   mounted() {},
   props: {
-    ucid: null
+    ucid: null,
+    callId: null
   },
 
   data() {
     return {
       showWidget: false,
-      showTimer: false
+      showTimer: false,
+      disposition: null,
+      sub_disposition : null
     }
   },
 
@@ -88,19 +90,32 @@ export default {
       this.disposeCall()
     },
     disposeCall() {
-      this.$store.dispatch('removeCallFromActiveCalls', this.ucid)
-      this.$store.dispatch('setAgentAuxCode', {
-        label: 'Ready',
-        state: AGENT_STATES.READY,
-        reasonCode: null
-      })
-      this.$store.dispatch('resetDummyData')
+      let dispositionRequest = {
+        callId: this.callId,
+        ucid: this.ucid,
+        cli : this.call.callingAddress,
+        dnis : this.call.calledAddress,
+
+        call_start_date_time: this.call.callStartTime,
+        call_end_date_time: this.call.callEndTime,
+        disposition : this.disposition,
+        sub_disposition : this.sub_disposition
+
+      }
+      this.$store.dispatch('requestCallDisposition')
+      this.$store.dispatch('removeCallFromActiveCalls', [
+        this.ucid,
+        this.callId
+      ])
     }
   },
 
   computed: {
+    call() {
+      return this.$store.getters.getCallByCallId(this.callId)
+    },
     callStatus() {
-      return this.$store.getters.getCallStatus
+      return this.call.status
     },
     isAgentInAcw() {
       return this.callStatus === CALL_STATES.DROPPED

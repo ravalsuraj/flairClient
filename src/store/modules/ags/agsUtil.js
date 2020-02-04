@@ -35,6 +35,12 @@ export default {
       agsMiddlewareConnector.fetchLobFromDnis(payload).then(resp => {
         commit('SET_LOB', [payload.callId, resp.lob])
       })
+    },
+
+    async requestPostCallDisposition({ commit }, payload) {
+      agsMiddlewareConnector.postCallDisposition(payload).then(resp => {
+        return resp
+      })
     }
   }
 }

@@ -88,7 +88,11 @@
                     </mdb-modal-header>
                     <mdb-modal-body>
                       <div v-if="!isCallConsulted">
-                        <consult-dialer :ucid="ucid" :callId="callId" @close-self="showConferenceModal=false"></consult-dialer>
+                        <consult-dialer
+                          :ucid="ucid"
+                          :callId="callId"
+                          @close-self="showConferenceModal=false"
+                        ></consult-dialer>
                       </div>
 
                       <div v-else>
@@ -249,7 +253,10 @@ export default {
     },
 
     disposeCall() {
-      this.$store.dispatch('removeCallFromActiveCalls')
+      this.$store.dispatch('removeCallFromActiveCalls', [
+        this.call.ucid,
+        this.call.callId
+      ])
     },
 
     transferCall() {
