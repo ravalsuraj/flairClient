@@ -123,6 +123,9 @@ export default {
 
         SOCKET_CALLCONF({ dispatch, getters }, payload) {
             console.log('SOCKET_CALLCONF(): Received event: ' + JSON.stringify(payload))
+            if(getters.getCallIndexByCallId(payload.callId)<0){
+                dispatch('processNewConferenceCall', payload)
+            }
             dispatch('setMultiCallStateConferenced', payload)
         },
         SOCKET_CONFCALLDISC({ dispatch, getters }, payload) {

@@ -6,13 +6,13 @@
       </mdb-row> -->
 
       <mdb-row>
-        <mdb-col :col="cardWidth" v-for="call in myCalls" :key="call.ucid">
+        <mdb-col :col="cardWidth" v-for="(call, index) in myCalls" :key="call.ucid">
           <call-card-inbound
-            v-if="!isCallDropped(call) && isCallTypeInbound(call)"
+            v-if="!isCallDropped(call) && index==0"
             :ucid="call.ucid" :callId="call.callId"
           ></call-card-inbound>
           <call-card-outbound
-            v-if="!isCallDropped(call) && isCallTypeOutbound(call)"
+            v-if="!isCallDropped(call) && index>0"
             :ucid="call.ucid" :callId="call.callId"
           ></call-card-outbound>
           <!-- <call-disposition v-if="isCallDropped(call)" :ucid="call.ucid"></call-disposition> -->
