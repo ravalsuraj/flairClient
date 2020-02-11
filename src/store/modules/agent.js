@@ -85,7 +85,7 @@ export default {
       let monitorAgentInterval = setInterval(() => {
         //console.log("startAgentStateMonitoring(): querying agent state")
         dispatch('sendQueryAgentStateRequest')
-      }, 500000)
+      }, 1000)
       commit('SET_MONITOR_AGENT_INTERVAL_HANDLE', monitorAgentInterval)
     },
 

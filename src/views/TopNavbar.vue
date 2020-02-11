@@ -15,7 +15,7 @@
       </div>
     </mdb-navbar-brand>
     <mdb-navbar-nav right >
-      <span class="fl_navbar_item">
+      <!-- <span class="fl_navbar_item">
         <mdb-btn
          class="light-blue"
   
@@ -27,13 +27,13 @@
           @close="showOutboundDialerModal = false"
         >
           <mdb-modal-header class="black-text">
-            <mdb-modal-title>Consult Call</mdb-modal-title>
+            <mdb-modal-title>Make Call</mdb-modal-title>
           </mdb-modal-header>
           <mdb-modal-body>
             <outbound-dialer @close-self="showOutboundDialerModal = false"></outbound-dialer>
           </mdb-modal-body>
         </mdb-modal>
-      </span>
+      </span> -->
       <span class="fl_navbar_item">
         <agent-state-control></agent-state-control>
       </span>
@@ -132,10 +132,10 @@ export default {
   justify-content: center;
   padding-left: 10px;
   padding-right: 10px;
-  min-width:160px;
+  min-width:140px;
 }
 
-.fl_navbar_item::after {
+/* .fl_navbar_item::after {
   content: ' ';
   margin: 3px -85px;
   position: absolute;
@@ -144,7 +144,7 @@ export default {
   width: 1px;
   background: #2f3336;
   box-shadow: 0 0 6px 0px rgba(255, 255, 255, 0.1);
-}
+} */
 .divider-vertical {
   height: 50px;
   margin: 0 9px;

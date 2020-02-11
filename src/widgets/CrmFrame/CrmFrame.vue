@@ -62,24 +62,24 @@ export default {
       )
     },
     activeCall() {
-   
       let callId = this.$store.getters.getActiveCallCallId
 
       return this.$store.getters.getCallByCallId(callId)
     },
     callingAddress() {
-
-      return this.activeCall?this.activeCall.callingAddress:null
+      return this.activeCall ? this.activeCall.callingAddress : null
     },
     calledAddress() {
-      return  this.activeCall?this.activeCall.calledAddress:null
-     
+      return this.activeCall ? this.activeCall.calledAddress : null
     },
     agentCredentials() {
       return this.$store.getters.getAgentCredentials
     },
     showWidget() {
       return this.manualShowWidget || this.autoShowWidget
+    },
+    sessionId(){
+      return this.$store.getters['session/getSessionId']
     },
 
     CRM_URL() {
@@ -93,7 +93,9 @@ export default {
           '&ucid=' +
           this.activeCall.ucid +
           '&callId=' +
-          this.activeCall.callId
+          this.activeCall.callId +
+          '&sessionId=' +
+          this.sessionId
         )
       } else {
         return this.$store.getters.getCrmUrl

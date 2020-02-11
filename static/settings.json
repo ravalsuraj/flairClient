@@ -1,11 +1,11 @@
 {
     "FLAIR_AWS_PORT": 8080,
-    "FLAIR_SERVER_URL": "http://localhost:9092",
+    "FLAIR_SERVER_URL": "http://192.168.110.99:9092",
     "SERVER_TIMEOUT_MS": 20000,
     "CRM_URL": "http://localhost:9527/#/dashboard",
     "CRM_TIMEOUT_MS": 10000,
-    "AGS":{
-        "MIDDLEWARE":{
+    "AGS": {
+        "MIDDLEWARE": {
             "URL": "http://localhost:9093",
             "TIMEOUT": 15000
         }
@@ -73,15 +73,18 @@
         }
     ],
     "rightComponents": {
-        "width": "3",
+        "width": "2",
         "widgets": [
             {
-                "name": "ags-helper"
+                "name": "sms-helper"
+            },
+            {
+                "name": "quick-links"
             }
         ]
     },
     "middleComponents": {
-        "width": "9",
+        "width": "10",
         "widgets": [
             {
                 "name": "crm-frame"

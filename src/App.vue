@@ -144,7 +144,10 @@ export default {
 }
 @import url('https://fonts.googleapis.com/css?family=Unica+One&display=swap');
 /* @import url('/static/fonts.css'); */
-
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 html {
   font-size: 75%;
   color: rgba(0, 0, 0, 0.45);
@@ -239,8 +242,8 @@ footer {
   opacity: 0.5;
 }
 .btn-circle {
-  width: 45px;
-  height: 45px;
+  width: 36px;
+  height: 36px;
   text-align: center;
   padding: 6px 0;
 

@@ -69,9 +69,9 @@ export default {
 
   computed: {
     cli() {
-      let ucid = this.$store.getters.getActiveCallUcid
-      let call = this.$store.getters.getCallFromUcid(ucid);
-      let cli = call.callingAddress
+      let callId = this.$store.getters.getActiveCallCallId
+      let call = this.$store.getters.getCallByCallId(callId);
+      let cli = call?call.callingAddress:null
       if (cli) {
         this.showWidget = true
       }

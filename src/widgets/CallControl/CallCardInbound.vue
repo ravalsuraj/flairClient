@@ -6,7 +6,7 @@
           <mdb-row class="no-gutters">
             <mdb-col :col="cardWidth">
               <mdb-row>
-                <mdb-col col="6" class="mb-3 d-flex">
+                <mdb-col col="7" class="mb-3 d-flex">
                   <span strong class="fl_well_text big mx-auto">{{callingAddress}}</span>
                   <span
                     v-if="isCallConferenced"
@@ -14,23 +14,24 @@
                     class="fl_well_text big mx-auto"
                   >{{thirdAddress}}</span>
                 </mdb-col>
-                <mdb-col col="6" class="mb-3 text-center">
+                <mdb-col col="5
+                " class="mb-3 text-center">
                   <persist-timer :timerName="callTimerName" class="fl_well_text big"></persist-timer>
                 </mdb-col>
               </mdb-row>
 
               <mdb-row>
-                <mdb-col col="6" class="mb-3 d-flex">
+                <mdb-col col="7" class="mb-3 d-flex">
                   <span strong class="fl_well_text big mx-auto">{{callStatusText}}</span>
                 </mdb-col>
-                <mdb-col col="6" class="mb-3 text-center">
+                <mdb-col col="5" class="mb-3 text-center">
                   <persist-timer :timerName="inStateTimerName" class="fl_well_text big"></persist-timer>
                 </mdb-col>
               </mdb-row>
             </mdb-col>
 
             <!--START: Inbound Call Controls-->
-            <mdb-col :col="cardWidth">
+            <mdb-col>
               <mdb-row>
                 <!-- START: Answer/Drop Button -->
                 <mdb-col col="4">
@@ -73,7 +74,7 @@
                   <mdb-btn
                     type="checkbox"
                     class="btn red lighten-1 btn-circle"
-                    v-if="!isCallConferenced"
+                    v-if="!isCallConferenced && !isCallHeld"
                     @click.native="showConferenceModal=true"
                     :class="{'fl_disabledWidget':!isCallActive}"
                   >
@@ -231,7 +232,7 @@ export default {
       return TIMER_TYPES.IN_STATE_TIMER + '_' + this.callId
     },
     cardWidth() {
-      return this.$store.getters.getCalls.length > 2 ? 'md-12' : 'md-6'
+      return this.$store.getters.getCalls.length > 2 ? 'md-12' : 'md-8'
     },
 
     allOngoingCalls() {

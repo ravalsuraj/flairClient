@@ -6,7 +6,7 @@
           <mdb-row class="no-gutters">
             <mdb-col :col="cardWidth">
               <mdb-row>
-                <mdb-col col="6" class="mb-3 d-flex">
+                <mdb-col col="7" class="mb-3 d-flex">
                   <span strong class="fl_well_text big mx-auto">{{callingAddress}}</span>
                   <span
                     v-if="isCallConferenced"
@@ -14,16 +14,16 @@
                     class="fl_well_text big mx-auto"
                   >{{thirdAddress}}</span>
                 </mdb-col>
-                <mdb-col col="6" class="mb-3 text-center">
+                <mdb-col col="5" class="mb-3 text-center">
                   <persist-timer :timerName="callTimerName" class="fl_well_text big"></persist-timer>
                 </mdb-col>
               </mdb-row>
 
               <mdb-row>
-                <mdb-col col="6" class="mb-3 d-flex">
+                <mdb-col col="7" class="mb-3 d-flex">
                   <span strong class="fl_well_text big mx-auto">{{callStatusText}}</span>
                 </mdb-col>
-                <mdb-col col="6" class="mb-3 text-center">
+                <mdb-col col="5" class="mb-3 text-center">
                   <persist-timer :timerName="inStateTimerName" class="fl_well_text big"></persist-timer>
                 </mdb-col>
               </mdb-row>
@@ -31,7 +31,7 @@
 
             <!--START: Inbound Call Controls-->
             <!-- START: Answer/Drop Button -->
-            <mdb-col :col="cardWidth">
+            <mdb-col >
               <mdb-row>
                 <mdb-col col="3">
                   <transition name="fade">
@@ -294,7 +294,7 @@ export default {
   },
   computed: {
     cardWidth() {
-      return this.$store.getters.getCalls.length > 2 ? 'md-12' : 'md-6'
+      return this.$store.getters.getCalls.length > 2 ? 'md-12' : 'md-8'
     },
 
     //Find the list of calls other than this call. This is used to display the call list in the drop-down for consult call
