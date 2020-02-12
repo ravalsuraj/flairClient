@@ -77,18 +77,18 @@ export default {
       this.disposeCall()
     },
     disposeCall() {
-      let dispositionRequest = {
-        callId: this.callId,
-        ucid: this.ucid,
-        cli : this.call.callingAddress,
-        dnis : this.call.calledAddress,
+      // let dispositionRequest = {
+      //   callId: this.callId,
+      //   ucid: this.ucid,
+      //   cli : this.call.callingAddress,
+      //   dnis : this.call.calledAddress,
 
-        call_start_date_time: this.call.callStartTime,
-        call_end_date_time: this.call.callEndTime,
-        disposition : this.disposition,
-        sub_disposition : this.sub_disposition
+      //   call_start_date_time: this.call.callStartTime,
+      //   call_end_date_time: this.call.callEndTime,
+      //   disposition : this.disposition,
+      //   sub_disposition : this.sub_disposition
 
-      }
+      // }
       this.$store.dispatch('requestCallDisposition')
       this.$store.dispatch('removeCallFromActiveCalls', [
         this.ucid,
