@@ -71,20 +71,10 @@ import {
   mdbRow,
   mdbCol,
   mdbBtn,
-  mdbCard,
-  mdbCardBody,
-  mdbCardHeader,
-  mdbCardText,
-  mdbInput,
+ 
   mdbIcon
 } from 'mdbvue'
-import {
-  CALL_STATES,
-  CALL_TYPES,
-  AGENT_STATES,
-  SOCKET_EVENTS
-} from '@/defines.js'
-import '@/defines.js'
+
 
 export default {
   name: 'OutboundDialer',
@@ -93,11 +83,7 @@ export default {
     mdbRow,
     mdbCol,
     mdbBtn,
-    mdbCard,
-    mdbCardBody,
-    mdbCardHeader,
-    mdbCardText,
-    mdbInput,
+  
     mdbIcon
   },
   mounted() {},

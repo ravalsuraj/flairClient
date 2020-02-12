@@ -1,6 +1,5 @@
 <template>
   <span id="time">{{time}}</span>
-  <up-timer></up-timer>
 </template>
 
 <style>
@@ -10,7 +9,7 @@
 </style>
 
 <script>
-import { CALL_STATES, AGENT_STATES } from "@/defines.js";
+import { AGENT_STATES } from "@/defines.js";
 
 export default {
   name: "LoginTimer",
@@ -52,12 +51,12 @@ export default {
     }
   },
   watch: {
-    agentStatus(newAgentStatus, oldAgentStatus) {
+    agentStatus(newAgentStatus) {
       console.log("Agent Status Changed to:" + newAgentStatus);
       if (newAgentStatus === AGENT_STATES.LOG_IN) {
         this.reset();
         this.interval = setInterval(this.updateCurrentTime, 1000);
-      } else if (newCallStatus === AGENT_STATES.LOG_OUT) {
+      } else if (newAgentStatus === AGENT_STATES.LOG_OUT) {
         this.reset();
         clearInterval(this.interval);
       } else {

@@ -47,79 +47,52 @@ import {
   mdbRow,
   mdbCol,
   mdbContainer,
-  mdbBtn,
-  mdbCard,
-  mdbCardBody,
-  mdbCardHeader,
-  mdbCardText,
-  mdbIcon,
   mdbTbl,
   mdbTblHead,
-  mdbTblBody,
-  mdbListGroup,
-  mdbListGroupItem,
-  mdbBadge,
-  mdbModal,
-  mdbModalHeader,
-  mdbModalTitle,
-  mdbModalBody,
-  mdbModalFooter
-} from 'mdbvue'
-import Widget from '@/components/agc/Widget'
-import { CALL_STATES } from '@/defines.js'
+  mdbTblBody
+} from "mdbvue";
+import Widget from "@/components/agc/Widget";
+import { CALL_STATES } from "@/defines.js";
 
 export default {
-  name: 'MenuTraversal',
+  name: "MenuTraversal",
   components: {
     Widget,
     mdbRow,
     mdbCol,
     mdbContainer,
-    mdbBtn,
-    mdbCard,
-    mdbCardBody,
-    mdbCardHeader,
-    mdbCardText,
-    mdbIcon,
+
     mdbTbl,
     mdbTblHead,
-    mdbTblBody,
-    mdbListGroup,
-    mdbListGroupItem,
-    mdbBadge,
-    mdbModal,
-    mdbModalHeader,
-    mdbModalTitle,
-    mdbModalBody,
-    mdbModalFooter
+    mdbTblBody
   },
   props: {},
   data() {
     return {
       showWidget: true,
-      callerName: 'John Doe',
-      callerRMN: '+919876512345',
-      callerAccountNo: '1234512345',
-      callerTransferReason: 'TPIN Generate',
-      callerLanguage: 'English'
-    }
+      callerName: "John Doe",
+      callerRMN: "+919876512345",
+      callerAccountNo: "1234512345",
+      callerTransferReason: "TPIN Generate",
+      callerLanguage: "English"
+    };
   },
   methods: {
     toggleShowWidget() {
-      this.showWidget = !this.showWidget
+      this.showWidget = !this.showWidget;
     }
   },
   computed: {
     isCallActive() {
-      let callStatus = this.$store.getters.getCallStatus
+      let callStatus = this.$store.getters.getCallStatus;
       return (
         callStatus === CALL_STATES.TALKING ||
         callStatus === CALL_STATES.HELD ||
         callStatus === CALL_STATES.RINGING
-      )
+      );
     }
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

@@ -10,65 +10,36 @@
     </main>
     <bottom-footer></bottom-footer>
 
-    <notifications group="warning" width="500" position="bottom center" ignoreDuplicates="true" />
-    <notifications group="info" width="500" position="bottom center" ignoreDuplicates="true" />
+    <notifications group="warning" width="500" position="bottom center" :ignoreDuplicates="true" />
+    <notifications group="info" width="500" position="bottom center" :ignoreDuplicates="true" />
     <notifications
       group="error"
       width="500"
       position="bottom center"
-      ignoreDuplicates="true"
-      classes="vue-notification fl-notification"
+      :ignoreDuplicates="true"
+      classes="vue-notification "
     />
   </div>
 </template>
 
 <script>
 import {
-  mdbContainer,
-  mdbNavbar,
-  mdbNavbarBrand,
-  mdbNavItem,
-  mdbNavbarNav,
-  mdbNavbarToggler,
-  mdbBtn,
-  mdbIcon,
-  mdbListGroup,
-  mdbListGroupItem,
-  mdbCardBody,
-  mdbFooter,
+
   waves
 } from 'mdbvue'
-import Dashboard from '@/views/Dashboard'
-import TopNavbar from '@/views/TopNavbar'
-import CallDrawer from '@/views/CallDrawer'
-import LoginPage from '@/views/Login'
-import UtilityBar from '@/views/UtilityBar.vue'
-import BottomFooter from '@/views/BottomFooter.vue'
 
-import { AGENT_STATES, SOCKET_EVENTS, SOCKET_STATES } from '@/defines'
-import Utils from '@/services/Utils'
+import TopNavbar from '@/views/TopNavbar'
+import LoginPage from '@/views/Login'
+import BottomFooter from '@/views/BottomFooter.vue'
+import { AGENT_STATES, SOCKET_STATES } from '@/defines'
+
 export default {
   name: 'AdminTemplate',
   components: {
     LoginPage,
     TopNavbar,
-    CallDrawer,
-    Dashboard,
-    UtilityBar,
     BottomFooter,
-    mdbContainer,
-    mdbNavbar,
-    mdbNavbarBrand,
-    mdbNavItem,
-    mdbNavbarNav,
-    mdbNavbarToggler,
-    mdbBtn,
-    mdbIcon,
-    mdbListGroup,
-    mdbListGroupItem,
-    mdbCardBody,
-    ftr: mdbFooter,
-    waves
+
   },
   data() {
     return {
@@ -170,9 +141,7 @@ footer {
     max-width: 20.833333%;
   }
 }
-.fl-notification {
-  /* margin-bottom: 70px; */
-}
+
 .navbar-nav{
     flex-direction: row !important;
 }
@@ -245,10 +214,10 @@ footer {
   width: 36px;
   height: 36px;
   text-align: center;
-  padding: 6px 0;
+  padding: 6px 0 !important;
 
   line-height: 1.428571429;
-  border-radius: 50%;
+  border-radius: 50% !important;
 }
 .btn-circle.btn-lg {
   width: 50px;

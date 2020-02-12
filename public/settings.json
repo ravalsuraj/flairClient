@@ -1,0 +1,105 @@
+{
+    "FLAIR_AWS_PORT": 8080,
+    "FLAIR_SERVER_URL": "http://192.168.110.99:9092",
+    "SERVER_TIMEOUT_MS": 20000,
+    "CRM_URL": "http://localhost:9527/#/dashboard",
+    "CRM_TIMEOUT_MS": 10000,
+    "DGFT": {
+        "CRM": {
+            "URL": "http://13.235.180.13/sugarcrm"
+        },
+        "UUI_KEYS": [
+            "UCID",
+            "uniqueID",
+            "lang",
+            "RMN",
+            "IECStatus",
+            "ConplaintNo",
+            "LastShortCode"
+        ]
+    },
+    "AGS": {
+        "MIDDLEWARE": {
+            "URL": "http://localhost:9093",
+            "TIMEOUT": 15000
+        }
+    },
+    "defaultAuxCodes": [
+        {
+            "label": "Ready",
+            "state": 4,
+            "userSelectable": true,
+            "reasonCode": null
+        },
+        {
+            "label": "After Call Work",
+            "state": 5,
+            "userSelectable": false,
+            "reasonCode": null
+        },
+        {
+            "label": "Work Ready",
+            "state": 6,
+            "userSelectable": false,
+            "reasonCode": null
+        },
+        {
+            "label": "Busy",
+            "state": 7,
+            "userSelectable": false,
+            "reasonCode": null
+        }
+    ],
+    "agentAuxCodes": [
+        {
+            "label": "Ready",
+            "state": 4,
+            "reasonCode": null
+        },
+        {
+            "label": "Not Ready",
+            "state": 3,
+            "reasonCode": 0
+        },
+        {
+            "label": "Lunch",
+            "state": 3,
+            "reasonCode": 2
+        },
+        {
+            "label": "Dinner",
+            "state": 3,
+            "reasonCode": 3
+        }
+    ],
+    "agentReasonCodeList": [
+        {
+            "reasonCode": 0,
+            "reasonLabel": "Not Ready"
+        },
+        {
+            "reasonCode": 2,
+            "reasonLabel": "Lunch"
+        },
+        {
+            "reasonCode": 3,
+            "reasonLabel": "Dinner"
+        }
+    ],
+    "rightComponents": {
+        "width": "0",
+        "widgets": []
+    },
+    "middleComponents": {
+        "width": "12",
+        "widgets": [
+            {
+                "name": "crm-frame"
+            }
+        ]
+    },
+    "leftComponents": {
+        "width": "0",
+        "widgets": []
+    }
+}

@@ -47,7 +47,7 @@ export default {
         )
       }
     },
-    setSocketStateDisconnected({ commit, dispatch }) {
+    setSocketStateDisconnected({ commit }) {
       commit('SET_SOCKET_STATE_DISCONNECTED')
     },
 
@@ -91,25 +91,25 @@ export default {
     /**********************************
      *  INCOMING SOCKET REQUESTS
      **********************************/
-    SOCKET_DEVEVENT({}, payload) {
+    SOCKET_DEVEVENT( payload) {
       console.log(
         'SOCKET_DEVEVENT(): Received event: ' + JSON.stringify(payload)
       )
     },
 
-    SOCKET_TEST_CONN_DROPPED({}, payload) {
+    SOCKET_TEST_CONN_DROPPED( payload) {
       console.log(
         'SOCKET_TEST_CONN_DROPPED(): Received event: ' + JSON.stringify(payload)
       )
     },
-    SOCKET_TEST_TERM_CONN_DROPPED({}, payload) {
+    SOCKET_TEST_TERM_CONN_DROPPED(payload) {
       console.log(
         'SOCKET_TEST_TERM_CONN_DROPPED(): Received event: ' +
           JSON.stringify(payload)
       )
     },
 
-    SOCKET_ICALLRING({ dispatch, getters }, payload) {
+    SOCKET_ICALLRING({ dispatch }, payload) {
       console.log(
         'SOCKET_ICALLRING(): Received event: ' + JSON.stringify(payload)
       )
@@ -160,7 +160,8 @@ export default {
       }
       dispatch('setMultiCallStateConferenced', payload)
     },
-    SOCKET_CONFCALLDISC({ dispatch, getters }, payload) {
+
+    SOCKET_CONFCALLDISC({ dispatch }, payload) {
       console.log(
         'SOCKET_CONFCALLDISC(): Received event: ' + JSON.stringify(payload)
       )

@@ -111,80 +111,48 @@
 </template>
 
 <script>
-import ConsultDialer from '@/widgets/Dialer/ConsultDialer'
-import OutboundDialer from '@/widgets/Dialer/OutboundDialer'
-import CallDisposition from '@/widgets/CallDisposition/CallDisposition'
-import PersistTimer from '@/components/agc/PersistTimer.vue'
-import Widget from '@/components/agc/Widget'
-import Utils from '@/services/Utils'
+import ConsultDialer from "@/widgets/Dialer/ConsultDialer";
+
+import PersistTimer from "@/components/agc/PersistTimer.vue";
+import Widget from "@/components/agc/Widget";
 import {
   CALL_STATES,
   CALL_TYPES,
-  SOCKET_EVENTS,
   TIMER_TYPES,
   MULTI_CALL_STATES
-} from '@/defines.js'
+} from "@/defines.js";
 
 import {
   mdbContainer,
   mdbRow,
   mdbCol,
   mdbBtn,
-  mdbPopover,
-  mdbCard,
-  mdbCardBody,
-  mdbCardHeader,
-  mdbCardText,
   mdbIcon,
-  mdbTbl,
-  mdbListGroup,
-  mdbListGroupItem,
-  mdbBadge,
   mdbModal,
   mdbModalHeader,
   mdbModalTitle,
-  mdbModalBody,
-  mdbModalFooter,
-  mdbDropdown,
-  mdbDropdownToggle,
-  mdbDropdownItem,
-  mdbDropdownMenu
-} from 'mdbvue'
+  mdbModalBody
+} from "mdbvue";
 
 export default {
-  name: 'CallCardInbound',
+  name: "CallCardInbound",
   components: {
     Widget,
     PersistTimer,
     ConsultDialer,
-    CallDisposition,
-    OutboundDialer,
-    mdbPopover,
+
     mdbContainer,
     mdbRow,
     mdbCol,
     mdbBtn,
-    mdbCard,
-    mdbCardBody,
-    mdbCardHeader,
-    mdbCardText,
     mdbIcon,
-    mdbTbl,
-    mdbListGroup,
-    mdbListGroupItem,
-    mdbBadge,
     mdbModal,
     mdbModalHeader,
     mdbModalTitle,
-    mdbModalBody,
-    mdbModalFooter,
-    mdbDropdown,
-    mdbDropdownToggle,
-    mdbDropdownItem,
-    mdbDropdownMenu
+    mdbModalBody
   },
   mounted() {
-    console.log('CallCardInbound(): mounted()')
+    console.log("CallCardInbound(): mounted()");
   },
   props: {
     ucid: String,
@@ -197,205 +165,217 @@ export default {
         show: false
       },
       showConferenceModal: false
-    }
+    };
   },
   methods: {
     showSpinner() {
-      this.spinner.show = true
+      this.spinner.show = true;
     },
     hideSpinner() {
-      this.spinner.show = false
+      this.spinner.show = false;
     },
 
     answerDropCall() {
-      this.$store.dispatch('requestAnswerDropCall', [
+      this.$store.dispatch("requestAnswerDropCall", [
         this.call.callId,
         CALL_TYPES.INBOUND
-      ])
+      ]);
     },
     holdUnholdCall() {
-      this.$store.dispatch('requestHoldUnholdCall', this.call.callId)
+      this.$store.dispatch("requestHoldUnholdCall", this.call.callId);
     },
 
     disposeCall() {
-      this.$store.dispatch('removeCallFromActiveCalls', [
+      this.$store.dispatch("removeCallFromActiveCalls", [
         this.call.ucid,
         this.call.callId
-      ])
+      ]);
     }
   },
   computed: {
     callTimerName() {
-      return TIMER_TYPES.CALL_TIMER + '_' + this.callId
+      return TIMER_TYPES.CALL_TIMER + "_" + this.callId;
     },
     inStateTimerName() {
-      return TIMER_TYPES.IN_STATE_TIMER + '_' + this.callId
+      return TIMER_TYPES.IN_STATE_TIMER + "_" + this.callId;
     },
     cardWidth() {
-      return this.$store.getters.getCalls.length > 2 ? 'md-12' : 'md-8'
+      return this.$store.getters.getCalls.length > 2 ? "md-12" : "md-8";
     },
 
     allOngoingCalls() {
-      return this.$store.getters.getCalls
+      return this.$store.getters.getCalls;
     },
     currentCallIndex() {
-      return this.$store.getters.getCallIndexByCallId(this.callId)
+      return this.$store.getters.getCallIndexByCallId(this.callId);
     },
     call() {
-      return this.$store.getters.getCallByCallId(this.callId)
+      return this.$store.getters.getCallByCallId(this.callId);
     },
 
     callIndex() {
-      return this.$store.getters.getCallIndexByCallId(this.callId)
+      return this.$store.getters.getCallIndexByCallId(this.callId);
     },
     callStatus() {
-      return this.call.status
+      return this.call.status;
     },
 
     isCallIdle() {
       return (
         this.callStatus === CALL_STATES.IDLE ||
         this.callStatus === CALL_STATES.DROPPED
-      )
+      );
     },
     isConfCallIdle() {
       return (
         this.conferenceCallStatus === CALL_STATES.IDLE ||
         this.conferenceCallStatus === CALL_STATES.DROPPED
-      )
+      );
     },
     isCallRinging() {
-      return this.callStatus === CALL_STATES.RINGING
+      return this.callStatus === CALL_STATES.RINGING;
     },
     isCallActive() {
       return (
         this.callStatus === CALL_STATES.TALKING ||
         this.callStatus === CALL_STATES.HELD
-      )
+      );
     },
 
     isCallHeld() {
-      return this.callStatus === CALL_STATES.HELD
+      return this.callStatus === CALL_STATES.HELD;
     },
 
     multiCallState() {
-      return this.$store.getters.getMultiCallState(this.callId)
+      return this.$store.getters.getMultiCallState(this.callId);
     },
     isCallConferenced() {
       if (this.multiCallState === MULTI_CALL_STATES.CONFERENCED) {
-        return true
+        return true;
       } else {
-        return false
+        return false;
       }
     },
     answerButtonText() {
       if (this.callStatus === CALL_STATES.RINGING) {
-        return 'Answer'
+        return "Answer";
       } else if (this.callStatus === CALL_STATES.TALKING) {
-        return 'Drop'
+        return "Drop";
       } else {
-        return '-'
+        return "-";
       }
     },
     widgetColor() {
       if (this.isCallHeld === false) {
-        return 'success-color text-white'
+        return "success-color text-white";
       } else {
-        return 'mdb-color text-white'
+        return "mdb-color text-white";
       }
     },
     answerButtonColor() {
       if (this.isCallRinging) {
-        return { 'btn-green': true }
+        return { "btn-green": true };
       } else if (this.isCallActive) {
-        return { 'btn-red': true }
+        return { "btn-red": true };
       } else {
-        return { 'blue-grey': true }
+        return { "blue-grey": true };
       }
     },
     holdButtonColor() {
       if (this.isCallHeld) {
-        return { 'blue-grey': true }
+        return { "blue-grey": true };
       } else {
-        return { cyan: true }
+        return { cyan: true };
       }
     },
     callingAddress() {
+      let tempAddress;
       switch (this.callType) {
         case CALL_TYPES.INBOUND:
-          return this.call.callingAddress
+          tempAddress = this.call.callingAddress;
+          break;
         case CALL_TYPES.OUTBOUND:
-          return this.call.calledAddress
+          tempAddress = this.call.calledAddress;
+          break;
         case CALL_TYPES.CONSULTED:
-          return this.call.calledAddress
+          tempAddress = this.call.calledAddress;
+          break;
       }
+      return tempAddress;
     },
 
     thirdAddress() {
+      let thirdAddress;
       switch (this.callType) {
         case CALL_TYPES.INBOUND:
-          return this.call.thirdAddress
+          thirdAddress = this.call.thirdAddress;
+          break;
         case CALL_TYPES.OUTBOUND:
-          return this.call.thirdAddress
+          thirdAddress = this.call.thirdAddress;
+          break;
         case CALL_TYPES.CONSULTED:
-          return this.call.thirdAddress
+          thirdAddress = this.call.thirdAddress;
       }
+      return thirdAddress;
     },
 
     callType() {
-      return this.call.type
+      return this.call.type;
     },
     cardTitle() {
-      return this.callTypeText + ' (' + this.callId + ')'
+      return this.callTypeText + " (" + this.callId + ")";
     },
     callTypeText() {
+      let tempCallType;
       switch (this.callType) {
         case CALL_TYPES.INBOUND:
           if (this.isCallConferenced) {
-            return 'Conference Call'
+            tempCallType = "Conference Call";
           } else {
-            return 'Inbound Call'
+            tempCallType = "Inbound Call";
           }
-
+          break;
         case CALL_TYPES.OUTBOUND:
-          return 'Outbound Call'
+          tempCallType = "Outbound Call";
+          break;
         case CALL_TYPES.CONSULTED:
-          return 'Outbound Call'
+          tempCallType = "Outbound Call";
       }
+      return tempCallType;
     },
 
     callStatusText() {
-      return CALL_STATES.Text[this.callStatus]
+      return CALL_STATES.Text[this.callStatus];
     },
     isCallDropped() {
-      return this.callStatus === CALL_STATES.DROPPED
+      return this.callStatus === CALL_STATES.DROPPED;
     }
   },
   watch: {
     callStatus: {
       immediate: false,
       deep: true,
-      handler: function(newCallStatus, oldCallStatus) {
+      handler: function(newCallStatus) {
         switch (newCallStatus) {
           case CALL_STATES.IDLE:
           case CALL_STATES.UNKNOWN:
-            break
+            break;
           case CALL_STATES.RINGING:
-            this.$store.dispatch('startTimer', this.callTimerName)
-            this.$store.dispatch('startTimer', this.inStateTimerName)
-            break
+            this.$store.dispatch("startTimer", this.callTimerName);
+            this.$store.dispatch("startTimer", this.inStateTimerName);
+            break;
           case CALL_STATES.TALKING:
           case CALL_STATES.HELD:
-            this.$store.dispatch('startTimer', this.inStateTimerName)
-            break
+            this.$store.dispatch("startTimer", this.inStateTimerName);
+            break;
           default:
-            this.$store.dispatch('stopTimer', this.callTimerName)
-            this.$store.dispatch('stopTimer', this.inStateTimerName)
+            this.$store.dispatch("stopTimer", this.callTimerName);
+            this.$store.dispatch("stopTimer", this.inStateTimerName);
         }
       }
     }
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -407,7 +387,7 @@ export default {
   color: black;
   padding-right: 10px;
   padding-left: 10px;
-  font-family: 'Unica One', sans-serif;
+  font-family: "Unica One", sans-serif;
   font-size: 1.2em;
 }
 

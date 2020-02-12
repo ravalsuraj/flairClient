@@ -62,37 +62,15 @@
 </template>
 
 <script>
-import {
-  mdbContainer,
-  mdbRow,
-  mdbCol,
-  mdbBtn,
-  mdbCard,
-  mdbCardBody,
-  mdbCardHeader,
-  mdbCardText,
-  mdbInput,
-  mdbIcon
-} from 'mdbvue'
-import {
-  CALL_STATES,
-  CALL_TYPES,
-  AGENT_STATES,
-  SOCKET_EVENTS
-} from '@/defines.js'
+import { mdbContainer, mdbRow, mdbCol, mdbBtn, mdbIcon } from "mdbvue";
 
 export default {
-  name: 'ConsultDialer',
+  name: "ConsultDialer",
   components: {
     mdbContainer,
     mdbRow,
     mdbCol,
     mdbBtn,
-    mdbCard,
-    mdbCardBody,
-    mdbCardHeader,
-    mdbCardText,
-    mdbInput,
     mdbIcon
   },
   mounted() {},
@@ -103,71 +81,71 @@ export default {
 
   data() {
     return {
-      dialedDigits: '',
+      dialedDigits: "",
 
       digits: [
         {
           text: 1,
-          subText: ''
+          subText: ""
         },
         {
           text: 2,
-          subText: 'ABC'
+          subText: "ABC"
         },
         {
           text: 3,
-          subText: 'DEF'
+          subText: "DEF"
         },
         {
           text: 4,
-          subText: 'GHI'
+          subText: "GHI"
         },
         {
           text: 5,
-          subText: 'JKL'
+          subText: "JKL"
         },
         {
           text: 6,
-          subText: 'MNO'
+          subText: "MNO"
         },
         {
           text: 7,
-          subText: 'PQRS'
+          subText: "PQRS"
         },
         {
           text: 8,
-          subText: 'TUV'
+          subText: "TUV"
         },
         {
           text: 9,
-          subText: 'WXYZ'
+          subText: "WXYZ"
         },
         {
-          text: '*',
-          subText: ''
+          text: "*",
+          subText: ""
         },
         {
           text: 0,
-          subText: '+'
+          subText: "+"
         },
         {
-          text: '#',
-          subText: ''
+          text: "#",
+          subText: ""
         }
       ],
       digitSubText: [
-        '',
-        'ABC',
-        'DEF',
-        'GHI',
-        'JKL',
-        'MNO',
-        'PQRS',
-        'TUV',
-        'WXYZ',
-        '',
-        '+',
-        ''
+        "",
+        "ABC",
+        "DEF",
+        "GHI",
+        "JKL",
+        "MNO",
+        "PQRS",
+        "TUV",
+        "WXYZ",
+        "",
+        "+",
+        ""
       ],
       interval: false,
       digitDeleteSpeed: 200,
@@ -175,58 +153,58 @@ export default {
       spinner: {
         show: false
       }
-    }
+    };
   },
 
   methods: {
     handleEnterKey(e) {
       if (e.keyCode === 13) {
-        this.onConsultButtonClicked()
+        this.onConsultButtonClicked();
       }
     },
     showSpinner() {
-      this.spinner.show = true
+      this.spinner.show = true;
     },
     hideSpinner() {
-      this.spinner.show = false
+      this.spinner.show = false;
     },
 
     appendDigit(digit) {
-      this.dialedDigits += digit
+      this.dialedDigits += digit;
     },
     deleteSingleDigit() {
-      console.log('deleteSingleDigits')
+      console.log("deleteSingleDigits");
       this.dialedDigits = this.dialedDigits.slice(
         0,
         this.dialedDigits.length - 1
-      )
+      );
     },
     startDeletingDigits() {
       this.interval = setInterval(
         () => this.deleteSingleDigit(),
         this.digitDeleteSpeed
-      )
+      );
     },
     stopDeletingDigits() {
-      clearInterval(this.interval)
+      clearInterval(this.interval);
     },
     clearDigits() {
-      this.dialedDigits = ''
+      this.dialedDigits = "";
     },
 
     onConsultButtonClicked() {
-      this.$store.dispatch('updateDialedDigits', this.dialedDigits)
-      this.showSpinner()
-      this.$store.dispatch('requestConsultCall', this.callId).then(resp => {
-        if (resp.responseCode === '0') {
-          this.$emit('close-self')
+      this.$store.dispatch("updateDialedDigits", this.dialedDigits);
+      this.showSpinner();
+      this.$store.dispatch("requestConsultCall", this.callId).then(resp => {
+        if (resp.responseCode === "0") {
+          this.$emit("close-self");
         }
-        this.hideSpinner()
-      })
+        this.hideSpinner();
+      });
     }
   },
   computed: {}
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -260,7 +238,7 @@ export default {
   height: 25px;
   width: 100%;
   border-bottom: 1px solid grey;
-  font-family: 'Unica One', san-serif;
+  font-family: "Unica One", san-serif;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.75);
 }
@@ -281,7 +259,7 @@ export default {
 }
 
 .fl_button_dialerDigit .number {
-  font-family: 'Unica One', san-serif;
+  font-family: "Unica One", san-serif;
   font-size: 1.3rem;
   font-weight: 400;
 }

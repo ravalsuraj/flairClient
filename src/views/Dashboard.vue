@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import draggable from 'vuedraggable'
+import draggable from "vuedraggable";
 
 import {
   mdbContainer,
@@ -82,24 +82,22 @@ import {
   mdbIcon,
   mdbTbl,
   mdbInput
-} from 'mdbvue'
-import CallHistory from '@/widgets/CallHistory/CallHistory.vue'
-import CallDetails from '@/widgets/CallDetails/CallDetails.vue'
-import MenuTraversal from '@/widgets/MenuTraversal/MenuTraversal.vue'
+} from "mdbvue";
+import CallHistory from "@/widgets/CallHistory/CallHistory.vue";
+import CallDetails from "@/widgets/CallDetails/CallDetails.vue";
+import MenuTraversal from "@/widgets/MenuTraversal/MenuTraversal.vue";
 
-import AgentControl from '@/widgets/AgentControl/AgentControl.vue'
-import AgentCallStatistics from '@/widgets/AgentCallStatistics/AgentCallStatistics.vue'
-import TestBench from '@/widgets/TestBench.vue'
-import ConsultDialer from '@/widgets/Dialer/ConsultDialer.vue'
-import CallDisposition from '@/widgets/CallDisposition/CallDisposition.vue'
-import CrmFrame from '@/widgets/CrmFrame/CrmFrame.vue'
-import QuickLinks from '@/widgets/QuickLinks/QuickLinks.vue'
-import SmsHelper from '@/widgets/SmsHelper/SmsHelper.vue'
-import AgsHelper from '@/widgets/AgsHelper/AgsHelper.vue'
-import CallDrawer from '@/views/CallDrawer.vue'
+import AgentCallStatistics from "@/widgets/AgentCallStatistics/AgentCallStatistics.vue";
+import ConsultDialer from "@/widgets/Dialer/ConsultDialer.vue";
+import CallDisposition from "@/widgets/CallDisposition/CallDisposition.vue";
+import CrmFrame from "@/widgets/CrmFrame/CrmFrame.vue";
+import QuickLinks from "@/widgets/QuickLinks/QuickLinks.vue";
+import SmsHelper from "@/widgets/SmsHelper/SmsHelper.vue";
+import AgsHelper from "@/widgets/AgsHelper/AgsHelper.vue";
+import CallDrawer from "@/views/CallDrawer.vue";
 
 export default {
-  name: 'Dashboard',
+  name: "Dashboard",
   components: {
     draggable,
     ConsultDialer,
@@ -108,8 +106,7 @@ export default {
     CallDisposition,
     AgentCallStatistics,
     MenuTraversal,
-    TestBench,
-    AgentControl,
+
     CallDetails,
     CallHistory,
     SmsHelper,
@@ -130,65 +127,62 @@ export default {
   },
   data() {
     return {
-      custName: ''
-    }
+      custName: ""
+    };
   },
   mounted() {
     //this.preventRefresh();
   },
   methods: {
     preventRefresh() {
-      window.addEventListener('beforeunload', function(e) {
-        e.preventDefault()
+      window.addEventListener("beforeunload", function(e) {
+        e.preventDefault();
         // Chrome requires returnValue to be set
-        e.returnValue = ''
-      })
+        e.returnValue = "";
+      });
     }
   },
   computed: {
     config() {
-      return this.$store.getters['session/getConfig']
+      return this.$store.getters["session/getConfig"];
     },
     myGhost() {
-      return { 'my-ghost': true }
+      return { "my-ghost": true };
     },
     leftComponentWidgets: {
       get() {
-        return this.config.leftComponents.widgets
+        return this.config.leftComponents.widgets;
       }
     },
     leftComponentWidth: {
       get() {
-        return this.config.leftComponents.width
+        return this.config.leftComponents.width;
       }
     },
     middleComponentWidgets: {
       get() {
-        return this.config.middleComponents.widgets
+        return this.config.middleComponents.widgets;
       }
     },
     middleComponentWidth: {
       get() {
-        return this.config.middleComponents.width
+        return this.config.middleComponents.width;
       }
     },
 
     rightComponentWidgets: {
       get() {
-        return this.config.rightComponents.widgets
+        return this.config.rightComponents.widgets;
       }
     },
 
     rightComponentWidth: {
       get() {
-        return this.config.rightComponents.width
+        return this.config.rightComponents.width;
       }
-    },
-    isDevMode() {
-      return this.$store.state.devMode
     }
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

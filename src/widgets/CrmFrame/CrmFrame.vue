@@ -2,33 +2,17 @@
   <widget title="CRM">
     <template v-slot:body>
       <div class="wrapper">
-        <!-- <div class="fallback px-5 py-5 mx-auto w-100 d-flex align-items-center">
-          <h1
-            class="blue-text py-3 my-5 text-center"
-          >The CRM could not be loaded. Please ensure that your CRM is accesible</h1>
-          <img
-            alt="Error 404"
-            class="img-fluid ml-5 pl-5"
-            src="https://mdbootstrap.com/img/Others/grafika404-bf.png"
-          />
-        </div>-->
-        <iframe
-          :src="CRM_URL"
-          class="w-100 fl_crm_window"
-          @error="iframeError=true"
-          :class="{'error': iframeError}"
-        ></iframe>
+        <iframe :src="CRM_URL" class="w-100 fl_crm_window"></iframe>
       </div>
     </template>
   </widget>
 </template>
 
 <script>
-import { mdbRow } from 'mdbvue'
-import { CALL_STATES } from '@/defines'
-import Widget from '@/components/agc/Widget'
+import { CALL_STATES } from "@/defines";
+import Widget from "@/components/agc/Widget";
 export default {
-  name: 'CrmFrame',
+  name: "CrmFrame",
   components: {
     Widget
   },
@@ -37,21 +21,13 @@ export default {
     return {
       manualShowWidget: true,
       iframeError: false
-    }
+    };
   },
   methods: {
     toggleShowWidget() {
       if (this.autoShowWidget === false) {
-        this.manualShowWidget = !this.manualShowWidget
+        this.manualShowWidget = !this.manualShowWidget;
       }
-    },
-
-    //used to detect whether the frame has loaded. if not, show a friendly error message
-    iframeLoad(e) {
-      this.iframeError = true
-      // if (e.timeStamp < 1000) {
-      //   this.iframeError = true
-      // }
     }
   },
   computed: {
@@ -59,50 +35,50 @@ export default {
       return (
         this.$store.activeCall.status === CALL_STATES.RINGING ||
         this.$store.activeCall.status === CALL_STATES.TALKING
-      )
+      );
     },
     activeCall() {
-      let callId = this.$store.getters.getActiveCallCallId
+      let callId = this.$store.getters.getActiveCallCallId;
 
-      return this.$store.getters.getCallByCallId(callId)
+      return this.$store.getters.getCallByCallId(callId);
     },
     callingAddress() {
-      return this.activeCall ? this.activeCall.callingAddress : null
+      return this.activeCall ? this.activeCall.callingAddress : null;
     },
     calledAddress() {
-      return this.activeCall ? this.activeCall.calledAddress : null
+      return this.activeCall ? this.activeCall.calledAddress : null;
     },
     agentCredentials() {
-      return this.$store.getters.getAgentCredentials
+      return this.$store.getters.getAgentCredentials;
     },
     showWidget() {
-      return this.manualShowWidget || this.autoShowWidget
+      return this.manualShowWidget || this.autoShowWidget;
     },
-    sessionId(){
-      return this.$store.getters['session/getSessionId']
+    sessionId() {
+      return this.$store.getters["session/getSessionId"];
     },
 
     CRM_URL() {
       if (this.callingAddress) {
         return (
           this.$store.getters.getCrmUrl +
-          '?cli=' +
+          "?cli=" +
           this.callingAddress +
-          '&dnis=' +
+          "&dnis=" +
           this.calledAddress +
-          '&ucid=' +
+          "&ucid=" +
           this.activeCall.ucid +
-          '&callId=' +
+          "&callId=" +
           this.activeCall.callId +
-          '&sessionId=' +
+          "&sessionId=" +
           this.sessionId
-        )
+        );
       } else {
-        return this.$store.getters.getCrmUrl
+        return this.$store.getters.getCrmUrl;
       }
     }
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

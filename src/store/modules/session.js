@@ -26,12 +26,8 @@ export default {
 
     SET_SESSION_ID(state, sessionId) {
       state.sessionId = sessionId
-      //state.socketRequest.sessionId = payload.sessionId
-      $cookies.set('sessionId', sessionId)
-      console.log(
-        'Setting Session Id in Cookies: ' +
-          JSON.stringify($cookies.get('sessionId'))
-      )
+      
+      
     },
 
     SET_IP_ADDRESS(state, ip) {
@@ -43,7 +39,7 @@ export default {
   },
   actions: {
     loadConfigurations({ commit }) {
-      return axios.get('./static/settings.json').then(response => {
+      return axios.get('./settings.json').then(response => {
         console.log('settings loaded. settings=', response.data)
         commit('LOAD_CONFIG_FILE', response.data)
       })
@@ -51,7 +47,7 @@ export default {
 
     async requestSessionFromServer({ getters, commit }) {
       console.log('requestSessionFromServer(): entered action')
-      return new Promise(resolve => {
+      return new Promise((resolve,reject) => {
         let request = {
           ipAddress: getters.getIpAddress
         }
@@ -124,7 +120,7 @@ export default {
           console.log(
             'fetchExistingSessionFromServer(): skipping update Session ID since the browser does not have a SessionID. '
           )
-          reject(resp)
+          reject()
         }
       })
     },
@@ -134,7 +130,7 @@ export default {
     },
 
     sendRemoveSessionRequest({ getters, commit }) {
-      new Promise((resolve, reject) => {
+      new Promise((resolve) => {
         let request = {
           sessionId: getters['session/getSessionId']
         }
@@ -150,11 +146,11 @@ export default {
       })
     },
 
-    addWindowRefreshReloadListener({ dispatch }) {
+    addWindowRefreshReloadListener() {
       console.log('addWindowRefreshReloadListener(): entered action')
-      window.addEventListener('beforeunload', function(e) {
-        //dispatch('sendRemoveSessionRequest')
-      })
+      // window.addEventListener('beforeunload', function(e) {
+      //   //dispatch('sendRemoveSessionRequest')
+      // })
     }
   },
   getters: {

@@ -1,7 +1,6 @@
 import axios from 'axios'
-import querystring from 'querystring'
 
-import config from './../../static/settings.json'
+import config from './../../public/settings.json'
 
 let instance = axios.create({
   baseURL: config.AGS.MIDDLEWARE.URL,

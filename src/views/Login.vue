@@ -74,7 +74,8 @@
               <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
               <div class="btn-group text-center my-3 w-100 pl-4 ml-3">
                 <mdb-btn
-                  class="btn white-text unique-color mr-3"
+                  color="mdb-color"
+                  class="btn white-text mr-3"
                   @click="agentLoginBtnClicked"
                   @keydown="handleEnterKeyForLogin"
                 >Log in</mdb-btn>
@@ -99,6 +100,7 @@
 </template>
 
 <script>
+import Utils from "@/services/Utils.js" 
 import {
   mdbAlert,
   mdbContainer,
@@ -107,26 +109,18 @@ import {
   mdbBtn,
   mdbCard,
   mdbCardBody,
-  mdbCardHeader,
-  mdbCardText,
-  mdbIcon,
-  mdbTbl,
+
   mdbInput,
   mdbModal,
   mdbModalHeader,
   mdbModalTitle,
   mdbModalBody,
   mdbModalFooter
-} from 'mdbvue'
-import WebSocketIndicator from '@/components/agc/WebSocketIndicator.vue'
-import ModalExample from '@/components/agc/ModalExample.vue'
-import { SOCKET_EVENTS } from '@/defines.js'
+} from "mdbvue";
 
 export default {
-  name: 'LoginPage',
+  name: "LoginPage",
   components: {
-    WebSocketIndicator,
-    ModalExample,
     mdbAlert,
     mdbContainer,
     mdbRow,
@@ -134,10 +128,7 @@ export default {
     mdbBtn,
     mdbCard,
     mdbCardBody,
-    mdbCardHeader,
-    mdbCardText,
-    mdbIcon,
-    mdbTbl,
+
     mdbInput,
     mdbModal,
     mdbModalHeader,
@@ -146,118 +137,114 @@ export default {
     mdbModalFooter
   },
   mounted() {
-    this.credentials = this.$store.getters.getAgentCredentials
+    this.credentials = this.$store.getters.getAgentCredentials;
   },
   props: {},
 
   data() {
     return {
-      loginResponse: '',
+      loginResponse: "",
       loginAlert: {
-        message: '',
-        color: '',
+        message: "",
+        color: "",
         show: false
       },
       credentials: {
-        agentId: '',
-        deviceId: '',
-        password: '',
-        workMode: 'auto'
+        agentId: "",
+        deviceId: "",
+        password: "",
+        workMode: "auto"
       },
       spinner: {
         show: false
       },
-      ipAddress: '',
+      ipAddress: "",
       showLogoutModal: false
-    }
+    };
   },
   sockets: {},
   methods: {
     handleEnterKeyForLogin(e) {
       if (e.keyCode === 13) {
-        this.agentLoginBtnClicked()
+        this.agentLoginBtnClicked();
       }
     },
-    async agentLoginBtnClicked(state) {
-      this.showSpinner()
+    async agentLoginBtnClicked() {
+      this.showSpinner();
       let sendAgentLoginRequest = () => {
-        this.$store.dispatch('sendAgentLoginRequest').then(resp => {
-          console.log(resp)
-          this.hideSpinner()
+        this.$store.dispatch("sendAgentLoginRequest").then(resp => {
+          console.log(resp);
+          this.hideSpinner();
           if (resp && resp.responseCode) {
-            if (resp.responseCode === '0') {
-              this.$store.dispatch('showErrorBanner', [
-                'Welcome',
-                'You are successfully logged in'
-              ])
-            } else if (resp.responseCode === '35') {
-              this.showLogoutModal = true
+            if (resp.responseCode === "0") {
+              this.$store.dispatch("showErrorBanner", [
+                "Welcome",
+                "You are successfully logged in"
+              ]);
+            } else if (resp.responseCode === "35") {
+              this.showLogoutModal = true;
             }
           }
-        })
-      }
+        });
+      };
 
-      this.$store.dispatch('setAgentLoginCredentials', this.credentials)
-      console.log('agentLoginBtnClicked(): login button clicked')
+      this.$store.dispatch("setAgentLoginCredentials", this.credentials);
+      console.log("agentLoginBtnClicked(): login button clicked");
 
-      let currentSessionId = this.$store.getters['session/getSessionId']
+      let currentSessionId = this.$store.getters["session/getSessionId"];
 
       if (!currentSessionId) {
-        this.$store.dispatch('session/requestSessionFromServer').then(resp => {
+        this.$store.dispatch("session/requestSessionFromServer").then(resp => {
           if (resp.sessionId) {
-            sendAgentLoginRequest()
+            sendAgentLoginRequest();
           } else {
-            if (resp.responseCode === '05') {
-              this.$store.dispatch('showErrorBanner', [
-                'Agent Login Failed',
+            if (resp.responseCode === "05") {
+              this.$store.dispatch("showErrorBanner", [
+                "Agent Login Failed",
                 resp.responseMessage
-              ])
+              ]);
             } else {
-              this.$store.dispatch('showErrorBanner', [
-                'Agent Login Failed',
-                'COuld not retrieve session ID from the server'
-              ])
+              this.$store.dispatch("showErrorBanner", [
+                "Agent Login Failed",
+                "COuld not retrieve session ID from the server"
+              ]);
             }
           }
-        })
+        });
       } else {
-        sendAgentLoginRequest()
+        sendAgentLoginRequest();
       }
     },
 
     forceLogoutButtonClicked() {
-      this.showLogoutModal = false
-      this.$store.dispatch('setAgentLoginCredentials', this.credentials)
-      this.$store.dispatch('sendAgentLogoutRequest')
+      this.showLogoutModal = false;
+      this.$store.dispatch("setAgentLoginCredentials", this.credentials);
+      this.$store.dispatch("sendAgentLogoutRequest");
     },
 
     hideAlert() {
-      this.loginAlert.message = ''
-      this.loginAlert.color = ''
-      this.loginAlert.show = false
+      this.loginAlert.message = "";
+      this.loginAlert.color = "";
+      this.loginAlert.show = false;
     },
     showAlert(color, message) {
-      this.loginAlert.message = message
-      this.loginAlert.color = color
-      this.loginAlert.show = true
+      this.loginAlert.message = message;
+      this.loginAlert.color = color;
+      this.loginAlert.show = true;
     },
     showSpinner() {
-      this.spinner.show = true
+      this.spinner.show = true;
     },
     hideSpinner() {
-      this.spinner.show = false
-    },
-
-    simulateAgentLogin(State) {
-      this.$store.commit('SET_AGENT_STATE_LOGIN')
+      this.spinner.show = false;
     }
   },
   computed: {
     socketRequest() {
-      return this.$store.state.socketRequest
+      return this.$store.state.socketRequest;
     }
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

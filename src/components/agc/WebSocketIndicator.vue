@@ -1,6 +1,8 @@
 <template>
   <a class="dropdown-toggle-a primary-text" slot="toggle">
+
     <mdb-icon icon="circle" :class="socketStateIndicatorColor" class="mr-1"/>Server Connectivity
+
   </a>
 </template>
 

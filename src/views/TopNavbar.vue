@@ -14,7 +14,7 @@
         />
       </div>
     </mdb-navbar-brand>
-    <mdb-navbar-nav right >
+    <mdb-navbar-nav right>
       <!-- <span class="fl_navbar_item">
         <mdb-btn
          class="light-blue"
@@ -33,7 +33,7 @@
             <outbound-dialer @close-self="showOutboundDialerModal = false"></outbound-dialer>
           </mdb-modal-body>
         </mdb-modal>
-      </span> -->
+      </span>-->
       <span class="fl_navbar_item">
         <agent-state-control></agent-state-control>
       </span>
@@ -46,65 +46,17 @@
 
 
 <script>
-import AgentControl from '@/widgets/AgentControl/AgentControl.vue'
-import AgentStateControl from '@/widgets/AgentControl/AgentStateControl.vue'
-import AgentProfile from '@/widgets/AgentControl/AgentProfile.vue'
-import OutboundDialer from '@/widgets/Dialer/OutboundDialer.vue'
-import {
-  mdbRow,
-  mdbCol,
-  mdbContainer,
-  mdbCard,
-  mdbCardHeader,
-  mdbCardText,
-  mdbNavbar,
-  mdbNavbarBrand,
-  mdbNavItem,
-  mdbNavbarNav,
-  mdbNavbarToggler,
-  mdbBtn,
-  mdbIcon,
-  mdbListGroup,
-  mdbListGroupItem,
-  mdbCardBody,
-  mdbFooter,
-  mdbModal,
-  mdbModalHeader,
-  mdbModalTitle,
-  mdbModalBody,
-  mdbModalFooter,
-  waves
-} from 'mdbvue'
+import AgentStateControl from "@/widgets/AgentControl/AgentStateControl.vue";
+import AgentProfile from "@/widgets/AgentControl/AgentProfile.vue";
+import { mdbNavbar, mdbNavbarBrand, mdbNavbarNav } from "mdbvue";
 export default {
-  name: 'TopNavbar',
+  name: "TopNavbar",
   components: {
     AgentProfile,
     AgentStateControl,
-    OutboundDialer,
-    mdbRow,
-    mdbCol,
-    mdbContainer,
-    mdbCard,
-    mdbCardHeader,
-    mdbCardText,
     mdbNavbar,
     mdbNavbarBrand,
-    mdbNavItem,
-    mdbNavbarNav,
-    mdbNavbarToggler,
-    mdbBtn,
-    mdbIcon,
-    mdbListGroup,
-    mdbListGroupItem,
-    mdbCardBody,
-    mdbFooter,
-    mdbModal,
-    mdbModalHeader,
-    mdbModalTitle,
-    mdbModalBody,
-    mdbModalFooter,
-    waves,
-    ftr: mdbFooter
+    mdbNavbarNav
   },
 
   props: {},
@@ -112,27 +64,21 @@ export default {
   data() {
     return {
       showOutboundDialerModal: false
-    }
+    };
   },
-  methods: {
-    toggleDevMode() {
-      this.$store.commit('TOGGLE_DEV_MODE')
-    }
-  }
-}
+  methods: {}
+};
 </script>
 
 <style>
-.fl_topNav {
-  /*width: fit-content;*/
-}
+
 .fl_navbar_item {
   display: flex;
   align-items: center;
   justify-content: center;
   padding-left: 10px;
   padding-right: 10px;
-  min-width:140px;
+  min-width: 140px;
 }
 
 /* .fl_navbar_item::after {
@@ -152,7 +98,7 @@ export default {
   border-right: 1px solid #fff;
 }
 .fl_topNav::after {
-  content: '';
+  content: "";
   line-height: 0;
   font-size: 0;
   width: 0;

@@ -37,34 +37,21 @@
 <script>
 import {
   mdbContainer,
-  mdbRow,
-  mdbCol,
+
   mdbBtn,
-  mdbCard,
-  mdbCardBody,
-  mdbCardHeader,
-  mdbCardText,
-  mdbInput,
-  mdbIcon
+
 } from 'mdbvue'
-import { AGENT_STATES, CALL_STATES } from '@/defines.js'
-import DownTimer from '@/components/agc/DownTimer'
+import { CALL_STATES } from '@/defines.js'
+
 import Widget from '@/components/agc/Widget'
 export default {
   name: 'CallDisposition',
   components: {
-    DownTimer,
     Widget,
     mdbContainer,
-    mdbRow,
-    mdbCol,
+
     mdbBtn,
-    mdbCard,
-    mdbCardBody,
-    mdbCardHeader,
-    mdbCardText,
-    mdbInput,
-    mdbIcon
+    
   },
   mounted() {},
   props: {

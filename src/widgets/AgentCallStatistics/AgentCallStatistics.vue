@@ -71,15 +71,7 @@
 <script>
 import { AGENT_STATES, CALL_STATES } from '@/defines'
 import {
-  mdbRow,
-  mdbCol,
   mdbContainer,
-  mdbBtn,
-  mdbCard,
-  mdbCardBody,
-  mdbCardHeader,
-  mdbCardText,
-  mdbIcon
 } from 'mdbvue'
 
 import Widget from '@/components/agc/Widget'
@@ -88,15 +80,8 @@ export default {
   name: 'AgentCallStats',
   components: {
     Widget,
-    mdbRow,
-    mdbCol,
     mdbContainer,
-    mdbBtn,
-    mdbCard,
-    mdbCardBody,
-    mdbCardHeader,
-    mdbCardText,
-    mdbIcon
+
   },
   props: {},
   data() {
