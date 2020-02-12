@@ -11,9 +11,12 @@
         <draggable
           :list="leftComponentWidgets"
           class="dragArea"
-          :options="{ghostClass:'ghost-component', chosenClass: 'chosen-component', 
-          animation:150, dragClass:'dragged-component',
-           filter: '.card-body', preventOnFilter: false}"
+          ghostClass="ghost-component"
+          chosenClass="chosen-component"
+          animation="150"
+          dragClass="dragged-component"
+          filter=".card-body"
+          :preventOnFilter="false"
         >
           <transition-group name>
             <component
@@ -30,9 +33,12 @@
         <draggable
           :list="middleComponentWidgets"
           class="dragArea"
-          :options="{ghostClass:'ghost-component', chosenClass: 'chosen-component', 
-          animation:150, dragClass:'dragged-component',
-           filter: '.card-body', preventOnFilter: false}"
+          ghostClass="ghost-component"
+          chosenClass="chosen-component"
+          animation="150"
+          dragClass="dragged-component"
+          filter=".card-body"
+          :preventOnFilter="false"
         >
           <transition-group name>
             <component
@@ -49,9 +55,12 @@
         <draggable
           :list="rightComponentWidgets"
           class="dragArea"
-          :options="{ghostClass:'ghost-component', chosenClass: 'chosen-component', 
-          animation:150, dragClass:'dragged-component',
-           filter: '.card-body', preventOnFilter: false}"
+          ghostClass="ghost-component"
+          chosenClass="chosen-component"
+          animation="150"
+          dragClass="dragged-component"
+          filter=".card-body"
+          :preventOnFilter="false"
         >
           <transition-group name>
             <component
@@ -83,18 +92,22 @@ import {
   mdbTbl,
   mdbInput
 } from "mdbvue";
+import CallDrawer from "@/views/CallDrawer.vue";
+import ConsultDialer from "@/widgets/Dialer/ConsultDialer.vue";
+import CallDisposition from "@/widgets/CallDisposition/CallDisposition.vue";
+
 import CallHistory from "@/widgets/CallHistory/CallHistory.vue";
 import CallDetails from "@/widgets/CallDetails/CallDetails.vue";
 import MenuTraversal from "@/widgets/MenuTraversal/MenuTraversal.vue";
 
 import AgentCallStatistics from "@/widgets/AgentCallStatistics/AgentCallStatistics.vue";
-import ConsultDialer from "@/widgets/Dialer/ConsultDialer.vue";
-import CallDisposition from "@/widgets/CallDisposition/CallDisposition.vue";
+
 import CrmFrame from "@/widgets/CrmFrame/CrmFrame.vue";
 import QuickLinks from "@/widgets/QuickLinks/QuickLinks.vue";
+
 import SmsHelper from "@/widgets/SmsHelper/SmsHelper.vue";
 import AgsHelper from "@/widgets/AgsHelper/AgsHelper.vue";
-import CallDrawer from "@/views/CallDrawer.vue";
+import DgftHelper from "@/widgets/DGFT/DgftHelper.vue";
 
 export default {
   name: "Dashboard",
@@ -111,6 +124,7 @@ export default {
     CallHistory,
     SmsHelper,
     AgsHelper,
+    DgftHelper,
     CallDrawer,
 
     mdbContainer,

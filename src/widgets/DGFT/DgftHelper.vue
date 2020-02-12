@@ -8,11 +8,11 @@
 
 <script>
 import { mdbContainer } from "mdbvue";
-import { AGENT_STATES, CALL_STATES, CALL_TYPES } from "@/defines.js";
+import { AGENT_STATES } from "@/defines.js";
 import Widget from "@/components/agc/Widget";
 
 export default {
-  name: "AgsHelper",
+  name: "DgftHelper",
   components: {
     Widget,
     mdbContainer
@@ -38,8 +38,7 @@ export default {
   methods: {
     toggleShowWidget() {
       this.showWidget = !this.showWidget;
-    },
-
+    }
   },
   watch: {
     inboundCallList(newInCallList, oldInCallList) {
@@ -47,7 +46,7 @@ export default {
         console.log("Dgfthelper/watch(allCalls): call list length increased");
         //if the call list increases, fetch the screenpop url for the latest call
         this.$store.dispatch(
-          "dgft_fetchScreenpopUrl",
+          "updateDgftCrmUrl",
           newInCallList[newInCallList.length]
         );
       } else if (newInCallList.length < oldInCallList.length) {
@@ -58,7 +57,7 @@ export default {
     },
     agentState(newAgentState) {
       if (newAgentState === AGENT_STATES.READY) {
-        this.$store.dispatch("clearScreenpopUrl");
+        this.$store.dispatch("initializeDgftCrmUrl");
       }
     }
   }

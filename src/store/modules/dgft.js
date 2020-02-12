@@ -3,16 +3,9 @@ import dgftMiddlewareConnector from "@/services/dgftMiddlewareConnector.js";
 function initialState() {
   //hard-coded UUI for testing
   return {
-    dgftSugarCrmUrl: null,
+    dgftCrmUrl: null,
 
-    uui: [],
-    //hard-coded Caller Data for testing
-    callerData: [
-      {
-        key: "Name",
-        value: ""
-      }
-    ]
+    uui: []
   };
 }
 
@@ -20,9 +13,9 @@ export default {
   state: initialState,
 
   actions: {
-    initializeSugarCrmUrl({ getters, commit }) {
+    initializeDgftCrmUrl({ getters, commit }) {
       let config = getters["session/getConfig"];
-      commit("RESET_CRM_URL", config.DGFT.CRM.URL);
+      commit("SET_INITIAL_CRM_URL", config.DGFT.CRM.URL);
     },
     setDgftUui({ commit, getters }, receivedUui) {
       const config = getters["session/getConfig"];
@@ -37,7 +30,7 @@ export default {
       commit("SET_CALLER_DATA", payload);
     },
 
-    dgft_fetchSugarCrmUrl({ commit, dispatch, getters }, inboundCallId) {
+    updateDgftCrmUrl({ commit, dispatch, getters }, inboundCallId) {
       let path = "";
       let call = dispatch("getCallByCallId", inboundCallId);
 
@@ -53,7 +46,7 @@ export default {
 
         // Set the relative path based on customer RMN and IEC status
 
-        //check if the UUI contains an RMN and IEC Field. In this case, no need to call SugarCRM API for it
+        //check if the UUI contains an RMN and IEC Field. In this case, no need to call DGFT (SugarCRM) API for it
         if (uui && uui["RMN"] && uui["IECStatus"]) {
           if (uui["RMN"].toLowerCase() === "n") {
             //Not RMN, so screenpop the Create Contact Page
@@ -69,7 +62,7 @@ export default {
             }
           }
         } else {
-          //since UUI not found, call SugarCRM API to check for RMN and IEC statu
+          //since UUI not found, call DGFT (SugarCRM) API to check for RMN and IEC statu
           dgftMiddlewareConnector.checkRMN(screenpopBuilderRequest).then(resp => {
             if (resp && resp.data && resp.data.number) {
               if (resp.data.number.toLowerCase() === "not found") {
@@ -89,18 +82,18 @@ export default {
 
         commit("SET_DGFT_SCREENPOP_URL", screenpopBuilderRequest);
       } else {
-        console.error("dgft_fetchSugarCrmUrl(): call could not be retreived");
+        console.error("updateDgftCrmUrl(): call could not be retreived");
       }
     }
   },
 
   mutations: {
-    RESET_DATA_MODULE(state) {
+    RESET_DGFT_MODULE(state) {
       Object.assign(state, initialState());
     },
 
-    RESET_CRM_URL(state, url) {
-      state.dgftSugarCrmUrl = url;
+    SET_INITIAL_CRM_URL(state, url) {
+      state.dgftCrmUrl = url;
     },
 
     SET_DGFT_SCREENPOP_URL(state, payload) {
@@ -121,7 +114,7 @@ export default {
         payload.agentId +
         "&sessionId=" +
         payload.sessionId;
-      state.dgftSugarCrmUrl = payload.baseUrl + payload.path + params;
+      state.dgftCrmUrl = payload.baseUrl + payload.path + params;
     },
 
     SET_DGFT_UUI(state, payload) {
@@ -140,23 +133,11 @@ export default {
     }
   },
   getters: {
-    getCallerData(state) {
-      return state.callerData;
-    },
     getDgftUui(state) {
       return state.uui;
     },
-    getSugarAccessToken(state) {
-      return state.crm.access_token;
-    },
-    getSugarAccountId(state) {
-      return state.crm.accountId;
-    },
-    getComputedCrmUrl(state) {
-      return state.crm.dgftSugarCrmUrl;
-    },
-    getCrmUrl() {
-      return "http://localhost:4000";
+    getDgftCrmUrl(state){
+      return state.dgftCrmUrl
     }
   }
 };

@@ -5,6 +5,9 @@
     "CRM_URL": "http://localhost:9527/#/dashboard",
     "CRM_TIMEOUT_MS": 10000,
     "DGFT": {
+        "MIDDLEWARE": {
+            "URL": "http://localhost:9093"
+        },
         "CRM": {
             "URL": "http://13.235.180.13/sugarcrm"
         },
@@ -88,7 +91,11 @@
     ],
     "rightComponents": {
         "width": "0",
-        "widgets": []
+        "widgets": [
+            {
+                "name": "dgft-helper"
+            }
+        ]
     },
     "middleComponents": {
         "width": "12",

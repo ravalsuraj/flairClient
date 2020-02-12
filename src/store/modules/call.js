@@ -190,10 +190,10 @@ const actions = {
   async processNewInboundCall({ commit, getters, dispatch }, payload) {
     await dispatch("addCallToActiveCalls", payload);
 
-    dispatch("setCallStateRinging", payload);
     commit("ADD_CALL_TO_INBOUND_CALL_LIST", payload.callId);
     let index = getters.getCallIndexByCallId(payload.callId);
     commit("SET_CALL_TYPE_INBOUND", index);
+    //dispatch("setDgftUui", payload.uui);
   },
 
   //Called when the consult call request is made

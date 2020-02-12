@@ -9,7 +9,6 @@ import dialer from "./modules/dialer";
 import session from "./modules/session";
 import socket from "./modules/socket";
 import timer from "./modules/timer";
-import data from "./modules/data";
 import dgft from "./modules/dgft";
 
 import { SOCKET_STATES } from "@/defines.js";
@@ -17,7 +16,7 @@ import { SOCKET_STATES } from "@/defines.js";
 const vuexPersist = new VuexPersist({
   key: "flair",
   storage: sessionStorage,
-  modules: ["agent", "call", "consultedCall", "dialer", "socket", "timer", "data", "session", "dgft"]
+  modules: ["agent", "call", "consultedCall", "dialer", "socket", "timer", "session", "dgft"]
 });
 
 Vue.use(Vuex);
@@ -30,7 +29,6 @@ export default new Vuex.Store({
     session,
     socket,
     timer,
-    data,
     consultedCall,
     dialer,
 
@@ -60,7 +58,6 @@ export default new Vuex.Store({
       commit("RESET_AGENT_MODULE");
       commit("RESET_CALL_MODULE");
       commit("RESET_CONSULTED_CALL_MODULE");
-      commit("RESET_DATA_MODULE");
       commit("RESET_DIALER_MODULE");
       commit("session/RESET_SESSION_MODULE");
       commit("RESET_TIMER_MODULE");
