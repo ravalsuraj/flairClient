@@ -42,6 +42,16 @@ export default {
   },
   watch: {
     inboundCallList(newInCallList, oldInCallList) {
+      console.log(
+        "newCallList=" +
+          JSON.stringify(newInCallList) +
+          ", oldCallList=" +
+          JSON.stringify(oldInCallList)
+      );
+      this.$store.dispatch(
+        "updateDgftCrmUrl",
+        newInCallList[newInCallList.length]
+      );
       if (newInCallList.length > oldInCallList.length) {
         console.log("Dgfthelper/watch(allCalls): call list length increased");
         //if the call list increases, fetch the screenpop url for the latest call
@@ -52,7 +62,7 @@ export default {
       } else if (newInCallList.length < oldInCallList.length) {
         console.log("Dgfthelper/watch(allCalls): call list length decreased");
       } else {
-        console.log("Dgfthelper/watch(allCalls): call list reamined the same");
+        console.log("Dgfthelper/watch(allCalls): call list remained the same");
       }
     },
     agentState(newAgentState) {

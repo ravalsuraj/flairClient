@@ -187,13 +187,14 @@ const actions = {
   },
 
   //Called when the first call event arrives (call state ringing)
-  async processNewInboundCall({ commit, getters, dispatch }, payload) {
-    await dispatch("addCallToActiveCalls", payload);
+  processNewInboundCall({ commit, getters, dispatch }, payload) {
+    dispatch("addCallToActiveCalls", payload);
 
     commit("ADD_CALL_TO_INBOUND_CALL_LIST", payload.callId);
     let index = getters.getCallIndexByCallId(payload.callId);
     commit("SET_CALL_TYPE_INBOUND", index);
-    //dispatch("setDgftUui", payload.uui);
+    dispatch("setCallStateRinging", payload);
+    dispatch("setDgftUui", payload.uui);
   },
 
   //Called when the consult call request is made
@@ -430,7 +431,7 @@ const actions = {
       console.error("requestHoldCall(): ", err);
     });
   },
-  requestUnholdCall(request) {
+  requestUnholdCall({},request) {
     console.log("requestUnholdCall():  request=" + JSON.stringify(request));
 
     this._vm.$socket.emit(SOCKET_EVENTS.RETRIEVE_CALL, request, response => {

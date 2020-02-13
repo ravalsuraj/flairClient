@@ -24,7 +24,7 @@
             <span class="float-left pl-4">Login</span>
           </p>
           <mdb-card-body class="p-4">
-            <div class="grey-text" @click.stop>
+            <form class="grey-text" @submit.prevent>
               <mdb-input
                 required
                 label="Agent ID"
@@ -80,7 +80,7 @@
                   @keydown="handleEnterKeyForLogin"
                 >Log in</mdb-btn>
               </div>
-            </div>
+            </form>
           </mdb-card-body>
           <mdb-alert :color="loginAlert.color" v-if="loginAlert.show">{{loginAlert.message}}</mdb-alert>
         </mdb-card>

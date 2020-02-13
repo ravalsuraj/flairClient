@@ -126,7 +126,10 @@ export default {
               dispatch("processAgentLogin");
               resolve(resp);
             } else {
-              dispatch("showErrorBanner", ["Agent Login failed:", resp.responseMessage]);
+              if (resp.responseCode !== "35") {
+                dispatch("showErrorBanner", ["Agent Login failed:", resp.responseMessage]);
+              }
+
               resolve(resp);
             }
           });
@@ -227,7 +230,7 @@ export default {
     async processAgentLogin({ commit, dispatch }) {
       await dispatch("session/loadConfigurations");
       dispatch("initializeReasonCodes");
-      
+
       commit("SET_AGENT_STATE_LOGIN");
       dispatch("sendQueryAgentStateRequest");
     },

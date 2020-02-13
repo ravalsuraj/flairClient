@@ -1,5 +1,5 @@
 {
-    "FLAIR_AWS_PORT": 8080,
+    "FLAIR_AWS_PORT": 8000,
     "FLAIR_SERVER_URL": "http://192.168.110.99:9092",
     "SERVER_TIMEOUT_MS": 20000,
     "CRM_URL": "http://localhost:9527/#/dashboard",

@@ -61,7 +61,7 @@ export default {
     CRM_URL() {
       if (this.callingAddress) {
         return (
-          this.$store.getters.getCrmUrl +
+          "http://localhost:4000" +
           "?cli=" +
           this.callingAddress +
           "&dnis=" +

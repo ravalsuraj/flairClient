@@ -89,10 +89,9 @@ export default {
 
     SOCKET_ICALLRING({ dispatch }, payload) {
       console.log("SOCKET_ICALLRING(): Received event: " + JSON.stringify(payload));
-      dispatch("addCallToActiveCalls", payload).then(() => {
-        dispatch("processNewInboundCall", payload);
-        dispatch("setCallStateRinging", payload);
-      });
+
+      dispatch("processNewInboundCall", payload);
+
     },
 
     SOCKET_ICALLTALK({ dispatch, getters }, payload) {
