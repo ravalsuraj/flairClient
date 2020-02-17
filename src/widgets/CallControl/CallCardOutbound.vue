@@ -322,15 +322,6 @@ export default {
     isCallConsulted() {
       return this.callType === CALL_TYPES.CONSULTED;
     },
-    answerButtonText() {
-      if (this.callStatus === CALL_STATES.RINGING) {
-        return "Answer";
-      } else if (this.callStatus === CALL_STATES.TALKING) {
-        return "Drop";
-      } else {
-        return "-";
-      }
-    },
     widgetColor() {
       if (this.isCallHeld === false) {
         return "success-color text-white";
@@ -338,15 +329,7 @@ export default {
         return "mdb-color text-white";
       }
     },
-    answerButtonColor() {
-      if (this.isCallRinging) {
-        return { "btn-green": true };
-      } else if (this.isCallActive) {
-        return { "btn-red": true };
-      } else {
-        return { "blue-grey": true };
-      }
-    },
+
     holdButtonColor() {
       if (this.isCallHeld) {
         return { "blue-grey": true };
@@ -361,8 +344,6 @@ export default {
           tempAddress = this.call.callingAddress;
           break;
         case CALL_TYPES.OUTBOUND:
-          tempAddress = this.call.calledAddress;
-          break;
         case CALL_TYPES.CONSULTED:
           tempAddress = this.call.calledAddress;
           break;
@@ -389,27 +370,15 @@ export default {
           }
           break;
         case CALL_TYPES.OUTBOUND:
-          tempCallType = "Outbound Call";
-          break;
         case CALL_TYPES.CONSULTED:
           tempCallType = "Outbound Call";
+          break;
       }
       return tempCallType;
     },
 
     thirdAddress() {
-      let thirdAddress;
-      switch (this.callType) {
-        case CALL_TYPES.INBOUND:
-          thirdAddress = this.call.thirdAddress;
-          break;
-        case CALL_TYPES.OUTBOUND:
-          thirdAddress = this.call.thirdAddress;
-          break;
-        case CALL_TYPES.CONSULTED:
-          thirdAddress = this.call.thirdAddress;
-      }
-      return thirdAddress;
+      return this.call.thirdAddress;
     },
 
     callStatusText() {
@@ -443,8 +412,7 @@ export default {
             console.log(
               "CallCardOutbound(): watcher - callStatus:  calling stop and start timer for instateTimer"
             );
-            // this.$store.dispatch('stopTimer', this.inStateTimerName)
-            // this.$store.dispatch('startTimer', this.callTimerName)
+
             this.$store.dispatch("startTimer", this.inStateTimerName);
             break;
           default:
@@ -493,34 +461,6 @@ export default {
 
   /* border: rgba(0, 0, 0, 0.3) solid 2px; */
   border-top: none;
-}
-
-#consultDialer {
-  top: 50px;
-  left: 500px;
-}
-
-#outboundDialer {
-  top: 50px;
-  left: 800px;
-}
-
-.fldialerDrawer .default {
-  top: 50px;
-  padding-top: unset;
-}
-
-.fldialerDrawer .lowered {
-  top: 60px;
-  padding-top: 20px;
-}
-
-.hide-checkbox {
-  opacity: 0;
-  pointer-events: none;
-}
-.fl_container_callControl {
-  width: 900px;
 }
 
 .iconGlow {

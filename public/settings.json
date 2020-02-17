@@ -9,7 +9,7 @@
             "URL": "http://localhost:9093"
         },
         "CRM": {
-            "URL": "http://13.235.180.13/sugarcrm"
+            "URL": "http://13.235.211.5:81/sugarcrm"
         },
         "UUI_KEYS": [
             "UCID",
@@ -90,15 +90,13 @@
         }
     ],
     "rightComponents": {
-        "width": "0",
-        "widgets": [
-            {
-                "name": "dgft-helper"
-            }
-        ]
+        "width": "3",
+        "widgets": [         {
+            "name": "dgft-helper"
+        }]
     },
     "middleComponents": {
-        "width": "12",
+        "width": "9",
         "widgets": [
             {
                 "name": "crm-frame"

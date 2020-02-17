@@ -1,22 +1,34 @@
 <template>
-  <form @submit.prevent class="form form-inline d-flex align-items-center" id="fl_agent_state_dropdown">
-    <mdb-dropdown class="mx-auto">
+  <!-- <form
+    @submit.prevent
+    class="form form-inline d-flex align-items-center nav-item"
+    id="fl_agent_state_dropdown"
+  > -->
+    <mdb-dropdown tag="li" class="nav-item">
       <!--Selected State-->
-      <a class="dropdown-toggle-a primary-text" slot="toggle">
+      <mdb-dropdown-toggle tag="a" navLink color="special" slot="toggle" >
         <mdb-icon
           icon="circle"
           :class="agentStateIndicatorColor(currentAgentAuxState.state)"
           class="mr-2"
         />
         {{currentAgentAuxState.label}}
-      </a>
+      </mdb-dropdown-toggle>
+      <!-- <a class="dropdown-toggle-a primary-text" slot="toggle">
+        <mdb-icon
+          icon="circle"
+          :class="agentStateIndicatorColor(currentAgentAuxState.state)"
+          class="mr-2"
+        />
+        {{currentAgentAuxState.label}}
+      </a>-->
 
-      <mdb-dropdown-menu left>
+      <mdb-dropdown-menu left color="primary">
         <!--List of all possible agent states-->
         <mdb-dropdown-item
           class="p-0 fl_dropdown_item"
-          :key="auxCodes.id"
-          v-for="(auxCode,i) in auxCodes"
+          :key="auxCode.id"
+          v-for="(auxCode) in auxCodes"
         >
           <div
             @click="onAgentStateDropDownChanged(auxCode)"
@@ -31,72 +43,54 @@
         </mdb-dropdown-item>
       </mdb-dropdown-menu>
     </mdb-dropdown>
-  </form>
+  <!-- </form> -->
 </template>
 
 <script>
 import {
-  mdbRow,
-  mdbCol,
-  mdbContainer,
-  mdbBtn,
   mdbDropdown,
-  mdbDropdownToggle,
   mdbDropdownItem,
   mdbDropdownMenu,
-  mdbCard,
-  mdbCardBody,
-  mdbCardHeader,
-  mdbCardText,
   mdbIcon,
-  mdbTbl
-} from 'mdbvue'
-import { AGENT_STATES } from '@/defines'
+  mdbDropdownToggle
+} from "mdbvue";
+import { AGENT_STATES } from "@/defines";
 
 export default {
-  name: 'AgentStateControl',
+  name: "AgentStateControl",
   components: {
-    mdbRow,
-    mdbCol,
-    mdbContainer,
-    mdbBtn,
-    mdbCard,
-    mdbCardBody,
-    mdbCardHeader,
-    mdbCardText,
     mdbIcon,
-    mdbTbl,
     mdbDropdown,
-    mdbDropdownToggle,
     mdbDropdownItem,
-    mdbDropdownMenu
+    mdbDropdownMenu,
+    mdbDropdownToggle
   },
   props: {},
   data() {
     return {
       auxCodes: this.$store.getters.getFullAuxCodeList
-    }
+    };
   },
 
   methods: {
     //This Method is called whenever the Agent Dropdown option is changed
     onAgentStateDropDownChanged(selectedAuxCode) {
       console.log(
-        'onAgentStateDropDownChanged(): method entered. selectedAuxCode=' +
+        "onAgentStateDropDownChanged(): method entered. selectedAuxCode=" +
           JSON.stringify(selectedAuxCode)
-      )
+      );
       //Depending on the selected state, update the store with the new state
       switch (selectedAuxCode.state) {
         case AGENT_STATES.READY:
         case AGENT_STATES.NOT_READY:
           this.$store
-            .dispatch('sendAgentStateRequest', selectedAuxCode)
+            .dispatch("sendAgentStateRequest", selectedAuxCode)
             .then(resp => {
-              if (resp.responseCode === '0') {
-                this.$store.commit('SET_AGENT_AUX_CODE', selectedAuxCode)
+              if (resp.responseCode === "0") {
+                this.$store.commit("SET_AGENT_AUX_CODE", selectedAuxCode);
               }
-            })
-          break
+            });
+          break;
 
         default:
       }
@@ -106,29 +100,29 @@ export default {
         //console.log('agentStateIndicatorColor(): state=', state)
         switch (state) {
           case AGENT_STATES.READY:
-            return 'green-text'
+            return "green-text";
 
           case AGENT_STATES.NOT_READY:
-            return 'red-text'
+            return "red-text";
           case AGENT_STATES.BUSY:
-            return 'amber-text'
+            return "amber-text";
           case AGENT_STATES.WORK_NOT_READY:
           case AGENT_STATES.LOG_IN:
-            return 'blue-text'
+            return "blue-text";
         }
       }
     }
   },
   computed: {
     currentAgentAuxState() {
-      return this.$store.getters.getAgentAuxState
+      return this.$store.getters.getAgentAuxState;
     }
   }
-}
+};
 </script>
 
 <style scoped>
-#fl_agent_state_dropdown{
+#fl_agent_state_dropdown {
   min-width: 150px;
 }
 .fl_dropdown_item {
@@ -141,7 +135,7 @@ export default {
   display: inline-block;
   margin-left: 0.255em;
   vertical-align: 0.255em;
-  content: '';
+  content: "";
   border-top: 0.3em solid;
   border-right: 0.3em solid transparent;
   border-bottom: 0;

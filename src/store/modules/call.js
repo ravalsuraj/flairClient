@@ -116,20 +116,23 @@ const actions = {
       if (!existingCall) {
         dispatch("addCallTimers", call.callId);
         let newCall = call;
-        newCall.multiCallState = MULTI_CALL_STATES.SINGLE;
+
         newCall.status = CALL_STATES.CREATED;
         newCall.type = CALL_TYPES.INBOUND;
+        newCall.multiCallState = MULTI_CALL_STATES.SINGLE;
+
         newCall.callStartTime = new Date();
         newCall.callEndTime = null;
-        newCall.thirdAddress = null;
+
         newCall.linkedCallId = null;
+        newCall.thirdAddress = null;
+
         newCall.callingAddressReference = null;
         newCall.calledAddressReference = null;
         newCall.thirdAddressReference = null;
-        //http://jsfiddle.net/pdmrL1gq/1/
-        newCall.startTime = new Date().getTime();
+
         commit("ADD_CALL", newCall);
-        // dispatch('setCallStartTime', newCall.callId)
+
         resolve();
       } else {
         console.log("addCallToActiveCalls(): skipping ADD_CALL mutation since the call already exists");
@@ -194,7 +197,6 @@ const actions = {
     let index = getters.getCallIndexByCallId(payload.callId);
     commit("SET_CALL_TYPE_INBOUND", index);
     dispatch("setCallStateRinging", payload);
-    dispatch("setDgftUui", payload.uui);
   },
 
   //Called when the consult call request is made
@@ -326,13 +328,8 @@ const actions = {
 
           break;
         default:
-          console.log(
-            "AnswerDropCall(): skipping answer or drop because call state is: " + CALL_STATES.Text[callStatus]
-          );
-          dispatch("showErrorBanner", [
-            "Cannot Disconnect",
-            "Please remove the call from hold, before attempting to disconnect"
-          ]);
+          console.log("AnswerDropCall(): skipping answer or drop because call state is: " + CALL_STATES.Text[callStatus]);
+          dispatch("showErrorBanner", ["Cannot Disconnect", "Please remove the call from hold, before attempting to disconnect"]);
       }
     } else if (callType === CALL_TYPES.OUTBOUND) {
       dispatch("requestDropCall", request);
@@ -431,7 +428,7 @@ const actions = {
       console.error("requestHoldCall(): ", err);
     });
   },
-  requestUnholdCall({},request) {
+  requestUnholdCall({}, request) {
     console.log("requestUnholdCall():  request=" + JSON.stringify(request));
 
     this._vm.$socket.emit(SOCKET_EVENTS.RETRIEVE_CALL, request, response => {
@@ -525,24 +522,10 @@ const mutations = {
   ADD_THIRD_ADDRESS_TO_CALL(state, [index, payload]) {
     let linkedCall = payload;
     if (linkedCall.callDirection == CALL_TYPES.INBOUND) {
-      console.log(
-        "ADD_THIRD_ADDRESS_TO_CALL(): condition for call direction inbound. callDirection=" +
-          linkedCall.callDirection +
-          ", index=" +
-          index +
-          ", payload=" +
-          JSON.stringify(payload)
-      );
+      console.log("ADD_THIRD_ADDRESS_TO_CALL(): condition for call direction inbound. callDirection=" + linkedCall.callDirection + ", index=" + index + ", payload=" + JSON.stringify(payload));
       state.calls[index].thirdAddress = linkedCall.callingAddress;
     } else {
-      console.log(
-        "ADD_THIRD_ADDRESS_TO_CALL(): condition for call direction outbound. callDirection=" +
-          linkedCall.callDirection +
-          ", index=" +
-          index +
-          ", payload=" +
-          JSON.stringify(payload)
-      );
+      console.log("ADD_THIRD_ADDRESS_TO_CALL(): condition for call direction outbound. callDirection=" + linkedCall.callDirection + ", index=" + index + ", payload=" + JSON.stringify(payload));
       state.calls[index].thirdAddress = linkedCall.calledAddress;
     }
 

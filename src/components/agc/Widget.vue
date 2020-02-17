@@ -20,30 +20,21 @@
 <script>
 import {
   mdbContainer,
-  mdbRow,
-  mdbCol,
-  mdbBtn,
   mdbCard,
   mdbCardBody,
   mdbCardHeader,
-  mdbCardText,
-  mdbInput,
   mdbIcon
-} from 'mdbvue'
-import { AGENT_STATES, CALL_STATES } from '@/defines.js'
+} from "mdbvue";
 
 export default {
-  name: 'Widget',
+  name: "Widget",
   components: {
     mdbContainer,
-    mdbRow,
-    mdbCol,
-    mdbBtn,
+
     mdbCard,
     mdbCardBody,
     mdbCardHeader,
-    mdbCardText,
-    mdbInput,
+
     mdbIcon
   },
   mounted() {},
@@ -51,22 +42,22 @@ export default {
     title: String,
     color: {
       type: String,
-      default: 'mdb-color text-white'
+      default: "mdb-color text-white"
     }
   },
 
   data() {
     return {
       showWidget: true
-    }
+    };
   },
 
   computed: {},
 
   methods: {
     toggleShowWidget() {
-      this.showWidget = !this.showWidget
+      this.showWidget = !this.showWidget;
     }
   }
-}
+};
 </script>

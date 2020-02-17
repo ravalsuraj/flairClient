@@ -295,8 +295,6 @@ export default {
           tempAddress = this.call.callingAddress;
           break;
         case CALL_TYPES.OUTBOUND:
-          tempAddress = this.call.calledAddress;
-          break;
         case CALL_TYPES.CONSULTED:
           tempAddress = this.call.calledAddress;
           break;
@@ -305,18 +303,7 @@ export default {
     },
 
     thirdAddress() {
-      let thirdAddress;
-      switch (this.callType) {
-        case CALL_TYPES.INBOUND:
-          thirdAddress = this.call.thirdAddress;
-          break;
-        case CALL_TYPES.OUTBOUND:
-          thirdAddress = this.call.thirdAddress;
-          break;
-        case CALL_TYPES.CONSULTED:
-          thirdAddress = this.call.thirdAddress;
-      }
-      return thirdAddress;
+      return this.call.thirdAddress;
     },
 
     callType() {
@@ -336,10 +323,9 @@ export default {
           }
           break;
         case CALL_TYPES.OUTBOUND:
-          tempCallType = "Outbound Call";
-          break;
         case CALL_TYPES.CONSULTED:
           tempCallType = "Outbound Call";
+          break;
       }
       return tempCallType;
     },

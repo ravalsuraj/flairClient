@@ -35,23 +35,17 @@
 </template>
 
 <script>
-import {
-  mdbContainer,
+import { mdbContainer, mdbBtn } from "mdbvue";
+import { CALL_STATES } from "@/defines.js";
 
-  mdbBtn,
-
-} from 'mdbvue'
-import { CALL_STATES } from '@/defines.js'
-
-import Widget from '@/components/agc/Widget'
+import Widget from "@/components/agc/Widget";
 export default {
-  name: 'CallDisposition',
+  name: "CallDisposition",
   components: {
     Widget,
     mdbContainer,
 
-    mdbBtn,
-    
+    mdbBtn
   },
   mounted() {},
   props: {
@@ -64,17 +58,17 @@ export default {
       showWidget: false,
       showTimer: false,
       disposition: null,
-      sub_disposition : null
-    }
+      sub_disposition: null
+    };
   },
 
   methods: {
     toggleShowWidget() {
-      this.showWidget = !this.showWidget
+      this.showWidget = !this.showWidget;
     },
     onAcwTimerExpired() {
-      this.showTimer = false
-      this.disposeCall()
+      this.showTimer = false;
+      this.disposeCall();
     },
     disposeCall() {
       // let dispositionRequest = {
@@ -89,23 +83,20 @@ export default {
       //   sub_disposition : this.sub_disposition
 
       // }
-      this.$store.dispatch('requestCallDisposition')
-      this.$store.dispatch('removeCallFromActiveCalls', [
-        this.ucid,
-        this.callId
-      ])
+      //this.$store.dispatch('requestCallDisposition')
+      this.$store.dispatch("removeCallFromActiveCalls", [this.ucid, this.callId]);
     }
   },
 
   computed: {
     call() {
-      return this.$store.getters.getCallByCallId(this.callId)
+      return this.$store.getters.getCallByCallId(this.callId);
     },
     callStatus() {
-      return this.call.status
+      return this.call.status;
     },
     isAgentInAcw() {
-      return this.callStatus === CALL_STATES.DROPPED
+      return this.callStatus === CALL_STATES.DROPPED;
     }
   },
 
@@ -115,18 +106,17 @@ export default {
         case CALL_STATES.TALKING:
         case CALL_STATES.HELD:
           if (newCallStatus === CALL_STATES.DROPPED) {
-            console.log('timer changed from talking to dropped')
-            this.showWidget = true
-            this.showTimer = true
-            this.$store.dispatch('startTimer', 'acwTimer')
+            console.log("timer changed from talking to dropped");
+            this.showWidget = true;
+            this.showTimer = true;
+            this.$store.dispatch("startTimer", "acwTimer");
           }
-          break
+          break;
         default:
           //this.$store.dispatch('stopTimer', 'acwTimer')
-          break
+          break;
       }
     }
   }
-}
+};
 </script>
-

@@ -20,10 +20,10 @@
           <call-disposition v-if="isCallDropped(call)" :ucid="call.ucid" :callId="call.callId"></call-disposition>
         </mdb-col>
         <mdb-col class="fl_navbar_item">
-          <mdb-btn class="btn-circle light-blue" @click.native="openOutboundModal">
+          <!-- <mdb-btn class="btn-circle light-blue" @click.native="openOutboundModal">
             <mdb-icon icon="phone" style="font-size:1.5em" />
             <mdb-icon icon="plus" style="font-size:1em" />
-          </mdb-btn>
+          </mdb-btn> -->
           <mdb-modal
             size="sm"
             v-if="showOutboundDialerModal"
@@ -46,7 +46,7 @@
 </style>
 
 <script>
-import _ from "lodash";
+import _ from "lodash.debounce";
 
 import CallCardInbound from "@/widgets/CallControl/CallCardInbound.vue";
 import CallCardOutbound from "@/widgets/CallControl/CallCardOutbound.vue";
@@ -62,8 +62,8 @@ import {
   mdbModalHeader,
   mdbModalTitle,
   mdbModalBody,
-  mdbBtn,
-  mdbIcon
+  // mdbBtn,
+  // mdbIcon
 } from "mdbvue";
 export default {
   name: "CallDrawer",
@@ -82,8 +82,8 @@ export default {
     mdbModalTitle,
     mdbModalBody,
 
-    mdbBtn,
-    mdbIcon
+    // mdbBtn,
+    // mdbIcon
   },
 
   props: {},
@@ -105,7 +105,7 @@ export default {
       return call.type !== CALL_TYPES.INBOUND;
     },
 
-    openOutboundModal: _.debounce(
+    openOutboundModal: _(
       function() {
         this.showOutboundDialerModal = true;
       },

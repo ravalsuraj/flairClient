@@ -106,7 +106,6 @@ import CrmFrame from "@/widgets/CrmFrame/CrmFrame.vue";
 import QuickLinks from "@/widgets/QuickLinks/QuickLinks.vue";
 
 import SmsHelper from "@/widgets/SmsHelper/SmsHelper.vue";
-import AgsHelper from "@/widgets/AgsHelper/AgsHelper.vue";
 import DgftHelper from "@/widgets/DGFT/DgftHelper.vue";
 
 export default {
@@ -123,7 +122,6 @@ export default {
     CallDetails,
     CallHistory,
     SmsHelper,
-    AgsHelper,
     DgftHelper,
     CallDrawer,
 

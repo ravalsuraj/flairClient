@@ -3,6 +3,7 @@
     class="special-color white-text flexible-navbar fl_topNav"
     position="top"
     navIconClass="white-text"
+    animation="1"
   >
     <mdb-navbar-brand href="/" target="_blank">
       <div class="light-color" style="opacity:1">
@@ -34,9 +35,10 @@
           </mdb-modal-body>
         </mdb-modal>
       </span>-->
-      <span class="fl_navbar_item">
+      <agent-state-control></agent-state-control>
+      <!-- <span class="fl_navbar_item">
         <agent-state-control></agent-state-control>
-      </span>
+      </span> -->
       <span class="fl_navbar_item">
         <agent-profile></agent-profile>
       </span>

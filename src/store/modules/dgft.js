@@ -3,9 +3,13 @@ import dgftMiddlewareConnector from "@/services/dgftMiddlewareConnector.js";
 function initialState() {
   //hard-coded UUI for testing
   return {
-    dgftCrmUrl: null,
-
-    uui: []
+    dgftCallToProcess: {
+      call: null,
+      callId: null,
+      callIndex: null
+    },
+    dgftCrmUrl: [],
+    dgftUui: []
   };
 }
 
@@ -13,30 +17,29 @@ export default {
   state: initialState,
 
   actions: {
-    initializeDgftCrmUrl({ getters, commit }) {
-      let config = getters["session/getConfig"];
-      commit("SET_INITIAL_CRM_URL", config.DGFT.CRM.URL);
+    processNewDgftCall({ commit, dispatch, getters }, callId) {
+      let call = getters.getCallByCallId(callId);
+      if (getters.getCallIndexByCallId(call.callId) === 0) {
+        const callIndex = getters.getCallIndexByCallId(call.callId);
+        commit("SET_DGFT_CALL_TO_PROCESS", [callId, callIndex, call]);
+      }
+      dispatch("setDgftUuiForCall", call);
+      dispatch("setDgftCrmUrlForCall", call);
     },
-    setDgftUui({ commit, getters }, receivedUui) {
-      const config = getters["session/getConfig"];
-      const uui = {
-        keys: config.DGFT.UUI_KEYS,
-        values: receivedUui
-      };
-      commit("SET_DGFT_UUI", uui);
-    },
-
-    setCallerData({ commit }, payload) {
-      commit("SET_CALLER_DATA", payload);
+    processDgftCallCleared({ commit, dispatch }, callIndex) {
+      commit("RESET_DGFT_CALL_TO_PROCESS");
+      dispatch("resetDgftCrmUrlForCall", callIndex);
+      dispatch("resetDgftUuiForCall", callIndex);
     },
 
-    updateDgftCrmUrl({ commit, dispatch, getters }, inboundCallId) {
+    setDgftCrmUrlForCall({ commit, getters }, call) {
+      let callIndex = getters.getCallIndexByCallId(call.callId);
       let path = "";
-      let call = dispatch("getCallByCallId", inboundCallId);
+      const uui = getters.getDgftUuiByCallIndex(callIndex);
 
       if (call && call.callingAddress !== "") {
-        let uui = getters.getDgftUui;
         let screenpopBuilderRequest = {
+          callId: call.callId,
           cli: call.callingAddress,
           uui: uui,
           baseUrl: getters["session/getConfig"].DGFT.CRM.URL,
@@ -80,10 +83,28 @@ export default {
         }
         screenpopBuilderRequest.path = path;
 
-        commit("SET_DGFT_SCREENPOP_URL", screenpopBuilderRequest);
+        commit("SET_DGFT_CRM_URL", screenpopBuilderRequest);
       } else {
-        console.error("updateDgftCrmUrl(): call could not be retreived");
+        console.error("setDgftCrmUrlForCall(): call could not be retreived");
       }
+    },
+
+    resetDgftCrmUrlForCall({ commit }, index) {
+      commit("RESET_DGFT_CRM_URL", index);
+    },
+
+    setDgftUuiForCall({ commit, getters }, call) {
+      const config = getters["session/getConfig"];
+      const request = {
+        callId: call.callId,
+        keys: config.DGFT.UUI_KEYS,
+        values: call.uui
+      };
+      commit("SET_DGFT_UUI", request);
+    },
+
+    resetDgftUuiForCall({ commit }, callId) {
+      commit("RESET_DGFT_UUI", callId);
     }
   },
 
@@ -92,12 +113,20 @@ export default {
       Object.assign(state, initialState());
     },
 
-    SET_INITIAL_CRM_URL(state, url) {
-      state.dgftCrmUrl = url;
+    SET_DGFT_CALL_TO_PROCESS(state, [callId, callIndex, call]) {
+      state.dgftCallToProcess.callIndex = callIndex;
+      state.dgftCallToProcess.callId = callId;
+      state.dgftCallToProcess.call = call;
+    },
+    RESET_DGFT_CALL_TO_PROCESS(state) {
+      state.dgftCallToProcess.callIndex = null;
+      state.dgftCallToProcess.callId = null;
+      state.dgftCallToProcess.call = null;
     },
 
-    SET_DGFT_SCREENPOP_URL(state, payload) {
+    SET_DGFT_CRM_URL(state, payload) {
       const params =
+        (payload.uui.RMN.toLowerCase() === "y" ? "/" : "") +
         "phone_office=" +
         payload.cli +
         "&ucid=" +
@@ -114,30 +143,71 @@ export default {
         payload.agentId +
         "&sessionId=" +
         payload.sessionId;
-      state.dgftCrmUrl = payload.baseUrl + payload.path + params;
+
+      state.dgftCrmUrl.push(payload.baseUrl + payload.path + params);
     },
 
-    SET_DGFT_UUI(state, payload) {
-      const uuiKeys = payload.keys;
-      let uuiValues = payload.values.split("|");
-
-      for (let i = 0; i < uuiKeys.length; i++) {
-        let tempJson = {};
-        tempJson[uuiKeys[i]] = uuiValues[i];
-        state.uui.push(tempJson);
+    RESET_DGFT_CRM_URL(state, index) {
+      if (state.dgftCrmUrl[index]) {
+        state.dgftCrmUrl.splice(index, 1);
+      } else {
+        console.log("RESET_DGFT_CRM_URL(): skipping, since index " + index + " does not exist in dgftCrmUrl List");
       }
     },
 
-    SET_CALLER_DATA(state) {
-      state.callerData[0].value = "Suraj Raval";
+    SET_DGFT_UUI(state, payload) {
+      //UUI Keys are retreived from config file
+      //UUI values are retreived as pipe separated string from IVR
+
+      const uuiKeys = payload.keys;
+      const uuiValues = payload.values.split("|");
+      //const tempUui = [];
+      //Loop through the array of UUI keys
+      let tempJson = {};
+      for (let i = 0; i < uuiKeys.length; i++) {
+        //set the key of the JSON obj as the UUI key, and set it's value as the corresponsing UUI value
+        tempJson[uuiKeys[i]] = uuiValues[i];
+        //For the uui for the call, set the key as the callID, and push the UUI entry as a key value pair in the state
+        //tempUui.push(tempJson);
+      }
+      state.dgftUui.push(tempJson);
+    },
+    RESET_DGFT_UUI(state, index) {
+      if (state.dgftUui[index]) {
+        state.dgftUui.splice(index, 1);
+      } else {
+        console.log("RESET_DGFT_UUI(): skipping, since callId does not exist in UUI List");
+      }
     }
   },
   getters: {
-    getDgftUui(state) {
-      return state.uui;
+    getSelectedDgftUui(state) {
+      const callIndex = state.dgftCallToProcess.callIndex;
+      return callIndex > -1 ? state.dgftUui[callIndex] : null;
     },
-    getDgftCrmUrl(state){
-      return state.dgftCrmUrl
+    getDgftUuiByCallIndex: state => callIndex => {
+      if (state.dgftUui[callIndex]) {
+        console.log("found DGFT UUI: state=" + JSON.stringify(state.dgftUui));
+        return state.dgftUui[callIndex];
+      } else {
+        console.log("could not find DGFT UUI: state=" + JSON.stringify(state.dgftUui));
+        return null;
+      }
+    },
+
+    getSelectedDgftCrmUrl(state) {
+      const callIndex = state.dgftCallToProcess.callIndex;
+      return callIndex > -1 ? state.dgftCrmUrl[callIndex] : null;
+    },
+
+    getDgftCrmUrlByCallIndex: state => callIndex => {
+      if (state.dgftCrmUrl[callIndex]) {
+        console.log("found DGFT CRM URL: state=" + JSON.stringify(state.dgftCrmUrl));
+        return state.dgftCrmUrl[callIndex];
+      } else {
+        console.log("did not find DGFT CRM URL: state=" + JSON.stringify(state.dgftCrmUrl));
+        return null;
+      }
     }
   }
 };

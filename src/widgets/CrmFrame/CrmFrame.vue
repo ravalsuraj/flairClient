@@ -1,5 +1,5 @@
 <template>
-  <widget title="CRM">
+  <widget :title="'CRM -' + CRM_URL">
     <template v-slot:body>
       <div class="wrapper">
         <iframe :src="CRM_URL" class="w-100 fl_crm_window"></iframe>
@@ -20,7 +20,8 @@ export default {
   data() {
     return {
       manualShowWidget: true,
-      iframeError: false
+      iframeError: false,
+      crmUrl: null
     };
   },
   methods: {
@@ -33,8 +34,7 @@ export default {
   computed: {
     autoShowWidget() {
       return (
-        this.$store.activeCall.status === CALL_STATES.RINGING ||
-        this.$store.activeCall.status === CALL_STATES.TALKING
+        this.$store.activeCall.status === CALL_STATES.RINGING || this.$store.activeCall.status === CALL_STATES.TALKING
       );
     },
     activeCall() {
@@ -59,23 +59,30 @@ export default {
     },
 
     CRM_URL() {
-      if (this.callingAddress) {
-        return (
-          "http://localhost:4000" +
-          "?cli=" +
-          this.callingAddress +
-          "&dnis=" +
-          this.calledAddress +
-          "&ucid=" +
-          this.activeCall.ucid +
-          "&callId=" +
-          this.activeCall.callId +
-          "&sessionId=" +
-          this.sessionId
-        );
+      // return "http://localhost:4000"
+      //return this.$store.getters.getDgftCrmUrlByCallIndex;
+      // if (this.callingAddress) {
+      //   return (
+      //     "http://localhost:4000" +
+      //     "?cli=" +
+      //     this.callingAddress +
+      //     "&dnis=" +
+      //     this.calledAddress +
+      //     "&ucid=" +
+      //     this.activeCall.ucid +
+      //     "&callId=" +
+      //     this.activeCall.callId +
+      //     "&sessionId=" +
+      //     this.sessionId
+      //   );
+      // } else {
+      if (this.$store.getters.getSelectedDgftCrmUrl) {
+        return this.$store.getters.getSelectedDgftCrmUrl;
       } else {
-        return this.$store.getters.getCrmUrl;
+        return this.$store.getters["session/getConfig"].DGFT.CRM.URL;
       }
+
+      // }
     }
   }
 };

@@ -23,10 +23,10 @@
 </template>
 
 <script>
-import {
+// import {
 
-  waves
-} from 'mdbvue'
+//   waves
+// } from 'mdbvue'
 
 import TopNavbar from '@/views/TopNavbar'
 import LoginPage from '@/views/Login'
@@ -102,7 +102,7 @@ export default {
   beforeMount() {
     this.activeItem = this.$route.matched[0].props.default.page
   },
-  mixins: [waves]
+  // mixins: [waves]
 }
 </script>
 

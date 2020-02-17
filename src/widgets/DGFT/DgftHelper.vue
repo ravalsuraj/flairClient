@@ -1,7 +1,25 @@
 <template>
-  <widget title="AGS Helper">
+  <widget title="DGFT Helper">
     <template v-slot:body>
-      <mdb-container fluid></mdb-container>
+      <mdb-container fluid>
+        <select
+          class="browser-default custom-select mb-5"
+          v-model="dropdownSelectedCallId"
+          v-if="inboundCallList && inboundCallList.length > 1"
+        >
+          <option selected disabled>Open this select menu</option>
+          <option :value="callid" v-for="callid in inboundCallList" :key="callid.id">{{ callid }}</option>
+        </select>
+        <div class="mb-5 w-100" v-if="inboundCallList && inboundCallList.length === 1">
+          <div class="text-center py-2">The following Call is being used to perform Screenpop</div>
+          <h3 class="text-center">{{ inboundCallList[0] }}</h3>
+        </div>
+
+        <dl class="row mb-1 no-gutters fl_dl" v-for="(value, name) in dgftUui" :key="value.id">
+          <dt class="col-sm-6 fl_dt">{{ name }}</dt>
+          <dd class="col-sm-6 fl_dd">{{ value }}</dd>
+        </dl>
+      </mdb-container>
     </template>
   </widget>
 </template>
@@ -22,7 +40,9 @@ export default {
 
   data() {
     return {
-      showWidget: false
+      showWidget: false,
+      currentInboundCallList: [],
+      dropdownSelectedCallId: null
     };
   },
 
@@ -30,8 +50,25 @@ export default {
     inboundCallList() {
       return this.$store.getters.getInboundCallList;
     },
+    latestCallId() {
+      return this.inboundCallList[this.inboundCallList.length - 1];
+    },
+    selectedCallId() {
+      if (this.inboundCallList.length > 1) {
+        return this.dropdownSelectedCallId;
+      } else {
+        return this.latestCallId;
+      }
+    },
     agentState() {
       return this.$store.getters["getAgentState"];
+    },
+    dgftUui() {
+      let callIndex = this.inboundCallList.indexOf(this.selectedCallId);
+      return this.$store.getters.getDgftUuiByCallIndex(callIndex);
+    },
+    dgftUuiKeys() {
+      return this.$store.getters["session/getConfig"].DGFT.UUI_KEYS;
     }
   },
 
@@ -41,36 +78,41 @@ export default {
     }
   },
   watch: {
-    inboundCallList(newInCallList, oldInCallList) {
-      console.log(
-        "newCallList=" +
-          JSON.stringify(newInCallList) +
-          ", oldCallList=" +
-          JSON.stringify(oldInCallList)
-      );
-      this.$store.dispatch(
-        "updateDgftCrmUrl",
-        newInCallList[newInCallList.length]
-      );
-      if (newInCallList.length > oldInCallList.length) {
-        console.log("Dgfthelper/watch(allCalls): call list length increased");
-        //if the call list increases, fetch the screenpop url for the latest call
-        this.$store.dispatch(
-          "updateDgftCrmUrl",
-          newInCallList[newInCallList.length]
-        );
-      } else if (newInCallList.length < oldInCallList.length) {
-        console.log("Dgfthelper/watch(allCalls): call list length decreased");
+    inboundCallList(newInCallList) {
+      //if the call list increases, fetch the screenpop url for the latest call
+      if (newInCallList.length > this.currentInboundCallList.length) {
+        this.currentInboundCallList.push(this.latestCallId);
+        this.$store.dispatch("processNewDgftCall", this.latestCallId);
+      }
+
+      //if the call list decreases, it means a call was dropped, so reset the screenpop URL
+      else if (newInCallList.length < this.currentInboundCallList.length) {
+        console.log("DgftHelper/watch(inboundCallList): call was removed");
+        let droppedCalls = this.currentInboundCallList.filter(function(el) {
+          return newInCallList.indexOf(el) < 0;
+        });
+        console.log("DgftHelper/watch(inboundCallList): droppedCalls=" + droppedCalls);
+        /*****************************************************************************************
+         * Assumption: only one call will drop at a time. if multiple calls get dropped in a
+         * single watch state, we will need to add the logic
+         *****************************************************************************************/
+        const droppedCallIndex = this.currentInboundCallList.indexOf(droppedCalls[0]);
+        console.log("DgftHelper/watch(inboundCallList): droppedCallIndex=" + droppedCallIndex);
+        if (droppedCalls.length === 1) {
+          this.currentInboundCallList.splice(droppedCallIndex, 1);
+          this.$store.dispatch("processDgftCallCleared", droppedCallIndex);
+        } else {
+          this.$store.dispatch("processDgftCallCleared", droppedCallIndex);
+        }
       } else {
-        console.log("Dgfthelper/watch(allCalls): call list remained the same");
+        console.log("Dgfthelper/watch(allCalls): call list remained the same. new length=" + newInCallList.length);
       }
     },
     agentState(newAgentState) {
       if (newAgentState === AGENT_STATES.READY) {
-        this.$store.dispatch("initializeDgftCrmUrl");
+        this.$store.dispatch("resetDgftCrmUrlForCall");
       }
     }
   }
 };
 </script>
-

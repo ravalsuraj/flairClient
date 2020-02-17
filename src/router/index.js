@@ -16,7 +16,14 @@ export default new Router({
       },
       alias: '/'
     },
-
+    {
+      path: '/504',
+      name: 'BadGateway',
+      props: {
+        page: 2
+      },
+      component: BadGateway
+    },
     {
       path: '/404',
       name: 'BadGateway',
