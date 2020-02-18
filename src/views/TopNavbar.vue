@@ -4,6 +4,7 @@
     position="top"
     navIconClass="white-text"
     animation="1"
+    :toggler="false"
   >
     <mdb-navbar-brand href="/" target="_blank">
       <div class="light-color" style="opacity:1">
@@ -46,7 +47,6 @@
   </mdb-navbar>
 </template>
 
-
 <script>
 import AgentStateControl from "@/widgets/AgentControl/AgentStateControl.vue";
 import AgentProfile from "@/widgets/AgentControl/AgentProfile.vue";
@@ -73,7 +73,6 @@ export default {
 </script>
 
 <style>
-
 .fl_navbar_item {
   display: flex;
   align-items: center;

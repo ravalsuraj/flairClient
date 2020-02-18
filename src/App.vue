@@ -1,11 +1,10 @@
-
 <template>
   <div class="d-flex flex-column">
     <div ref="topNavBar">
       <top-navbar v-if="isAgentLoggedIn" class></top-navbar>
     </div>
     <main class="d-flex flex-fill main-body pt-5 mt-5">
-      <router-view v-if="isAgentLoggedIn" class></router-view>
+      <router-view v-if="isAgentLoggedIn" class="flex-fill"></router-view>
       <login-page v-else class="flex-fill pt-4"></login-page>
     </main>
     <bottom-footer></bottom-footer>
@@ -28,82 +27,78 @@
 //   waves
 // } from 'mdbvue'
 
-import TopNavbar from '@/views/TopNavbar'
-import LoginPage from '@/views/Login'
-import BottomFooter from '@/views/BottomFooter.vue'
-import { AGENT_STATES, SOCKET_STATES } from '@/defines'
+import TopNavbar from "@/views/TopNavbar";
+import LoginPage from "@/views/Login";
+import BottomFooter from "@/views/BottomFooter.vue";
+import { AGENT_STATES, SOCKET_STATES } from "@/defines";
 
 export default {
-  name: 'AdminTemplate',
+  name: "AdminTemplate",
   components: {
     LoginPage,
     TopNavbar,
-    BottomFooter,
-
+    BottomFooter
   },
   data() {
     return {
       activeItem: 1,
       ipAddress: null
-    }
+    };
   },
   sockets: {
     connect() {
-      console.log('App/sockets/connect(): socket connected')
-      this.$store.dispatch('processSocketConnected')
+      console.log("App/sockets/connect(): socket connected");
+      this.$store.dispatch("processSocketConnected");
     },
     connect_error() {
-      console.log('App/sockets/connect(): socket connect_error')
+      console.log("App/sockets/connect(): socket connect_error");
       if (this.$store.getters.getSocketStatus === SOCKET_STATES.CONNECTED) {
-        this.$store.dispatch('showErrorBanner', [
-          'Server Connection Lost!',
-          'Server connection could not be established. Please make sure you have connectivity with the server before you attempt to log in.'
-        ])
-        this.$store.dispatch('setSocketStateDisconnected')
+        this.$store.dispatch("showErrorBanner", [
+          "Server Connection Lost!",
+          "Server connection could not be established. Please make sure you have connectivity with the server before you attempt to log in."
+        ]);
+        this.$store.dispatch("setSocketStateDisconnected");
       }
     },
     connection_error() {
-      console.log('App/sockets/connect(): socket connection_error')
-      this.$store.dispatch('showErrorBanner', [
-        'Server Connection Lost!',
-        'WebSocket connection timed out. Please make sure the websocket server is running.'
-      ])
+      console.log("App/sockets/connect(): socket connection_error");
+      this.$store.dispatch("showErrorBanner", [
+        "Server Connection Lost!",
+        "WebSocket connection timed out. Please make sure the websocket server is running."
+      ]);
 
-      this.$store.dispatch('setSocketStateDisconnected')
+      this.$store.dispatch("setSocketStateDisconnected");
     }
   },
   mounted() {
-    this.$store.dispatch('session/addWindowRefreshReloadListener')
+    this.$store.dispatch("session/addWindowRefreshReloadListener");
     // this.$store.dispatch('authenticateCrm').then(() => {
     //   //this.$store.dispatch('getAccountIdFromCli', '8879708222')
     // })
 
     if (this.$refs.topNavBar) {
-      console.log(
-        'App/mounted(): navbar height is' +
-          JSON.stringify(this.$refs.topNavBar.clientHeight)
-      )
+      console.log("App/mounted(): navbar height is" + JSON.stringify(this.$refs.topNavBar.clientHeight));
     }
-    this.$store.dispatch('session/loadConfigurations')
+    this.$store.dispatch("session/loadConfigurations");
   },
   methods: {},
   computed: {
     isAgentLoggedIn() {
       if (
-        this.$store.getters['getAgentState'] === AGENT_STATES.LOG_OUT ||
-        this.$store.getters['getAgentState'] === AGENT_STATES.UNKNOWN
+        this.$store.getters["getAgentState"] === AGENT_STATES.LOG_OUT ||
+        this.$store.getters["getAgentState"] === AGENT_STATES.UNKNOWN
       ) {
-        return false
+        return false;
       } else {
-        return true
+        return true;
       }
     }
   },
   beforeMount() {
-    this.activeItem = this.$route.matched[0].props.default.page
-  },
+    this.activeItem = this.$route.matched[0].props.default.page;
+  }
   // mixins: [waves]
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -113,25 +108,26 @@ export default {
   width: 280px;
   background: red;
 }
-@import url('https://fonts.googleapis.com/css?family=Unica+One&display=swap');
+@import url("https://fonts.googleapis.com/css?family=Unica+One&display=swap");
 /* @import url('/static/fonts.css'); */
 * {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 html {
-  font-size: 75%;
+  font-size: 62.5%;
   color: rgba(0, 0, 0, 0.45);
 }
 .main-body {
   height: calc(100vh - 25px);
   background: linear-gradient(#fff, rgb(243, 243, 243));
+  overflow: hidden
 }
 footer {
   height: 25px;
 }
 .dispFont {
-  font-family: 'Unica One', sans-serif;
+  font-family: "Unica One", sans-serif;
 }
 
 @media (min-width: 992px) {
@@ -142,8 +138,8 @@ footer {
   }
 }
 
-.navbar-nav{
-    flex-direction: row !important;
+.navbar-nav {
+  flex-direction: row !important;
 }
 .fl_widget {
   margin-bottom: 10px !important;
@@ -165,43 +161,42 @@ footer {
 }
 .fl-color-agc {
   background: rgba(204, 0, 0, 1);
-  background: -moz-linear-gradient(
-    left,
-    rgba(204, 0, 0, 1) 0%,
-    rgba(255, 102, 0, 1) 100%
-  );
+  background: -moz-linear-gradient(left, rgba(204, 0, 0, 1) 0%, rgba(255, 102, 0, 1) 100%);
   background: -webkit-gradient(
     left top,
     right top,
     color-stop(0%, rgba(204, 0, 0, 1)),
     color-stop(100%, rgba(255, 102, 0, 1))
   );
-  background: -webkit-linear-gradient(
-    left,
-    rgba(204, 0, 0, 1) 0%,
-    rgba(255, 102, 0, 1) 100%
-  );
-  background: -o-linear-gradient(
-    left,
-    rgba(204, 0, 0, 1) 0%,
-    rgba(255, 102, 0, 1) 100%
-  );
-  background: -ms-linear-gradient(
-    left,
-    rgba(204, 0, 0, 1) 0%,
-    rgba(255, 102, 0, 1) 100%
-  );
-  background: linear-gradient(
-    to right,
-    rgba(204, 0, 0, 1) 0%,
-    rgba(255, 102, 0, 1) 100%
-  );
+  background: -webkit-linear-gradient(left, rgba(204, 0, 0, 1) 0%, rgba(255, 102, 0, 1) 100%);
+  background: -o-linear-gradient(left, rgba(204, 0, 0, 1) 0%, rgba(255, 102, 0, 1) 100%);
+  background: -ms-linear-gradient(left, rgba(204, 0, 0, 1) 0%, rgba(255, 102, 0, 1) 100%);
+  background: linear-gradient(to right, rgba(204, 0, 0, 1) 0%, rgba(255, 102, 0, 1) 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(
     startColorstr='#cc0000', endColorstr='#ff6600',
     GradientType=1 );
 }
 .fa-1p5x {
   font-size: 1.5em;
+}
+.fl_dropdown {
+  border-width: 0px;
+  position: absolute;
+  right: 40px;
+  z-index: 99;
+}
+.fl_rotating_icon {
+  transform: rotate(225deg);
+  transition: all 0.3s ease;
+}
+.fl_rotating_icon.active {
+  transform: rotate(360deg);
+}
+.fl_container_dialer {
+  /* box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12); */
+  border-radius: 0px 0px 8px 8px;
+  max-width: 250px;
+  margin: auto;
 }
 
 /************   Utility Styles   *******************/
@@ -211,17 +206,16 @@ footer {
   opacity: 0.5;
 }
 .btn-circle {
-  width: 36px;
-  height: 36px;
+  width: 24px;
+  height: 24px;
   text-align: center;
   padding: 6px 0 !important;
-
   line-height: 1.428571429;
   border-radius: 50% !important;
 }
 .btn-circle.btn-lg {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   padding: 10px 16px;
   font-size: 18px;
   line-height: 1.33;
@@ -285,8 +279,7 @@ footer {
   opacity: 0;
 }
 .card {
-  box-shadow: 3px 2px 15px 2px rgba(0, 0, 0, 0.16),
-    0 2px 10px 0 rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 3px 2px 15px 2px rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12) !important;
 }
 </style>
 <style scoped>

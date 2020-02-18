@@ -33,15 +33,20 @@ export default {
     },
 
     setDgftCrmUrlForCall({ commit, getters }, call) {
-      let callIndex = getters.getCallIndexByCallId(call.callId);
-      let path = "";
+      const callIndex = getters.getCallIndexByCallId(call.callId);
+      let path = "/";
       const uui = getters.getDgftUuiByCallIndex(callIndex);
 
       if (call && call.callingAddress !== "") {
         let screenpopBuilderRequest = {
+          type: "",
           callId: call.callId,
           cli: call.callingAddress,
           uui: uui,
+          api: {
+            RMN: "",
+            IECStatus: ""
+          },
           baseUrl: getters["session/getConfig"].DGFT.CRM.URL,
           agentId: getters.getAgentCredentials.agentId,
           sessionId: getters["session/getSessionId"]
@@ -50,7 +55,8 @@ export default {
         // Set the relative path based on customer RMN and IEC status
 
         //check if the UUI contains an RMN and IEC Field. In this case, no need to call DGFT (SugarCRM) API for it
-        if (uui && uui["RMN"] && uui["IECStatus"]) {
+        if (uui && uui !== "" && uui["RMN"] && uui["RMN"] != undefined && uui["IECStatus"]) {
+          screenpopBuilderRequest.type = "uui";
           if (uui["RMN"].toLowerCase() === "n") {
             //Not RMN, so screenpop the Create Contact Page
             path = "/#Contacts/create?";
@@ -58,32 +64,39 @@ export default {
             //RMN, so check if status is IEC
             if (uui["IECStatus"].toLowerCase() === "y") {
               //Status is IEC, so screenpop the accounts search page
-              path = "/index.php?module=Accounts&searchFormTab=basic_search&";
+              path = "/index.php?entryPoint=searchcrm&module=Accounts&";
             } else if (uui["IECStatus"].toLowerCase() === "n") {
               //Status is IEC, so screenpop the contacts search page
-              path = "/index.php?module=Contacts&searchFormTab=basic_search&";
+              path = "/index.php?entryPoint=searchcrm&module=Contacts&";
             }
+            screenpopBuilderRequest.path = path;
+            commit("SET_DGFT_CRM_URL", screenpopBuilderRequest);
           }
         } else {
+          screenpopBuilderRequest.type = "api";
           //since UUI not found, call DGFT (SugarCRM) API to check for RMN and IEC statu
           dgftMiddlewareConnector.checkRMN(screenpopBuilderRequest).then(resp => {
+            console.log("dgftMiddlewareConnector.checkRMN(): resp=" + JSON.stringify(resp));
             if (resp && resp.data && resp.data.number) {
               if (resp.data.number.toLowerCase() === "not found") {
+                screenpopBuilderRequest.api.RMN = "n";
                 //build URL for new caller
                 path = "/#Contacts/create?";
               } else if (resp.data.number.toLowerCase() === "found") {
-                if (resp.data.module.toLowerCase() === "iec") {
-                  path = "/index.php?module=Accounts&searchFormTab=basic_search&";
+                screenpopBuilderRequest.api.RMN = "y";
+                if (resp.data.module.toLowerCase() === "accounts") {
+                  screenpopBuilderRequest.api.IECStatus = "y";
+                  path = "/index.php?entryPoint=searchcrm&module=Accounts&";
                 } else if (resp.data.module.toLowerCase() === "contacts") {
-                  path = "/index.php?module=Contacts&searchFormTab=basic_search&";
+                  screenpopBuilderRequest.api.IECStatus = "n";
+                  path = "/index.php?entryPoint=searchcrm&module=Contacts&";
                 }
               }
+              screenpopBuilderRequest.path = path;
+              commit("SET_DGFT_CRM_URL", screenpopBuilderRequest);
             }
           });
         }
-        screenpopBuilderRequest.path = path;
-
-        commit("SET_DGFT_CRM_URL", screenpopBuilderRequest);
       } else {
         console.error("setDgftCrmUrlForCall(): call could not be retreived");
       }
@@ -125,24 +138,40 @@ export default {
     },
 
     SET_DGFT_CRM_URL(state, payload) {
-      const params =
-        (payload.uui.RMN.toLowerCase() === "y" ? "/" : "") +
-        "phone_office=" +
-        payload.cli +
-        "&ucid=" +
-        payload.uui.UCID +
-        "&complaintno=" +
-        payload.uui.ConplaintNo +
-        "+&rmn=" +
-        payload.uui.RMN +
-        "&lang=" +
-        payload.uui.lang +
-        "&lastshortcode=" +
-        payload.uui.LastShortCode +
-        "&agentId=" +
-        payload.agentId +
-        "&sessionId=" +
-        payload.sessionId;
+      let params = "";
+      if (payload.type.toLowerCase() === "uui") {
+        params =
+          (payload.uui.RMN.toLowerCase() === "y" ? "" : "") +
+          (payload.uui.RMN.toLowerCase() === "y" && payload.uui.IECStatus.toLowerCase() === "y"
+            ? "phone_office="
+            : "phone_mobile=") +
+          payload.cli +
+          "&ucid=" +
+          payload.uui.UCID +
+          "&complaintno=" +
+          payload.uui.ConplaintNo +
+          "+&rmn=" +
+          payload.uui.RMN +
+          "&lang=" +
+          payload.uui.lang +
+          "&lastshortcode=" +
+          payload.uui.LastShortCode +
+          "&agentId=" +
+          payload.agentId +
+          "&sessionId=" +
+          payload.sessionId;
+      } else if (payload.type.toLowerCase() === "api") {
+        params =
+          (payload.api.RMN.toLowerCase() === "y" ? "" : "") +
+          (payload.api.RMN.toLowerCase() === "y" && payload.api.IECStatus.toLowerCase() === "y"
+            ? "phone_office="
+            : "phone_mobile=") +
+          "9890012122" +
+          "&agentId=" +
+          payload.agentId +
+          "&sessionId=" +
+          payload.sessionId;
+      }
 
       state.dgftCrmUrl.push(payload.baseUrl + payload.path + params);
     },
@@ -160,17 +189,21 @@ export default {
       //UUI values are retreived as pipe separated string from IVR
 
       const uuiKeys = payload.keys;
-      const uuiValues = payload.values.split("|");
-      //const tempUui = [];
-      //Loop through the array of UUI keys
-      let tempJson = {};
-      for (let i = 0; i < uuiKeys.length; i++) {
-        //set the key of the JSON obj as the UUI key, and set it's value as the corresponsing UUI value
-        tempJson[uuiKeys[i]] = uuiValues[i];
-        //For the uui for the call, set the key as the callID, and push the UUI entry as a key value pair in the state
-        //tempUui.push(tempJson);
+      if (payload.values !== "") {
+        const uuiValues = payload.values.split("|");
+        //const tempUui = [];
+        //Loop through the array of UUI keys
+        let tempJson = {};
+        for (let i = 0; i < uuiKeys.length; i++) {
+          //set the key of the JSON obj as the UUI key, and set it's value as the corresponsing UUI value
+          tempJson[uuiKeys[i]] = uuiValues[i];
+          //For the uui for the call, set the key as the callID, and push the UUI entry as a key value pair in the state
+          //tempUui.push(tempJson);
+        }
+        state.dgftUui.push(tempJson);
+      } else {
+        state.dgftUui.push(null);
       }
-      state.dgftUui.push(tempJson);
     },
     RESET_DGFT_UUI(state, index) {
       if (state.dgftUui[index]) {

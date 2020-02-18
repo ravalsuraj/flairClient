@@ -34,7 +34,7 @@
       </form>
       <mdb-row>
         <!--For Loop for cycling through array of digits to for a grid of dialpad digits-->
-        <mdb-col col="md-4 px-0" v-for="digit in digits" :key="digit.id">
+        <mdb-col col="sm-4 px-0" v-for="digit in digits" :key="digit.id">
           <div
             class="fl_button_dialerDigit btn-block transparent-color text-center fl_btn_btnIcon"
             @click="appendDigit(digit.text)"
@@ -229,11 +229,7 @@ export default {
   -webkit-appearance: none;
   margin: 0;
 }
-.fl_container_dialer {
-  /* box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12); */
-  border-radius: 0px 0px 8px 8px;
-  max-width: 300px;
-}
+
 .fl_inp_dialedDigits {
   height: 25px;
   width: 100%;

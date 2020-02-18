@@ -7,22 +7,21 @@
             <mdb-col :col="cardWidth">
               <mdb-row>
                 <mdb-col col="7" class="mb-3 d-flex">
-                  <span strong class="fl_well_text big mx-auto">{{callingAddress}}</span>
-                  <span
-                    v-if="isCallConferenced"
-                    strong
-                    class="fl_well_text big mx-auto"
-                  >{{thirdAddress}}</span>
+                  <span strong class="fl_well_text big mx-auto">{{ callingAddress }}</span>
+                  <span v-if="isCallConferenced" strong class="fl_well_text big mx-auto">{{ thirdAddress }}</span>
                 </mdb-col>
-                <mdb-col col="5
-                " class="mb-3 text-center">
+                <mdb-col
+                  col="5
+                "
+                  class="mb-3 text-center"
+                >
                   <persist-timer :timerName="callTimerName" class="fl_well_text big"></persist-timer>
                 </mdb-col>
               </mdb-row>
 
               <mdb-row>
                 <mdb-col col="7" class="mb-3 d-flex">
-                  <span strong class="fl_well_text big mx-auto">{{callStatusText}}</span>
+                  <span strong class="fl_well_text big mx-auto">{{ callStatusText }}</span>
                 </mdb-col>
                 <mdb-col col="5" class="mb-3 text-center">
                   <persist-timer :timerName="inStateTimerName" class="fl_well_text big"></persist-timer>
@@ -36,19 +35,20 @@
                 <!-- START: Answer/Drop Button -->
                 <mdb-col col="4">
                   <transition name="fade">
-                    <button
+                    <mdb-btn
                       v-if="!isCallHeld"
                       type="button"
                       class="btn btn-circle"
                       @click="answerDropCall"
                       :disabled="isCallIdle"
-                      :class="[{iconGlow:isCallRinging}, answerButtonColor]"
+                      :class="[{ iconGlow: isCallRinging }]"
+                      :outline="answerButtonOutline"
                     >
                       <transition name="fade">
-                        <mdb-icon icon="phone" style="font-size:1.5em" v-if="isCallRinging" />
-                        <mdb-icon icon="phone-slash" style="font-size:1.5em" v-else />
+                        <mdb-icon icon="phone" style="font-size:1em" v-if="isCallRinging" />
+                        <mdb-icon icon="phone-slash" style="font-size:1em" v-else />
                       </transition>
-                    </button>
+                    </mdb-btn>
                   </transition>
                 </mdb-col>
                 <!-- END: Answer/Drop Button -->
@@ -56,15 +56,15 @@
                 <!-- START: Hold Button -->
                 <mdb-col col="4">
                   <transition name="fade">
-                    <button
+                    <mdb-btn
                       type="checkbox"
                       class="btn btn-circle"
                       :disabled="!isCallActive"
                       @click="holdUnholdCall"
-                      :class="holdButtonColor"
+                      :outline="holdButtonOutline"
                     >
-                      <mdb-icon :icon="isCallHeld?'play':'pause'" style="font-size:1.5em" />
-                    </button>
+                      <mdb-icon :icon="isCallHeld ? 'play' : 'pause'" style="font-size:1em" />
+                    </mdb-btn>
                   </transition>
                 </mdb-col>
                 <!--END: Hold Button-->
@@ -73,20 +73,17 @@
                 <mdb-col col="4">
                   <mdb-btn
                     type="checkbox"
-                    class="btn red lighten-1 btn-circle"
+                    class="btn btn-circle"
+                    outline="deep-orange"
                     v-if="!isCallConferenced && !isCallHeld"
-                    @click.native="showConferenceModal=true"
-                    :class="{'fl_disabledWidget':!isCallActive}"
+                    @click.native="showConferenceModal = true"
+                    :class="{ fl_disabledWidget: !isCallActive }"
                   >
-                    <mdb-icon icon="users" style="font-size:1.5em" />
+                    <mdb-icon icon="users" style="font-size:1em" color="red" />
                   </mdb-btn>
 
                   <!--START: Consult Call Dialer Modal-->
-                  <mdb-modal
-                    size="sm"
-                    v-if="showConferenceModal"
-                    @close="showConferenceModal=false"
-                  >
+                  <mdb-modal style="{max-width:250px !important}" size="sm" v-if="showConferenceModal" @close="showConferenceModal = false">
                     <mdb-modal-header>
                       <mdb-modal-title>Consult Call</mdb-modal-title>
                     </mdb-modal-header>
@@ -115,12 +112,7 @@ import ConsultDialer from "@/widgets/Dialer/ConsultDialer";
 
 import PersistTimer from "@/components/agc/PersistTimer.vue";
 import Widget from "@/components/agc/Widget";
-import {
-  CALL_STATES,
-  CALL_TYPES,
-  TIMER_TYPES,
-  MULTI_CALL_STATES
-} from "@/defines.js";
+import { CALL_STATES, CALL_TYPES, TIMER_TYPES, MULTI_CALL_STATES } from "@/defines.js";
 
 import {
   mdbContainer,
@@ -176,20 +168,14 @@ export default {
     },
 
     answerDropCall() {
-      this.$store.dispatch("requestAnswerDropCall", [
-        this.call.callId,
-        CALL_TYPES.INBOUND
-      ]);
+      this.$store.dispatch("requestAnswerDropCall", [this.call.callId, CALL_TYPES.INBOUND]);
     },
     holdUnholdCall() {
       this.$store.dispatch("requestHoldUnholdCall", this.call.callId);
     },
 
     disposeCall() {
-      this.$store.dispatch("removeCallFromActiveCalls", [
-        this.call.ucid,
-        this.call.callId
-      ]);
+      this.$store.dispatch("removeCallFromActiveCalls", [this.call.ucid, this.call.callId]);
     }
   },
   computed: {
@@ -221,25 +207,16 @@ export default {
     },
 
     isCallIdle() {
-      return (
-        this.callStatus === CALL_STATES.IDLE ||
-        this.callStatus === CALL_STATES.DROPPED
-      );
+      return this.callStatus === CALL_STATES.IDLE || this.callStatus === CALL_STATES.DROPPED;
     },
     isConfCallIdle() {
-      return (
-        this.conferenceCallStatus === CALL_STATES.IDLE ||
-        this.conferenceCallStatus === CALL_STATES.DROPPED
-      );
+      return this.conferenceCallStatus === CALL_STATES.IDLE || this.conferenceCallStatus === CALL_STATES.DROPPED;
     },
     isCallRinging() {
       return this.callStatus === CALL_STATES.RINGING;
     },
     isCallActive() {
-      return (
-        this.callStatus === CALL_STATES.TALKING ||
-        this.callStatus === CALL_STATES.HELD
-      );
+      return this.callStatus === CALL_STATES.TALKING || this.callStatus === CALL_STATES.HELD;
     },
 
     isCallHeld() {
@@ -281,11 +258,27 @@ export default {
         return { "blue-grey": true };
       }
     },
+    answerButtonOutline() {
+      if (this.isCallRinging) {
+        return "green";
+      } else if (this.isCallActive) {
+        return "red";
+      } else {
+        return "blue-grey";
+      }
+    },
     holdButtonColor() {
       if (this.isCallHeld) {
         return { "blue-grey": true };
       } else {
         return { cyan: true };
+      }
+    },
+    holdButtonOutline() {
+      if (this.isCallHeld) {
+        return "mdb-color";
+      } else {
+        return "cyan";
       }
     },
     callingAddress() {

@@ -1,8 +1,9 @@
 <template>
-  <widget :title="'CRM -' + CRM_URL">
+  <widget :title="'CRM: ' + crmUrl" fillHeight height="100%">
     <template v-slot:body>
-      <div class="wrapper">
-        <iframe :src="CRM_URL" class="w-100 fl_crm_window"></iframe>
+      <mdb-btn @click.native="loadDefaultCrmUrl">HOME</mdb-btn>
+      <div class="wrapper ">
+        <iframe :src="crmUrl" class="w-100 fl_crm_window"></iframe>
       </div>
     </template>
   </widget>
@@ -11,17 +12,22 @@
 <script>
 import { CALL_STATES } from "@/defines";
 import Widget from "@/components/agc/Widget";
+import { mdbBtn } from "mdbvue";
 export default {
   name: "CrmFrame",
   components: {
-    Widget
+    Widget,
+    mdbBtn
   },
   props: {},
+  mounted() {
+    this.crmUrl = this.defaultUrl;
+  },
   data() {
     return {
       manualShowWidget: true,
       iframeError: false,
-      crmUrl: null
+      crmUrl: ""
     };
   },
   methods: {
@@ -29,9 +35,15 @@ export default {
       if (this.autoShowWidget === false) {
         this.manualShowWidget = !this.manualShowWidget;
       }
+    },
+    loadDefaultCrmUrl() {
+      this.crmUrl = this.defaultUrl;
     }
   },
   computed: {
+    defaultUrl() {
+      return this.$store.getters["session/getConfig"].DGFT.CRM.URL + "/";
+    },
     autoShowWidget() {
       return (
         this.$store.activeCall.status === CALL_STATES.RINGING || this.$store.activeCall.status === CALL_STATES.TALKING
@@ -59,30 +71,18 @@ export default {
     },
 
     CRM_URL() {
-      // return "http://localhost:4000"
-      //return this.$store.getters.getDgftCrmUrlByCallIndex;
-      // if (this.callingAddress) {
-      //   return (
-      //     "http://localhost:4000" +
-      //     "?cli=" +
-      //     this.callingAddress +
-      //     "&dnis=" +
-      //     this.calledAddress +
-      //     "&ucid=" +
-      //     this.activeCall.ucid +
-      //     "&callId=" +
-      //     this.activeCall.callId +
-      //     "&sessionId=" +
-      //     this.sessionId
-      //   );
-      // } else {
       if (this.$store.getters.getSelectedDgftCrmUrl) {
         return this.$store.getters.getSelectedDgftCrmUrl;
       } else {
-        return this.$store.getters["session/getConfig"].DGFT.CRM.URL;
+        return this.defaultUrl;
       }
 
       // }
+    }
+  },
+  watch: {
+    CRM_URL(newUrl) {
+      this.crmUrl = newUrl;
     }
   }
 };
@@ -92,14 +92,14 @@ export default {
 <style scoped>
 .fl_crm_window {
   border: none;
-  height: 500px;
+  /* height: 600px; */
 }
 
 .wrapper {
   position: relative;
-  height: 500px;
+
   border: none;
-  height: 500px;
+  height: 100%;
 }
 .wrapper > * {
   position: absolute;

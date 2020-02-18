@@ -91,7 +91,6 @@ export default {
       console.log("SOCKET_ICALLRING(): Received event: " + JSON.stringify(payload));
 
       dispatch("processNewInboundCall", payload);
-
     },
 
     SOCKET_ICALLTALK({ dispatch, getters }, payload) {
@@ -170,6 +169,13 @@ export default {
     SOCKET_AGTUPDATED({ dispatch }, payload) {
       console.log("SOCKET_AGTUPDATED(): Received event: " + JSON.stringify(payload));
       dispatch("setAgentState", payload.agentState);
+    },
+
+    SOCKET_AVAYACONNDISC({}, payload) {
+      console.log("SOCKET_AVAYACONNDISC(): Received event: " + JSON.stringify(payload));
+    },
+    SOCKET_AVAYACONNRECONN({}, payload) {
+      console.log("SOCKET_AVAYACONNRECONN(): Received event: " + JSON.stringify(payload));
     }
   },
   getters: {

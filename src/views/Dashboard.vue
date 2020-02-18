@@ -1,16 +1,16 @@
 <template>
-  <mdb-container fluid class="mx-2 px-0 pt-2">
-    <mdb-row class="mb-4 mx-0">
+  <mdb-container fluid class="mx-2 px-0 pt-2 d-flex flex-fill flex-column">
+    <mdb-row class="my-3 mx-0">
       <mdb-col col="12">
         <call-drawer class="mx-3"></call-drawer>
       </mdb-col>
     </mdb-row>
     <hr />
-    <mdb-row class="mx-0">
-      <mdb-col :lg="leftComponentWidth" md="12" class>
+    <mdb-row class="mx-0 d-flex flex-fill">
+      <mdb-col :lg="leftComponentWidth" :md="leftComponentWidth" class=" flex-fill">
         <draggable
           :list="leftComponentWidgets"
-          class="dragArea"
+          class="dragArea flex-fill"
           ghostClass="ghost-component"
           chosenClass="chosen-component"
           animation="150"
@@ -29,10 +29,10 @@
         </draggable>
       </mdb-col>
 
-      <mdb-col :lg="middleComponentWidth" md="12" class="mb-1 px-0 mx-0">
-        <draggable
+      <mdb-col :lg="middleComponentWidth" :md="middleComponentWidth" class="mb-1 px-0 mx-0 h-100">
+        <!-- <draggable
           :list="middleComponentWidgets"
-          class="dragArea"
+          class="dragArea h-100"
           ghostClass="ghost-component"
           chosenClass="chosen-component"
           animation="150"
@@ -40,18 +40,19 @@
           filter=".card-body"
           :preventOnFilter="false"
         >
-          <transition-group name>
-            <component
-              v-for="component in middleComponentWidgets"
-              :is="component.name"
-              :key="component.name"
-              class="fl_widget"
-            ></component>
-          </transition-group>
-        </draggable>
+
+        </draggable> -->
+        <transition-group name>
+          <component
+            v-for="component in middleComponentWidgets"
+            :is="component.name"
+            :key="component.name"
+            class="fl_widget"
+          ></component>
+        </transition-group>
       </mdb-col>
 
-      <mdb-col :lg="rightComponentWidth" md="12" class="mb-1 px-0 mx-0">
+      <mdb-col :lg="rightComponentWidth" :md="rightComponentWidth" class="mb-1 px-0 mx-0">
         <draggable
           :list="rightComponentWidgets"
           class="dragArea"
@@ -198,7 +199,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style >
+<style>
 .ghost-component {
   opacity: 0;
   cursor: move;

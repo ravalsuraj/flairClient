@@ -2,14 +2,14 @@
     "FLAIR_AWS_PORT": 8000,
     "FLAIR_SERVER_URL": "http://192.168.110.99:9092",
     "SERVER_TIMEOUT_MS": 20000,
-    "CRM_URL": "http://localhost:9527/#/dashboard",
     "CRM_TIMEOUT_MS": 10000,
+    "ALLOW_OUTBOUND_DIALING": true,
     "DGFT": {
         "MIDDLEWARE": {
-            "URL": "http://localhost:9093"
+            "URL": "http://192.168.110.99:9093"
         },
         "CRM": {
-            "URL": "http://13.235.211.5:81/sugarcrm"
+            "URL": "https://egtf.dgft.gov.in/sitsugarcrm"
         },
         "UUI_KEYS": [
             "UCID",
@@ -89,11 +89,9 @@
             "reasonLabel": "Dinner"
         }
     ],
-    "rightComponents": {
-        "width": "3",
-        "widgets": [         {
-            "name": "dgft-helper"
-        }]
+    "leftComponents": {
+        "width": "0",
+        "widgets": []
     },
     "middleComponents": {
         "width": "9",
@@ -103,8 +101,12 @@
             }
         ]
     },
-    "leftComponents": {
-        "width": "0",
-        "widgets": []
+    "rightComponents": {
+        "width": "3",
+        "widgets": [
+            {
+                "name": "dgft-helper"
+            }
+        ]
     }
 }

@@ -27,9 +27,9 @@
           </a>
 
           <!--Delete All Digits-->
-          <a class="black-text align-self-baseline fl_btn_btnIcon" @click="clearDigits" @click.stop>
+          <!-- <a class="black-text align-self-baseline fl_btn_btnIcon" @click="clearDigits" @click.stop>
             <mdb-icon icon="trash" size="1p5x" />
-          </a>
+          </a> -->
         </mdb-row>
       </div>
 
@@ -49,7 +49,7 @@
       <div @click.stop>
         <mdb-row class @click.stop>
           <transition name="fade">
-            <mdb-btn  class="mx-2 btn-block light-blue" @click="onMakeCallButtonClicked">
+            <mdb-btn  class="mx-2 py-3 btn-block" color="cyan darken-2" @click="onMakeCallButtonClicked">
               <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
               <span>Call</span>
             </mdb-btn>
@@ -240,11 +240,6 @@ export default {
   margin: 0;
 }
 
-.fl_container_dialer {
-  /* box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12); */
-  border-radius: 0px 0px 8px 8px;
-  max-width: 300px;
-}
 .fl_inp_dialedDigits {
   height: 25px;
   width: 100%;

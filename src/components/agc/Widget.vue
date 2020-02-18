@@ -1,8 +1,8 @@
 <template>
-  <mdb-container fluid>
-    <mdb-card class="mb-0">
+  <mdb-container fluid :style="{ height: height }">
+    <mdb-card class="mb-0" :class="{ 'h-100': fillHeight && showWidget }">
       <mdb-card-header :class="color">
-        <strong>{{title}}</strong>
+        <strong>{{ title }}</strong>
         <a @click="toggleShowWidget">
           <transition name="fade" mode="out-in">
             <mdb-icon v-if="showWidget" icon="window-minimize" class="float-right"></mdb-icon>
@@ -10,7 +10,7 @@
           </transition>
         </a>
       </mdb-card-header>
-      <mdb-card-body class="px-1" v-show-slide="showWidget" :class="{'p-0': !showWidget}">
+      <mdb-card-body class="px-1" v-show-slide="showWidget" :class="{ 'p-0': !showWidget }">
         <slot name="body"></slot>
       </mdb-card-body>
     </mdb-card>
@@ -18,13 +18,7 @@
 </template>
 
 <script>
-import {
-  mdbContainer,
-  mdbCard,
-  mdbCardBody,
-  mdbCardHeader,
-  mdbIcon
-} from "mdbvue";
+import { mdbContainer, mdbCard, mdbCardBody, mdbCardHeader, mdbIcon } from "mdbvue";
 
 export default {
   name: "Widget",
@@ -43,6 +37,14 @@ export default {
     color: {
       type: String,
       default: "mdb-color text-white"
+    },
+    height: {
+      type: String,
+      default: ""
+    },
+    fillHeight: {
+      type: Boolean,
+      default: false
     }
   },
 

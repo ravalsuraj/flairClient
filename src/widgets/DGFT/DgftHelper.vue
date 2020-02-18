@@ -60,6 +60,14 @@ export default {
         return this.latestCallId;
       }
     },
+    selectedCallersAddress() {
+      let call = this.$store.getters.getCallByCallId(this.selectedCallId);
+      if (call) {
+        return call.callingAddress;
+      } else {
+        return null;
+      }
+    },
     agentState() {
       return this.$store.getters["getAgentState"];
     },
@@ -82,7 +90,11 @@ export default {
       //if the call list increases, fetch the screenpop url for the latest call
       if (newInCallList.length > this.currentInboundCallList.length) {
         this.currentInboundCallList.push(this.latestCallId);
-        this.$store.dispatch("processNewDgftCall", this.latestCallId);
+        if (this.selectedCallersAddress.length > 5) {
+          this.$store.dispatch("processNewDgftCall", this.latestCallId);
+        } else {
+          console.log("caller length < 5, so this call was not processed. callId=" + this.latestCallId);
+        }
       }
 
       //if the call list decreases, it means a call was dropped, so reset the screenpop URL

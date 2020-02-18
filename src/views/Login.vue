@@ -311,9 +311,6 @@ a {
   color: #42b983;
 }
 
-.iconCallHangup {
-  transform: rotate(135deg);
-}
 
 .fade-enter-active,
 .fade-leave-active {
