@@ -1,10 +1,11 @@
 <template>
   <mdb-navbar
-    class="special-color white-text flexible-navbar fl_topNav"
+    color="special-color"
+    class="white-text flexible-navbar fl_topNav"
     position="top"
     navIconClass="white-text"
-    animation="1"
     :toggler="false"
+   
   >
     <mdb-navbar-brand href="/" target="_blank">
       <div class="light-color" style="opacity:1">

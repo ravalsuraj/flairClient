@@ -103,6 +103,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+body > div > div:nth-child(1) > nav > ul > li > ul,
+body > div > div:nth-child(1) > nav > ul > span > div > ul {
+  transition: unset !important;
+}
 .test-cont {
   height: 280px;
   width: 280px;
@@ -115,13 +119,32 @@ export default {
   -moz-osx-font-smoothing: grayscale;
 }
 html {
-  font-size: 62.5%;
+  font-size: 70%;
+  font-size: 1em;
   color: rgba(0, 0, 0, 0.45);
+}
+@media (min-width: 600px) {
+  html {
+    font-size: 50%;
+  }
+}
+
+@media (min-width: 800px) {
+  html {
+    font-size: 62.5%;
+  }
+}
+
+@media (min-width: 1440px) {
+  html {
+    /* Never get larger than this */
+    font-size: 75%;
+  }
 }
 .main-body {
   height: calc(100vh - 25px);
   background: linear-gradient(#fff, rgb(243, 243, 243));
-  overflow: hidden
+  overflow: hidden;
 }
 footer {
   height: 25px;

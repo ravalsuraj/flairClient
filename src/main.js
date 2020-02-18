@@ -25,14 +25,6 @@ Vue.use(VShowSlide);
 Vue.use(Vuedraggable);
 import "mdbvue/lib/css/mdb.min.css";
 import '@fortawesome/fontawesome-free/css/all.min.css'
-// Vue.use(VueCookies);
-// set default config
-//VueCookies.config("1d");
-
-// set global cookie
-// VueCookies.set("theme", "default");
-// VueCookies.set("hover-time", "1s");
-
 
 //Used to detect long click. Used in the dialer to delete multiple digits upon long-click
 const longClickInstance = longClickDirective({ delay: 400, interval: 50 });

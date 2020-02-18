@@ -5,24 +5,27 @@
         <mdb-container>
           <mdb-row class="no-gutters">
             <mdb-col :col="cardWidth">
+              <!-- First row of the call card -->
               <mdb-row>
+                <!-- Participant display -->
                 <mdb-col col="7" class="mb-3 d-flex">
                   <span strong class="fl_well_text big mx-auto">{{ callingAddress }}</span>
                   <span v-if="isCallConferenced" strong class="fl_well_text big mx-auto">{{ thirdAddress }}</span>
                 </mdb-col>
-                <mdb-col
-                  col="5
-                "
-                  class="mb-3 text-center"
-                >
+
+                <!-- Total Call Timer -->
+                <mdb-col col="5" class="mb-3 text-center">
                   <persist-timer :timerName="callTimerName" class="fl_well_text big"></persist-timer>
                 </mdb-col>
               </mdb-row>
 
               <mdb-row>
+                <!-- Call Status Display -->
                 <mdb-col col="7" class="mb-3 d-flex">
                   <span strong class="fl_well_text big mx-auto">{{ callStatusText }}</span>
                 </mdb-col>
+
+                <!-- Call State Timer -->
                 <mdb-col col="5" class="mb-3 text-center">
                   <persist-timer :timerName="inStateTimerName" class="fl_well_text big"></persist-timer>
                 </mdb-col>
@@ -83,7 +86,12 @@
                   </mdb-btn>
 
                   <!--START: Consult Call Dialer Modal-->
-                  <mdb-modal style="{max-width:250px !important}" size="sm" v-if="showConferenceModal" @close="showConferenceModal = false">
+                  <mdb-modal
+                    style="{max-width:250px !important}"
+                    size="sm"
+                    v-if="showConferenceModal"
+                    @close="showConferenceModal = false"
+                  >
                     <mdb-modal-header>
                       <mdb-modal-title>Consult Call</mdb-modal-title>
                     </mdb-modal-header>

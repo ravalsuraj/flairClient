@@ -1,6 +1,6 @@
 <template>
   <section>
-    <mdb-container fluid>
+    <mdb-container fluid v-if="myCalls && myCalls.length > 0">
       <!-- <mdb-row>
         <timer-test></timer-test>
       </mdb-row>-->
@@ -20,52 +20,36 @@
           <dgft-disposition v-if="isCallDropped(call)" :ucid="call.ucid" :callId="call.callId"></dgft-disposition>
         </mdb-col>
       </mdb-row>
-      <span class="float-right">
-        <!-- <mdb-btn class="btn-circle light-blue" @click.native="openOutboundModal">
-          
-          <mdb-icon icon="plus" style="font-size:1.5em" />
-        </mdb-btn> -->
-        <mdb-modal size="sm" v-if="showOutboundDialerModal" @close="showOutboundDialerModal = false">
-          <mdb-modal-header class="black-text">
-            <mdb-modal-title>Make Call</mdb-modal-title>
-          </mdb-modal-header>
-          <mdb-modal-body>
-            <outbound-dialer @close-self="showOutboundDialerModal = false"></outbound-dialer>
-          </mdb-modal-body>
-        </mdb-modal>
-      </span>
-      <div class="float-right" end>
-        <!-- <mdb-dropdown-toggle slot="toggle" color="secondary">Dropdown link</mdb-dropdown-toggle> -->
-        <mdb-btn
-          v-if="isOutCallingEnabled"
-          class="btn-circle btn-lg"
-          :color="showOutboundDialerDropdown?'cyan':'mdb-color'"
-          @click.native="showOutboundDialerDropdown = !showOutboundDialerDropdown"
-        >
-          <!-- <mdb-icon icon="phone" style="font-size:1em" /> -->
-          <mdb-icon
-            icon="phone"
-            style="font-size:1.7em"
-            class="white-text fl_rotating_icon"
-            :class="{ active: showOutboundDialerDropdown }"
-          />
-        </mdb-btn>
-        <!-- <transition name="fade" mode="out-in"> -->
-        <scale-transition origin="top right">
-          <div class=" fl_dropdown" v-if="showOutboundDialerDropdown">
-            <mdb-card>
-              <mdb-card-header color="cyan darken-1" class="pt-4"
-                ><h4><strong>Make Outbound Call</strong></h4></mdb-card-header
-              >
-              <mdb-card-body>
-                <outbound-dialer></outbound-dialer>
-              </mdb-card-body>
-            </mdb-card>
-          </div>
-        </scale-transition>
-        <!-- </transition> -->
-      </div>
     </mdb-container>
+    <div class="float-right" end v-else>
+      <mdb-btn
+        v-if="isOutCallingEnabled"
+        class="btn-circle btn-lg"
+        :color="showOutboundDialerDropdown ? 'cyan' : 'mdb-color'"
+        @click.native="showOutboundDialerDropdown = !showOutboundDialerDropdown"
+      >
+        <mdb-icon
+          icon="phone"
+          style="font-size:1.7em"
+          class="white-text fl_rotating_icon"
+          :class="{ active: showOutboundDialerDropdown }"
+        />
+      </mdb-btn>
+      <!-- <transition name="fade" mode="out-in"> -->
+      <scale-transition origin="top right">
+        <div class=" fl_dropdown" v-if="showOutboundDialerDropdown">
+          <mdb-card>
+            <mdb-card-header color="cyan darken-1" class="pt-4"
+              ><h4><strong>Make Outbound Call</strong></h4></mdb-card-header
+            >
+            <mdb-card-body>
+              <outbound-dialer></outbound-dialer>
+            </mdb-card-body>
+          </mdb-card>
+        </div>
+      </scale-transition>
+      <!-- </transition> -->
+    </div>
   </section>
 </template>
 
@@ -80,20 +64,7 @@ import DgftDisposition from "@/widgets/DGFT/DgftDisposition.vue";
 import OutboundDialer from "@/widgets/Dialer/OutboundDialer.vue";
 
 import { CALL_STATES, CALL_TYPES } from "@/defines.js";
-import {
-  mdbRow,
-  mdbCol,
-  mdbContainer,
-  mdbModal,
-  mdbModalHeader,
-  mdbModalTitle,
-  mdbModalBody,
-  mdbBtn,
-  mdbIcon,
-  mdbCard,
-  mdbCardBody,
-  mdbCardHeader
-} from "mdbvue";
+import { mdbRow, mdbCol, mdbContainer, mdbBtn, mdbIcon, mdbCard, mdbCardBody, mdbCardHeader } from "mdbvue";
 export default {
   name: "CallDrawer",
   components: {
@@ -106,10 +77,6 @@ export default {
     mdbCol,
     mdbContainer,
 
-    mdbModal,
-    mdbModalHeader,
-    mdbModalTitle,
-    mdbModalBody,
     mdbBtn,
     mdbIcon,
 
