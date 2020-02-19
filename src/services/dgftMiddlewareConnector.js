@@ -10,5 +10,8 @@ export default {
   checkRMN(request) {
     console.log("checkRMN(): request received Request=", request);
     return instance.get("/rmn/" + request.cli);
+  },
+  getServerIp() {
+    return instance.get("/flairserverip");
   }
 };

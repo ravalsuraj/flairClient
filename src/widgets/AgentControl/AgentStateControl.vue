@@ -1,23 +1,10 @@
 <template>
-  <!-- <form
-    @submit.prevent
-    class="form form-inline d-flex align-items-center nav-item"
-    id="fl_agent_state_dropdown"
-  > -->
   <mdb-dropdown tag="li" class="nav-item">
     <!--Selected State-->
-    <mdb-dropdown-toggle tag="a" navLink color="special" slot="toggle" >
+    <mdb-dropdown-toggle tag="a" navLink color="special" slot="toggle">
       <mdb-icon icon="circle" :class="agentStateIndicatorColor(currentAgentAuxState.state)" class="mr-2" />
-      {{ currentAgentAuxState.label }}
+      <strong class="h5">{{ currentAgentAuxState.label }}</strong>
     </mdb-dropdown-toggle>
-    <!-- <a class="dropdown-toggle-a primary-text" slot="toggle">
-        <mdb-icon
-          icon="circle"
-          :class="agentStateIndicatorColor(currentAgentAuxState.state)"
-          class="mr-2"
-        />
-        {{currentAgentAuxState.label}}
-      </a>-->
 
     <mdb-dropdown-menu left color="primary">
       <!--List of all possible agent states-->
@@ -31,7 +18,6 @@
       </mdb-dropdown-item>
     </mdb-dropdown-menu>
   </mdb-dropdown>
-  <!-- </form> -->
 </template>
 
 <script>

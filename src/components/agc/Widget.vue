@@ -1,6 +1,6 @@
 <template>
   <mdb-container fluid :style="{ height: height }">
-    <mdb-card class="mb-0" :class="{ 'h-100': fillHeight && showWidget }" :style="{ 'border-radius': '0 0 10px 0' }">
+    <mdb-card class="mb-0" :class="{ 'h-100': fillHeight && showWidget }" :style="{ 'border-radius': '10px 0 10px 0' }">
       <mdb-card-header :class="color" :style="{ 'border-radius': '10px 0 0 0' }">
         <strong>{{ title }}</strong>
         <a @click="toggleShowWidget">

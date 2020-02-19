@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column">
+  <div class="d-flex flex-column py-0 my-0">
     <div ref="topNavBar">
       <top-navbar v-if="isAgentLoggedIn" class></top-navbar>
     </div>
@@ -103,7 +103,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-body > div > div:nth-child(1) > nav > ul > span> li > ul,
+body > div > div:nth-child(1) > nav > ul > span > li > ul,
 body > div > div:nth-child(1) > nav > ul > span > div > ul {
   transition: unset !important;
 }
@@ -142,7 +142,7 @@ html {
   }
 }
 .main-body {
-  height: calc(100vh - 25px);
+  height: calc(100vh - 30px);
   background: linear-gradient(#fff, rgb(243, 243, 243));
   overflow: hidden;
 }
