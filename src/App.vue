@@ -103,7 +103,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-body > div > div:nth-child(1) > nav > ul > li > ul,
+body > div > div:nth-child(1) > nav > ul > span> li > ul,
 body > div > div:nth-child(1) > nav > ul > span > div > ul {
   transition: unset !important;
 }

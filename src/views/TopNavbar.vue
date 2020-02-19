@@ -5,7 +5,6 @@
     position="top"
     navIconClass="white-text"
     :toggler="false"
-   
   >
     <mdb-navbar-brand href="/" target="_blank">
       <div class="light-color" style="opacity:1">
@@ -18,29 +17,10 @@
       </div>
     </mdb-navbar-brand>
     <mdb-navbar-nav right>
-      <!-- <span class="fl_navbar_item">
-        <mdb-btn
-         class="light-blue"
-  
-          @click.native="showOutboundDialerModal = true"
-        >Place Call</mdb-btn>
-        <mdb-modal
-          size="sm"
-          v-if="showOutboundDialerModal"
-          @close="showOutboundDialerModal = false"
-        >
-          <mdb-modal-header class="black-text">
-            <mdb-modal-title>Make Call</mdb-modal-title>
-          </mdb-modal-header>
-          <mdb-modal-body>
-            <outbound-dialer @close-self="showOutboundDialerModal = false"></outbound-dialer>
-          </mdb-modal-body>
-        </mdb-modal>
-      </span>-->
-      <agent-state-control></agent-state-control>
-      <!-- <span class="fl_navbar_item">
+      <span class="fl_navbar_item">
         <agent-state-control></agent-state-control>
-      </span> -->
+      </span>
+
       <span class="fl_navbar_item">
         <agent-profile></agent-profile>
       </span>
