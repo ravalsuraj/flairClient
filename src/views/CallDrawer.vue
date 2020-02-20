@@ -1,10 +1,6 @@
 <template>
   <section>
     <mdb-container fluid v-if="myCalls && myCalls.length > 0">
-      <!-- <mdb-row>
-        <timer-test></timer-test>
-      </mdb-row>-->
-
       <mdb-row>
         <mdb-col :col="cardWidth" v-for="call in myCalls" :key="call.callId">
           <call-card-inbound
@@ -22,33 +18,7 @@
       </mdb-row>
     </mdb-container>
     <div class="float-right" end v-else>
-      <mdb-btn
-        v-if="isOutCallingEnabled"
-        class="btn-circle btn-lg"
-        :color="showOutboundDialerDropdown ? 'cyan' : 'mdb-color'"
-        @click.native="showOutboundDialerDropdown = !showOutboundDialerDropdown"
-      >
-        <mdb-icon
-          icon="phone"
-          style="font-size:1.7em"
-          class="white-text fl_rotating_icon"
-          :class="{ active: showOutboundDialerDropdown }"
-        />
-      </mdb-btn>
-      <!-- <transition name="fade" mode="out-in"> -->
-      <scale-transition origin="top right">
-        <div class=" fl_dropdown" v-if="showOutboundDialerDropdown">
-          <mdb-card>
-            <mdb-card-header color="cyan darken-1" class="pt-4"
-              ><h4><strong>Make Outbound Call</strong></h4></mdb-card-header
-            >
-            <mdb-card-body>
-              <outbound-dialer></outbound-dialer>
-            </mdb-card-body>
-          </mdb-card>
-        </div>
-      </scale-transition>
-      <!-- </transition> -->
+      <dialer-toggle></dialer-toggle>
     </div>
   </section>
 </template>
@@ -57,32 +27,24 @@
 
 <script>
 import _ from "lodash.debounce";
-import { ScaleTransition } from "vue2-transitions";
+
 import CallCardInbound from "@/widgets/CallControl/CallCardInbound.vue";
 import CallCardOutbound from "@/widgets/CallControl/CallCardOutbound.vue";
+import DialerToggle from "@/widgets/Dialer/DialerToggle.vue";
 import DgftDisposition from "@/widgets/DGFT/DgftDisposition.vue";
-import OutboundDialer from "@/widgets/Dialer/OutboundDialer.vue";
 
 import { CALL_STATES, CALL_TYPES } from "@/defines.js";
-import { mdbRow, mdbCol, mdbContainer, mdbBtn, mdbIcon, mdbCard, mdbCardBody, mdbCardHeader } from "mdbvue";
+import { mdbRow, mdbCol, mdbContainer } from "mdbvue";
 export default {
   name: "CallDrawer",
   components: {
     CallCardInbound,
     CallCardOutbound,
     DgftDisposition,
-    OutboundDialer,
-    ScaleTransition,
+    DialerToggle,
     mdbRow,
     mdbCol,
-    mdbContainer,
-
-    mdbBtn,
-    mdbIcon,
-
-    mdbCard,
-    mdbCardBody,
-    mdbCardHeader
+    mdbContainer
   },
 
   props: {},

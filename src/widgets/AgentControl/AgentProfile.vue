@@ -3,7 +3,7 @@
     <a class="dropdown-toggle-a unique-color-text" slot="toggle">
       <strong>
         <mdb-icon icon="user" class="mr-2" size="1x" />
-        <span class="h5 pb-1">Agent {{ agentCredentials.agentId }}</span>
+        <span class="h6 pb-1">Agent {{ agentCredentials.agentId }}</span>
       </strong>
     </a>
     <mdb-dropdown-menu right>
