@@ -38,10 +38,16 @@ export default {
       const uui = getters.getDgftUuiByCallIndex(callIndex);
 
       if (call && call.callingAddress !== "") {
+        let formattedCli = "";
+        if (call.callingAddress.substring(0, 2) === "91") {
+          formattedCli = call.callingAddress.substring(2, call.callingAddress.length);
+        } else {
+          formattedCli = call.callingAddress;
+        }
         let screenpopBuilderRequest = {
           type: "",
           callId: call.callId,
-          cli: call.callingAddress,
+          cli: formattedCli,
           uui: uui,
           api: {
             RMN: "",
@@ -118,6 +124,10 @@ export default {
 
     resetDgftUuiForCall({ commit }, callId) {
       commit("RESET_DGFT_UUI", callId);
+    },
+
+    requestDgftSurveyIvrTransfer({ }, callId) {
+      
     }
   },
 
@@ -166,7 +176,7 @@ export default {
           (payload.api.RMN.toLowerCase() === "y" && payload.api.IECStatus.toLowerCase() === "y"
             ? "phone_office="
             : "phone_mobile=") +
-          "9890012122" +
+          payload.cli +
           "&agentId=" +
           payload.agentId +
           "&sessionId=" +
@@ -202,7 +212,7 @@ export default {
         }
         state.dgftUui.push(tempJson);
       } else {
-        state.dgftUui.push(null);
+        state.dgftUui.push("");
       }
     },
     RESET_DGFT_UUI(state, index) {
