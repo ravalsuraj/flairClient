@@ -1,5 +1,5 @@
 import dgftMiddlewareConnector from "@/services/dgftMiddlewareConnector.js";
-
+import { SOCKET_EVENTS } from "@/defines.js";
 function initialState() {
   //hard-coded UUI for testing
   return {
@@ -126,8 +126,20 @@ export default {
       commit("RESET_DGFT_UUI", callId);
     },
 
-    requestDgftSurveyIvrTransfer({ }, callId) {
-      
+    requestDgftSurveyIvrTransfer({ dispatch, getters }, callId) {
+      let request = {
+        sessionId: getters["session/getSessionId"],
+        primaryCallId: callId,
+        dialedNumber: getters["session/getConfig"].DGFT.CSAT.VDN
+      };
+
+      console.log("requestDgftSurveyIvrTransfer(): request=" + JSON.stringify(request));
+      this._vm.$socket.emit(SOCKET_EVENTS.DGFT_IVR_TRANSFER, request, resp => {
+        console.log("requestDgftSurveyIvrTransfer(): resp=" + JSON.stringify(resp));
+        if (resp.responseCode === "0") {
+          dispatch("processCallTransferDone", resp);
+        }
+      });
     }
   },
 
@@ -187,7 +199,7 @@ export default {
     },
 
     RESET_DGFT_CRM_URL(state, index) {
-      if (state.dgftCrmUrl[index]) {
+      if (state.dgftCrmUrl[index] != null) {
         state.dgftCrmUrl.splice(index, 1);
       } else {
         console.log("RESET_DGFT_CRM_URL(): skipping, since index " + index + " does not exist in dgftCrmUrl List");
@@ -229,11 +241,16 @@ export default {
       return callIndex > -1 ? state.dgftUui[callIndex] : null;
     },
     getDgftUuiByCallIndex: state => callIndex => {
-      if (state.dgftUui[callIndex]) {
+      if (state.dgftUui[callIndex] != null) {
         console.log("found DGFT UUI: state=" + JSON.stringify(state.dgftUui));
         return state.dgftUui[callIndex];
       } else {
-        console.log("could not find DGFT UUI: state=" + JSON.stringify(state.dgftUui));
+        console.log(
+          "getDgftUuiByCallIndex(): could not find DGFT UUI for call index=" +
+            callIndex +
+            "+ state=" +
+            JSON.stringify(state.dgftUui)
+        );
         return null;
       }
     },
