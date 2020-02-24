@@ -2,6 +2,7 @@
   <widget title="DGFT Helper">
     <template v-slot:body>
       <mdb-container fluid>
+        <h4 v-if="!inboundCallList || (inboundCallList && inboundCallList.length === 0)">Waiting for calls</h4>
         <select
           class="browser-default custom-select mb-5"
           v-model="dropdownSelectedCallId"
@@ -14,6 +15,16 @@
           <div class="text-center py-2">The following Call is being used to perform Screenpop</div>
           <h3 class="text-center">{{ inboundCallList[0] }}</h3>
         </div>
+        <div class="w-100">
+          <mdb-btn
+            v-if="inboundCallList && inboundCallList.length > 0"
+            color="green"
+            class="mx-auto btn-block"
+            @click.native="onSurveyTransferBtnClicked"
+          >
+            Transfer to Survey
+          </mdb-btn>
+        </div>
 
         <dl class="row mb-1 no-gutters fl_dl" v-for="(value, name) in dgftUui" :key="value.id">
           <dt class="col-sm-6 fl_dt">{{ name }}</dt>
@@ -25,7 +36,7 @@
 </template>
 
 <script>
-import { mdbContainer } from "mdbvue";
+import { mdbContainer, mdbBtn } from "mdbvue";
 import { AGENT_STATES } from "@/defines.js";
 import Widget from "@/components/agc/Widget";
 
@@ -33,7 +44,8 @@ export default {
   name: "DgftHelper",
   components: {
     Widget,
-    mdbContainer
+    mdbContainer,
+    mdbBtn
   },
   mounted() {},
   props: {},
@@ -83,6 +95,9 @@ export default {
   methods: {
     toggleShowWidget() {
       this.showWidget = !this.showWidget;
+    },
+    onSurveyTransferBtnClicked() {
+      this.$store.dispatch("requestDgftSurveyIvrTransfer", this.selectedCallId);
     }
   },
   watch: {

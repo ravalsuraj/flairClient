@@ -25,14 +25,15 @@ Vue.use(VShowSlide);
 Vue.use(Vuedraggable);
 import "mdbvue/lib/css/mdb.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import dgftMiddlewareConnector from "./services/dgftMiddlewareConnector";
+import api from "./services/api";
 
 //Used to detect long click. Used in the dialer to delete multiple digits upon long-click
 const longClickInstance = longClickDirective({ delay: 400, interval: 50 });
 let serverIp = "";
 Vue.directive("longclick", longClickInstance);
 
-dgftMiddlewareConnector
+//get the IP address dynamically for the websocket server.
+api
   .getServerIp()
   .then(resp => {
     console.log("resp=" + JSON.stringify(resp.data));
@@ -52,7 +53,7 @@ dgftMiddlewareConnector
       Vue.use(Vue2TouchEvents);
 
       Vue.config.productionTip = false;
-
+      Vue.prototype.$serverip = serverIp;
       new Vue({
         router,
         store,
