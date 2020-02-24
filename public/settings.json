@@ -4,12 +4,16 @@
     "SERVER_TIMEOUT_MS": 20000,
     "CRM_TIMEOUT_MS": 10000,
     "ALLOW_OUTBOUND_DIALING": true,
+    "AGENT_STATE_POLLING_INTERVAL_MS": 1000,
     "DGFT": {
         "MIDDLEWARE": {
             "URL": "http://192.168.110.99:9093"
         },
         "CRM": {
             "URL": "https://egtf.dgft.gov.in/sitsugarcrm"
+        },
+        "CSAT": {
+            "VDN": "2527"
         },
         "UUI_KEYS": [
             "UCID",
@@ -94,7 +98,7 @@
         "widgets": []
     },
     "middleComponents": {
-        "width": "9",
+        "width": "10",
         "widgets": [
             {
                 "name": "crm-frame"
@@ -102,7 +106,7 @@
         ]
     },
     "rightComponents": {
-        "width": "3",
+        "width": "2",
         "widgets": [
             {
                 "name": "dgft-helper"

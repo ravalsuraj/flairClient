@@ -1,7 +1,11 @@
 <template>
   <widget :title="'CRM: ' + crmUrl" fillHeight height="100%">
+    <template v-slot:toolbar>
+      <!-- <mdb-btn size="sm" class="btn-circle" @click.native="loadDefaultCrmUrl"
+        ><mdb-icon icon="home"> </mdb-icon
+      ></mdb-btn> -->
+    </template>
     <template v-slot:body>
-      <mdb-btn @click.native="loadDefaultCrmUrl">HOME</mdb-btn>
       <div class="wrapper ">
         <iframe :src="crmUrl" class="w-100 fl_crm_window"></iframe>
       </div>
@@ -12,12 +16,13 @@
 <script>
 import { CALL_STATES } from "@/defines";
 import Widget from "@/components/agc/Widget";
-import { mdbBtn } from "mdbvue";
+// import { mdbBtn, mdbIcon } from "mdbvue";
 export default {
   name: "CrmFrame",
   components: {
-    Widget,
-    mdbBtn
+    Widget
+    // mdbBtn,
+    // mdbIcon
   },
   props: {},
   mounted() {
