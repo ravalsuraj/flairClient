@@ -32,8 +32,7 @@ const longClickInstance = longClickDirective({ delay: 400, interval: 50 });
 let serverIp = "";
 Vue.directive("longclick", longClickInstance);
 
-//get the IP address dynamically for the websocket server.
-api
+dgftMiddlewareConnector
   .getServerIp()
   .then(resp => {
     console.log("resp=" + JSON.stringify(resp.data));
