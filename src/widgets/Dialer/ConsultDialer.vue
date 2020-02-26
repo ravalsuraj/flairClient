@@ -3,7 +3,7 @@
   <mdb-card-body class="p-2 mb-1">-->
   <div class="fl_container_dialer">
     <mdb-container fluid>
-      <form @click.stop @keyup.enter="onConsultButtonClicked">
+      <form @submit.prevent @click.stop @keyup.enter="onConsultButtonClicked">
         <mdb-row class="px-3 py-4" @click.stop>
           <mdb-col class="d-flex align-items-baseline">
             <!--Input Textbox for digits-->
@@ -34,7 +34,7 @@
       </form>
       <mdb-row>
         <!--For Loop for cycling through array of digits to for a grid of dialpad digits-->
-        <mdb-col col="md-4 px-0" v-for="digit in digits" :key="digit.id">
+        <mdb-col col="sm-4 px-0" v-for="digit in digits" :key="digit.id">
           <div
             class="fl_button_dialerDigit btn-block transparent-color text-center fl_btn_btnIcon"
             @click="appendDigit(digit.text)"
@@ -62,37 +62,15 @@
 </template>
 
 <script>
-import {
-  mdbContainer,
-  mdbRow,
-  mdbCol,
-  mdbBtn,
-  mdbCard,
-  mdbCardBody,
-  mdbCardHeader,
-  mdbCardText,
-  mdbInput,
-  mdbIcon
-} from 'mdbvue'
-import {
-  CALL_STATES,
-  CALL_TYPES,
-  AGENT_STATES,
-  SOCKET_EVENTS
-} from '@/defines.js'
+import { mdbContainer, mdbRow, mdbCol, mdbBtn, mdbIcon } from "mdbvue";
 
 export default {
-  name: 'ConsultDialer',
+  name: "ConsultDialer",
   components: {
     mdbContainer,
     mdbRow,
     mdbCol,
     mdbBtn,
-    mdbCard,
-    mdbCardBody,
-    mdbCardHeader,
-    mdbCardText,
-    mdbInput,
     mdbIcon
   },
   mounted() {},
@@ -103,71 +81,71 @@ export default {
 
   data() {
     return {
-      dialedDigits: '',
+      dialedDigits: "",
 
       digits: [
         {
           text: 1,
-          subText: ''
+          subText: ""
         },
         {
           text: 2,
-          subText: 'ABC'
+          subText: "ABC"
         },
         {
           text: 3,
-          subText: 'DEF'
+          subText: "DEF"
         },
         {
           text: 4,
-          subText: 'GHI'
+          subText: "GHI"
         },
         {
           text: 5,
-          subText: 'JKL'
+          subText: "JKL"
         },
         {
           text: 6,
-          subText: 'MNO'
+          subText: "MNO"
         },
         {
           text: 7,
-          subText: 'PQRS'
+          subText: "PQRS"
         },
         {
           text: 8,
-          subText: 'TUV'
+          subText: "TUV"
         },
         {
           text: 9,
-          subText: 'WXYZ'
+          subText: "WXYZ"
         },
         {
-          text: '*',
-          subText: ''
+          text: "*",
+          subText: ""
         },
         {
           text: 0,
-          subText: '+'
+          subText: "+"
         },
         {
-          text: '#',
-          subText: ''
+          text: "#",
+          subText: ""
         }
       ],
       digitSubText: [
-        '',
-        'ABC',
-        'DEF',
-        'GHI',
-        'JKL',
-        'MNO',
-        'PQRS',
-        'TUV',
-        'WXYZ',
-        '',
-        '+',
-        ''
+        "",
+        "ABC",
+        "DEF",
+        "GHI",
+        "JKL",
+        "MNO",
+        "PQRS",
+        "TUV",
+        "WXYZ",
+        "",
+        "+",
+        ""
       ],
       interval: false,
       digitDeleteSpeed: 200,
@@ -175,55 +153,58 @@ export default {
       spinner: {
         show: false
       }
-    }
+    };
   },
 
   methods: {
     handleEnterKey(e) {
       if (e.keyCode === 13) {
-        this.onConsultButtonClicked()
+        this.onConsultButtonClicked();
       }
     },
     showSpinner() {
-      this.spinner.show = true
+      this.spinner.show = true;
     },
     hideSpinner() {
-      this.spinner.show = false
+      this.spinner.show = false;
     },
 
     appendDigit(digit) {
-      this.dialedDigits += digit
+      this.dialedDigits += digit;
     },
     deleteSingleDigit() {
-      console.log('deleteSingleDigits')
+      console.log("deleteSingleDigits");
       this.dialedDigits = this.dialedDigits.slice(
         0,
         this.dialedDigits.length - 1
-      )
+      );
     },
     startDeletingDigits() {
       this.interval = setInterval(
         () => this.deleteSingleDigit(),
         this.digitDeleteSpeed
-      )
+      );
     },
     stopDeletingDigits() {
-      clearInterval(this.interval)
+      clearInterval(this.interval);
     },
     clearDigits() {
-      this.dialedDigits = ''
+      this.dialedDigits = "";
     },
 
     onConsultButtonClicked() {
-      this.$store.dispatch('updateDialedDigits', this.dialedDigits)
-      this.showSpinner()
-      this.$store.dispatch('requestConsultCall', this.callId).then(resp => {
-        this.hideSpinner()
-      })
+      this.$store.dispatch("updateDialedDigits", this.dialedDigits);
+      this.showSpinner();
+      this.$store.dispatch("requestConsultCall", this.callId).then(resp => {
+        if (resp.responseCode === "0") {
+          this.$emit("close-self");
+        }
+        this.hideSpinner();
+      });
     }
   },
   computed: {}
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -248,16 +229,12 @@ export default {
   -webkit-appearance: none;
   margin: 0;
 }
-.fl_container_dialer {
-  /* box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12); */
-  border-radius: 0px 0px 8px 8px;
-  max-width: 300px;
-}
+
 .fl_inp_dialedDigits {
   height: 25px;
   width: 100%;
   border-bottom: 1px solid grey;
-  font-family: 'Unica One', san-serif;
+  font-family: "Unica One", san-serif;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.75);
 }
@@ -278,7 +255,7 @@ export default {
 }
 
 .fl_button_dialerDigit .number {
-  font-family: 'Unica One', san-serif;
+  font-family: "Unica One", san-serif;
   font-size: 1.3rem;
   font-weight: 400;
 }
@@ -289,7 +266,7 @@ export default {
 }
 
 .fl_button_dialerDigit:hover {
-  color: #00bcd4;
+  color: #03a9f4;
 
   background-color: rgba(240, 240, 240, 0.05);
 }

@@ -49,56 +49,14 @@
 </template>
 
 <script>
-import {
-  mdbRow,
-  mdbCol,
-  mdbBtn,
-  mdbCard,
-  mdbCardBody,
-  mdbCardHeader,
-  mdbCardText,
-  mdbIcon,
-  mdbTbl,
-  mdbBarChart,
-  mdbPieChart,
-  mdbLineChart,
-  mdbRadarChart,
-  mdbDoughnutChart,
-  mdbListGroup,
-  mdbListGroupItem,
-  mdbBadge,
-  mdbModal,
-  mdbModalHeader,
-  mdbModalTitle,
-  mdbModalBody,
-  mdbModalFooter
-} from "mdbvue";
+import { mdbCard, mdbCardBody, mdbCardHeader } from "mdbvue";
 
 export default {
   name: "CallHistory",
   components: {
-    mdbRow,
-    mdbCol,
-    mdbBtn,
     mdbCard,
     mdbCardBody,
-    mdbCardHeader,
-    mdbCardText,
-    mdbIcon,
-    mdbTbl,
-    mdbBarChart,
-    mdbPieChart,
-    mdbLineChart,
-    mdbRadarChart,
-    mdbDoughnutChart,
-    mdbListGroup,
-    mdbListGroupItem,
-    mdbBadge,
-    mdbModal,
-    mdbModalHeader,
-    mdbModalTitle,
-    mdbModalBody,
-    mdbModalFooter
+    mdbCardHeader
   },
   props: {
     msg: String

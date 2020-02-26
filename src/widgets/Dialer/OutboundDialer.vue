@@ -1,9 +1,7 @@
 <template>
-  <!-- <mdb-card class="mb-0" color="special-color">
-  <mdb-card-body class="p-2 mb-1">-->
-  <div class="fl_container_dialer">
+  <div class="fl_container_dialer black-text" >
     <mdb-container fluid>
-      <form @click.stop>
+      <div @click.stop>
         <mdb-row class="px-3 py-4" @click.stop>
           <mdb-col class="d-flex align-items-baseline">
             <!--Input Textbox for digits-->
@@ -21,16 +19,12 @@
             class="black-text align-self-baseline mr-3 fl_btn_btnIcon"
             @click="deleteSingleDigit"
             @click.stop
+            v-longclick="() => clearDigits()"
           >
             <mdb-icon icon="backspace" size="1p5x" />
           </a>
-
-          <!--Delete All Digits-->
-          <a class="black-text align-self-baseline fl_btn_btnIcon" @click="clearDigits" @click.stop>
-            <mdb-icon icon="trash" size="1p5x" />
-          </a>
         </mdb-row>
-      </form>
+      </div>
 
       <mdb-row>
         <!--For Loop for cycling through array of digits to for a grid of dialpad digits-->
@@ -45,28 +39,23 @@
           </div>
         </mdb-col>
       </mdb-row>
-      <form @click.stop>
+      <div @click.stop>
         <mdb-row class @click.stop>
           <transition name="fade">
-            <mdb-btn color="success" class="mx-2 btn-block" @click="onMakeCallButtonClicked">
+            <mdb-btn  class="mx-2 py-3 btn-block" color="cyan darken-2" @click="onMakeCallButtonClicked">
               <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
               <span>Call</span>
             </mdb-btn>
           </transition>
           <transition name="fade">
-            <div class="btn-group w-50 pb-2" v-if="!isCallIdle">
-              <mdb-btn class="btn-red mx-2 px-2 w-100" @click="onCallDropBtnClicked" @click.stop>
-                <span>Drop</span>
-              </mdb-btn>
-            </div>
+          
           </transition>
         </mdb-row>
-      </form>
+      </div>
     </mdb-container>
   </div>
 
-  <!-- </mdb-card-body>
-  </mdb-card>-->
+
 </template>
 
 <script>
@@ -75,20 +64,10 @@ import {
   mdbRow,
   mdbCol,
   mdbBtn,
-  mdbCard,
-  mdbCardBody,
-  mdbCardHeader,
-  mdbCardText,
-  mdbInput,
+ 
   mdbIcon
 } from 'mdbvue'
-import {
-  CALL_STATES,
-  CALL_TYPES,
-  AGENT_STATES,
-  SOCKET_EVENTS
-} from '@/defines.js'
-import '@/defines.js'
+
 
 export default {
   name: 'OutboundDialer',
@@ -97,11 +76,7 @@ export default {
     mdbRow,
     mdbCol,
     mdbBtn,
-    mdbCard,
-    mdbCardBody,
-    mdbCardHeader,
-    mdbCardText,
-    mdbInput,
+  
     mdbIcon
   },
   mounted() {},
@@ -109,7 +84,7 @@ export default {
   //digits: [1, 2, 3, 4, 5, 6, 7, 8, 9, '*', 0, '#'],
   data() {
     return {
-      dialedDigits: '08879708222',
+      dialedDigits: '',
 
       digits: [
         {
@@ -183,14 +158,7 @@ export default {
       }
     }
   },
-  // sockets: {
-  //   connect: function () {
-  //       console.log('socket connected')
-  //   },
-  //   customEmit: function (data) {
-  //       console.log('this method was fired by the socket server. eg: io.emit("customEmit", data)')
-  //   }
-  // },
+
   methods: {
     showSpinner() {
       this.spinner.show = true
@@ -229,36 +197,15 @@ export default {
         console.log('onMakeCallButtonClicked(): resp=' + JSON.stringify(resp))
         this.hideSpinner()
         if (resp.responseCode === '0') {
+          this.$emit('close-self')
           this.$store.dispatch('setCallStateDialing', resp)
           this.$store.dispatch('processNewOutboundCall', resp)
         }
       })
     },
-
-    onCallDropBtnClicked() {
-      this.$store.dispatch('requestAnswerDropCall', [
-        this.$store.getters.getPrimaryCall.ucid,
-        CALL_TYPES.OUTBOUND
-      ])
-    },
-  
   },
   computed: {
-    credentials() {
-      return this.$store.getters.getAgentCredentials
-    },
-    callStatus() {
-      return this.$store.getters.getPrimaryCall.status
-    },
-    isAgentStateHeld() {
-      return this.$store.getters.getAgentState === AGENT_STATES.HELD
-    },
-    isCallIdle() {
-      return (
-        this.callStatus === CALL_STATES.IDLE ||
-        this.callStatus === CALL_STATES.DROPPED
-      )
-    }
+
   }
 }
 </script>
@@ -286,11 +233,6 @@ export default {
   margin: 0;
 }
 
-.fl_container_dialer {
-  /* box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12); */
-  border-radius: 0px 0px 8px 8px;
-  max-width: 300px;
-}
 .fl_inp_dialedDigits {
   height: 25px;
   width: 100%;
@@ -302,7 +244,7 @@ export default {
 
 .fl_inp_dialedDigits input {
   font-size: 2em;
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(0, 0, 0, 0.75);
 }
 
 .fl_button_dialerDigit {
@@ -327,7 +269,7 @@ export default {
 }
 
 .fl_button_dialerDigit:hover {
-  color: #00bcd4;
+  color: #03a9f4;
 
   background-color: rgba(240, 240, 240, 0.05);
 }

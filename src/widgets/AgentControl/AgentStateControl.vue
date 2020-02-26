@@ -1,103 +1,59 @@
 <template>
-  <form @submit.prevent class="form form-inline d-flex align-items-center">
-    <mdb-dropdown class="mr-5">
-      <!--Selected State-->
-      <a class="dropdown-toggle-a primary-text" slot="toggle">
-        <mdb-icon
-          icon="circle"
-          :class="agentStateIndicatorColor(currentAgentAuxState.state)"
-          class="mr-1"
-        />
-        {{currentAgentAuxState.label}}
-      </a>
+  <mdb-dropdown tag="li" class="nav-item">
+    <!--Selected State-->
+    <mdb-dropdown-toggle tag="a" navLink color="special" slot="toggle">
+      <mdb-icon icon="circle" :class="agentStateIndicatorColor(currentAgentAuxState.state)" class="mr-2" />
+      <strong class="h6">{{ currentAgentAuxState.label }}</strong>
+    </mdb-dropdown-toggle>
 
-      <mdb-dropdown-menu left>
-        <!--List of all possible agent states-->
-        <mdb-dropdown-item
-          class="p-0 fl_dropdown_item"
-          :key="auxCodes.id"
-          v-for="(auxCode,i) in auxCodes"
-        >
-          <div
-            @click="onAgentStateDropDownChanged(auxCode)"
-            class="p-2"
-            v-if="auxCode.userSelectable===true"
-          >
-            <!-- Round Icon to indicate the color of the agent's state-->
-            <mdb-icon icon="circle" class="mr-1" :class="agentStateIndicatorColor(auxCode.state)" />
-            <!-- Actual Agent State-->
-            <span>{{auxCode.label}}</span>
-          </div>
-        </mdb-dropdown-item>
-      </mdb-dropdown-menu>
-    </mdb-dropdown>
-  </form>
+    <mdb-dropdown-menu left color="primary">
+      <!--List of all possible agent states-->
+      <mdb-dropdown-item class="p-0 fl_dropdown_item" :key="auxCode.id" v-for="auxCode in auxCodes">
+        <div @click="onAgentStateDropDownChanged(auxCode)" class="p-2" v-if="auxCode.userSelectable === true">
+          <!-- Round Icon to indicate the color of the agent's state-->
+          <mdb-icon icon="circle" class="mr-1" :class="agentStateIndicatorColor(auxCode.state)" />
+          <!-- Actual Agent State-->
+          <span>{{ auxCode.label }}</span>
+        </div>
+      </mdb-dropdown-item>
+    </mdb-dropdown-menu>
+  </mdb-dropdown>
 </template>
 
 <script>
-import {
-  mdbRow,
-  mdbCol,
-  mdbContainer,
-  mdbBtn,
-  mdbDropdown,
-  mdbDropdownToggle,
-  mdbDropdownItem,
-  mdbDropdownMenu,
-  mdbCard,
-  mdbCardBody,
-  mdbCardHeader,
-  mdbCardText,
-  mdbIcon,
-  mdbTbl
-} from 'mdbvue'
-import { AGENT_STATES } from '@/defines'
+import { mdbDropdown, mdbDropdownItem, mdbDropdownMenu, mdbIcon, mdbDropdownToggle } from "mdbvue";
+import { AGENT_STATES } from "@/defines";
 
 export default {
-  name: 'AgentStateControl',
+  name: "AgentStateControl",
   components: {
-    mdbRow,
-    mdbCol,
-    mdbContainer,
-    mdbBtn,
-    mdbCard,
-    mdbCardBody,
-    mdbCardHeader,
-    mdbCardText,
     mdbIcon,
-    mdbTbl,
     mdbDropdown,
-    mdbDropdownToggle,
     mdbDropdownItem,
-    mdbDropdownMenu
+    mdbDropdownMenu,
+    mdbDropdownToggle
   },
   props: {},
   data() {
     return {
       auxCodes: this.$store.getters.getFullAuxCodeList
-    }
+    };
   },
 
   methods: {
     //This Method is called whenever the Agent Dropdown option is changed
     onAgentStateDropDownChanged(selectedAuxCode) {
-      console.log(
-        'onAgentStateDropDownChanged(): method entered. selectedAuxCode=' +
-          JSON.stringify(selectedAuxCode)
-      )
+      console.log("onAgentStateDropDownChanged(): method entered. selectedAuxCode=" + JSON.stringify(selectedAuxCode));
       //Depending on the selected state, update the store with the new state
       switch (selectedAuxCode.state) {
         case AGENT_STATES.READY:
         case AGENT_STATES.NOT_READY:
-        case AGENT_STATES.WORK_NOT_READY:
-          this.$store
-            .dispatch('sendAgentStateRequest', selectedAuxCode)
-            .then(resp => {
-              if (resp.responseCode === '0') {
-                this.$store.commit('SET_AGENT_AUX_CODE', selectedAuxCode)
-              }
-            })
-          break
+          this.$store.dispatch("sendAgentStateRequest", selectedAuxCode).then(resp => {
+            if (resp.responseCode === "0") {
+              this.$store.commit("SET_AGENT_AUX_CODE", selectedAuxCode);
+            }
+          });
+          break;
 
         default:
       }
@@ -107,28 +63,31 @@ export default {
         //console.log('agentStateIndicatorColor(): state=', state)
         switch (state) {
           case AGENT_STATES.READY:
-            return 'green-text'
+            return "green-text";
 
           case AGENT_STATES.NOT_READY:
-            return 'red-text'
+            return "red-text";
           case AGENT_STATES.BUSY:
-            return 'amber-text'
+            return "amber-text";
           case AGENT_STATES.WORK_NOT_READY:
           case AGENT_STATES.LOG_IN:
-            return 'blue-text'
+            return "blue-text";
         }
       }
     }
   },
   computed: {
     currentAgentAuxState() {
-      return this.$store.getters.getAgentAuxState
+      return this.$store.getters.getAgentAuxState;
     }
   }
-}
+};
 </script>
 
 <style scoped>
+#fl_agent_state_dropdown {
+  min-width: 150px;
+}
 .fl_dropdown_item {
   font-size: 1rem !important;
 }
@@ -139,7 +98,7 @@ export default {
   display: inline-block;
   margin-left: 0.255em;
   vertical-align: 0.255em;
-  content: '';
+  content: "";
   border-top: 0.3em solid;
   border-right: 0.3em solid transparent;
   border-bottom: 0;
@@ -148,27 +107,5 @@ export default {
 .custom-select {
   height: unset !important;
   line-height: 1;
-}
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.25s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
 }
 </style>

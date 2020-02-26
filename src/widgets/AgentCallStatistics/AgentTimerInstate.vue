@@ -1,5 +1,5 @@
 <template>
-  <up-timer name="agentTimerInstate"></up-timer>
+  <persist-timer name="agentTimerInstate"></persist-timer>
 </template>
 
 <style>
@@ -10,11 +10,11 @@
 
 <script>
 import { AGENT_STATES } from '@/defines.js'
-import UpTimer from '@/components/agc/UpTimer.vue'
+import PersistTimer from '@/components/agc/PersistTimer.vue'
 export default {
   name: 'AgentTimerInstate',
   components: {
-    UpTimer
+    PersistTimer
   },
   data() {
     return {}

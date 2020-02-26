@@ -22,72 +22,51 @@
 </template>
 
 <script>
-import {
-  mdbContainer,
-  mdbRow,
-  mdbCol,
-  mdbBtn,
-  mdbCard,
-  mdbCardBody,
-  mdbCardHeader,
-  mdbCardText,
-  mdbInput,
-  mdbIcon
-} from 'mdbvue'
-import { AGENT_STATES, CALL_STATES } from '@/defines.js'
-import Widget from '@/components/agc/Widget'
+import { mdbContainer } from "mdbvue";
+import { CALL_STATES } from "@/defines.js";
+import Widget from "@/components/agc/Widget";
 
 export default {
-  name: 'SmsHelper',
+  name: "SmsHelper",
   components: {
     Widget,
-    mdbContainer,
-    mdbRow,
-    mdbCol,
-    mdbBtn,
-    mdbCard,
-    mdbCardBody,
-    mdbCardHeader,
-    mdbCardText,
-    mdbInput,
-    mdbIcon
+    mdbContainer
   },
   mounted() {},
   props: {},
 
   data() {
     return {
-      showWidget: false,
-      smsContentType: '',
+      smsContentType: "",
       message: [
-        'Dear Customer, your feedback is valuable to us. Please visit https://tinyurl.com/y44tb3sm',
-        'Dear customer, to reset your password, please visit http://dummyurl.com/resetPassword',
-        'Dear customer, you can begin your registration process by visiting http://dummyurl.com/register'
+        "Dear Customer, your feedback is valuable to us. Please visit https://tinyurl.com/y44tb3sm",
+        "Dear customer, to reset your password, please visit http://dummyurl.com/resetPassword",
+        "Dear customer, you can begin your registration process by visiting http://dummyurl.com/register"
       ]
-    }
+    };
   },
 
   computed: {
+    showWidget() {
+      return this.cli ? true : false;
+    },
     cli() {
-      let ucid = this.$store.getters.getActiveCallUcid
-      let call = this.$store.getters.getCallFromUcid(ucid);
-      let cli = call.callingAddress
-      if (cli) {
-        this.showWidget = true
-      }
-      return cli
+      let callId = this.$store.getters.getActiveCallCallId;
+      let call = this.$store.getters.getCallByCallId(callId);
+      let cli = call ? call.callingAddress : null;
+      return cli;
     },
     isCallAvailable() {
       return (
         this.callStatus !== CALL_STATES.IDLE &&
         this.callStatus !== CALL_STATES.RINGING
-      )
+      );
     }
   },
 
   methods: {
     toggleShowWidget() {
-      this.showWidget = !this.showWidget
+      this.showWidget = !this.showWidget;
     },
 
     onSendSmsClick() {
@@ -95,17 +74,17 @@ export default {
         let request = {
           cli: this.cli,
           message: this.message[this.smsContentType]
-        }
-        this.$store.dispatch('requestSendSms', request)
+        };
+        this.$store.dispatch("requestSendSms", request);
       } else {
         this.$store.dispatch(
-          'showErrorBanner'[
-            ('Select SMS Type', 'Please select an SMS type before sending')
+          "showErrorBanner"[
+            ("Select SMS Type", "Please select an SMS type before sending")
           ]
-        )
+        );
       }
     }
   }
-}
+};
 </script>
 

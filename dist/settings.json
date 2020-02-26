@@ -1,0 +1,116 @@
+{
+    "FLAIR_AWS_PORT": 8000,
+    "FLAIR_SERVER_URL": "http://192.168.110.99:9092",
+    "SERVER_TIMEOUT_MS": 20000,
+    "CRM_TIMEOUT_MS": 10000,
+    "ALLOW_OUTBOUND_DIALING": true,
+    "AGENT_STATE_POLLING_INTERVAL_MS": 1000,
+    "DGFT": {
+        "MIDDLEWARE": {
+            "URL": "http://192.168.110.99:9093"
+        },
+        "CRM": {
+            "URL": "https://egtf.dgft.gov.in/sitsugarcrm"
+        },
+        "CSAT": {
+            "VDN": "2527"
+        },
+        "UUI_KEYS": [
+            "UCID",
+            "uniqueID",
+            "lang",
+            "RMN",
+            "IECStatus",
+            "ConplaintNo",
+            "LastShortCode"
+        ]
+    },
+    "AGS": {
+        "MIDDLEWARE": {
+            "URL": "http://localhost:9093",
+            "TIMEOUT": 15000
+        }
+    },
+    "defaultAuxCodes": [
+        {
+            "label": "Ready",
+            "state": 4,
+            "userSelectable": true,
+            "reasonCode": null
+        },
+        {
+            "label": "After Call Work",
+            "state": 5,
+            "userSelectable": false,
+            "reasonCode": null
+        },
+        {
+            "label": "Work Ready",
+            "state": 6,
+            "userSelectable": false,
+            "reasonCode": null
+        },
+        {
+            "label": "Busy",
+            "state": 7,
+            "userSelectable": false,
+            "reasonCode": null
+        }
+    ],
+    "agentAuxCodes": [
+        {
+            "label": "Ready",
+            "state": 4,
+            "reasonCode": null
+        },
+        {
+            "label": "Not Ready",
+            "state": 3,
+            "reasonCode": 0
+        },
+        {
+            "label": "Lunch",
+            "state": 3,
+            "reasonCode": 2
+        },
+        {
+            "label": "Dinner",
+            "state": 3,
+            "reasonCode": 3
+        }
+    ],
+    "agentReasonCodeList": [
+        {
+            "reasonCode": 0,
+            "reasonLabel": "Not Ready"
+        },
+        {
+            "reasonCode": 2,
+            "reasonLabel": "Lunch"
+        },
+        {
+            "reasonCode": 3,
+            "reasonLabel": "Dinner"
+        }
+    ],
+    "leftComponents": {
+        "width": "0",
+        "widgets": []
+    },
+    "middleComponents": {
+        "width": "10",
+        "widgets": [
+            {
+                "name": "crm-frame"
+            }
+        ]
+    },
+    "rightComponents": {
+        "width": "2",
+        "widgets": [
+            {
+                "name": "dgft-helper"
+            }
+        ]
+    }
+}

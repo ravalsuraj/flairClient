@@ -1,16 +1,25 @@
 <template>
-  <mdb-container fluid>
-    <mdb-card class="mb-0">
-      <mdb-card-header :class="color">
-        <strong>{{title}}</strong>
+  <mdb-container fluid :style="{ height: height }">
+    <mdb-card class="mb-0 fl_widget_card" :class="{ maximized: showWidget }" style="border-radius:10px">
+      <mdb-card-header
+        class="fl_widget_card_header"
+        :color="color"
+        :class="{ minimized: showWidget == false }"
+        style="border-radius:5px 5px 0 0"
+      >
+        <strong>{{ title }}</strong>
+
         <a @click="toggleShowWidget">
-          <transition name="fade" mode="out-in">
+          <transition name="fade" mode="in-out">
             <mdb-icon v-if="showWidget" icon="window-minimize" class="float-right"></mdb-icon>
             <mdb-icon v-else icon="bars" class="float-right"></mdb-icon>
           </transition>
         </a>
+        <div class="float-right pr-5">
+          <slot name="toolbar"></slot>
+        </div>
       </mdb-card-header>
-      <mdb-card-body class="px-1" v-show-slide="showWidget" :class="{'p-0': !showWidget}">
+      <mdb-card-body class="fl_widget_card_body" v-show-slide="showWidget" :class="{ maximized: showWidget }">
         <slot name="body"></slot>
       </mdb-card-body>
     </mdb-card>
@@ -18,32 +27,17 @@
 </template>
 
 <script>
-import {
-  mdbContainer,
-  mdbRow,
-  mdbCol,
-  mdbBtn,
-  mdbCard,
-  mdbCardBody,
-  mdbCardHeader,
-  mdbCardText,
-  mdbInput,
-  mdbIcon
-} from 'mdbvue'
-import { AGENT_STATES, CALL_STATES } from '@/defines.js'
+import { mdbContainer, mdbCard, mdbCardBody, mdbCardHeader, mdbIcon } from "mdbvue";
 
 export default {
-  name: 'Widget',
+  name: "Widget",
   components: {
     mdbContainer,
-    mdbRow,
-    mdbCol,
-    mdbBtn,
+
     mdbCard,
     mdbCardBody,
     mdbCardHeader,
-    mdbCardText,
-    mdbInput,
+
     mdbIcon
   },
   mounted() {},
@@ -51,22 +45,59 @@ export default {
     title: String,
     color: {
       type: String,
-      default: 'mdb-color text-white'
+      default: "mdb-color text-white"
+    },
+    height: {
+      type: String,
+      default: ""
+    },
+    fillHeight: {
+      type: Boolean,
+      default: false
     }
   },
 
   data() {
     return {
       showWidget: true
+    };
+  },
+
+  computed: {
+    widgetColor() {
+      return "background-color: " + this.color;
     }
   },
 
-  computed: {},
-
   methods: {
     toggleShowWidget() {
-      this.showWidget = !this.showWidget
+      this.showWidget = !this.showWidget;
     }
   }
-}
+};
 </script>
+<style scoped>
+.fl_widget_card {
+  height: 0;
+  transition: all 0.2s linear;
+}
+.fl_widget_card.maximized {
+  height: 100%;
+}
+.fl_widget_card_body {
+  padding: 0px;
+  opacity: 0;
+  transition: all 1s ease;
+}
+.fl_widget_card_body.maximized {
+  padding: 8px;
+  opacity: 1;
+}
+.fl_widget_card_header {
+  transition: all 0.2s ease;
+}
+.fl_widget_card_header.minimized {
+  background-color: #7283a7 !important;
+  /* color: black !important; */
+}
+</style>

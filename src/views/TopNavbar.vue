@@ -1,8 +1,10 @@
 <template>
   <mdb-navbar
-    class="special-color white-text flexible-navbar fl_topNav"
+    color="special-color"
+    class="white-text flexible-navbar fl_topNav"
     position="top"
     navIconClass="white-text"
+    :toggler="false"
   >
     <mdb-navbar-brand href="/" target="_blank">
       <div class="light-color" style="opacity:1">
@@ -14,30 +16,71 @@
         />
       </div>
     </mdb-navbar-brand>
-    <!-- <mdb-navbar-toggler>
-    </mdb-navbar-toggler>-->
-    <!-- <mdb-navbar-nav left>
-      <call-control></call-control>
-    </mdb-navbar-nav>-->
-    <mdb-navbar-nav right class="pr-5">
-      <!-- <div class="light-color" style="opacity:1">
-        <img
-          src="@/assets/flair_logo_white.png"
-          class="mx-5"
-          alt="Responsive image"
-          style="width: 75px; opacity:1 !important"
-        />
-      </div> -->
-      <agent-control></agent-control>
+    <mdb-navbar-nav right>
+      <span class="fl_navbar_item">
+        <agent-state-control></agent-state-control>
+      </span>
+
+      <span class="fl_navbar_item">
+        <agent-profile></agent-profile>
+      </span>
     </mdb-navbar-nav>
   </mdb-navbar>
 </template>
+
+<script>
+import AgentStateControl from "@/widgets/AgentControl/AgentStateControl.vue";
+import AgentProfile from "@/widgets/AgentControl/AgentProfile.vue";
+import { mdbNavbar, mdbNavbarBrand, mdbNavbarNav } from "mdbvue";
+export default {
+  name: "TopNavbar",
+  components: {
+    AgentProfile,
+    AgentStateControl,
+    mdbNavbar,
+    mdbNavbarBrand,
+    mdbNavbarNav
+  },
+
+  props: {},
+
+  data() {
+    return {
+      showOutboundDialerModal: false
+    };
+  },
+  methods: {}
+};
+</script>
+
 <style>
-.fl_topNav {
-  /*width: fit-content;*/
+.fl_navbar_item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 10px;
+  padding-right: 10px;
+  min-width: 140px;
+}
+
+/* .fl_navbar_item::after {
+  content: ' ';
+  margin: 3px -85px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: #2f3336;
+  box-shadow: 0 0 6px 0px rgba(255, 255, 255, 0.1);
+} */
+.divider-vertical {
+  height: 50px;
+  margin: 0 9px;
+  border-left: 1px solid #f2f2f2;
+  border-right: 1px solid #fff;
 }
 .fl_topNav::after {
-  content: '';
+  content: "";
   line-height: 0;
   font-size: 0;
   width: 0;
@@ -83,18 +126,6 @@ main {
   padding-bottom: 4px !important;
 }
 
-.sidebar-fixed {
-  left: 0;
-  top: 0;
-  height: 100vh;
-  width: 170px;
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
-  z-index: 1050;
-  background-color: #fff;
-  padding: 0rem;
-  padding-top: 0;
-}
-
 @media (max-width: 1199.98px) {
   .sidebar-fixed {
     display: none;
@@ -107,64 +138,3 @@ main {
   }
 }
 </style>
-
-<script>
-import AgentControl from '@/widgets/AgentControl/AgentControl.vue'
-import {
-  mdbRow,
-  mdbCol,
-  mdbContainer,
-  mdbCard,
-  mdbCardHeader,
-  mdbCardText,
-  mdbNavbar,
-  mdbNavbarBrand,
-  mdbNavItem,
-  mdbNavbarNav,
-  mdbNavbarToggler,
-  mdbBtn,
-  mdbIcon,
-  mdbListGroup,
-  mdbListGroupItem,
-  mdbCardBody,
-  mdbFooter,
-  waves
-} from 'mdbvue'
-export default {
-  name: 'TopNavbar',
-  components: {
-    AgentControl,
-
-    mdbRow,
-    mdbCol,
-    mdbContainer,
-    mdbCard,
-    mdbCardHeader,
-    mdbCardText,
-    mdbNavbar,
-    mdbNavbarBrand,
-    mdbNavItem,
-    mdbNavbarNav,
-    mdbNavbarToggler,
-    mdbBtn,
-    mdbIcon,
-    mdbListGroup,
-    mdbListGroupItem,
-    mdbCardBody,
-    mdbFooter,
-    waves,
-    ftr: mdbFooter
-  },
-
-  props: {},
-
-  data() {
-    return {}
-  },
-  methods: {
-    toggleDevMode() {
-      this.$store.commit('TOGGLE_DEV_MODE')
-    }
-  }
-}
-</script>

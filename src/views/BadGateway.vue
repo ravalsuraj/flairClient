@@ -3,7 +3,7 @@
     <div class="full">
       <mdb-row class="bad-gateway-row">
         <mdb-col md="8">
-          <img alt="Error 404" class="img-fluid" hieght="20px" src="@/assets/agc-logo.jpg"/>
+          <img alt="Error 404" class="img-fluid" hieght="20px" src="./../assets/agc-logo_v2.jpg"/>
           <h2 class="h2-responsive mt-3 mb-2">404. That's an error.</h2>
           <h4>The requested URL was not found on this server.</h4>
         </mdb-col>

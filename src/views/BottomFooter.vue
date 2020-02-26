@@ -1,24 +1,21 @@
-
-
 <template>
-  <mdb-navbar text="white" color="special" position="bottom" dark>
+  <mdb-navbar text="white" color="special" position="bottom" dark :toggler="false">
     <mdb-navbar-nav>
       <web-socket-indicator class="white-text mr-4 pr-4"></web-socket-indicator>
     </mdb-navbar-nav>
     <mdb-navbar-nav right>
-      <span class="white-text">SessionID: {{sessionId}}</span>
+      <span class="white-text">SessionID: {{ sessionId }}</span>
       <span class="white-text pl-5 ml-5 float-right">ver: 1.0.0</span>
     </mdb-navbar-nav>
   </mdb-navbar>
 </template>
-<style>
-</style>
+<style></style>
 
 <script>
-import WebSocketIndicator from '@/components/agc/WebSocketIndicator'
-import { mdbNavbar, mdbNavbarNav } from 'mdbvue'
+import WebSocketIndicator from "@/components/agc/WebSocketIndicator";
+import { mdbNavbar, mdbNavbarNav } from "mdbvue";
 export default {
-  name: 'UtilityBar',
+  name: "UtilityBar",
   components: {
     WebSocketIndicator,
 
@@ -29,13 +26,13 @@ export default {
   props: {},
 
   data() {
-    return {}
+    return {};
   },
   methods: {},
   computed: {
     sessionId() {
-      return this.$store.getters['session/getSessionId']
+      return this.$store.getters["session/getSessionId"];
     }
   }
-}
+};
 </script>

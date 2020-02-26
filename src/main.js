@@ -1,58 +1,77 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-import 'bootstrap-css-only/css/bootstrap.min.css'
-import '../build/css/mdb.css'
+import "bootstrap-css-only/css/bootstrap.min.css";
 
-import Vue from 'vue'
-import Vuex from 'vuex'
-import App from './App'
-import router from './router'
-import Vue2TouchEvents from 'vue2-touch-events'
-import store from './store/index'
+import Vue from "vue";
+import Vuex from "vuex";
+import App from "./App";
+import router from "./router";
+import Vue2TouchEvents from "vue2-touch-events";
+import store from "./store/index";
 
-import VueSocketIO from 'vue-socket.io'
-import VShowSlide from 'v-show-slide'
-import Vuedraggable from 'vuedraggable'
-import Vuebar from 'vuebar'
-import VueCookies from 'vue-cookies'
-import Notifications from 'vue-notification'
-import { longClickDirective } from 'vue-long-click'
+import VueSocketIO from "vue-socket.io";
+import VShowSlide from "v-show-slide";
+import Vuedraggable from "vuedraggable";
 
-import config from './../static/settings.json'
-import 'x-frame-bypass'
-Vue.use(Notifications)
-Vue.use(Vuex)
-Vue.use(VShowSlide)
-Vue.use(Vuedraggable)
-Vue.use(Vuebar)
+// import VueCookies from "vue-cookies";
+import Notifications from "vue-notification";
+import { longClickDirective } from "vue-long-click";
 
-Vue.use(VueCookies)
-// set default config
-VueCookies.config('1d')
+import config from "./../public/settings.json";
+// import "x-frame-bypass";
+Vue.use(Notifications);
+Vue.use(Vuex);
+Vue.use(VShowSlide);
+Vue.use(Vuedraggable);
+import "mdbvue/lib/css/mdb.min.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import api from "./services/api";
 
-// set global cookie
-VueCookies.set('theme', 'default')
-VueCookies.set('hover-time', '1s')
 //Used to detect long click. Used in the dialer to delete multiple digits upon long-click
-const longClickInstance = longClickDirective({ delay: 400, interval: 50 })
-Vue.directive('longclick', longClickInstance)
-Vue.use(
-  new VueSocketIO({
-    debug: false,
-    connection: config.FLAIR_SERVER_URL,
-    vuex: {
-      store,
-      actionPrefix: 'SOCKET_',
-      mutationPrefix: 'SOCKET_'
+const longClickInstance = longClickDirective({ delay: 400, interval: 50 });
+
+//initialize the URL to the settings.json URL
+let serverIp = config.FLAIR_SERVER_URL;
+Vue.directive("longclick", longClickInstance);
+
+//get the IP address dynamically for the websocket server. This is saved in the config.js file for the FlairClientLauncher
+api
+  .getServerIp()
+  .then(resp => {
+    console.log("resp=" + JSON.stringify(resp.data));
+    if (resp.data.responseCode === "0") {
+      serverIp = resp.data.ip;
+      initVue();
+      console.log("main.js execution complete. using server URL=" + serverIp);
+    } else {
+      console.error("could not fetch server ip");
+      initVue();
     }
   })
-)
-Vue.use(Vue2TouchEvents)
+  .catch(() => {
+    console.log("could not fetch server IP , so using the value from settings.json");
+    initVue();
+  });
 
-Vue.config.productionTip = false
+let initVue = () => {
+  Vue.use(
+    new VueSocketIO({
+      debug: true,
+      connection: serverIp,
+      vuex: {
+        store,
+        actionPrefix: "SOCKET_",
+        mutationPrefix: "SOCKET_"
+      }
+    })
+  );
+  Vue.use(Vue2TouchEvents);
 
-new Vue({
-  router,
-  store,
-  render: h => h(App)
-}).$mount('#app')
+  Vue.config.productionTip = false;
+  Vue.prototype.$serverip = serverIp;
+  new Vue({
+    router,
+    store,
+    render: h => h(App)
+  }).$mount("#app");
+};

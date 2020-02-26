@@ -1,17 +1,15 @@
 <template>
- <mdb-navbar class="flexible-navbar white" position="top" scrolling>
-      
-      <mdb-navbar-brand href="/" target="_blank">AGC Flair</mdb-navbar-brand>
-      <mdb-navbar-toggler>
-        <mdb-navbar-nav left>
-          <agent-control></agent-control>
-          
-        </mdb-navbar-nav>
-<mdb-navbar-nav right>
-  <mdb-nav-item  waves-fixed active class="active" router >Log Out</mdb-nav-item>
-</mdb-navbar-nav>
+  <mdb-navbar class="flexible-navbar white" position="top" scrolling>
+    <mdb-navbar-brand href="/" target="_blank">AGC Flair</mdb-navbar-brand>
+    <mdb-navbar-toggler>
+      <mdb-navbar-nav left>
+        <agent-control></agent-control>
+      </mdb-navbar-nav>
+      <mdb-navbar-nav right>
+        <mdb-nav-item waves-fixed active class="active" router>Log Out</mdb-nav-item>
+      </mdb-navbar-nav>
     </mdb-navbar-toggler>
-</mdb-navbar>
+  </mdb-navbar>
 </template>
 <style>
 .navbar-light .navbar-brand {
@@ -20,7 +18,7 @@
   font-weight: bolder;
 }
 main {
-  background-color: #EDEDEE;
+  background-color: #ededee;
 }
 
 .flexible-content {
@@ -56,26 +54,30 @@ main {
     padding-left: 10px;
   }
 }
-
 </style>
 
 <script>
-import { mdbRow, mdbCol, mdbContainer,mdbCard, mdbCardHeader,mdbCardText, mdbNavbar, mdbNavbarBrand, mdbNavItem, mdbNavbarNav, mdbNavbarToggler, mdbBtn, mdbIcon, mdbListGroup, mdbListGroupItem, mdbCardBody, mdbFooter, waves } from 'mdbvue'
+import {
+  mdbNavbar,
+  mdbNavbarBrand,
+  mdbNavItem,
+  mdbNavbarNav,
+  mdbNavbarToggler
+} from "mdbvue";
 export default {
-  name: 'SideNavbar',
-  components: {AgentControl,
-        mdbRow, mdbCol, mdbContainer,mdbCard, mdbCardHeader,mdbCardText, mdbNavbar, mdbNavbarBrand, mdbNavItem, mdbNavbarNav, mdbNavbarToggler, mdbBtn, mdbIcon, mdbListGroup, mdbListGroupItem, mdbCardBody, mdbFooter, waves,
-    'ftr': mdbFooter,waves
-  },
- 
-  props: {
-  
+  name: "SideNavbar",
+  components: {
+    mdbNavbar,
+    mdbNavbarBrand,
+    mdbNavItem,
+    mdbNavbarNav,
+    mdbNavbarToggler
   },
 
-  data(){
-    return {
+  props: {},
 
-    }
+  data() {
+    return {};
   }
-}
+};
 </script>

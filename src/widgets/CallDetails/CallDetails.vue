@@ -2,101 +2,62 @@
   <widget title="Call Details">
     <template v-slot:body>
       <mdb-container>
-          <mdb-row>
-            <mdb-col col="lg-12 mt-2">
-              <dl class="row mb-1 no-gutters fl_dl" v-for="element in callerData" :key=element.key>
-                <dt class="col-sm-6 fl_dt">{{element.key}}</dt>
-                <dd class="col-sm-6 fl_dd">{{element.value.length>0?element.value : "-"}}</dd>
-              </dl>
-            </mdb-col>
-          </mdb-row>
-          <hr>
-          <mdb-row>
-            <mdb-col col="lg-12">
-              <dl class="row mb-1 no-gutters fl_dl" v-for="element in uuiElements" :key=element.key>
-                <dt class="col-sm-6 fl_dt">{{element.key}}</dt>
-                <dd class="col-sm-6 fl_dd">{{element.value.length>0?element.value : "-"}}</dd>
-              </dl>
-            </mdb-col>
-          </mdb-row>
-        </mdb-container>
+        <mdb-row>
+          <mdb-col col="lg-12 mt-2">
+            <dl class="row mb-1 no-gutters fl_dl" v-for="element in callerData" :key="element.key">
+              <dt class="col-sm-6 fl_dt">{{element.key}}</dt>
+              <dd class="col-sm-6 fl_dd">{{element.value.length>0?element.value : "-"}}</dd>
+            </dl>
+          </mdb-col>
+        </mdb-row>
+        <hr />
+        <mdb-row>
+          <mdb-col col="lg-12">
+            <dl class="row mb-1 no-gutters fl_dl" v-for="element in uuiElements" :key="element.key">
+              <dt class="col-sm-6 fl_dt">{{element.key}}</dt>
+              <dd class="col-sm-6 fl_dd">{{element.value.length>0?element.value : "-"}}</dd>
+            </dl>
+          </mdb-col>
+        </mdb-row>
+      </mdb-container>
     </template>
   </widget>
 </template>
 
 <script>
-import {
-  mdbRow,
-  mdbCol,
-  mdbContainer,
-  mdbBtn,
-  mdbCard,
-  mdbCardBody,
-  mdbCardHeader,
-  mdbCardText,
-  mdbIcon,
-  mdbTbl,
-  mdbTblHead,
-  mdbTblBody,
-  mdbListGroup,
-  mdbListGroupItem,
-  mdbBadge,
-  mdbModal,
-  mdbModalHeader,
-  mdbModalTitle,
-  mdbModalBody,
-  mdbModalFooter
-} from 'mdbvue'
+import { mdbRow, mdbCol, mdbContainer } from "mdbvue";
 
-import Widget from '@/components/agc/Widget'
+import Widget from "@/components/agc/Widget";
 
 export default {
-  name: 'CallerDetails',
+  name: "CallerDetails",
   components: {
     Widget,
     mdbRow,
     mdbCol,
-    mdbContainer,
-    mdbBtn,
-    mdbCard,
-    mdbCardBody,
-    mdbCardHeader,
-    mdbCardText,
-    mdbIcon,
-    mdbTbl,
-    mdbTblHead,
-    mdbTblBody,
-    mdbListGroup,
-    mdbListGroupItem,
-    mdbBadge,
-    mdbModal,
-    mdbModalHeader,
-    mdbModalTitle,
-    mdbModalBody,
-    mdbModalFooter
+    mdbContainer
   },
   props: {},
   data() {
-    return { showWidget: true ,
-    }
+    return { showWidget: true };
   },
   methods: {
     toggleShowWidget() {
-      this.showWidget = !this.showWidget
+      this.showWidget = !this.showWidget;
     }
   },
   computed: {
     uuiLabels() {
-      return this.$store.state.uui.labels
+      return this.$store.state.uui.labels;
     },
     callerData() {
-      return this.$store.getters.getCallerData
+      return this.$store.getters.getCallerData;
     },
     uuiElements() {
-      return this.$store.getters.getUui
+      return this.$store.getters.getUui;
     }
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
