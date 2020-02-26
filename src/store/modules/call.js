@@ -227,6 +227,14 @@ const actions = {
     dispatch("setCallStateTalking", payload);
   },
 
+  processNewConferenceCall({ commit, getters, dispatch }, payload) {
+    dispatch('addCallToActiveCalls', payload)
+    dispatch('linkPrimaryAndConsultedCall', payload)
+    let index = getters.getCallIndexByCallId(payload.callId)
+    commit('SET_CALL_TYPE_INBOUND', index)
+    dispatch('setCallStateTalking', payload)
+  },
+
   //called when one ore more conference call parties leave the call
   processConferenceConnectionDisconnect({ commit, getters }, payload) {
     let index = getters.getCallIndexByCallId(payload.callId);
