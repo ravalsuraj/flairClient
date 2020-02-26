@@ -63,13 +63,13 @@ export default {
        * object by keys instead of index
        ***********************************************/
       let config = getters["session/getConfig"];
-      let reasonCodeArray = config.agentReasonCodeList;
+      let reasonCodeArray = config.AGENT_REASON_CODE_LIST;
       var reasonCodeMap = reasonCodeArray.reduce(function(map, obj) {
         map[obj.reasonCode] = obj.reasonLabel;
         return map;
       }, {});
 
-      let auxArray = config.defaultAuxCodes;
+      let auxArray = config.AVAILABLE_AGENT_STATES;
       var auxMap = auxArray.reduce(function(map, obj) {
         map[obj.state] = obj.label;
         return map;
@@ -279,9 +279,9 @@ export default {
     },
 
     UPDATE_FULL_AUX_CODE_LIST(state, config) {
-      const agentReasonCodeList = config.agentReasonCodeList;
-      for (let i = 0; i < config.defaultAuxCodes.length; i++) {
-        state.fullAuxCodeList.push(config.defaultAuxCodes[i]);
+      const agentReasonCodeList = config.AGENT_REASON_CODE_LIST;
+      for (let i = 0; i < config.AVAILABLE_AGENT_STATES.length; i++) {
+        state.fullAuxCodeList.push(config.AVAILABLE_AGENT_STATES[i]);
       }
       for (let i = 0; i < agentReasonCodeList.length; i++) {
         state.fullAuxCodeList.push({

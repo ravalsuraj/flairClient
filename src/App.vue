@@ -144,7 +144,7 @@ html {
 .main-body {
   height: calc(100vh - 30px);
   background: linear-gradient(#fff, rgb(243, 243, 243));
-  overflow: hidden;
+  overflow: scroll;
 }
 footer {
   height: 25px;
@@ -217,7 +217,7 @@ footer {
 }
 .fl_container_dialer {
   /* box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12); */
-  border-radius: 0px 0px 8px 8px;
+  border-radius: 10px;
   max-width: 250px;
   margin: auto;
 }
@@ -295,7 +295,7 @@ footer {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.5s ease;
+  transition: opacity 0.5s linear;
 }
 .fade-enter, .fade-leave-to
 /* .-fade-leave-active below version 2.1.8 */ {

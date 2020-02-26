@@ -219,6 +219,13 @@ const actions = {
       commit("SET_CALL_TYPE_OUTBOUND", index);
     }
   },
+  processNewConferenceCall({ commit, getters, dispatch }, payload) {
+    dispatch("addCallToActiveCalls", payload);
+    dispatch("linkPrimaryAndConsultedCall", payload);
+    let index = getters.getCallIndexByCallId(payload.callId);
+    commit("SET_CALL_TYPE_INBOUND", index);
+    dispatch("setCallStateTalking", payload);
+  },
 
   //called when one ore more conference call parties leave the call
   processConferenceConnectionDisconnect({ commit, getters }, payload) {
@@ -328,8 +335,13 @@ const actions = {
 
           break;
         default:
-          console.log("AnswerDropCall(): skipping answer or drop because call state is: " + CALL_STATES.Text[callStatus]);
-          dispatch("showErrorBanner", ["Cannot Disconnect", "Please remove the call from hold, before attempting to disconnect"]);
+          console.log(
+            "AnswerDropCall(): skipping answer or drop because call state is: " + CALL_STATES.Text[callStatus]
+          );
+          dispatch("showErrorBanner", [
+            "Cannot Disconnect",
+            "Please remove the call from hold, before attempting to disconnect"
+          ]);
       }
     } else if (callType === CALL_TYPES.OUTBOUND) {
       dispatch("requestDropCall", request);
@@ -522,10 +534,24 @@ const mutations = {
   ADD_THIRD_ADDRESS_TO_CALL(state, [index, payload]) {
     let linkedCall = payload;
     if (linkedCall.callDirection == CALL_TYPES.INBOUND) {
-      console.log("ADD_THIRD_ADDRESS_TO_CALL(): condition for call direction inbound. callDirection=" + linkedCall.callDirection + ", index=" + index + ", payload=" + JSON.stringify(payload));
+      console.log(
+        "ADD_THIRD_ADDRESS_TO_CALL(): condition for call direction inbound. callDirection=" +
+          linkedCall.callDirection +
+          ", index=" +
+          index +
+          ", payload=" +
+          JSON.stringify(payload)
+      );
       state.calls[index].thirdAddress = linkedCall.callingAddress;
     } else {
-      console.log("ADD_THIRD_ADDRESS_TO_CALL(): condition for call direction outbound. callDirection=" + linkedCall.callDirection + ", index=" + index + ", payload=" + JSON.stringify(payload));
+      console.log(
+        "ADD_THIRD_ADDRESS_TO_CALL(): condition for call direction outbound. callDirection=" +
+          linkedCall.callDirection +
+          ", index=" +
+          index +
+          ", payload=" +
+          JSON.stringify(payload)
+      );
       state.calls[index].thirdAddress = linkedCall.calledAddress;
     }
 

@@ -6,6 +6,7 @@
     "ALLOW_OUTBOUND_DIALING": true,
     "AGENT_STATE_POLLING_INTERVAL_MS": 1000,
     "DGFT": {
+        "OUTCALLING_REASON_CODE": 1,
         "MIDDLEWARE": {
             "URL": "http://192.168.110.99:9093"
         },
@@ -20,18 +21,18 @@
             "uniqueID",
             "lang",
             "RMN",
-            "IECStatus",
+            "IEC",
             "ConplaintNo",
             "LastShortCode"
         ]
     },
     "AGS": {
         "MIDDLEWARE": {
-            "URL": "http://localhost:9093",
+            "URL": "http://192.168.110.99:9093",
             "TIMEOUT": 15000
         }
     },
-    "defaultAuxCodes": [
+    "AVAILABLE_AGENT_STATES": [
         {
             "label": "Ready",
             "state": 4,
@@ -57,32 +58,14 @@
             "reasonCode": null
         }
     ],
-    "agentAuxCodes": [
-        {
-            "label": "Ready",
-            "state": 4,
-            "reasonCode": null
-        },
-        {
-            "label": "Not Ready",
-            "state": 3,
-            "reasonCode": 0
-        },
-        {
-            "label": "Lunch",
-            "state": 3,
-            "reasonCode": 2
-        },
-        {
-            "label": "Dinner",
-            "state": 3,
-            "reasonCode": 3
-        }
-    ],
-    "agentReasonCodeList": [
+    "AGENT_REASON_CODE_LIST": [
         {
             "reasonCode": 0,
             "reasonLabel": "Not Ready"
+        },
+        {
+            "reasonCode": 1,
+            "reasonLabel": "Outbound Call"
         },
         {
             "reasonCode": 2,

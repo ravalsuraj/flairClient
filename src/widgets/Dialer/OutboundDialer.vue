@@ -1,6 +1,4 @@
 <template>
-  <!-- <mdb-card class="mb-0" color="special-color">
-  <mdb-card-body class="p-2 mb-1">-->
   <div class="fl_container_dialer black-text" >
     <mdb-container fluid>
       <div @click.stop>
@@ -25,11 +23,6 @@
           >
             <mdb-icon icon="backspace" size="1p5x" />
           </a>
-
-          <!--Delete All Digits-->
-          <!-- <a class="black-text align-self-baseline fl_btn_btnIcon" @click="clearDigits" @click.stop>
-            <mdb-icon icon="trash" size="1p5x" />
-          </a> -->
         </mdb-row>
       </div>
 

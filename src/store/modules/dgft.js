@@ -32,6 +32,9 @@ export default {
       dispatch("resetDgftUuiForCall", callIndex);
     },
 
+    disposeDgftCall({ dispatch }, payload) {
+      dispatch("removeCallFromActiveCalls", [payload.ucid, payload.callId]);
+    },
     setDgftCrmUrlForCall({ commit, getters }, call) {
       const callIndex = getters.getCallIndexByCallId(call.callId);
       let path = "/";

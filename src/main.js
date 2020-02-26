@@ -17,7 +17,7 @@ import Vuedraggable from "vuedraggable";
 import Notifications from "vue-notification";
 import { longClickDirective } from "vue-long-click";
 
-// import config from "./../public/settings.json";
+import config from "./../public/settings.json";
 // import "x-frame-bypass";
 Vue.use(Notifications);
 Vue.use(Vuex);
@@ -29,41 +29,49 @@ import api from "./services/api";
 
 //Used to detect long click. Used in the dialer to delete multiple digits upon long-click
 const longClickInstance = longClickDirective({ delay: 400, interval: 50 });
-let serverIp = "";
+
+//initialize the URL to the settings.json URL
+let serverIp = config.FLAIR_SERVER_URL;
 Vue.directive("longclick", longClickInstance);
 
-//get the IP address dynamically for the websocket server.
+//get the IP address dynamically for the websocket server. This is saved in the config.js file for the FlairClientLauncher
 api
   .getServerIp()
   .then(resp => {
     console.log("resp=" + JSON.stringify(resp.data));
     if (resp.data.responseCode === "0") {
       serverIp = resp.data.ip;
-      Vue.use(
-        new VueSocketIO({
-          debug: true,
-          connection: serverIp,
-          vuex: {
-            store,
-            actionPrefix: "SOCKET_",
-            mutationPrefix: "SOCKET_"
-          }
-        })
-      );
-      Vue.use(Vue2TouchEvents);
-
-      Vue.config.productionTip = false;
-      Vue.prototype.$serverip = serverIp;
-      new Vue({
-        router,
-        store,
-        render: h => h(App)
-      }).$mount("#app");
+      initVue();
       console.log("main.js execution complete. using server URL=" + serverIp);
     } else {
       console.error("could not fetch server ip");
+      initVue();
     }
   })
-  .catch(err => {
-    console.error("could not fetch server ip" + JSON.stringify(err));
+  .catch(() => {
+    console.log("could not fetch server IP , so using the value from settings.json");
+    initVue();
   });
+
+let initVue = () => {
+  Vue.use(
+    new VueSocketIO({
+      debug: true,
+      connection: serverIp,
+      vuex: {
+        store,
+        actionPrefix: "SOCKET_",
+        mutationPrefix: "SOCKET_"
+      }
+    })
+  );
+  Vue.use(Vue2TouchEvents);
+
+  Vue.config.productionTip = false;
+  Vue.prototype.$serverip = serverIp;
+  new Vue({
+    router,
+    store,
+    render: h => h(App)
+  }).$mount("#app");
+};
