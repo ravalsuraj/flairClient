@@ -65,6 +65,7 @@ export default {
     latestCallId() {
       return this.inboundCallList[this.inboundCallList.length - 1];
     },
+
     selectedCallId() {
       if (this.inboundCallList.length > 1) {
         return this.dropdownSelectedCallId;
@@ -72,10 +73,10 @@ export default {
         return this.latestCallId;
       }
     },
-    selectedCallersAddress() {
+    selectedCall() {
       let call = this.$store.getters.getCallByCallId(this.selectedCallId);
       if (call) {
-        return call.callingAddress;
+        return call;
       } else {
         return null;
       }
@@ -105,7 +106,7 @@ export default {
       //if the call list increases, fetch the screenpop url for the latest call
       if (newInCallList.length > this.currentInboundCallList.length) {
         this.currentInboundCallList.push(this.latestCallId);
-        if (this.selectedCallersAddress.length > 5) {
+        if (this.selectedCall.callingAddress.length > 5) {
           this.$store.dispatch("processNewDgftCall", this.latestCallId);
         } else {
           console.log("caller length < 5, so this call was not processed. callId=" + this.latestCallId);
@@ -137,7 +138,8 @@ export default {
     },
     agentState(newAgentState) {
       if (newAgentState === AGENT_STATES.READY) {
-        this.$store.dispatch("resetDgftCrmUrlForCall");
+        if (this.selectedCallId && this.selectedCall)
+          this.$store.dispatch("disposeDgftCall", { callId: this.selectedCallId, ucid: this.selectedCall.ucid });
       }
     }
   }

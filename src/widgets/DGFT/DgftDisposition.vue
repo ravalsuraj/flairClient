@@ -7,7 +7,7 @@
             <mdb-col col="8">
               <span>
                 Please dispose the call on the CRM to clear this call and go on "Ready"<br />In case of issues, use the
-                DISPOSE button here 
+                DISPOSE button here
               </span>
             </mdb-col>
             <mdb-col col="4">
@@ -25,7 +25,7 @@
 
 <script>
 import { mdbContainer, mdbBtn, mdbRow, mdbCol } from "mdbvue";
-import { CALL_STATES } from "@/defines.js";
+import { CALL_STATES, CALL_TYPES } from "@/defines.js";
 
 import Widget from "@/components/agc/Widget";
 export default {
@@ -36,6 +36,11 @@ export default {
     mdbRow,
     mdbCol,
     mdbBtn
+  },
+  beforeMount() {
+    if (!this.isCallTypeInbound(this.call)) {
+      this.$store.dispatch("disposeDgftCall", { ucid: this.ucid, callId: this.callId });
+    }
   },
   mounted() {},
   props: {
@@ -61,20 +66,10 @@ export default {
       this.disposeCall();
     },
     disposeCall() {
-      // let dispositionRequest = {
-      //   callId: this.callId,
-      //   ucid: this.ucid,
-      //   cli : this.call.callingAddress,
-      //   dnis : this.call.calledAddress,
-
-      //   call_start_date_time: this.call.callStartTime,
-      //   call_end_date_time: this.call.callEndTime,
-      //   disposition : this.disposition,
-      //   sub_disposition : this.sub_disposition
-
-      // }
-      //this.$store.dispatch('requestCallDisposition')
-      this.$store.dispatch("removeCallFromActiveCalls", [this.ucid, this.callId]);
+      this.$store.dispatch("disposeDgftCall", { ucid: this.ucid, callId: this.callId });
+    },
+    isCallTypeInbound(call) {
+      return call.type === CALL_TYPES.INBOUND;
     }
   },
 

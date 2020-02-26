@@ -1,11 +1,16 @@
 <template>
   <mdb-container fluid :style="{ height: height }">
-    <mdb-card class="mb-0" :class="{ 'h-100': true && showWidget }" style="border-radius:10px">
-      <mdb-card-header :class="color" style="border-radius:5px 5px 0 0">
+    <mdb-card class="mb-0 fl_widget_card" :class="{ maximized: showWidget }" style="border-radius:10px">
+      <mdb-card-header
+        class="fl_widget_card_header"
+        :color="color"
+        :class="{ minimized: showWidget == false }"
+        style="border-radius:5px 5px 0 0"
+      >
         <strong>{{ title }}</strong>
 
         <a @click="toggleShowWidget">
-          <transition name="fade" mode="out-in">
+          <transition name="fade" mode="in-out">
             <mdb-icon v-if="showWidget" icon="window-minimize" class="float-right"></mdb-icon>
             <mdb-icon v-else icon="bars" class="float-right"></mdb-icon>
           </transition>
@@ -14,7 +19,7 @@
           <slot name="toolbar"></slot>
         </div>
       </mdb-card-header>
-      <mdb-card-body class="px-1" v-show-slide="showWidget" :class="{ 'p-0': !showWidget }">
+      <mdb-card-body class="fl_widget_card_body" v-show-slide="showWidget" :class="{ maximized: showWidget }">
         <slot name="body"></slot>
       </mdb-card-body>
     </mdb-card>
@@ -58,7 +63,11 @@ export default {
     };
   },
 
-  computed: {},
+  computed: {
+    widgetColor() {
+      return "background-color: " + this.color;
+    }
+  },
 
   methods: {
     toggleShowWidget() {
@@ -67,3 +76,28 @@ export default {
   }
 };
 </script>
+<style scoped>
+.fl_widget_card {
+  height: 0;
+  transition: all 0.2s linear;
+}
+.fl_widget_card.maximized {
+  height: 100%;
+}
+.fl_widget_card_body {
+  padding: 0px;
+  opacity: 0;
+  transition: all 1s ease;
+}
+.fl_widget_card_body.maximized {
+  padding: 8px;
+  opacity: 1;
+}
+.fl_widget_card_header {
+  transition: all 0.2s ease;
+}
+.fl_widget_card_header.minimized {
+  background-color: #7283a7 !important;
+  /* color: black !important; */
+}
+</style>

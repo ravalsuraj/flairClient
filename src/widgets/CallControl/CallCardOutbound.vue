@@ -7,12 +7,8 @@
             <mdb-col :col="cardWidth">
               <mdb-row>
                 <mdb-col col="7" class="mb-3 d-flex">
-                  <span strong class="fl_well_text big mx-auto">{{callingAddress}}</span>
-                  <span
-                    v-if="isCallConferenced"
-                    strong
-                    class="fl_well_text big mx-auto"
-                  >{{thirdAddress}}</span>
+                  <span strong class="fl_well_text big mx-auto">{{ callingAddress }}</span>
+                  <span v-if="isCallConferenced" strong class="fl_well_text big mx-auto">{{ thirdAddress }}</span>
                 </mdb-col>
                 <mdb-col col="5" class="mb-3 text-center">
                   <persist-timer :timerName="callTimerName" class="fl_well_text big"></persist-timer>
@@ -21,7 +17,7 @@
 
               <mdb-row>
                 <mdb-col col="7" class="mb-3 d-flex">
-                  <span strong class="fl_well_text big mx-auto">{{callStatusText}}</span>
+                  <span strong class="fl_well_text big mx-auto">{{ callStatusText }}</span>
                 </mdb-col>
                 <mdb-col col="5" class="mb-3 text-center">
                   <persist-timer :timerName="inStateTimerName" class="fl_well_text big"></persist-timer>
@@ -35,18 +31,19 @@
               <mdb-row>
                 <mdb-col col="3">
                   <transition name="fade">
-                    <button
+                    <mdb-btn
                       v-if="!isCallHeld"
                       type="button"
-                      class="btn btn-circle btn-red"
+                      class="btn btn-circle"
+                      outline="red"
                       @click="answerDropCall"
                       :disabled="isCallIdle"
                     >
                       <transition name="fade">
-                        <mdb-icon icon="phone" style="font-size:1.5em" v-if="isCallRinging" />
-                        <mdb-icon icon="phone-slash" style="font-size:1.5em" v-else />
+                        <mdb-icon icon="phone" style="font-size:1em" v-if="isCallRinging" />
+                        <mdb-icon icon="phone-slash" style="font-size:1em" v-else />
                       </transition>
-                    </button>
+                    </mdb-btn>
                   </transition>
                 </mdb-col>
                 <!-- END: Answer/Drop Button -->
@@ -54,35 +51,32 @@
                 <!-- START: Hold Button -->
                 <mdb-col col="3">
                   <transition name="fade">
-                    <button
+                    <mdb-btn
                       type="checkbox"
                       class="btn btn-circle"
                       :disabled="!isCallActive"
                       @click="holdUnholdCall"
-                      :class="holdButtonColor"
+                      :outline="holdButtonOutline"
                     >
-                      <mdb-icon :icon="isCallHeld?'play':'pause'" style="font-size:1.5em" />
-                    </button>
+                      <mdb-icon :icon="isCallHeld ? 'play' : 'pause'" style="font-size:1em" />
+                    </mdb-btn>
                   </transition>
                 </mdb-col>
                 <!--END: Hold Button-->
 
                 <!-- START: Conference Button -->
                 <mdb-col col="3">
-                  <button
+                  <mdb-btn
                     type="checkbox"
-                    class="btn red lighten-1 btn-circle"
-                    @click="showConferenceModal=true"
+                    class="btn btn-circle"
+                    outline="deep-orange"
+                    @click="showConferenceModal = true"
                     v-if="!isCallHeld && !isCallRinging"
                   >
-                    <mdb-icon icon="users" style="font-size:1.5em" />
-                  </button>
+                    <mdb-icon icon="users" style="font-size:1em" />
+                  </mdb-btn>
 
-                  <mdb-modal
-                    size="sm"
-                    v-if="showConferenceModal"
-                    @close="showConferenceModal=false"
-                  >
+                  <mdb-modal size="sm" v-if="showConferenceModal" @close="showConferenceModal = false">
                     <mdb-modal-header>
                       <mdb-modal-title>Consult Call</mdb-modal-title>
                     </mdb-modal-header>
@@ -91,7 +85,7 @@
                         <consult-dialer
                           :ucid="ucid"
                           :callId="callId"
-                          @close-self="showConferenceModal=false"
+                          @close-self="showConferenceModal = false"
                         ></consult-dialer>
                       </div>
 
@@ -102,23 +96,18 @@
                           v-if="otherCalls"
                         >
                           <option selected disabled>Open this select menu</option>
-                          <option
-                            :value="call.callId"
-                            v-for="call in otherCalls"
-                            :key="call.id"
-                          >{{call.callingAddress}}</option>
+                          <option :value="call.callId" v-for="call in otherCalls" :key="call.id">{{
+                            call.callingAddress
+                          }}</option>
                         </select>
                         <div class="mb-5 w-100">
                           <div class="text-center py-2">Call to Conference/ Transfer :</div>
-                          <h3 class="text-center">{{otherCalls[0].callingAddress}}</h3>
+                          <h3 class="text-center">{{ otherCalls[0].callingAddress }}</h3>
                         </div>
                         <transition name="fade">
                           <div class="btn-group w-100">
                             <mdb-btn class="mdb-color mx-2 px-2 w-50" @click="transferCall">Transfer</mdb-btn>
-                            <mdb-btn
-                              class="mdb-color mx-2 px-2 w-50"
-                              @click="conferenceCall"
-                            >Conference</mdb-btn>
+                            <mdb-btn class="mdb-color mx-2 px-2 w-50" @click="conferenceCall">Conference</mdb-btn>
                           </div>
                         </transition>
                       </div>
@@ -140,12 +129,7 @@
 import ConsultDialer from "@/widgets/Dialer/ConsultDialer";
 import PersistTimer from "@/components/agc/PersistTimer.vue";
 import Widget from "@/components/agc/Widget";
-import {
-  CALL_STATES,
-  CALL_TYPES,
-  TIMER_TYPES,
-  MULTI_CALL_STATES
-} from "@/defines.js";
+import { CALL_STATES, CALL_TYPES, TIMER_TYPES, MULTI_CALL_STATES } from "@/defines.js";
 
 import {
   mdbContainer,
@@ -205,10 +189,7 @@ export default {
     },
 
     answerDropCall() {
-      this.$store.dispatch("requestAnswerDropCall", [
-        this.call.callId,
-        CALL_TYPES.OUTBOUND
-      ]);
+      this.$store.dispatch("requestAnswerDropCall", [this.call.callId, CALL_TYPES.OUTBOUND]);
     },
 
     holdUnholdCall() {
@@ -216,10 +197,7 @@ export default {
     },
 
     disposeCall() {
-      this.$store.dispatch("removeCallFromActiveCalls", [
-        this.call.ucid,
-        this.call.callId
-      ]);
+      this.$store.dispatch("removeCallFromActiveCalls", [this.call.ucid, this.call.callId]);
     },
 
     transferCall() {
@@ -231,9 +209,7 @@ export default {
         this.$store.dispatch("requestTransferCall", transferRequest);
       } else {
         console.log(
-          "skipping transfer call. this.callId=" +
-            this.callId +
-            "callIdToBeConferenced=",
+          "skipping transfer call. this.callId=" + this.callId + "callIdToBeConferenced=",
           this.callIdToBeConferenced
         );
       }
@@ -247,9 +223,7 @@ export default {
         this.$store.dispatch("requestConferenceCall", transferRequest);
       } else {
         console.log(
-          "skipping conference call. this.callId=" +
-            this.callId +
-            "callIdToBeConferenced=",
+          "skipping conference call. this.callId=" + this.callId + "callIdToBeConferenced=",
           this.callIdToBeConferenced
         );
       }
@@ -288,20 +262,14 @@ export default {
     },
 
     isCallIdle() {
-      return (
-        this.callStatus === CALL_STATES.IDLE ||
-        this.callStatus === CALL_STATES.DROPPED
-      );
+      return this.callStatus === CALL_STATES.IDLE || this.callStatus === CALL_STATES.DROPPED;
     },
 
     isCallRinging() {
       return this.callStatus === CALL_STATES.RINGING;
     },
     isCallActive() {
-      return (
-        this.callStatus === CALL_STATES.TALKING ||
-        this.callStatus === CALL_STATES.HELD
-      );
+      return this.callStatus === CALL_STATES.TALKING || this.callStatus === CALL_STATES.HELD;
     },
 
     isCallHeld() {
@@ -335,6 +303,13 @@ export default {
         return { "blue-grey": true };
       } else {
         return { cyan: true };
+      }
+    },
+    holdButtonOutline() {
+      if (this.isCallHeld) {
+        return "mdb-color";
+      } else {
+        return "cyan";
       }
     },
     callingAddress() {
@@ -409,9 +384,7 @@ export default {
             break;
           case CALL_STATES.TALKING:
           case CALL_STATES.HELD:
-            console.log(
-              "CallCardOutbound(): watcher - callStatus:  calling stop and start timer for instateTimer"
-            );
+            console.log("CallCardOutbound(): watcher - callStatus:  calling stop and start timer for instateTimer");
 
             this.$store.dispatch("startTimer", this.inStateTimerName);
             break;
