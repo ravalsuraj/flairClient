@@ -2,6 +2,7 @@
   <div>
     <mdb-tooltip trigger="hover" :options="{ placement: 'left' }" :disabled="isAgentInOutboundAuxState">
       <span slot="tip">Switch to "Outbound Call" to enable dialer</span>
+
       <span slot="reference">
         <mdb-btn
           v-if="isOutCallingEnabled"
