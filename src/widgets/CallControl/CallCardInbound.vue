@@ -99,7 +99,7 @@
                       <consult-dialer
                         :ucid="ucid"
                         :callId="callId"
-                        @close-self="showOutboundDialerModal = false"
+                        @close-self="showConferenceModal = false"
                       ></consult-dialer>
                     </mdb-modal-body>
                   </mdb-modal>

@@ -40,15 +40,15 @@
             @click="appendDigit(digit.text)"
             @click.stop
           >
-            <div class="number">{{digit.text}}</div>
-            <div class="subText">{{digit.subText}}</div>
+            <div class="number">{{ digit.text }}</div>
+            <div class="subText">{{ digit.subText }}</div>
           </div>
         </mdb-col>
       </mdb-row>
 
       <mdb-row class>
         <transition name="fade">
-          <mdb-btn class="mdb-color mx-2 w-100" @click="onConsultButtonClicked">
+          <mdb-btn class="mdb-color mx-2 w-100" @click.native="onConsultButtonClicked">
             <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
             <span>Consult</span>
           </mdb-btn>
@@ -133,20 +133,7 @@ export default {
           subText: ""
         }
       ],
-      digitSubText: [
-        "",
-        "ABC",
-        "DEF",
-        "GHI",
-        "JKL",
-        "MNO",
-        "PQRS",
-        "TUV",
-        "WXYZ",
-        "",
-        "+",
-        ""
-      ],
+      digitSubText: ["", "ABC", "DEF", "GHI", "JKL", "MNO", "PQRS", "TUV", "WXYZ", "", "+", ""],
       interval: false,
       digitDeleteSpeed: 200,
       initialDeleteSpeed: 500,
@@ -174,16 +161,10 @@ export default {
     },
     deleteSingleDigit() {
       console.log("deleteSingleDigits");
-      this.dialedDigits = this.dialedDigits.slice(
-        0,
-        this.dialedDigits.length - 1
-      );
+      this.dialedDigits = this.dialedDigits.slice(0, this.dialedDigits.length - 1);
     },
     startDeletingDigits() {
-      this.interval = setInterval(
-        () => this.deleteSingleDigit(),
-        this.digitDeleteSpeed
-      );
+      this.interval = setInterval(() => this.deleteSingleDigit(), this.digitDeleteSpeed);
     },
     stopDeletingDigits() {
       clearInterval(this.interval);

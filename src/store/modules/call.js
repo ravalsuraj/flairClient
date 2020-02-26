@@ -227,14 +227,6 @@ const actions = {
     dispatch("setCallStateTalking", payload);
   },
 
-  processNewConferenceCall({ commit, getters, dispatch }, payload) {
-    dispatch('addCallToActiveCalls', payload)
-    dispatch('linkPrimaryAndConsultedCall', payload)
-    let index = getters.getCallIndexByCallId(payload.callId)
-    commit('SET_CALL_TYPE_INBOUND', index)
-    dispatch('setCallStateTalking', payload)
-  },
-
   //called when one ore more conference call parties leave the call
   processConferenceConnectionDisconnect({ commit, getters }, payload) {
     let index = getters.getCallIndexByCallId(payload.callId);
@@ -274,8 +266,8 @@ const actions = {
       };
 
       commit("LINK_PRIMARY_CONSULTED_CALL", linkCallRequest);
-      commit("ADD_THIRD_ADDRESS_TO_CALL", [primaryCallIndex, consultedCall]);
-      commit("ADD_THIRD_ADDRESS_TO_CALL", [consultedCallIndex, primaryCall]);
+      commit("ADD_LINKED_ADDRESS_TO_CALL", [primaryCallIndex, consultedCall]);
+      commit("ADD_LINKED_ADDRESS_TO_CALL", [consultedCallIndex, primaryCall]);
     }
   },
 
@@ -300,6 +292,8 @@ const actions = {
         offSwitchAddress: null,
         callIndex: callIndex
       };
+
+      commit("SET_CONFERENCE_CALL_ADDRESS", { confRequest: payload, callIndex: callIndex });
       //Check if the address is an Off-Switch Address
       if (payload.callingAddress.substring(0, 1) === "T") {
         offSwitchAddressRequest.callAddressType = "CALLING";
@@ -528,7 +522,11 @@ const mutations = {
   SET_MULTI_CALL_STATE_CONFERENCED(state, [index]) {
     state.calls[index].multiCallState = MULTI_CALL_STATES.CONFERENCED;
   },
-
+  SET_CONFERENCE_CALL_ADDRESS(state, payload) {
+    if (!state.calls[payload.callIndex].thirdAddress) {
+      state.calls[payload.callIndex].thirdAddress = payload.confRequest.thirdAddress;
+    }
+  },
   SET_OFF_SWITCH_ADDRESS(state, payload) {
     if (payload.callAddressType === "CALLING") {
       state.calls[payload.callIndex].callingAddressReference = payload.offSwitchAddress;
@@ -539,11 +537,11 @@ const mutations = {
     }
   },
 
-  ADD_THIRD_ADDRESS_TO_CALL(state, [index, payload]) {
+  ADD_LINKED_ADDRESS_TO_CALL(state, [index, payload]) {
     let linkedCall = payload;
     if (linkedCall.callDirection == CALL_TYPES.INBOUND) {
       console.log(
-        "ADD_THIRD_ADDRESS_TO_CALL(): condition for call direction inbound. callDirection=" +
+        "ADD_LINKED_ADDRESS_TO_CALL(): condition for call direction inbound. callDirection=" +
           linkedCall.callDirection +
           ", index=" +
           index +
@@ -553,7 +551,7 @@ const mutations = {
       state.calls[index].thirdAddress = linkedCall.callingAddress;
     } else {
       console.log(
-        "ADD_THIRD_ADDRESS_TO_CALL(): condition for call direction outbound. callDirection=" +
+        "ADD_LINKED_ADDRESS_TO_CALL(): condition for call direction outbound. callDirection=" +
           linkedCall.callDirection +
           ", index=" +
           index +
@@ -569,16 +567,16 @@ const mutations = {
     //   state.calls[index].calledAddress === linkedCall.callingAddress ||
     //   state.calls[index].callingAddress === linkedCall.callingAddress
     // ) {
-    //   console.log("ADD_THIRD_ADDRESS_TO_CALL(): setting third address as calledAddress. index=" + index + "payload" + JSON.stringify(payload))
+    //   console.log("ADD_LINKED_ADDRESS_TO_CALL(): setting third address as calledAddress. index=" + index + "payload" + JSON.stringify(payload))
     //   state.calls[index].thirdAddress = linkedCall.calledAddress
     // } else if (
     //   state.calls[index].calledAddress === linkedCall.calledAddress ||
     //   state.calls[index].callingAddress === linkedCall.calledAddress
     // ) {
-    //   console.log("ADD_THIRD_ADDRESS_TO_CALL(): setting third address as callingAddress. index=" + index + "payload" + JSON.stringify(payload))
+    //   console.log("ADD_LINKED_ADDRESS_TO_CALL(): setting third address as callingAddress. index=" + index + "payload" + JSON.stringify(payload))
     //   state.calls[index].thirdAddress = linkedCall.callingAddress
     // } else {
-    //   console.log("ADD_THIRD_ADDRESS_TO_CALL(): no conditions matched")
+    //   console.log("ADD_LINKED_ADDRESS_TO_CALL(): no conditions matched")
     // }
   },
 

@@ -15,6 +15,11 @@
           <div class="text-center py-2">The following Call is being used to perform Screenpop</div>
           <h3 class="text-center">{{ inboundCallList[0] }}</h3>
         </div>
+
+        <dl class="row mb-1 no-gutters fl_dl" v-for="(value, name) in dgftUui" :key="value.id">
+          <dt class="col-sm-6 fl_dt">{{ name }}</dt>
+          <dd class="col-sm-6 fl_dd">{{ value }}</dd>
+        </dl>
         <div class="w-100">
           <mdb-btn
             v-if="inboundCallList && inboundCallList.length > 0"
@@ -25,11 +30,6 @@
             Transfer to Survey
           </mdb-btn>
         </div>
-
-        <dl class="row mb-1 no-gutters fl_dl" v-for="(value, name) in dgftUui" :key="value.id">
-          <dt class="col-sm-6 fl_dt">{{ name }}</dt>
-          <dd class="col-sm-6 fl_dd">{{ value }}</dd>
-        </dl>
       </mdb-container>
     </template>
   </widget>
@@ -86,6 +86,17 @@ export default {
     },
     dgftUui() {
       let callIndex = this.inboundCallList.indexOf(this.selectedCallId);
+      if (callIndex > -1) {
+        return {
+          UCID: this.selectedCall.ucid,
+          uniqueID: "1234",
+          lang: "en",
+          RMN: "YES",
+          IEC: "YES",
+          ConplaintNo: "1234",
+          LastShortCode: "A1001"
+        };
+      }
       return this.$store.getters.getDgftUuiByCallIndex(callIndex);
     },
     dgftUuiKeys() {

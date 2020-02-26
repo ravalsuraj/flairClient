@@ -38,7 +38,15 @@ export default {
     mdbBtn
   },
   beforeMount() {
-    if (!this.isCallTypeInbound(this.call)) {
+    /**************************************************************************************
+     *  if the calling number is an internal number, or if the number is not an inbound call,
+     *  dispose the call before displaying the dispose card
+     **************************************************************************************/
+    if (
+      this.call.callingAddress.length < this.$store.getters["session/getConfig"].INTERNAL_NUMBERS_MAX_LENGTH ||
+      !this.isCallTypeInbound(this.call)
+    ) {
+      console.log("auto disposing call since it is either an internal call, or is not an inbound call:" + this.callId);
       this.$store.dispatch("disposeDgftCall", { ucid: this.ucid, callId: this.callId });
     }
   },

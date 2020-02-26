@@ -125,8 +125,8 @@ export default {
       commit("SET_DGFT_UUI", request);
     },
 
-    resetDgftUuiForCall({ commit }, callId) {
-      commit("RESET_DGFT_UUI", callId);
+    resetDgftUuiForCall({ commit, getters }, callId) {
+      commit("RESET_DGFT_UUI", getters.getCallIndexByCallId(callId));
     },
 
     requestDgftSurveyIvrTransfer({ dispatch, getters }, callId) {
@@ -251,7 +251,7 @@ export default {
         console.log(
           "getDgftUuiByCallIndex(): could not find DGFT UUI for call index=" +
             callIndex +
-            "+ state=" +
+            ", state=" +
             JSON.stringify(state.dgftUui)
         );
         return null;
