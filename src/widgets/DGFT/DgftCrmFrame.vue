@@ -26,7 +26,11 @@ export default {
   },
   props: {},
   mounted() {
-    this.crmUrl = this.defaultUrl;
+    if (this.crmUrl == "") {
+      this.crmUrl = this.CRM_URL;
+    } else {
+      console.log("crmURL is not blank so not setting anything. crmUrl=" + this.crmUrl);
+    }
   },
   data() {
     return {

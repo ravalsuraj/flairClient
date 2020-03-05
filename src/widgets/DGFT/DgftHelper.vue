@@ -149,8 +149,10 @@ export default {
     },
     agentState(newAgentState) {
       if (newAgentState === AGENT_STATES.READY) {
-        if (this.selectedCallId && this.selectedCall)
+        if (this.selectedCallId && this.selectedCall) {
+          this.$store.dispatch("processDgftCallCleared", this.$store.getters.getCallIndexByCallId(this.selectedCallId));
           this.$store.dispatch("disposeDgftCall", { callId: this.selectedCallId, ucid: this.selectedCall.ucid });
+        }
       }
     }
   }
