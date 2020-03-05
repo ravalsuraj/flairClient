@@ -33,7 +33,7 @@ import BottomFooter from "@/views/BottomFooter.vue";
 import { AGENT_STATES, SOCKET_STATES } from "@/defines";
 
 export default {
-  name: "AdminTemplate",
+  name: "App",
   components: {
     LoginPage,
     TopNavbar,

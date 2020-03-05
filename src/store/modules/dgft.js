@@ -27,9 +27,9 @@ export default {
       dispatch("setDgftCrmUrlForCall", call);
     },
     processDgftCallCleared({ commit, dispatch }, callIndex) {
-      commit("RESET_DGFT_CALL_TO_PROCESS");
       dispatch("resetDgftCrmUrlForCall", callIndex);
       dispatch("resetDgftUuiForCall", callIndex);
+      commit("RESET_DGFT_CALL_TO_PROCESS");
     },
 
     disposeDgftCall({ dispatch }, payload) {
@@ -125,8 +125,8 @@ export default {
       commit("SET_DGFT_UUI", request);
     },
 
-    resetDgftUuiForCall({ commit, getters }, callId) {
-      commit("RESET_DGFT_UUI", getters.getCallIndexByCallId(callId));
+    resetDgftUuiForCall({ commit }, callIndex) {
+      commit("RESET_DGFT_UUI", callIndex);
     },
 
     requestDgftSurveyIvrTransfer({ dispatch, getters }, callId) {
