@@ -85,7 +85,7 @@
         "width": "10",
         "widgets": [
             {
-                "name": "crm-frame"
+                "name": "dgft-crm-frame"
             }
         ]
     },

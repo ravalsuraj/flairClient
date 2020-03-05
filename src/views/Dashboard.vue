@@ -103,7 +103,7 @@ import MenuTraversal from "@/widgets/MenuTraversal/MenuTraversal.vue";
 
 import AgentCallStatistics from "@/widgets/AgentCallStatistics/AgentCallStatistics.vue";
 
-import CrmFrame from "@/widgets/CrmFrame/CrmFrame.vue";
+import DgftCrmFrame from "@/widgets/DGFT/DgftCrmFrame.vue";
 import QuickLinks from "@/widgets/QuickLinks/QuickLinks.vue";
 
 import SmsHelper from "@/widgets/SmsHelper/SmsHelper.vue";
@@ -114,7 +114,7 @@ export default {
   components: {
     draggable,
     ConsultDialer,
-    CrmFrame,
+    DgftCrmFrame,
     QuickLinks,
     CallDisposition,
     AgentCallStatistics,
