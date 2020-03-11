@@ -4,17 +4,16 @@ var ajaxAppender;
 var jsonLayout;
 
 export default {
-  log(sessionId, message) {
+  log(message) {
     if (!myLogger) {
       myLogger = log4javascript.getLogger();
 
       ajaxAppender = new log4javascript.AjaxAppender("http://192.168.110.99:9093/log");
       jsonLayout = new log4javascript.JsonLayout();
       ajaxAppender.setLayout(jsonLayout);
-      ajaxAppender.setSessionId(sessionId);
       ajaxAppender.setThreshold(log4javascript.Level.INFO);
       myLogger.addAppender(ajaxAppender);
     }
-    myLogger.info(message);
+    myLogger.info(JSON.stringify(message));
   }
 };
