@@ -46,7 +46,9 @@ export default {
       this.call.callingAddress.length < this.$store.getters["session/getConfig"].INTERNAL_NUMBERS_MAX_LENGTH ||
       !this.isCallTypeInbound(this.call)
     ) {
-      console.log("auto disposing call since it is either an internal call, or is not an inbound call:" + this.callId);
+      this.serverLog(
+        "auto disposing call since it is either an internal call, or is not an inbound call:" + this.callId
+      );
       this.$store.dispatch("disposeDgftCall", { ucid: this.ucid, callId: this.callId });
     }
   },
@@ -99,7 +101,7 @@ export default {
         case CALL_STATES.TALKING:
         case CALL_STATES.HELD:
           if (newCallStatus === CALL_STATES.DROPPED) {
-            console.log("timer changed from talking to dropped");
+            this.serverLog("timer changed from talking to dropped");
             this.showWidget = true;
             this.showTimer = true;
             this.$store.dispatch("startTimer", "acwTimer");

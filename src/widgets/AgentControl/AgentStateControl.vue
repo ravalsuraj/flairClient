@@ -43,7 +43,9 @@ export default {
   methods: {
     //This Method is called whenever the Agent Dropdown option is changed
     onAgentStateDropDownChanged(selectedAuxCode) {
-      console.log("onAgentStateDropDownChanged(): method entered. selectedAuxCode=" + JSON.stringify(selectedAuxCode));
+      this.serverLog(
+        "onAgentStateDropDownChanged(): method entered. selectedAuxCode=" + JSON.stringify(selectedAuxCode)
+      );
       //Depending on the selected state, update the store with the new state
       switch (selectedAuxCode.state) {
         case AGENT_STATES.READY:
@@ -60,7 +62,7 @@ export default {
     },
     agentStateIndicatorColor(state) {
       if (state) {
-        //console.log('agentStateIndicatorColor(): state=', state)
+        //this.serverLog('agentStateIndicatorColor(): state=', state)
         switch (state) {
           case AGENT_STATES.READY:
             return "green-text";

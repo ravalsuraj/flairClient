@@ -88,7 +88,7 @@ export default {
   },
   watch: {
     myCalls(newState) {
-      console.log("CallDrawer()/watch(myCalls): call state changed to:", newState);
+      this.serverLog("CallDrawer()/watch(myCalls): call state changed to:", newState);
     }
   }
 };

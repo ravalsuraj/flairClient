@@ -1,6 +1,7 @@
 import { CALL_STATES, CALL_TYPES, SOCKET_EVENTS, TIMER_TYPES } from "@/defines.js";
 import Utils from "@/services/Utils";
 import { MULTI_CALL_STATES } from "../../defines";
+import logger from "@/services/logger";
 function initialState() {
   return {
     calls: [],
@@ -56,19 +57,19 @@ const getters = {
   },
 
   getCallIndex: state => ucid => {
-    console.log("getCallIndex():ucid=" + ucid + ", call_list_ucids=" + JSON.stringify(state.call_list_ucids));
-    console.log("getCallIndex(): returning index=" + state.call_list_ucids.indexOf(ucid));
+    logger.log("getCallIndex():ucid=" + ucid + ", call_list_ucids=" + JSON.stringify(state.call_list_ucids));
+    logger.log("getCallIndex(): returning index=" + state.call_list_ucids.indexOf(ucid));
     return state.call_list_ucids.indexOf(ucid);
   },
 
   getCallIndexByCallId: state => callId => {
-    console.log("getCallIndex():callId=" + callId + ", call_list_callIds=" + JSON.stringify(state.call_list_callIds));
-    console.log("getCallIndex(): returning index=" + state.call_list_callIds.indexOf(callId));
+    logger.log("getCallIndex():callId=" + callId + ", call_list_callIds=" + JSON.stringify(state.call_list_callIds));
+    logger.log("getCallIndex(): returning index=" + state.call_list_callIds.indexOf(callId));
     return state.call_list_callIds.indexOf(callId);
   },
 
   getMultiCallState: state => callId => {
-    console.log("getMultiCallState called. call[x]=", state.calls[state.call_list_callIds.indexOf(callId)]);
+    logger.log("getMultiCallState called. call[x]=", state.calls[state.call_list_callIds.indexOf(callId)]);
     return state.calls[state.call_list_callIds.indexOf(callId)].multiCallState;
   },
 
@@ -90,14 +91,14 @@ const actions = {
   //To be invoked whenever page is refreshed or connectivity is restored. Restores the Call State
   sendQueryCallStateRequest({ getters, commit }) {
     let sessionId = getters["session/getSessionId"];
-    console.log("sendQueryCallStateRequest(): sessionId=", sessionId);
+    logger.log("sendQueryCallStateRequest(): sessionId=", sessionId);
     let request = {
       sessionId: sessionId
     };
-    console.log("sendQueryCallStateRequest(): request: " + JSON.stringify(request));
+    logger.log("sendQueryCallStateRequest(): request: " + JSON.stringify(request));
 
     this._vm.$socket.emit(SOCKET_EVENTS.GET_ACTIVE_CALLS, request, resp => {
-      console.log("sendQueryCallStateRequest(): response: " + JSON.stringify(resp));
+      logger.log("sendQueryCallStateRequest(): response: " + JSON.stringify(resp));
 
       if (resp.responseCode === "0") {
         commit("SET_ASYNC_CALL_STATE", resp.agentState);
@@ -112,7 +113,7 @@ const actions = {
       let existingCall = getters.getCallByCallId(call.callId);
 
       //check if call exists. if existingcall is undefined, this call is a new call, so add it
-      console.log("addCallToActiveCalls(): existingCall=" + JSON.stringify(existingCall));
+      logger.log("addCallToActiveCalls(): existingCall=" + JSON.stringify(existingCall));
       if (!existingCall) {
         dispatch("addCallTimers", call.callId);
         let newCall = call;
@@ -135,7 +136,7 @@ const actions = {
 
         resolve();
       } else {
-        console.log("addCallToActiveCalls(): skipping ADD_CALL mutation since the call already exists");
+        logger.log("addCallToActiveCalls(): skipping ADD_CALL mutation since the call already exists");
         resolve();
       }
     });
@@ -283,10 +284,10 @@ const actions = {
   removeConferenceCallFromPrimary() {},
 
   setMultiCallStateConferenced({ commit, getters }, payload) {
-    console.log("setMultiCallStateConferenced(): action entered: payload" + JSON.stringify(payload));
+    logger.log("setMultiCallStateConferenced(): action entered: payload" + JSON.stringify(payload));
     let callIndex = getters.getCallIndexByCallId(payload.callId);
     if (callIndex !== null) {
-      console.log("setMultiCallStateConferenced(): commiting mutation. callIndex=" + callIndex);
+      logger.log("setMultiCallStateConferenced(): commiting mutation. callIndex=" + callIndex);
       let offSwitchAddressRequest = {
         callAddressType: null,
         offSwitchAddress: null,
@@ -313,7 +314,7 @@ const actions = {
 
       commit("SET_MULTI_CALL_STATE_CONFERENCED", [callIndex, payload]);
     } else {
-      console.log("setMultiCallStateConferenced(): skiping mutation. callIndex=" + callIndex);
+      logger.log("setMultiCallStateConferenced(): skiping mutation. callIndex=" + callIndex);
     }
   },
 
@@ -322,22 +323,22 @@ const actions = {
       sessionId: getters["session/getSessionId"],
       callId: requestedCallId
     };
-    console.log("requestAnswerDropCall(): request=", request);
+    logger.log("requestAnswerDropCall(): request=", request);
     if (callType === CALL_TYPES.INBOUND) {
       let callStatus = getters.getCallByCallId(requestedCallId).status;
 
       switch (callStatus) {
         case CALL_STATES.RINGING:
-          console.log("AnswerDropCall(): calling answerCall()");
+          logger.log("AnswerDropCall(): calling answerCall()");
           dispatch("requestAnswerCall", request);
           break;
         case CALL_STATES.TALKING:
-          console.log("AnswerDropCall(): calling dropCall()");
+          logger.log("AnswerDropCall(): calling dropCall()");
           dispatch("requestDropCall", request);
 
           break;
         default:
-          console.log(
+          logger.log(
             "AnswerDropCall(): skipping answer or drop because call state is: " + CALL_STATES.Text[callStatus]
           );
           dispatch("showErrorBanner", [
@@ -350,10 +351,10 @@ const actions = {
     }
   },
   requestAnswerCall({ getters, dispatch }, request) {
-    console.log("requestAnswerCall(): action entered");
+    logger.log("requestAnswerCall(): action entered");
 
     if (!getters.devMode) {
-      console.log("requestAnswerCall(): request=" + JSON.stringify(request));
+      logger.log("requestAnswerCall(): request=" + JSON.stringify(request));
 
       this._vm.$socket.emit(SOCKET_EVENTS.ANSWER_CALL, request, response => {
         dispatch("processAnswerCallResponse", response);
@@ -367,14 +368,14 @@ const actions = {
   },
 
   requestDropCall({ dispatch }, request) {
-    console.log(SOCKET_EVENTS.DROP_CALL + "(): request=" + JSON.stringify(request));
+    logger.log(SOCKET_EVENTS.DROP_CALL + "(): request=" + JSON.stringify(request));
     this._vm.$socket.emit(SOCKET_EVENTS.DROP_CALL, request, response => {
       dispatch("processDropCallResponse", response);
     });
   },
 
   processAnswerCallResponse({ dispatch }, response) {
-    console.log(SOCKET_EVENTS.ANSWER_CALL + "(): response=" + JSON.stringify(response));
+    logger.log(SOCKET_EVENTS.ANSWER_CALL + "(): response=" + JSON.stringify(response));
     if (response.responseCode === "0") {
       // dispatch('setCallStateTalking')
     } else {
@@ -383,14 +384,14 @@ const actions = {
   },
 
   processDropCallResponse({ dispatch }, response) {
-    console.log("processDropCallResponse(): response=" + JSON.stringify(response));
+    logger.log("processDropCallResponse(): response=" + JSON.stringify(response));
     if (response.responseCode !== "0") {
       dispatch("showErrorBanner", ["Call Drop Failed", response.responseMessage]);
     }
   },
 
   requestHoldUnholdCall({ getters, dispatch }, requestedCallId) {
-    console.log("requestHoldUnholdCall(): action entered" + getters.getCallByCallId);
+    logger.log("requestHoldUnholdCall(): action entered" + getters.getCallByCallId);
 
     let callStatus = getters.getCallByCallId(requestedCallId).status;
     let primaryRequest = {
@@ -399,7 +400,7 @@ const actions = {
       deviceId: getters["getAgentCredentials"].deviceId,
       callId: requestedCallId
     };
-    console.log("requestHoldUnholdCall(): primaryRequest=", primaryRequest);
+    logger.log("requestHoldUnholdCall(): primaryRequest=", primaryRequest);
 
     if (callStatus === CALL_STATES.HELD) {
       let currentActiveCallCallId = getters.getActiveCallCallId;
@@ -412,12 +413,12 @@ const actions = {
           callId: currentActiveCallCallId
         };
 
-        console.log("requestHoldUnholdCall(): holdActiveCallRequest=", primaryRequest);
+        logger.log("requestHoldUnholdCall(): holdActiveCallRequest=", primaryRequest);
         dispatch("requestHoldCall", holdActiveCallRequest).then(() => {
           dispatch("requestUnholdCall", primaryRequest);
         });
       } else {
-        console.log("requestHoldUnholdCall(): no active calls, so sending unhold request " + currentActiveCallCallId);
+        logger.log("requestHoldUnholdCall(): no active calls, so sending unhold request " + currentActiveCallCallId);
         dispatch("requestUnholdCall", primaryRequest);
       }
     } else {
@@ -427,10 +428,10 @@ const actions = {
 
   requestHoldCall({ dispatch }, request) {
     return new Promise((resolve, reject) => {
-      console.log("requestHoldCall():  request=" + JSON.stringify(request));
+      logger.log("requestHoldCall():  request=" + JSON.stringify(request));
 
       this._vm.$socket.emit(SOCKET_EVENTS.HOLD_CALL, request, response => {
-        console.log("requestHoldCall(): response=" + JSON.stringify(response));
+        logger.log("requestHoldCall(): response=" + JSON.stringify(response));
         if (response.responseCode === "0") {
           resolve(response);
         } else {
@@ -443,14 +444,14 @@ const actions = {
     });
   },
   requestUnholdCall({}, request) {
-    console.log("requestUnholdCall():  request=" + JSON.stringify(request));
+    logger.log("requestUnholdCall():  request=" + JSON.stringify(request));
 
     this._vm.$socket.emit(SOCKET_EVENTS.RETRIEVE_CALL, request, response => {
-      console.log("requestUnholdCall(): response=" + JSON.stringify(response));
+      logger.log("requestUnholdCall(): response=" + JSON.stringify(response));
       if (response.responseCode === "0") {
         //dispatch('setCallStateTalking')
       } else {
-        console.log("Call Unhold Failed" + JSON.stringify(response));
+        logger.log("Call Unhold Failed" + JSON.stringify(response));
       }
     });
   }
@@ -540,7 +541,7 @@ const mutations = {
   ADD_LINKED_ADDRESS_TO_CALL(state, [index, payload]) {
     let linkedCall = payload;
     if (linkedCall.callDirection == CALL_TYPES.INBOUND) {
-      console.log(
+      logger.log(
         "ADD_LINKED_ADDRESS_TO_CALL(): condition for call direction inbound. callDirection=" +
           linkedCall.callDirection +
           ", index=" +
@@ -550,7 +551,7 @@ const mutations = {
       );
       state.calls[index].thirdAddress = linkedCall.callingAddress;
     } else {
-      console.log(
+      logger.log(
         "ADD_LINKED_ADDRESS_TO_CALL(): condition for call direction outbound. callDirection=" +
           linkedCall.callDirection +
           ", index=" +
@@ -567,16 +568,16 @@ const mutations = {
     //   state.calls[index].calledAddress === linkedCall.callingAddress ||
     //   state.calls[index].callingAddress === linkedCall.callingAddress
     // ) {
-    //   console.log("ADD_LINKED_ADDRESS_TO_CALL(): setting third address as calledAddress. index=" + index + "payload" + JSON.stringify(payload))
+    //   logger.log("ADD_LINKED_ADDRESS_TO_CALL(): setting third address as calledAddress. index=" + index + "payload" + JSON.stringify(payload))
     //   state.calls[index].thirdAddress = linkedCall.calledAddress
     // } else if (
     //   state.calls[index].calledAddress === linkedCall.calledAddress ||
     //   state.calls[index].callingAddress === linkedCall.calledAddress
     // ) {
-    //   console.log("ADD_LINKED_ADDRESS_TO_CALL(): setting third address as callingAddress. index=" + index + "payload" + JSON.stringify(payload))
+    //   logger.log("ADD_LINKED_ADDRESS_TO_CALL(): setting third address as callingAddress. index=" + index + "payload" + JSON.stringify(payload))
     //   state.calls[index].thirdAddress = linkedCall.callingAddress
     // } else {
-    //   console.log("ADD_LINKED_ADDRESS_TO_CALL(): no conditions matched")
+    //   logger.log("ADD_LINKED_ADDRESS_TO_CALL(): no conditions matched")
     // }
   },
 
@@ -628,7 +629,7 @@ const mutations = {
     if (!state.inboundCallList.includes(callId)) {
       state.inboundCallList.push(callId);
     } else {
-      console.log("ADD_CALL_TO_INBOUND_CALL_LIST(): callId does not exist in outboundCallList");
+      logger.log("ADD_CALL_TO_INBOUND_CALL_LIST(): callId does not exist in outboundCallList");
     }
   },
   REMOVE_CALL_FROM_INBOUND_CALL_LIST(state, callId) {
@@ -636,7 +637,7 @@ const mutations = {
     if (index != -1) {
       state.inboundCallList.splice(index, 1);
     } else {
-      console.log("REMOVE_CALL_FROM_INBOUND_CALL_LIST(): callId does not exist in inboundCallList");
+      logger.log("REMOVE_CALL_FROM_INBOUND_CALL_LIST(): callId does not exist in inboundCallList");
     }
   },
 
@@ -652,7 +653,7 @@ const mutations = {
     if (index != -1) {
       state.consultedCallList.splice(index, 1);
     } else {
-      console.log("REMOVE_CALL_FROM_CONSULTED_CALL_LIST(): callId does not exist in consultedCallList");
+      logger.log("REMOVE_CALL_FROM_CONSULTED_CALL_LIST(): callId does not exist in consultedCallList");
     }
   },
   ADD_CALL_TO_OUTBOUND_CALL_LIST(state, callId) {
@@ -660,7 +661,7 @@ const mutations = {
     if (!state.outboundCallList.includes(callId)) {
       state.outboundCallList.push(callId);
     } else {
-      console.log("ADD_CALL_TO_OUTBOUND_CALL_LIST(): callId does not exist in outboundCallList");
+      logger.log("ADD_CALL_TO_OUTBOUND_CALL_LIST(): callId does not exist in outboundCallList");
     }
   },
 
@@ -670,7 +671,7 @@ const mutations = {
     if (index != -1) {
       state.outboundCallList.splice(index, 1);
     } else {
-      console.log("REMOVE_CALL_FROM_OUTBOUND_CALL_LIST(): callId does not exist in outboundCallList");
+      logger.log("REMOVE_CALL_FROM_OUTBOUND_CALL_LIST(): callId does not exist in outboundCallList");
     }
   },
 

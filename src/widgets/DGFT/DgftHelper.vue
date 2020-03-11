@@ -120,23 +120,23 @@ export default {
         if (this.selectedCall.callingAddress.length > 5) {
           this.$store.dispatch("processNewDgftCall", this.latestCallId);
         } else {
-          console.log("caller length < 5, so this call was not processed. callId=" + this.latestCallId);
+          this.serverLog("caller length < 5, so this call was not processed. callId=" + this.latestCallId);
         }
       }
 
       //if the call list decreases, it means a call was dropped, so reset the screenpop URL
       else if (newInCallList.length < this.currentInboundCallList.length) {
-        console.log("DgftHelper/watch(inboundCallList): call was removed");
+        this.serverLog("DgftHelper/watch(inboundCallList): call was removed");
         let droppedCalls = this.currentInboundCallList.filter(function(el) {
           return newInCallList.indexOf(el) < 0;
         });
-        console.log("DgftHelper/watch(inboundCallList): droppedCalls=" + droppedCalls);
+        this.serverLog("DgftHelper/watch(inboundCallList): droppedCalls=" + droppedCalls);
         /*****************************************************************************************
          * Assumption: only one call will drop at a time. if multiple calls get dropped in a
          * single watch state, we will need to add the logic
          *****************************************************************************************/
         const droppedCallIndex = this.currentInboundCallList.indexOf(droppedCalls[0]);
-        console.log("DgftHelper/watch(inboundCallList): droppedCallIndex=" + droppedCallIndex);
+        this.serverLog("DgftHelper/watch(inboundCallList): droppedCallIndex=" + droppedCallIndex);
         if (droppedCalls.length === 1) {
           this.currentInboundCallList.splice(droppedCallIndex, 1);
           this.$store.dispatch("processDgftCallCleared", droppedCallIndex);
@@ -144,7 +144,7 @@ export default {
           this.$store.dispatch("processDgftCallCleared", droppedCallIndex);
         }
       } else {
-        console.log("Dgfthelper/watch(allCalls): call list remained the same. new length=" + newInCallList.length);
+        this.serverLog("Dgfthelper/watch(allCalls): call list remained the same. new length=" + newInCallList.length);
       }
     },
     agentState(newAgentState) {

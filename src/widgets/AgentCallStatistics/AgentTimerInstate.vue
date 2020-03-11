@@ -9,15 +9,15 @@
 </style>
 
 <script>
-import { AGENT_STATES } from '@/defines.js'
-import PersistTimer from '@/components/agc/PersistTimer.vue'
+import { AGENT_STATES } from "@/defines.js";
+import PersistTimer from "@/components/agc/PersistTimer.vue";
 export default {
-  name: 'AgentTimerInstate',
+  name: "AgentTimerInstate",
   components: {
     PersistTimer
   },
   data() {
-    return {}
+    return {};
   },
   mounted() {
     //TODO: add agent state timer
@@ -25,24 +25,21 @@ export default {
   destroyed() {},
   computed: {
     agentStatus() {
-      return this.$store.getters.getAgentState
+      return this.$store.getters.getAgentState;
     }
   },
   watch: {
     agentStatus(newAgentStatus, oldAgentStatus) {
-      console.log(
-        'CallTimerInstate()/watch(agentStatus): Changed from: ' +
-          oldAgentStatus +
-          ' to: ' +
-          newAgentStatus
-      )
+      this.serverLog(
+        "CallTimerInstate()/watch(agentStatus): Changed from: " + oldAgentStatus + " to: " + newAgentStatus
+      );
       if (newAgentStatus !== AGENT_STATES.LOG_OUT) {
-        this.$store.dispatch('startTimer', '','agentTimerInstate')
+        this.$store.dispatch("startTimer", "", "agentTimerInstate");
       } else {
-        this.$store.dispatch('stopTimer', 'agentTimerInstate')
+        this.$store.dispatch("stopTimer", "agentTimerInstate");
       }
     }
   },
   methods: {}
-}
+};
 </script>

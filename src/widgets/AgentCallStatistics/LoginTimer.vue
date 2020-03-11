@@ -1,5 +1,5 @@
 <template>
-  <span id="time">{{time}}</span>
+  <span id="time">{{ time }}</span>
 </template>
 
 <style>
@@ -52,7 +52,7 @@ export default {
   },
   watch: {
     agentStatus(newAgentStatus) {
-      console.log("Agent Status Changed to:" + newAgentStatus);
+      this.serverLog("Agent Status Changed to:" + newAgentStatus);
       if (newAgentStatus === AGENT_STATES.LOG_IN) {
         this.reset();
         this.interval = setInterval(this.updateCurrentTime, 1000);

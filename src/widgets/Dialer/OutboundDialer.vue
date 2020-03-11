@@ -1,5 +1,5 @@
 <template>
-  <div class="fl_container_dialer black-text" >
+  <div class="fl_container_dialer black-text">
     <mdb-container fluid>
       <div @click.stop>
         <mdb-row class="px-3 py-4" @click.stop>
@@ -34,49 +34,37 @@
             @click="appendDigit(digit.text)"
             @click.stop
           >
-            <div class="number">{{digit.text}}</div>
-            <div class="subText">{{digit.subText}}</div>
+            <div class="number">{{ digit.text }}</div>
+            <div class="subText">{{ digit.subText }}</div>
           </div>
         </mdb-col>
       </mdb-row>
       <div @click.stop>
         <mdb-row class @click.stop>
           <transition name="fade">
-            <mdb-btn  class="mx-2 py-3 btn-block" color="cyan darken-2" @click="onMakeCallButtonClicked">
+            <mdb-btn class="mx-2 py-3 btn-block" color="cyan darken-2" @click="onMakeCallButtonClicked">
               <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
               <span>Call</span>
             </mdb-btn>
           </transition>
-          <transition name="fade">
-          
-          </transition>
+          <transition name="fade"> </transition>
         </mdb-row>
       </div>
     </mdb-container>
   </div>
-
-
 </template>
 
 <script>
-import {
-  mdbContainer,
-  mdbRow,
-  mdbCol,
-  mdbBtn,
- 
-  mdbIcon
-} from 'mdbvue'
-
+import { mdbContainer, mdbRow, mdbCol, mdbBtn, mdbIcon } from "mdbvue";
 
 export default {
-  name: 'OutboundDialer',
+  name: "OutboundDialer",
   components: {
     mdbContainer,
     mdbRow,
     mdbCol,
     mdbBtn,
-  
+
     mdbIcon
   },
   mounted() {},
@@ -84,130 +72,109 @@ export default {
   //digits: [1, 2, 3, 4, 5, 6, 7, 8, 9, '*', 0, '#'],
   data() {
     return {
-      dialedDigits: '',
+      dialedDigits: "",
 
       digits: [
         {
           text: 1,
-          subText: ''
+          subText: ""
         },
         {
           text: 2,
-          subText: 'ABC'
+          subText: "ABC"
         },
         {
           text: 3,
-          subText: 'DEF'
+          subText: "DEF"
         },
         {
           text: 4,
-          subText: 'GHI'
+          subText: "GHI"
         },
         {
           text: 5,
-          subText: 'JKL'
+          subText: "JKL"
         },
         {
           text: 6,
-          subText: 'MNO'
+          subText: "MNO"
         },
         {
           text: 7,
-          subText: 'PQRS'
+          subText: "PQRS"
         },
         {
           text: 8,
-          subText: 'TUV'
+          subText: "TUV"
         },
         {
           text: 9,
-          subText: 'WXYZ'
+          subText: "WXYZ"
         },
         {
-          text: '*',
-          subText: ''
+          text: "*",
+          subText: ""
         },
         {
           text: 0,
-          subText: '+'
+          subText: "+"
         },
         {
-          text: '#',
-          subText: ''
+          text: "#",
+          subText: ""
         }
       ],
-      digitSubText: [
-        '',
-        'ABC',
-        'DEF',
-        'GHI',
-        'JKL',
-        'MNO',
-        'PQRS',
-        'TUV',
-        'WXYZ',
-        '',
-        '+',
-        ''
-      ],
+      digitSubText: ["", "ABC", "DEF", "GHI", "JKL", "MNO", "PQRS", "TUV", "WXYZ", "", "+", ""],
       interval: false,
       digitDeleteSpeed: 200,
       initialDeleteSpeed: 500,
       spinner: {
         show: false
       }
-    }
+    };
   },
 
   methods: {
     showSpinner() {
-      this.spinner.show = true
+      this.spinner.show = true;
     },
     hideSpinner() {
-      this.spinner.show = false
+      this.spinner.show = false;
     },
 
     appendDigit(digit) {
-      this.dialedDigits += digit
+      this.dialedDigits += digit;
     },
     deleteSingleDigit() {
-      console.log('deleteSingleDigits')
-      this.dialedDigits = this.dialedDigits.slice(
-        0,
-        this.dialedDigits.length - 1
-      )
+      this.serverLog("deleteSingleDigits");
+      this.dialedDigits = this.dialedDigits.slice(0, this.dialedDigits.length - 1);
     },
     startDeletingDigits() {
-      this.interval = setInterval(
-        () => this.deleteSingleDigit(),
-        this.digitDeleteSpeed
-      )
+      this.interval = setInterval(() => this.deleteSingleDigit(), this.digitDeleteSpeed);
     },
     stopDeletingDigits() {
-      clearInterval(this.interval)
+      clearInterval(this.interval);
     },
     clearDigits() {
-      this.dialedDigits = ''
+      this.dialedDigits = "";
     },
 
     onMakeCallButtonClicked() {
-      this.$store.dispatch('updateDialedDigits', this.dialedDigits)
-      this.showSpinner()
-      this.$store.dispatch('requestOutboundCall').then(resp => {
-        console.log('onMakeCallButtonClicked(): resp=' + JSON.stringify(resp))
-        this.hideSpinner()
-        if (resp.responseCode === '0') {
-          this.$emit('close-self')
-          this.$store.dispatch('setCallStateDialing', resp)
-          this.$store.dispatch('processNewOutboundCall', resp)
+      this.$store.dispatch("updateDialedDigits", this.dialedDigits);
+      this.showSpinner();
+      this.$store.dispatch("requestOutboundCall").then(resp => {
+        this.serverLog("onMakeCallButtonClicked(): resp=" + JSON.stringify(resp));
+        this.hideSpinner();
+        if (resp.responseCode === "0") {
+          this.$emit("close-self");
+          this.$store.dispatch("setCallStateDialing", resp);
+          this.$store.dispatch("processNewOutboundCall", resp);
         }
-      })
-    },
+      });
+    }
   },
-  computed: {
-
-  }
-}
+  computed: {}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -237,7 +204,7 @@ export default {
   height: 25px;
   width: 100%;
   border-bottom: 1px solid grey;
-  font-family: 'Unica One', san-serif;
+  font-family: "Unica One", san-serif;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.75);
 }
@@ -258,7 +225,7 @@ export default {
 }
 
 .fl_button_dialerDigit .number {
-  font-family: 'Unica One', san-serif;
+  font-family: "Unica One", san-serif;
   font-size: 1.3rem;
   font-weight: 400;
 }

@@ -47,11 +47,11 @@ export default {
   },
   sockets: {
     connect() {
-      console.log("App/sockets/connect(): socket connected");
+      this.serverLog("App/sockets/connect(): socket connected");
       this.$store.dispatch("processSocketConnected");
     },
     connect_error() {
-      console.log("App/sockets/connect(): socket connect_error");
+      this.serverLog("App/sockets/connect(): socket connect_error");
       if (this.$store.getters.getSocketStatus === SOCKET_STATES.CONNECTED) {
         this.$store.dispatch("showErrorBanner", [
           "Server Connection Lost!",
@@ -61,7 +61,7 @@ export default {
       }
     },
     connection_error() {
-      console.log("App/sockets/connect(): socket connection_error");
+      this.serverLog("App/sockets/connect(): socket connection_error");
       this.$store.dispatch("showErrorBanner", [
         "Server Connection Lost!",
         "WebSocket connection timed out. Please make sure the websocket server is running."
@@ -77,7 +77,7 @@ export default {
     // })
 
     if (this.$refs.topNavBar) {
-      console.log("App/mounted(): navbar height is" + JSON.stringify(this.$refs.topNavBar.clientHeight));
+      this.serverLog("App/mounted(): navbar height is" + JSON.stringify(this.$refs.topNavBar.clientHeight));
     }
     this.$store.dispatch("session/loadConfigurations");
   },

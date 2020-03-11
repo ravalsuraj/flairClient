@@ -163,7 +163,7 @@ export default {
     if (this.otherCalls.length === 1) {
       this.callIdToBeConferenced = this.otherCalls[0].callId;
     } else {
-      console.log("not setting callIdToBeConferenced");
+      this.serverLog("not setting callIdToBeConferenced");
     }
   },
   props: {
@@ -208,7 +208,7 @@ export default {
         };
         this.$store.dispatch("requestTransferCall", transferRequest);
       } else {
-        console.log(
+        this.serverLog(
           "skipping transfer call. this.callId=" + this.callId + "callIdToBeConferenced=",
           this.callIdToBeConferenced
         );
@@ -222,7 +222,7 @@ export default {
         };
         this.$store.dispatch("requestConferenceCall", transferRequest);
       } else {
-        console.log(
+        this.serverLog(
           "skipping conference call. this.callId=" + this.callId + "callIdToBeConferenced=",
           this.callIdToBeConferenced
         );
@@ -368,7 +368,7 @@ export default {
       immediate: true,
       deep: true,
       handler: function(newCallStatus, oldCallStatus) {
-        console.log(
+        this.serverLog(
           "CallCardOutbound(): watcher - callStatus: newCallStatus=" +
             newCallStatus +
             ", oldCallStatus=" +
@@ -384,7 +384,7 @@ export default {
             break;
           case CALL_STATES.TALKING:
           case CALL_STATES.HELD:
-            console.log("CallCardOutbound(): watcher - callStatus:  calling stop and start timer for instateTimer");
+            this.serverLog("CallCardOutbound(): watcher - callStatus:  calling stop and start timer for instateTimer");
 
             this.$store.dispatch("startTimer", this.inStateTimerName);
             break;

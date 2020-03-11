@@ -1,30 +1,30 @@
-import axios from 'axios'
+import axios from "axios";
 
-import config from './../../public/settings.json'
+import config from "./../../public/settings.json";
 
 let instance = axios.create({
   baseURL: config.AGS.MIDDLEWARE.URL,
   timeout: config.AGS.MIDDLEWARE.TIMEOUT
-})
+});
 export default {
   fetchLobFromDnis(request) {
-    console.log('fetchLobFromDnis(): request received Request=', request)
+    console.log("fetchLobFromDnis(): request received Request=", request);
 
     return instance
-      .get('/api/lob/dnis/' + request.dnis, {})
+      .get("/api/lob/dnis/" + request.dnis, {})
       .then(response => {
-        console.log('fetchLobFromDnis() response=', response)
+        console.log("fetchLobFromDnis() response=", response);
 
-        return response.data
+        return response.data;
       })
       .catch(error => {
-        console.log('fetchLobFromDnis() :  error=', error)
-        throw error
-      })
+        console.log("fetchLobFromDnis() :  error=", error);
+        throw error;
+      });
   },
 
   async postCallDisposition(request) {
-    console.log('fetchLobFromDnis(): request received Request=', request)
+    console.log("fetchLobFromDnis(): request received Request=", request);
 
     let body = {
       ucid: request.ucid,
@@ -35,14 +35,14 @@ export default {
       call_end_date_time: request.call_end_date_time,
       disposition: request.disposition,
       sub_disposition: request.sub_disposition
-    }
+    };
     try {
-      const response = await instance.post('/api/call/disposition', body, {})
-      console.log('fetchLobFromDnis() response=', response)
-      return response.data
+      const response = await instance.post("/api/call/disposition", body, {});
+      console.log("fetchLobFromDnis() response=", response);
+      return response.data;
     } catch (error) {
-      console.log('fetchLobFromDnis() :  error=', error)
-      throw error
+      console.log("fetchLobFromDnis() :  error=", error);
+      throw error;
     }
   }
-}
+};

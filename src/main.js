@@ -16,13 +16,33 @@ import Vuedraggable from "vuedraggable";
 // import VueCookies from "vue-cookies";
 import Notifications from "vue-notification";
 import { longClickDirective } from "vue-long-click";
-
 import config from "./../public/settings.json";
 // import "x-frame-bypass";
 Vue.use(Notifications);
 Vue.use(Vuex);
 Vue.use(VShowSlide);
 Vue.use(Vuedraggable);
+
+import log4javascript from "log4javascript";
+var log = log4javascript.getLogger();
+
+// var inPageAppender = new log4javascript.InPageAppender();
+// var inPageLayout = new log4javascript.PatternLayout("%d{HH:mm:ss} %-5p - %m%n");
+// inPageAppender.setLayout(inPageLayout);
+// log.addAppender(inPageAppender);
+//var ajaxAppender = new log4javascript.AjaxAppender("/log");
+var ajaxAppender = new log4javascript.AjaxAppender("http://192.168.110.99:9093/log");
+var jsonLayout = new log4javascript.JsonLayout();
+ajaxAppender.setLayout(jsonLayout);
+
+ajaxAppender.setThreshold(log4javascript.Level.INFO);
+log.addAppender(ajaxAppender);
+console.log("main.js initialized");
+
+// var console = {};
+// window.console = console;
+// console.log = function() {};
+
 import "mdbvue/lib/css/mdb.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import api from "./services/api";
@@ -60,6 +80,7 @@ let initVue = () => {
       connection: serverIp,
       vuex: {
         store,
+        log4javascript,
         actionPrefix: "SOCKET_",
         mutationPrefix: "SOCKET_"
       }
@@ -69,6 +90,24 @@ let initVue = () => {
 
   Vue.config.productionTip = false;
   Vue.prototype.$serverip = serverIp;
+  Vue.mixin({
+    data() {
+      return {
+        loggableSessionId: String
+      };
+    },
+    created() {
+      const agent = this.$store.getters.getAgentCredentials;
+      this.loggableSessionId = agent.agentId + "/" + agent.deviceId + "-" + this.$store.getters["session/getSessionId"];
+      log.getEffectiveAppenders()[0].setSessionId(this.loggableSessionId);
+    },
+    methods: {
+      serverLog(message) {
+        console.log(message);
+        log.info(JSON.stringify(message));
+      }
+    }
+  });
   new Vue({
     router,
     store,
