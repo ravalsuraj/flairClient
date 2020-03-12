@@ -69,7 +69,9 @@ const getters = {
   },
 
   getMultiCallState: state => callId => {
-    logger.log("getMultiCallState called. call[x]=", state.calls[state.call_list_callIds.indexOf(callId)]);
+    logger.log(
+      "getMultiCallState called. call[x]=" + JSON.stringify(state.calls[state.call_list_callIds.indexOf(callId)])
+    );
     return state.calls[state.call_list_callIds.indexOf(callId)].multiCallState;
   },
 
@@ -91,7 +93,7 @@ const actions = {
   //To be invoked whenever page is refreshed or connectivity is restored. Restores the Call State
   sendQueryCallStateRequest({ getters, commit }) {
     let sessionId = getters["session/getSessionId"];
-    logger.log("sendQueryCallStateRequest(): sessionId=", sessionId);
+    logger.log("sendQueryCallStateRequest(): sessionId=" + sessionId);
     let request = {
       sessionId: sessionId
     };
@@ -323,7 +325,7 @@ const actions = {
       sessionId: getters["session/getSessionId"],
       callId: requestedCallId
     };
-    logger.log("requestAnswerDropCall(): request=", request);
+    logger.log("requestAnswerDropCall(): request=" + JSON.stringify(request));
     if (callType === CALL_TYPES.INBOUND) {
       let callStatus = getters.getCallByCallId(requestedCallId).status;
 

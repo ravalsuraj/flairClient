@@ -104,6 +104,7 @@ let initVue = () => {
     methods: {
       serverLog(message) {
         console.log(message);
+        if(message)
         log.info(JSON.stringify(message));
       }
     }

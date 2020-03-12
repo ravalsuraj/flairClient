@@ -22,9 +22,11 @@ export default {
 
     RESET_SESSION_ID(state) {
       state.sessionId = null;
+      sessionStorage.removeItem("loggableSessionId");
     },
 
     SET_SESSION_ID(state, sessionId) {
+      sessionStorage.setItem("loggableSessionId", sessionId);
       state.sessionId = sessionId;
     },
 
