@@ -147,7 +147,7 @@ export default {
       this.showSpinner();
       let sendAgentLoginRequest = () => {
         this.$store.dispatch("sendAgentLoginRequest").then(resp => {
-          this.serverLog(resp);
+          this.serverLog(JSON.stringify(resp));
           this.hideSpinner();
           if (resp && resp.responseCode) {
             if (resp.responseCode === "0") {

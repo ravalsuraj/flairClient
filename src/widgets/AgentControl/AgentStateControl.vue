@@ -62,7 +62,7 @@ export default {
     },
     agentStateIndicatorColor(state) {
       if (state) {
-        //this.serverLog('agentStateIndicatorColor(): state=', state)
+        //this.serverLog('agentStateIndicatorColor(): state='+JSON.stringify(state));
         switch (state) {
           case AGENT_STATES.READY:
             return "green-text";

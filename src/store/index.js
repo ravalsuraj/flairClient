@@ -9,7 +9,7 @@ import dialer from "./modules/dialer";
 import session from "./modules/session";
 import socket from "./modules/socket";
 import timer from "./modules/timer";
-import dgft from "./modules/dgft";
+import dgft from "@/customer/store/modules/dgft";
 
 import { SOCKET_STATES } from "@/defines.js";
 

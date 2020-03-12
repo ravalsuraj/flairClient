@@ -166,9 +166,11 @@ export default {
       console.log("SOCKET_OUTCALLHLD(): Received event: " + JSON.stringify(payload));
       dispatch("setCallStateHeld", payload);
     },
-    SOCKET_AGTUPDATED({ dispatch }, payload) {
+    SOCKET_AGTUPDATED({ commit, dispatch }, payload) {
       console.log("SOCKET_AGTUPDATED(): Received event: " + JSON.stringify(payload));
-      dispatch("setAgentState", payload.agentState);
+      commit("SET_AGENT_STATE", payload.agentState);
+
+      dispatch("setUpdatedAuxCode", payload);
     },
 
     SOCKET_AVAYACONNDISC({}, payload) {

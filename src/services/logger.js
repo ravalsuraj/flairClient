@@ -15,6 +15,7 @@ export default {
       ajaxAppender.setThreshold(log4javascript.Level.INFO);
       myLogger.addAppender(ajaxAppender);
     }
-    myLogger.info("-+-" + JSON.stringify(message));
+    console.log(message);
+    myLogger.info("-+-" + message);
   }
 };

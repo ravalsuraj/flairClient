@@ -96,7 +96,7 @@ let initVue = () => {
         loggableSessionId: String
       };
     },
-    created() {
+    beforeMount() {
       const agent = this.$store.getters.getAgentCredentials;
       this.loggableSessionId = agent.agentId + "/" + agent.deviceId + "-" + this.$store.getters["session/getSessionId"];
       log.getEffectiveAppenders()[0].setSessionId(this.loggableSessionId);
@@ -104,8 +104,7 @@ let initVue = () => {
     methods: {
       serverLog(message) {
         console.log(message);
-        if(message)
-        log.info(JSON.stringify(message));
+        if (message) log.info(message);
       }
     }
   });

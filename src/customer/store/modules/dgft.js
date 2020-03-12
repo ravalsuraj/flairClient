@@ -1,4 +1,4 @@
-import dgftMiddlewareConnector from "@/services/dgftMiddlewareConnector.js";
+import dgftMiddlewareConnector from "@/customer/services/dgftMiddlewareConnector.js";
 import { SOCKET_EVENTS } from "@/defines.js";
 function initialState() {
   //hard-coded UUI for testing

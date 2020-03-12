@@ -194,21 +194,21 @@ export default {
     sendQueryAgentStateRequest({ getters, commit, dispatch }) {
       let agent = getters.getAgent;
       let sessionId = getters["session/getSessionId"];
-      //console.log("sendQueryAgentStateRequest(): sessionId=", sessionId)
+
       let request = {
         sessionId: sessionId,
         agentId: agent.agentId,
         deviceId: agent.deviceId
       };
-      //console.log('sendQueryAgentStateRequest(): request: ' + JSON.stringify(request))
+
 
       this._vm.$socket.emit(SOCKET_EVENTS.QUERY_AGENT_STATE, request, resp => {
-        //console.log('sendQueryAgentStateRequest(): response: ' + JSON.stringify(resp))
+
 
         if (resp.responseCode === "0") {
           if (resp.agentState && getters.getAgentAuxState.state !== resp.agentState) {
             commit("SET_AGENT_STATE", resp.agentState);
-            //dispatch('setInitialAuxCode', resp)
+     
             dispatch("setAgentAuxCode", {
               state: resp.agentState,
               reasonCode: resp.reasonCode

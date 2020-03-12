@@ -103,11 +103,12 @@ import MenuTraversal from "@/widgets/MenuTraversal/MenuTraversal.vue";
 
 import AgentCallStatistics from "@/widgets/AgentCallStatistics/AgentCallStatistics.vue";
 
-import DgftCrmFrame from "@/widgets/DGFT/DgftCrmFrame.vue";
 import QuickLinks from "@/widgets/QuickLinks/QuickLinks.vue";
 
 import SmsHelper from "@/widgets/SmsHelper/SmsHelper.vue";
-import DgftHelper from "@/widgets/DGFT/DgftHelper.vue";
+
+import DgftCrmFrame from "@/customer/widgets/DGFT/DgftCrmFrame.vue";
+import DgftHelper from "@/customer/widgets/DGFT/DgftHelper.vue";
 
 export default {
   name: "Dashboard",

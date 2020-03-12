@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import config from "./../../public/settings.json";
+import config from "./../../../public/settings.json";
 
 let instance = axios.create({
   baseURL: config.DGFT.MIDDLEWARE.URL,

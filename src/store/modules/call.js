@@ -402,7 +402,7 @@ const actions = {
       deviceId: getters["getAgentCredentials"].deviceId,
       callId: requestedCallId
     };
-    logger.log("requestHoldUnholdCall(): primaryRequest=", primaryRequest);
+    logger.log("requestHoldUnholdCall(): primaryRequest=" + JSON.stringify(primaryRequest));
 
     if (callStatus === CALL_STATES.HELD) {
       let currentActiveCallCallId = getters.getActiveCallCallId;
@@ -415,7 +415,7 @@ const actions = {
           callId: currentActiveCallCallId
         };
 
-        logger.log("requestHoldUnholdCall(): holdActiveCallRequest=", primaryRequest);
+        logger.log("requestHoldUnholdCall(): holdActiveCallRequest=" + JSON.stringify(primaryRequest));
         dispatch("requestHoldCall", holdActiveCallRequest).then(() => {
           dispatch("requestUnholdCall", primaryRequest);
         });

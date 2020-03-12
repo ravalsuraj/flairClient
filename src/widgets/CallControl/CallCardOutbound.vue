@@ -209,8 +209,7 @@ export default {
         this.$store.dispatch("requestTransferCall", transferRequest);
       } else {
         this.serverLog(
-          "skipping transfer call. this.callId=" + this.callId + "callIdToBeConferenced=",
-          this.callIdToBeConferenced
+          "skipping transfer call. this.callId=" + this.callId + "callIdToBeConferenced=" + this.callIdToBeConferenced
         );
       }
     },
@@ -223,8 +222,7 @@ export default {
         this.$store.dispatch("requestConferenceCall", transferRequest);
       } else {
         this.serverLog(
-          "skipping conference call. this.callId=" + this.callId + "callIdToBeConferenced=",
-          this.callIdToBeConferenced
+          "skipping conference call. this.callId=" + this.callId + "callIdToBeConferenced=" + this.callIdToBeConferenced
         );
       }
     }
