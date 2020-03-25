@@ -4,10 +4,10 @@ function initialState() {
   return {
     agentState: AGENT_STATES.UNKNOWN,
     reasonCode: 0,
-    displayLabel: "-",
-    agentId: null,
-    deviceId: null,
-    password: null,
+    displayLabel: "Ready",
+    agentId: 1234,
+    deviceId: 1234,
+    password: 1234,
     workMode: "auto",
     rememberCredentials: true,
     monitorAgentInterval: null,
@@ -201,14 +201,11 @@ export default {
         deviceId: agent.deviceId
       };
 
-
       this._vm.$socket.emit(SOCKET_EVENTS.QUERY_AGENT_STATE, request, resp => {
-
-
         if (resp.responseCode === "0") {
           if (resp.agentState && getters.getAgentAuxState.state !== resp.agentState) {
             commit("SET_AGENT_STATE", resp.agentState);
-     
+
             dispatch("setAgentAuxCode", {
               state: resp.agentState,
               reasonCode: resp.reasonCode

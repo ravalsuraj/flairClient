@@ -119,8 +119,8 @@ body > div > div:nth-child(1) > nav > ul > span > div > ul {
   -moz-osx-font-smoothing: grayscale;
 }
 html {
-  font-size: 70%;
-  font-size: 1em;
+  font-size: 50%;
+  font-size: 0.75em;
   color: rgba(0, 0, 0, 0.45);
 }
 @media (min-width: 600px) {

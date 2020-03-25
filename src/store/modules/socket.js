@@ -2,7 +2,7 @@ import { SOCKET_EVENTS, SOCKET_STATES } from "@/defines.js";
 
 function initialState() {
   return {
-    status: SOCKET_STATES.DISCONNECTED
+    status: SOCKET_STATES.CONNECTED
   };
 }
 export default {
