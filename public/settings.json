@@ -27,12 +27,6 @@
             "LastShortCode"
         ]
     },
-    "AGS": {
-        "MIDDLEWARE": {
-            "URL": "http://192.168.110.99:9093",
-            "TIMEOUT": 15000
-        }
-    },
     "AVAILABLE_AGENT_STATES": [
         {
             "label": "Ready",
@@ -78,7 +72,7 @@
         }
     ],
     "leftComponents": {
-        "width": "0",
+        "width": "3",
         "widgets": []
     },
     "middleComponents": {
