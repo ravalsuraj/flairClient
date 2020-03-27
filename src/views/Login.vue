@@ -7,8 +7,13 @@
         <a class="text-white" @click="forceLogoutButtonClicked">Logout</a>
         <mdb-card>
           <div class="pt-3 d-flex justify-content-around">
-            <img src="@/assets/flair_logo.png" class="ml-2 mr-5" alt="Responsive image" style="width: 200px" />
-            <img src="@/assets/agc-logo_v2.jpg" class="mr-2 ml-5 pb-5" alt="Responsive image" style="width: 150px" />
+            <img
+              src="@/assets/flair_logo.png"
+              class="ml-2 mr-5"
+              alt="Responsive image"
+              style="width: 33%; height: 33%"
+            />
+            <img src="@/assets/agc-logo_v2.jpg" class="mr-2 ml-5 pb-5" alt="Responsive image" style="width: 33%" />
           </div>
           <p class="h4 text-center my-4 py-3 fl-color-agc white-text">
             <span class="float-left pl-4">Login</span>

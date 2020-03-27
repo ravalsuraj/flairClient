@@ -6,7 +6,7 @@
     navIconClass="white-text"
     :toggler="false"
   >
-    <mdb-navbar-brand href="/" target="_blank">
+    <!-- <mdb-navbar-brand href="/" target="_blank">
       <div class="light-color" style="opacity:1">
         <img
           src="@/assets/flair_logo_white.png"
@@ -15,8 +15,18 @@
           style="width: 75px; opacity:1 !important"
         />
       </div>
-    </mdb-navbar-brand>
+    </mdb-navbar-brand> -->
     <mdb-navbar-nav right>
+      <span class="fl_navbar_item">
+        <div class="light-color" style="opacity:1">
+          <img
+            src="@/assets/flair_logo_white.png"
+            class="mx-0"
+            alt="Responsive image"
+            style="width: 75px; opacity:1 !important"
+          />
+        </div>
+      </span>
       <span class="fl_navbar_item">
         <agent-state-control></agent-state-control>
       </span>
@@ -31,14 +41,14 @@
 <script>
 import AgentStateControl from "@/widgets/AgentControl/AgentStateControl.vue";
 import AgentProfile from "@/widgets/AgentControl/AgentProfile.vue";
-import { mdbNavbar, mdbNavbarBrand, mdbNavbarNav } from "mdbvue";
+import { mdbNavbar, mdbNavbarNav } from "mdbvue";
 export default {
   name: "TopNavbar",
   components: {
     AgentProfile,
     AgentStateControl,
     mdbNavbar,
-    mdbNavbarBrand,
+    // mdbNavbarBrand,
     mdbNavbarNav
   },
 

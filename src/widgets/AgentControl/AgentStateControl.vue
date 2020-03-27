@@ -3,7 +3,7 @@
     <!--Selected State-->
     <mdb-dropdown-toggle tag="a" navLink color="special" slot="toggle">
       <mdb-icon icon="circle" :class="agentStateIndicatorColor(currentAgentAuxState.state)" class="mr-2" />
-      <strong class="h6">{{ currentAgentAuxState.label }}</strong>
+      <strong class="h6">{{ /*currentAgentAuxState.label*/ "Ready" }}</strong>
     </mdb-dropdown-toggle>
 
     <mdb-dropdown-menu left color="primary">
