@@ -7,5 +7,8 @@ import axios from "axios";
 export default {
   getServerIp() {
     return axios.get("/flairserverip");
+  },
+  getDgftMiddlewareIp(){
+    return axios.get("/middlewareip");
   }
 };

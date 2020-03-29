@@ -7,7 +7,6 @@ import Vuex from "vuex";
 import App from "./App";
 import router from "./router";
 import Vue2TouchEvents from "vue2-touch-events";
-import store from "./store/index";
 
 import VueSocketIO from "vue-socket.io";
 import VShowSlide from "v-show-slide";
@@ -16,56 +15,42 @@ import Vuedraggable from "vuedraggable";
 // import VueCookies from "vue-cookies";
 import Notifications from "vue-notification";
 import { longClickDirective } from "vue-long-click";
+
 import config from "./../public/settings.json";
+import store from "./store/index";
+import "mdbvue/lib/css/mdb.min.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import api from "./services/api";
+import logger from "./services/logger";
+
 // import "x-frame-bypass";
 Vue.use(Notifications);
 Vue.use(Vuex);
 Vue.use(VShowSlide);
 Vue.use(Vuedraggable);
 
-import log4javascript from "log4javascript";
-var log = log4javascript.getLogger();
-
-import "mdbvue/lib/css/mdb.min.css";
-import "@fortawesome/fontawesome-free/css/all.min.css";
-import api from "./services/api";
-
 //Used to detect long click. Used in the dialer to delete multiple digits upon long-click
 const longClickInstance = longClickDirective({ delay: 400, interval: 50 });
+Vue.directive("longclick", longClickInstance);
 
 //initialize the URL to the settings.json URL
 let serverIp = config.FLAIR_SERVER_URL;
-Vue.directive("longclick", longClickInstance);
 
 //get the IP address dynamically for the websocket server. This is saved in the config.js file for the FlairClientLauncher
 api
   .getServerIp()
   .then(resp => {
-    console.log("resp=" + JSON.stringify(resp.data));
+    logger.log("resp=" + JSON.stringify(resp.data));
     if (resp.data.responseCode === "0") {
       serverIp = resp.data.ip;
-      initVue();
-      console.log("main.js execution complete. using server URL=" + serverIp);
-
-      api.getMiddlewareIp().then(fetchMiddlewareResponse => {
-        var middlewareIp = fetchMiddlewareResponse.data.ip;
-
-        var logUrl = middlewareIp + "/log";
-        var ajaxAppender = new log4javascript.AjaxAppender(logUrl);
-        var jsonLayout = new log4javascript.JsonLayout();
-        ajaxAppender.setLayout(jsonLayout);
-
-        ajaxAppender.setThreshold(log4javascript.Level.INFO);
-        log.addAppender(ajaxAppender);
-        console.log("main.js initialized");
-      });
+      logger.log("main.js execution complete. using server URL=" + serverIp);
     } else {
-      console.error("could not fetch server ip");
-      initVue();
+      logger.error("could not fetch server ip");
     }
+    initVue();
   })
   .catch(() => {
-    console.log("could not fetch server IP , so using the value from settings.json");
+    logger.log("could not fetch server IP , so using the value from settings.json");
     initVue();
   });
 
@@ -76,7 +61,6 @@ let initVue = () => {
       connection: serverIp,
       vuex: {
         store,
-        log4javascript,
         actionPrefix: "SOCKET_",
         mutationPrefix: "SOCKET_"
       }
@@ -92,15 +76,10 @@ let initVue = () => {
         loggableSessionId: String
       };
     },
-    beforeMount() {
-      const agent = this.$store.getters.getAgentCredentials;
-      this.loggableSessionId = agent.agentId + "/" + agent.deviceId + "-" + this.$store.getters["session/getSessionId"];
-      log.getEffectiveAppenders()[0].setSessionId(this.loggableSessionId);
-    },
+    beforeMount() {},
     methods: {
       serverLog(message) {
-        console.log(message);
-        if (message) log.info(message);
+        if (message) logger.log(message);
       }
     }
   });

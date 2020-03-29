@@ -165,34 +165,34 @@ export default {
     },
     leftComponentWidgets: {
       get() {
-        return this.config.leftComponents.widgets;
+        return this.config.WIDGET_LAYOUT.LEFT.WIDGETS;
       }
     },
     leftComponentWidth: {
       get() {
-        return this.config.leftComponents.width;
+        return this.config.WIDGET_LAYOUT.LEFT.WIDTH;
       }
     },
     middleComponentWidgets: {
       get() {
-        return this.config.middleComponents.widgets;
+        return this.config.WIDGET_LAYOUT.MIDDLE.WIDGETS;
       }
     },
     middleComponentWidth: {
       get() {
-        return this.config.middleComponents.width;
+        return this.config.WIDGET_LAYOUT.MIDDLE.WIDTH;
       }
     },
 
     rightComponentWidgets: {
       get() {
-        return this.config.rightComponents.widgets;
+        return this.config.WIDGET_LAYOUT.RIGHT.WIDGETS;
       }
     },
 
     rightComponentWidth: {
       get() {
-        return this.config.rightComponents.width;
+        return this.config.WIDGET_LAYOUT.RIGHT.WIDTH;
       }
     }
   }

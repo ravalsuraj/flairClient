@@ -47,7 +47,7 @@ export default {
   },
   computed: {
     defaultUrl() {
-      return this.$store.getters["session/getConfig"].DGFT.CRM.URL + "/";
+      return this.$store.getters["session/getConfig"].DGFT.CRM_URL + "/";
     },
     autoShowWidget() {
       return (

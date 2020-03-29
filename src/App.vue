@@ -31,7 +31,7 @@ import TopNavbar from "@/views/TopNavbar";
 import LoginPage from "@/views/Login";
 import BottomFooter from "@/views/BottomFooter.vue";
 import { AGENT_STATES, SOCKET_STATES } from "@/defines";
-
+import logger from "@/services/logger";
 export default {
   name: "App",
   components: {
@@ -70,6 +70,13 @@ export default {
       this.$store.dispatch("setSocketStateDisconnected");
     }
   },
+  beforeMount() {
+    this.activeItem = this.$route.matched[0].props.default.page;
+
+    const agent = this.$store.getters.getAgentCredentials;
+    this.loggableSessionId = agent.agentId + "/" + agent.deviceId + "-" + this.$store.getters["session/getSessionId"];
+    logger.setSessionId(this.loggableSessionId);
+  },
   mounted() {
     this.$store.dispatch("session/addWindowRefreshReloadListener");
     // this.$store.dispatch('authenticateCrm').then(() => {
@@ -93,11 +100,7 @@ export default {
         return true;
       }
     }
-  },
-  beforeMount() {
-    this.activeItem = this.$route.matched[0].props.default.page;
   }
-  // mixins: [waves]
 };
 </script>
 

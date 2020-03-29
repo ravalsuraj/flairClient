@@ -1,7 +1,7 @@
 import { SOCKET_EVENTS } from "@/defines.js";
 import Utils from "@/services/Utils";
 import axios from "axios";
-
+import logger from "@/services/logger";
 function initialState() {
   return {
     ipAddress: "0.0.0.0",
@@ -40,21 +40,21 @@ export default {
   actions: {
     loadConfigurations({ commit }) {
       return axios.get("./settings.json").then(response => {
-        console.log("settings loaded. settings=", response.data);
+        logger.log("settings loaded. settings=", response.data);
         commit("LOAD_CONFIG_FILE", response.data);
       });
     },
 
     async requestSessionFromServer({ getters, commit }) {
-      console.log("requestSessionFromServer(): entered action");
+      logger.log("requestSessionFromServer(): entered action");
       return new Promise((resolve, reject) => {
         let request = {
           ipAddress: getters.getIpAddress
         };
-        console.log("requestSessionFromServer(): request=" + JSON.stringify(request));
+        logger.log("requestSessionFromServer(): request=" + JSON.stringify(request));
         try {
           this._vm.$socket.emit(SOCKET_EVENTS.GET_SESSION, request, resp => {
-            console.log("requestSessionFromServer():" + JSON.stringify(resp));
+            logger.log("requestSessionFromServer():" + JSON.stringify(resp));
             commit("SET_SESSION_ID", resp.sessionId);
             resolve(resp);
           });
@@ -68,11 +68,11 @@ export default {
       //Call Utility function to retreive IP Address for this client
       Utils.getIpAddressForClient()
         .then(ip => {
-          console.log("updateIpAddress(): received IP:", ip);
+          logger.log("updateIpAddress(): received IP:", ip);
           commit("SET_IP_ADDRESS", ip);
 
           if (getters["session/getSessionId"] === null) {
-            console.log("updateIpAddress(): Getting SessionId for IP Address:" + ip);
+            logger.log("updateIpAddress(): Getting SessionId for IP Address:" + ip);
             dispatch("session/requestSessionFromServer");
           }
         })
@@ -82,7 +82,7 @@ export default {
     },
 
     async fetchExistingSessionFromServer({ getters, commit }) {
-      console.log("fetchExistingSessionFromServer(): entered action");
+      logger.log("fetchExistingSessionFromServer(): entered action");
       return new Promise((resolve, reject) => {
         let sessionId = getters["getSessionId"];
 
@@ -90,17 +90,17 @@ export default {
           let request = {
             sessionId: sessionId
           };
-          console.log("fetchExistingSessionFromServer(): request=" + JSON.stringify(request));
+          logger.log("fetchExistingSessionFromServer(): request=" + JSON.stringify(request));
 
           this._vm.$socket.emit(SOCKET_EVENTS.CHECK_SESSION, request, resp => {
-            console.log("fetchExistingSessionFromServer():" + JSON.stringify(resp));
+            logger.log("fetchExistingSessionFromServer():" + JSON.stringify(resp));
 
             if (resp && resp.sessionId) {
               commit("SET_SESSION_ID", resp.sessionId);
               commit("SET_IP_ADDRESS", resp.ipAddress);
               resolve(resp);
             } else {
-              console.log(
+              logger.log(
                 "fetchExistingSessionFromServer(): skipping update Session ID since the response does not contain a session ID. resp=",
                 JSON.stringify(resp)
               );
@@ -108,7 +108,7 @@ export default {
             }
           });
         } else {
-          console.log(
+          logger.log(
             "fetchExistingSessionFromServer(): skipping update Session ID since the browser does not have a SessionID. "
           );
           reject();
@@ -125,10 +125,10 @@ export default {
         let request = {
           sessionId: getters["session/getSessionId"]
         };
-        console.log("sendRemoveSessionRequest(): request" + JSON.stringify(request));
+        logger.log("sendRemoveSessionRequest(): request" + JSON.stringify(request));
 
         this._vm.$socket.emit(SOCKET_EVENTS.END_SESSION, request, resp => {
-          console.log("sendRemoveSessionRequest():" + JSON.stringify(resp));
+          logger.log("sendRemoveSessionRequest():" + JSON.stringify(resp));
           commit("SET_SESSION_ID", resp.sessionId);
           resolve(resp);
         });
@@ -136,7 +136,7 @@ export default {
     },
 
     addWindowRefreshReloadListener() {
-      console.log("addWindowRefreshReloadListener(): entered action");
+      logger.log("addWindowRefreshReloadListener(): entered action");
       // window.addEventListener('beforeunload', function(e) {
       //   //dispatch('sendRemoveSessionRequest')
       // })

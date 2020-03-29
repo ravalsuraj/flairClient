@@ -1,5 +1,6 @@
 import dgftMiddlewareConnector from "@/customer/services/dgftMiddlewareConnector.js";
 import { SOCKET_EVENTS } from "@/defines.js";
+import logger from "@/services/logger";
 function initialState() {
   //hard-coded UUI for testing
   return {
@@ -56,7 +57,7 @@ export default {
             RMN: "",
             IECStatus: ""
           },
-          baseUrl: getters["session/getConfig"].DGFT.CRM.URL,
+          baseUrl: getters["session/getConfig"].DGFT.CRM_URL,
           agentId: getters.getAgentCredentials.agentId,
           sessionId: getters["session/getSessionId"]
         };
@@ -85,7 +86,7 @@ export default {
           screenpopBuilderRequest.type = "api";
           //since UUI not found, call DGFT (SugarCRM) API to check for RMN and IEC statu
           dgftMiddlewareConnector.checkRMN(screenpopBuilderRequest).then(resp => {
-            console.log("dgftMiddlewareConnector.checkRMN(): resp=" + JSON.stringify(resp));
+            logger.log("dgftMiddlewareConnector.checkRMN(): resp=" + JSON.stringify(resp));
             if (resp && resp.data && resp.data.number) {
               if (resp.data.number.toLowerCase() === "not found") {
                 screenpopBuilderRequest.api.RMN = "n";
@@ -133,12 +134,12 @@ export default {
       let request = {
         sessionId: getters["session/getSessionId"],
         primaryCallId: callId,
-        dialedNumber: getters["session/getConfig"].DGFT.CSAT.VDN
+        dialedNumber: getters["session/getConfig"].DGFT.CSAT_VDN
       };
 
-      console.log("requestDgftSurveyIvrTransfer(): request=" + JSON.stringify(request));
+      logger.log("requestDgftSurveyIvrTransfer(): request=" + JSON.stringify(request));
       this._vm.$socket.emit(SOCKET_EVENTS.DGFT_IVR_TRANSFER, request, resp => {
-        console.log("requestDgftSurveyIvrTransfer(): resp=" + JSON.stringify(resp));
+        logger.log("requestDgftSurveyIvrTransfer(): resp=" + JSON.stringify(resp));
         if (resp.responseCode === "0") {
           dispatch("processCallTransferDone", resp);
         }
@@ -205,7 +206,7 @@ export default {
       if (state.dgftCrmUrl[index] != null) {
         state.dgftCrmUrl.splice(index, 1);
       } else {
-        console.log("RESET_DGFT_CRM_URL(): skipping, since index " + index + " does not exist in dgftCrmUrl List");
+        logger.log("RESET_DGFT_CRM_URL(): skipping, since index " + index + " does not exist in dgftCrmUrl List");
       }
     },
 
@@ -234,7 +235,7 @@ export default {
       if (state.dgftUui[index]) {
         state.dgftUui.splice(index, 1);
       } else {
-        console.log("RESET_DGFT_UUI(): skipping, since callId does not exist in UUI List");
+        logger.log("RESET_DGFT_UUI(): skipping, since callId does not exist in UUI List");
       }
     }
   },
@@ -245,10 +246,10 @@ export default {
     },
     getDgftUuiByCallIndex: state => callIndex => {
       if (state.dgftUui[callIndex] != null) {
-        console.log("found DGFT UUI: state=" + JSON.stringify(state.dgftUui));
+        logger.log("found DGFT UUI: state=" + JSON.stringify(state.dgftUui));
         return state.dgftUui[callIndex];
       } else {
-        console.log(
+        logger.log(
           "getDgftUuiByCallIndex(): could not find DGFT UUI for call index=" +
             callIndex +
             ", state=" +
@@ -265,10 +266,10 @@ export default {
 
     getDgftCrmUrlByCallIndex: state => callIndex => {
       if (state.dgftCrmUrl[callIndex]) {
-        console.log("found DGFT CRM URL: state=" + JSON.stringify(state.dgftCrmUrl));
+        logger.log("found DGFT CRM URL: state=" + JSON.stringify(state.dgftCrmUrl));
         return state.dgftCrmUrl[callIndex];
       } else {
-        console.log("did not find DGFT CRM URL: state=" + JSON.stringify(state.dgftCrmUrl));
+        logger.log("did not find DGFT CRM URL: state=" + JSON.stringify(state.dgftCrmUrl));
         return null;
       }
     }

@@ -1,4 +1,5 @@
 import { SOCKET_EVENTS } from "@/defines.js";
+import logger from "@/services/logger";
 function initialState() {
   return {};
 }
@@ -25,9 +26,9 @@ export default {
             dialedNumber: getters.getDialedDigits
           };
 
-          console.log("requestConsultCall(): request=" + JSON.stringify(request));
+          logger.log("requestConsultCall(): request=" + JSON.stringify(request));
           this._vm.$socket.emit(SOCKET_EVENTS.CONSULT_CALL, request, resp => {
-            console.log("requestConsultCall(): resp=" + JSON.stringify(resp));
+            logger.log("requestConsultCall(): resp=" + JSON.stringify(resp));
             if (resp.responseCode == "0") {
               resolve(resp);
             } else {
@@ -47,9 +48,9 @@ export default {
         consultedCallId: payload.callIdB
       };
 
-      console.log("requestConferenceCall(): request=" + JSON.stringify(request));
+      logger.log("requestConferenceCall(): request=" + JSON.stringify(request));
       this._vm.$socket.emit(SOCKET_EVENTS.CONFERENCE_CALL, request, resp => {
-        console.log("requestConferenceCall(): resp=" + JSON.stringify(resp));
+        logger.log("requestConferenceCall(): resp=" + JSON.stringify(resp));
         if (resp.responseCode === "0") {
           dispatch("processCallConferenceDone", resp);
         }
@@ -63,9 +64,9 @@ export default {
         consultedCallId: payload.callIdB
       };
 
-      console.log("requestTransferCall(): request=" + JSON.stringify(request));
+      logger.log("requestTransferCall(): request=" + JSON.stringify(request));
       this._vm.$socket.emit(SOCKET_EVENTS.TRANSFER_CALL, request, resp => {
-        console.log("requestTransferCall(): resp=" + JSON.stringify(resp));
+        logger.log("requestTransferCall(): resp=" + JSON.stringify(resp));
         if (resp.responseCode === "0") {
           dispatch("processCallTransferDone", resp);
         }

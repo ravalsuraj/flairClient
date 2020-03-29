@@ -1,13 +1,13 @@
 import { AGENT_STATES, SOCKET_EVENTS } from "@/defines";
-
+import logger from "@/services/logger";
 function initialState() {
   return {
     agentState: AGENT_STATES.UNKNOWN,
     reasonCode: 0,
-    displayLabel: "Ready",
-    agentId: 1234,
-    deviceId: 1234,
-    password: 1234,
+    displayLabel: "-",
+    agentId: null,
+    deviceId: null,
+    password: null,
     workMode: "auto",
     rememberCredentials: true,
     monitorAgentInterval: null,
@@ -83,7 +83,7 @@ export default {
     },
     startAgentStateMonitoring({ commit, dispatch, getters }) {
       let monitorAgentInterval = setInterval(() => {
-        //console.log("startAgentStateMonitoring(): querying agent state")
+        //logger.log("startAgentStateMonitoring(): querying agent state")
         dispatch("sendQueryAgentStateRequest");
       }, getters["session/getConfig"].AGENT_STATE_POLLING_INTERVAL_MS);
       commit("SET_MONITOR_AGENT_INTERVAL_HANDLE", monitorAgentInterval);
@@ -109,7 +109,7 @@ export default {
       return new Promise(resolve => {
         let agent = getters.getAgent;
         let sessionId = getters["session/getSessionId"];
-        console.log("sendAgentLoginRequest(): sessionId=", sessionId);
+        logger.log("sendAgentLoginRequest(): sessionId=", sessionId);
         let request = {
           sessionId: sessionId,
           agentId: agent.agentId,
@@ -117,10 +117,10 @@ export default {
           password: agent.password,
           workMode: agent.workMode
         };
-        console.log("sendAgentLoginRequest(): request: " + JSON.stringify(request));
+        logger.log("sendAgentLoginRequest(): request: " + JSON.stringify(request));
         try {
           this._vm.$socket.emit(SOCKET_EVENTS.AGENT_LOGIN, request, resp => {
-            console.log("sendAgentLoginRequest(): response: " + JSON.stringify(resp));
+            logger.log("sendAgentLoginRequest(): response: " + JSON.stringify(resp));
 
             if (resp.responseCode === "0") {
               dispatch("processAgentLogin");
@@ -149,10 +149,10 @@ export default {
         password: agent.password,
         workMode: agent.workMode
       };
-      console.log("sendAgentLogoutEvent(): request: " + JSON.stringify(request));
+      logger.log("sendAgentLogoutEvent(): request: " + JSON.stringify(request));
 
       this._vm.$socket.emit(SOCKET_EVENTS.AGENT_LOGOFF, request, resp => {
-        console.log("sendAgentLogoutEvent(): response: " + JSON.stringify(resp));
+        logger.log("sendAgentLogoutEvent(): response: " + JSON.stringify(resp));
 
         if (resp.responseCode === "0") {
           dispatch("processAgentLogout");
@@ -174,10 +174,10 @@ export default {
           reasonCode: auxRequest.reasonCode
         };
 
-        console.log("sendAgentStateRequest(): request= " + JSON.stringify(request));
+        logger.log("sendAgentStateRequest(): request= " + JSON.stringify(request));
 
         this._vm.$socket.emit("SETAGTSTATE", request, resp => {
-          console.log("sendAgentStateRequest(): response= " + JSON.stringify(resp));
+          logger.log("sendAgentStateRequest(): response= " + JSON.stringify(resp));
           if (resp.responseCode === "0") {
             commit("SET_AGENT_STATE", resp.agentState);
 
@@ -238,7 +238,7 @@ export default {
     },
     /********************************* */
     setUpdatedAuxCode({ commit }, payload) {
-      console.log("setUpdatedAuxCode(): payload=" + JSON.stringify(payload));
+      logger.log("setUpdatedAuxCode(): payload=" + JSON.stringify(payload));
 
       let selectedAuxCode = {
         agentState: payload.agentState,
@@ -290,7 +290,7 @@ export default {
       }
     },
     SET_DISPLAY_LABELS(state, [auxMap, reasonCodeMap]) {
-      console.log("auxCodes" + JSON.stringify(auxMap));
+      logger.log("auxCodes" + JSON.stringify(auxMap));
       state.agentStateDisplayLabelMap = auxMap;
       state.agentReasonCodeDisplayLabelMap = reasonCodeMap;
     },

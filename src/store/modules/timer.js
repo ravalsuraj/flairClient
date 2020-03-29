@@ -1,5 +1,5 @@
 import { TIMER_STATES, TIMER_DIRECTIONS } from "@/defines.js";
-
+import logger from "@/services/logger";
 function initialState() {
   return {
     timers: [],
@@ -48,18 +48,18 @@ export default {
         state.timers[index].state = 0;
         state.timers[index].refTime = null;
       } else {
-        console.log("STOP_TIMER(): skipping, since timer does not exist in state. timerName=" + timerName);
+        logger.log("STOP_TIMER(): skipping, since timer does not exist in state. timerName=" + timerName);
       }
     },
 
     START_TIMER(state, timerName) {
       let index = state.timerList.indexOf(timerName);
-      console.log("START_TIMER mutation called for index=" + index + ", timerName=" + timerName);
+      logger.log("START_TIMER mutation called for index=" + index + ", timerName=" + timerName);
       if (index != -1) {
         state.timers[index].refTime = new Date().getTime();
         state.timers[index].state = 1;
       } else {
-        console.log("START_TIMER(): skipping, since timer does not exist in state. timerName=" + timerName);
+        logger.log("START_TIMER(): skipping, since timer does not exist in state. timerName=" + timerName);
       }
     },
 
@@ -105,12 +105,12 @@ export default {
       return state.timerList.indexOf(timerName);
     },
     getTimerStatus: state => timerName => {
-      console.log("getters.getTimerStatus=" + state[timerName].status);
+      logger.log("getters.getTimerStatus=" + state[timerName].status);
       return state[timerName].status;
     },
 
     getTimerExpiry: state => timerName => {
-      console.log("getTimerExpiry, timerName=", timerName);
+      logger.log("getTimerExpiry, timerName=", timerName);
       return state[timerName].expiry;
     }
   }

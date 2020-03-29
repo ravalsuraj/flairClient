@@ -1,22 +1,9 @@
 {
-    "FLAIR_AWS_PORT": 8000,
-    "FLAIR_SERVER_URL": "http://192.168.110.99:9092",
-    "SERVER_TIMEOUT_MS": 20000,
-    "CRM_TIMEOUT_MS": 10000,
-    "ALLOW_OUTBOUND_DIALING": true,
-    "AGENT_STATE_POLLING_INTERVAL_MS": 100000,
-    "INTERNAL_NUMBERS_MAX_LENGTH": 6,
     "DGFT": {
         "OUTCALLING_REASON_CODE": 1,
-        "MIDDLEWARE": {
-            "URL": "http://192.168.110.99:9093"
-        },
-        "CRM": {
-            "URL": "https://egtf.dgft.gov.in/sitsugarcrm"
-        },
-        "CSAT": {
-            "VDN": "2527"
-        },
+        "MIDDLEWARE_URL": "http://192.168.110.99:9093",
+        "CRM_URL": "https://egtf.dgft.gov.in/sitsugarcrm",
+        "CSAT_VDN": "2527",
         "UUI_KEYS": [
             "UCID",
             "uniqueID",
@@ -27,6 +14,15 @@
             "LastShortCode"
         ]
     },
+    "FLAIR_AWS_PORT": 8000,
+    "FLAIR_SERVER_URL": "http://192.168.110.99:9092",
+    "SERVER_TIMEOUT_MS": 20000,
+    "CRM_TIMEOUT_MS": 10000,
+    "LOGGER_SERVER_URL": "http://192.168.29.248:9091/log",
+    "LOG_INTERVAL": 300000,
+    "ALLOW_OUTBOUND_DIALING": true,
+    "INTERNAL_NUMBERS_MAX_LENGTH": 6,
+    "AGENT_STATE_POLLING_INTERVAL_MS": 100000,
     "AVAILABLE_AGENT_STATES": [
         {
             "label": "Ready",
@@ -71,24 +67,26 @@
             "reasonLabel": "Dinner"
         }
     ],
-    "leftComponents": {
-        "width": "3",
-        "widgets": []
-    },
-    "middleComponents": {
-        "width": "10",
-        "widgets": [
-            {
-                "name": "dgft-crm-frame"
-            }
-        ]
-    },
-    "rightComponents": {
-        "width": "2",
-        "widgets": [
-            {
-                "name": "dgft-helper"
-            }
-        ]
+    "WIDGET_LAYOUT": {
+        "LEFT": {
+            "WIDTH": "3",
+            "WIDGETS": []
+        },
+        "MIDDLE": {
+            "WIDTH": "10",
+            "WIDGETS": [
+                {
+                    "name": "dgft-crm-frame"
+                }
+            ]
+        },
+        "RIGHT": {
+            "WIDTH": "2",
+            "WIDGETS": [
+                {
+                    "name": "dgft-helper"
+                }
+            ]
+        }
     }
 }
