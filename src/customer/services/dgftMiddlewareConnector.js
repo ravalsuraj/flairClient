@@ -11,7 +11,7 @@ export default {
     logger.log("checkRMN(): request received Request=", request);
     return instance.get("/rmn/" + request.cli);
   },
-  getServerIp() {
+  getServerUrl() {
     return instance.get("/flairserverip");
   }
 };

@@ -38,9 +38,9 @@ let serverIp = config.FLAIR_SERVER_URL;
 
 //get the IP address dynamically for the websocket server. This is saved in the config.js file for the FlairClientLauncher
 api
-  .getServerIp()
+  .getConfig()
   .then(resp => {
-    logger.log("resp=" + JSON.stringify(resp.data));
+    logger.log("resp=" + JSON.stringify(resp.data.FLAIR_SERVER_URL));
     if (resp.data.responseCode === "0") {
       serverIp = resp.data.ip;
       logger.log("main.js execution complete. using server URL=" + serverIp);
@@ -76,7 +76,7 @@ let initVue = () => {
         loggableSessionId: String
       };
     },
-    beforeMount() {},
+    beforeMount() { },
     methods: {
       serverLog(message) {
         if (message) logger.log(message);
