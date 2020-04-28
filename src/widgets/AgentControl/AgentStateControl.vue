@@ -3,7 +3,7 @@
     <!--Selected State-->
     <mdb-dropdown-toggle tag="a" navLink color="special" slot="toggle">
       <mdb-icon icon="circle" :class="agentStateIndicatorColor(currentAgentAuxState.state)" class="mr-2" />
-      <strong class="h6">{{ currentAgentAuxState.label }}</strong>
+      <strong class="h6">{{ /*currentAgentAuxState.label*/ "Ready" }}</strong>
     </mdb-dropdown-toggle>
 
     <mdb-dropdown-menu left color="primary">
@@ -43,9 +43,7 @@ export default {
   methods: {
     //This Method is called whenever the Agent Dropdown option is changed
     onAgentStateDropDownChanged(selectedAuxCode) {
-      this.serverLog(
-        "onAgentStateDropDownChanged(): method entered. selectedAuxCode=" + JSON.stringify(selectedAuxCode)
-      );
+      console.log("onAgentStateDropDownChanged(): method entered. selectedAuxCode=" + JSON.stringify(selectedAuxCode));
       //Depending on the selected state, update the store with the new state
       switch (selectedAuxCode.state) {
         case AGENT_STATES.READY:
@@ -62,7 +60,7 @@ export default {
     },
     agentStateIndicatorColor(state) {
       if (state) {
-        //this.serverLog('agentStateIndicatorColor(): state='+JSON.stringify(state));
+        //console.log('agentStateIndicatorColor(): state=', state)
         switch (state) {
           case AGENT_STATES.READY:
             return "green-text";

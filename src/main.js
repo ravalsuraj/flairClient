@@ -7,6 +7,7 @@ import Vuex from "vuex";
 import App from "./App";
 import router from "./router";
 import Vue2TouchEvents from "vue2-touch-events";
+import store from "./store/index";
 
 import VueSocketIO from "vue-socket.io";
 import VShowSlide from "v-show-slide";
@@ -17,40 +18,72 @@ import Notifications from "vue-notification";
 import { longClickDirective } from "vue-long-click";
 
 import config from "./../public/settings.json";
-import store from "./store/index";
-import "mdbvue/lib/css/mdb.min.css";
-import "@fortawesome/fontawesome-free/css/all.min.css";
-import api from "./services/api";
-import logger from "./services/logger";
-
 // import "x-frame-bypass";
 Vue.use(Notifications);
 Vue.use(Vuex);
 Vue.use(VShowSlide);
 Vue.use(Vuedraggable);
 
+import log4javascript from "log4javascript";
+var log = log4javascript.getLogger();
+
+// var inPageAppender = new log4javascript.InPageAppender();
+// var inPageLayout = new log4javascript.PatternLayout("%d{HH:mm:ss} %-5p - %m%n");
+// inPageAppender.setLayout(inPageLayout);
+// log.addAppender(inPageAppender);
+//var ajaxAppender = new log4javascript.AjaxAppender("/log");
+var ajaxAppender = new log4javascript.AjaxAppender("http://192.168.110.99:9093/log");
+var jsonLayout = new log4javascript.JsonLayout();
+ajaxAppender.setLayout(jsonLayout);
+
+ajaxAppender.setThreshold(log4javascript.Level.INFO);
+log.addAppender(ajaxAppender);
+console.log("main.js initialized");
+
+// var console = {};
+// window.console = console;
+// console.log = function() {};
+
+import "mdbvue/lib/css/mdb.min.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import api from "./services/api";
+
 //Used to detect long click. Used in the dialer to delete multiple digits upon long-click
 const longClickInstance = longClickDirective({ delay: 400, interval: 50 });
-Vue.directive("longclick", longClickInstance);
 
 //initialize the URL to the settings.json URL
 let serverIp = config.FLAIR_SERVER_URL;
+Vue.directive("longclick", longClickInstance);
 
 //get the IP address dynamically for the websocket server. This is saved in the config.js file for the FlairClientLauncher
 api
-  .getConfig()
+  .getServerIp()
   .then(resp => {
-    logger.log("resp=" + JSON.stringify(resp.data.FLAIR_SERVER_URL));
+    console.log("resp=" + JSON.stringify(resp.data));
     if (resp.data.responseCode === "0") {
       serverIp = resp.data.ip;
-      logger.log("main.js execution complete. using server URL=" + serverIp);
+      initVue();
+      console.log("main.js execution complete. using server URL=" + serverIp);
+
+      api.getMiddlewareIp().then(fetchMiddlewareResponse => {
+        var middlewareIp = fetchMiddlewareResponse.data.ip;
+
+        var logUrl = middlewareIp + "/log";
+        var ajaxAppender = new log4javascript.AjaxAppender(logUrl);
+        var jsonLayout = new log4javascript.JsonLayout();
+        ajaxAppender.setLayout(jsonLayout);
+
+        ajaxAppender.setThreshold(log4javascript.Level.INFO);
+        log.addAppender(ajaxAppender);
+        console.log("main.js initialized");
+      });
     } else {
-      logger.error("could not fetch server ip");
+      console.error("could not fetch server ip");
+      initVue();
     }
-    initVue();
   })
   .catch(() => {
-    logger.log("could not fetch server IP , so using the value from settings.json");
+    console.log("could not fetch server IP , so using the value from settings.json");
     initVue();
   });
 
@@ -70,19 +103,6 @@ let initVue = () => {
 
   Vue.config.productionTip = false;
   Vue.prototype.$serverip = serverIp;
-  Vue.mixin({
-    data() {
-      return {
-        loggableSessionId: String
-      };
-    },
-    beforeMount() { },
-    methods: {
-      serverLog(message) {
-        if (message) logger.log(message);
-      }
-    }
-  });
   new Vue({
     router,
     store,

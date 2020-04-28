@@ -160,7 +160,7 @@ export default {
       this.dialedDigits += digit;
     },
     deleteSingleDigit() {
-      this.serverLog("deleteSingleDigits");
+      console.log("deleteSingleDigits");
       this.dialedDigits = this.dialedDigits.slice(0, this.dialedDigits.length - 1);
     },
     startDeletingDigits() {

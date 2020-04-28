@@ -20,9 +20,27 @@
           </p>
           <mdb-card-body class="p-4">
             <form class="grey-text" @submit.prevent>
-              <mdb-input required label="Agent ID" icon="user" type="text" v-model="credentials.agentId" />
-              <mdb-input required label="Station ID" icon="phone" type="text" v-model="credentials.deviceId" />
-              <mdb-input required label="Password" icon="lock" type="password" v-model="credentials.password" />
+              <mdb-input
+                required
+                label="Agent ID"
+                icon="user"
+                type="text"
+                v-model="credentials.agentId"
+              />
+              <mdb-input
+                required
+                label="Station ID"
+                icon="phone"
+                type="text"
+                v-model="credentials.deviceId"
+              />
+              <mdb-input
+                required
+                label="Password"
+                icon="lock"
+                type="password"
+                v-model="credentials.password"
+              />
               <!-- <div class="d-flex justify-content-center mb-1">
                 <div class="custom-control custom-radio custom-control-inline mr-5">
                   <input
@@ -55,12 +73,11 @@
                   class="btn white-text mr-3"
                   @click="agentLoginBtnClicked"
                   @keydown="handleEnterKeyForLogin"
-                  >Log in</mdb-btn
-                >
+                >Log in</mdb-btn>
               </div>
             </form>
           </mdb-card-body>
-          <mdb-alert :color="loginAlert.color" v-if="loginAlert.show">{{ loginAlert.message }}</mdb-alert>
+          <mdb-alert :color="loginAlert.color" v-if="loginAlert.show">{{loginAlert.message}}</mdb-alert>
         </mdb-card>
       </mdb-col>
     </mdb-row>
@@ -68,9 +85,7 @@
       <mdb-modal-header>
         <mdb-modal-title>Modal title</mdb-modal-title>
       </mdb-modal-header>
-      <mdb-modal-body
-        >You are already logged-in as an agent. Would you like to logout from the previous session?</mdb-modal-body
-      >
+      <mdb-modal-body>You are already logged-in as an agent. Would you like to logout from the previous session?</mdb-modal-body>
       <mdb-modal-footer>
         <mdb-btn color="secondary" @click.native="showLogoutModal = false">Cancel</mdb-btn>
         <mdb-btn color="primary" @click.native="forceLogoutButtonClicked">Force Log-out</mdb-btn>
@@ -80,7 +95,7 @@
 </template>
 
 <script>
-// import Utils from "@/services/Utils.js"
+// import Utils from "@/services/Utils.js" 
 import {
   mdbAlert,
   mdbContainer,
@@ -89,6 +104,7 @@ import {
   mdbBtn,
   mdbCard,
   mdbCardBody,
+
   mdbInput,
   mdbModal,
   mdbModalHeader,
@@ -152,11 +168,14 @@ export default {
       this.showSpinner();
       let sendAgentLoginRequest = () => {
         this.$store.dispatch("sendAgentLoginRequest").then(resp => {
-          this.serverLog(JSON.stringify(resp));
+          console.log(resp);
           this.hideSpinner();
           if (resp && resp.responseCode) {
             if (resp.responseCode === "0") {
-              this.$store.dispatch("showErrorBanner", ["Welcome", "You are successfully logged in"]);
+              this.$store.dispatch("showErrorBanner", [
+                "Welcome",
+                "You are successfully logged in"
+              ]);
             } else if (resp.responseCode === "35") {
               this.showLogoutModal = true;
             }
@@ -165,7 +184,7 @@ export default {
       };
 
       this.$store.dispatch("setAgentLoginCredentials", this.credentials);
-      this.serverLog("agentLoginBtnClicked(): login button clicked");
+      console.log("agentLoginBtnClicked(): login button clicked");
 
       let currentSessionId = this.$store.getters["session/getSessionId"];
 
@@ -175,7 +194,10 @@ export default {
             sendAgentLoginRequest();
           } else {
             if (resp.responseCode === "05") {
-              this.$store.dispatch("showErrorBanner", ["Agent Login Failed", resp.responseMessage]);
+              this.$store.dispatch("showErrorBanner", [
+                "Agent Login Failed",
+                resp.responseMessage
+              ]);
             } else {
               this.$store.dispatch("showErrorBanner", [
                 "Agent Login Failed",
@@ -226,17 +248,37 @@ export default {
 } */
 .fl_login_banner {
   background: rgba(204, 0, 0, 1);
-  background: -moz-linear-gradient(left, rgba(204, 0, 0, 1) 0%, rgba(255, 102, 0, 1) 100%);
+  background: -moz-linear-gradient(
+    left,
+    rgba(204, 0, 0, 1) 0%,
+    rgba(255, 102, 0, 1) 100%
+  );
   background: -webkit-gradient(
     left top,
     right top,
     color-stop(0%, rgba(204, 0, 0, 1)),
     color-stop(100%, rgba(255, 102, 0, 1))
   );
-  background: -webkit-linear-gradient(left, rgba(204, 0, 0, 1) 0%, rgba(255, 102, 0, 1) 100%);
-  background: -o-linear-gradient(left, rgba(204, 0, 0, 1) 0%, rgba(255, 102, 0, 1) 100%);
-  background: -ms-linear-gradient(left, rgba(204, 0, 0, 1) 0%, rgba(255, 102, 0, 1) 100%);
-  background: linear-gradient(to right, rgba(204, 0, 0, 1) 0%, rgba(255, 102, 0, 1) 100%);
+  background: -webkit-linear-gradient(
+    left,
+    rgba(204, 0, 0, 1) 0%,
+    rgba(255, 102, 0, 1) 100%
+  );
+  background: -o-linear-gradient(
+    left,
+    rgba(204, 0, 0, 1) 0%,
+    rgba(255, 102, 0, 1) 100%
+  );
+  background: -ms-linear-gradient(
+    left,
+    rgba(204, 0, 0, 1) 0%,
+    rgba(255, 102, 0, 1) 100%
+  );
+  background: linear-gradient(
+    to right,
+    rgba(204, 0, 0, 1) 0%,
+    rgba(255, 102, 0, 1) 100%
+  );
   filter: progid:DXImageTransform.Microsoft.gradient( 
     startColorstr='#cc0000', endColorstr='#ff6600', 
     GradientType=1 );
@@ -263,6 +305,7 @@ li {
 a {
   color: #42b983;
 }
+
 
 .fade-enter-active,
 .fade-leave-active {

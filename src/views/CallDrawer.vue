@@ -13,7 +13,7 @@
             :ucid="call.ucid"
             :callId="call.callId"
           ></call-card-outbound>
-          <dgft-disposition v-if="isCallDropped(call)" :ucid="call.ucid" :callId="call.callId"></dgft-disposition>
+          <quess-disposition v-if="isCallDropped(call)" :ucid="call.ucid" :callId="call.callId"></quess-disposition>
         </mdb-col>
       </mdb-row>
     </mdb-container>
@@ -31,7 +31,7 @@ import _ from "lodash.debounce";
 import CallCardInbound from "@/widgets/CallControl/CallCardInbound.vue";
 import CallCardOutbound from "@/widgets/CallControl/CallCardOutbound.vue";
 import DialerToggle from "@/widgets/Dialer/DialerToggle.vue";
-import DgftDisposition from "@/customer/widgets/DGFT/DgftDisposition.vue";
+import QuessDisposition from "@/widgets/Quess/QuessDisposition.vue";
 
 import { CALL_STATES, CALL_TYPES } from "@/defines.js";
 import { mdbRow, mdbCol, mdbContainer } from "mdbvue";
@@ -40,7 +40,7 @@ export default {
   components: {
     CallCardInbound,
     CallCardOutbound,
-    DgftDisposition,
+    QuessDisposition,
     DialerToggle,
     mdbRow,
     mdbCol,
@@ -88,7 +88,7 @@ export default {
   },
   watch: {
     myCalls(newState) {
-      this.serverLog("CallDrawer()/watch(myCalls): call state changed to:" + JSON.stringify(newState));
+      console.log("CallDrawer()/watch(myCalls): call state changed to:", newState);
     }
   }
 };

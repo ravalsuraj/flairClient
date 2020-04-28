@@ -7,7 +7,7 @@
     </mdb-row>
     <hr />
     <mdb-row class="mx-0 d-flex flex-fill">
-      <mdb-col :lg="leftComponentWidth" :md="leftComponentWidth" class=" flex-fill px-0">
+      <mdb-col :lg="leftComponentWidth" :md="leftComponentWidth" class=" flex-fill">
         <draggable
           :list="leftComponentWidgets"
           class="dragArea flex-fill"
@@ -103,12 +103,12 @@ import MenuTraversal from "@/widgets/MenuTraversal/MenuTraversal.vue";
 
 import AgentCallStatistics from "@/widgets/AgentCallStatistics/AgentCallStatistics.vue";
 
+import DgftCrmFrame from "@/widgets/DGFT/DgftCrmFrame.vue";
 import QuickLinks from "@/widgets/QuickLinks/QuickLinks.vue";
 
 import SmsHelper from "@/widgets/SmsHelper/SmsHelper.vue";
-
-import DgftCrmFrame from "@/customer/widgets/DGFT/DgftCrmFrame.vue";
-import DgftHelper from "@/customer/widgets/DGFT/DgftHelper.vue";
+import QuessCrmFrame from "@/widgets/Quess/QuessCrmFrame.vue";
+import QuessHelper from "@/widgets/Quess/QuessHelper.vue";
 
 export default {
   name: "Dashboard",
@@ -124,7 +124,8 @@ export default {
     CallDetails,
     CallHistory,
     SmsHelper,
-    DgftHelper,
+    QuessCrmFrame,
+    QuessHelper,
     CallDrawer,
 
     mdbContainer,
@@ -165,34 +166,34 @@ export default {
     },
     leftComponentWidgets: {
       get() {
-        return this.config.WIDGET_LAYOUT.LEFT.WIDGETS;
+        return this.config.leftComponents.widgets;
       }
     },
     leftComponentWidth: {
       get() {
-        return this.config.WIDGET_LAYOUT.LEFT.WIDTH;
+        return this.config.leftComponents.width;
       }
     },
     middleComponentWidgets: {
       get() {
-        return this.config.WIDGET_LAYOUT.MIDDLE.WIDGETS;
+        return this.config.middleComponents.widgets;
       }
     },
     middleComponentWidth: {
       get() {
-        return this.config.WIDGET_LAYOUT.MIDDLE.WIDTH;
+        return this.config.middleComponents.width;
       }
     },
 
     rightComponentWidgets: {
       get() {
-        return this.config.WIDGET_LAYOUT.RIGHT.WIDGETS;
+        return this.config.rightComponents.widgets;
       }
     },
 
     rightComponentWidth: {
       get() {
-        return this.config.WIDGET_LAYOUT.RIGHT.WIDTH;
+        return this.config.rightComponents.width;
       }
     }
   }

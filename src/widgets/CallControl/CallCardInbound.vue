@@ -152,7 +152,7 @@ export default {
     mdbModalBody
   },
   mounted() {
-    this.serverLog("CallCardInbound(): mounted()");
+    console.log("CallCardInbound(): mounted()");
   },
   props: {
     ucid: String,

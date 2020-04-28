@@ -1,10 +1,9 @@
 /********************************
  * Misc Utility Function
  * *******************************/
-import logger from "@/services/logger";
 export default {
   async getIpAddressForClient() {
-    logger.log("getIpAddressForClient() function entered");
+    console.log("getIpAddressForClient() function entered");
 
     return new Promise(r => {
       var w = window,

@@ -6,17 +6,7 @@
     navIconClass="white-text"
     :toggler="false"
   >
-    <!-- <mdb-navbar-brand href="/" target="_blank">
-      <div class="light-color" style="opacity:1">
-        <img
-          src="@/assets/flair_logo_white.png"
-          class="mx-5"
-          alt="Responsive image"
-          style="width: 75px; opacity:1 !important"
-        />
-      </div>
-    </mdb-navbar-brand>-->
-    <mdb-navbar-nav left>
+    <mdb-navbar-nav>
       <span class="fl_navbar_item">
         <div class="light-color" style="opacity:1">
           <img
@@ -29,12 +19,15 @@
       </span>
     </mdb-navbar-nav>
     <mdb-navbar-nav right>
-      <span class="fl_navbar_item">
+      <span class="fl_navbar_item float-right">
         <agent-state-control></agent-state-control>
       </span>
 
       <span class="fl_navbar_item">
         <agent-profile></agent-profile>
+      </span>
+      <span class="fl_navbar_item">
+        <side-navbar-toggle></side-navbar-toggle>
       </span>
     </mdb-navbar-nav>
   </mdb-navbar>
@@ -43,14 +36,16 @@
 <script>
 import AgentStateControl from "@/widgets/AgentControl/AgentStateControl.vue";
 import AgentProfile from "@/widgets/AgentControl/AgentProfile.vue";
+import sideNavbarToggle from "@/views/SideNavbarToggle";
 import { mdbNavbar, mdbNavbarNav } from "mdbvue";
 export default {
   name: "TopNavbar",
   components: {
     AgentProfile,
     AgentStateControl,
+    sideNavbarToggle,
     mdbNavbar,
-    // mdbNavbarBrand,
+
     mdbNavbarNav
   },
 
@@ -74,17 +69,6 @@ export default {
   padding-right: 10px;
   min-width: 140px;
 }
-
-/* .fl_navbar_item::after {
-  content: ' ';
-  margin: 3px -85px;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background: #2f3336;
-  box-shadow: 0 0 6px 0px rgba(255, 255, 255, 0.1);
-} */
 .divider-vertical {
   height: 50px;
   margin: 0 9px;
@@ -125,9 +109,6 @@ export default {
   margin-left: 15px;
   color: #2196f3 !important;
   font-weight: bolder;
-}
-main {
-  background-color: #ededee;
 }
 
 .flexible-navbar {
