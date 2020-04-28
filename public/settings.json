@@ -2,8 +2,8 @@
     "DGFT": {
         "OUTCALLING_REASON_CODE": 1,
         "MIDDLEWARE_URL": "http://10.248.123.102:9093",
-        "CRM_URL": "https://egtf.dgft.gov.in/sitsugarcrm",
-        "CSAT_VDN": "2527",
+        "CRM_URL": "http://192.168.147.150/sugarcrm",
+        "CSAT_VDN": "51118",
         "UUI_KEYS": [
             "UCID",
             "uniqueID",
@@ -12,7 +12,20 @@
             "IEC",
             "ConplaintNo",
             "LastShortCode"
-        ]
+        ],
+        "IVR_SHORT_CODES": {
+            "A0003": "Complaint Status Played",
+            "M0001-1": "Complaint Status",
+            "M0001-2": "Queries",
+            "M0002-1": "IEC related queries",
+            "M0002-2": "SIMS - steele import Monitoring system",
+            "M0002-3": "COO - Certificate of Origin ",
+            "M0002-4": "MEIS related Queries ",
+            "M0002-5": "License, Shipping Bill or IEC Transmission ",
+            "M0002-6": "other queries",
+            "M0001": "Main menu",
+            "M0002": "Queries menu​"
+        }
     },
     "FLAIR_AWS_PORT": 8000,
     "FLAIR_SERVER_URL": "http://10.248.123.102:9092",

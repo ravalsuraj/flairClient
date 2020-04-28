@@ -45,6 +45,8 @@ export default {
         let formattedCli = "";
         if (call.callingAddress.substring(0, 2) === "91") {
           formattedCli = call.callingAddress.substring(2, call.callingAddress.length);
+        } else if (call.callingAddress.substring(0, 1) === "0") {
+          formattedCli = call.callingAddress.substring(1, call.callingAddress.length);
         } else {
           formattedCli = call.callingAddress;
         }
@@ -63,25 +65,28 @@ export default {
         };
 
         // Set the relative path based on customer RMN and IEC status
-
+        logger.log("checking screenpopBuilderRequest.type. uui=" + JSON.stringify(uui))
         //check if the UUI contains an RMN and IEC Field. In this case, no need to call DGFT (SugarCRM) API for it
-        if (uui && uui !== "" && uui["RMN"] && uui["RMN"] != undefined && uui["IECStatus"]) {
+        if (uui && uui !== "" && uui["RMN"] && uui["RMN"] != undefined && uui["IEC"]) {
           screenpopBuilderRequest.type = "uui";
-          if (uui["RMN"].toLowerCase() === "n") {
+          logger.log("Screenpop builder request will be built based on UUI. UUI=" + JSON.stringify(uui));
+          if (uui["RMN"].toLowerCase() === "no") {
             //Not RMN, so screenpop the Create Contact Page
+            logger.log("condition for RMN =NO, navigating to the path")
             path = "/#Contacts/create?";
-          } else if (uui["RMN"].toLowerCase() === "y") {
+          } else if (uui["RMN"].toLowerCase() === "yes") {
             //RMN, so check if status is IEC
-            if (uui["IECStatus"].toLowerCase() === "y") {
+            if (uui["IEC"].toLowerCase() === "accounts") {
               //Status is IEC, so screenpop the accounts search page
               path = "/index.php?entryPoint=searchcrm&module=Accounts&";
-            } else if (uui["IECStatus"].toLowerCase() === "n") {
+            } else if (uui["IEC"].toLowerCase() === "contacts") {
               //Status is IEC, so screenpop the contacts search page
               path = "/index.php?entryPoint=searchcrm&module=Contacts&";
             }
-            screenpopBuilderRequest.path = path;
-            commit("SET_DGFT_CRM_URL", screenpopBuilderRequest);
+
           }
+          screenpopBuilderRequest.path = path;
+          commit("SET_DGFT_CRM_URL", screenpopBuilderRequest);
         } else {
           screenpopBuilderRequest.type = "api";
           //since UUI not found, call DGFT (SugarCRM) API to check for RMN and IEC statu
@@ -167,8 +172,8 @@ export default {
       let params = "";
       if (payload.type.toLowerCase() === "uui") {
         params =
-          (payload.uui.RMN.toLowerCase() === "y" ? "" : "") +
-          (payload.uui.RMN.toLowerCase() === "y" && payload.uui.IECStatus.toLowerCase() === "y"
+          (payload.uui.RMN.toLowerCase() === "yes" ? "" : "") +
+          (payload.uui.RMN.toLowerCase() === "yes" && payload.uui.IEC.toLowerCase() === "accounts"
             ? "phone_office="
             : "phone_mobile=") +
           payload.cli +
@@ -251,9 +256,9 @@ export default {
       } else {
         logger.log(
           "getDgftUuiByCallIndex(): could not find DGFT UUI for call index=" +
-            callIndex +
-            ", state=" +
-            JSON.stringify(state.dgftUui)
+          callIndex +
+          ", state=" +
+          JSON.stringify(state.dgftUui)
         );
         return null;
       }

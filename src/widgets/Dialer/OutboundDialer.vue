@@ -28,7 +28,7 @@
 
       <mdb-row>
         <!--For Loop for cycling through array of digits to for a grid of dialpad digits-->
-        <mdb-col col="md-4 px-0" v-for="digit in digits" :key="digit.id">
+        <mdb-col col="4" class="px-0" v-for="digit in digits" :key="digit.id">
           <div
             class="fl_button_dialerDigit btn-block transparent-color text-center fl_btn_btnIcon"
             @click="appendDigit(digit.text)"
@@ -42,12 +42,16 @@
       <div @click.stop>
         <mdb-row class @click.stop>
           <transition name="fade">
-            <mdb-btn class="mx-2 py-3 btn-block" color="cyan darken-2" @click="onMakeCallButtonClicked">
+            <mdb-btn
+              class="mx-2 py-3 btn-block"
+              color="cyan darken-2"
+              @click="onMakeCallButtonClicked"
+            >
               <span class="spinner-border text-info float-left" v-if="spinner.show"></span>
               <span>Call</span>
             </mdb-btn>
           </transition>
-          <transition name="fade"> </transition>
+          <transition name="fade"></transition>
         </mdb-row>
       </div>
     </mdb-container>
@@ -124,7 +128,20 @@ export default {
           subText: ""
         }
       ],
-      digitSubText: ["", "ABC", "DEF", "GHI", "JKL", "MNO", "PQRS", "TUV", "WXYZ", "", "+", ""],
+      digitSubText: [
+        "",
+        "ABC",
+        "DEF",
+        "GHI",
+        "JKL",
+        "MNO",
+        "PQRS",
+        "TUV",
+        "WXYZ",
+        "",
+        "+",
+        ""
+      ],
       interval: false,
       digitDeleteSpeed: 200,
       initialDeleteSpeed: 500,
@@ -147,10 +164,16 @@ export default {
     },
     deleteSingleDigit() {
       this.serverLog("deleteSingleDigits");
-      this.dialedDigits = this.dialedDigits.slice(0, this.dialedDigits.length - 1);
+      this.dialedDigits = this.dialedDigits.slice(
+        0,
+        this.dialedDigits.length - 1
+      );
     },
     startDeletingDigits() {
-      this.interval = setInterval(() => this.deleteSingleDigit(), this.digitDeleteSpeed);
+      this.interval = setInterval(
+        () => this.deleteSingleDigit(),
+        this.digitDeleteSpeed
+      );
     },
     stopDeletingDigits() {
       clearInterval(this.interval);
@@ -163,7 +186,9 @@ export default {
       this.$store.dispatch("updateDialedDigits", this.dialedDigits);
       this.showSpinner();
       this.$store.dispatch("requestOutboundCall").then(resp => {
-        this.serverLog("onMakeCallButtonClicked(): resp=" + JSON.stringify(resp));
+        this.serverLog(
+          "onMakeCallButtonClicked(): resp=" + JSON.stringify(resp)
+        );
         this.hideSpinner();
         if (resp.responseCode === "0") {
           this.$emit("close-self");

@@ -7,7 +7,7 @@
     </mdb-row>
     <hr />
     <mdb-row class="mx-0 d-flex flex-fill">
-      <mdb-col :lg="leftComponentWidth" :md="leftComponentWidth" class=" flex-fill">
+      <mdb-col :lg="leftComponentWidth" :md="leftComponentWidth" class=" flex-fill px-0">
         <draggable
           :list="leftComponentWidgets"
           class="dragArea flex-fill"

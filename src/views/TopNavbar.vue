@@ -15,8 +15,8 @@
           style="width: 75px; opacity:1 !important"
         />
       </div>
-    </mdb-navbar-brand> -->
-    <mdb-navbar-nav right>
+    </mdb-navbar-brand>-->
+    <mdb-navbar-nav left>
       <span class="fl_navbar_item">
         <div class="light-color" style="opacity:1">
           <img
@@ -27,6 +27,8 @@
           />
         </div>
       </span>
+    </mdb-navbar-nav>
+    <mdb-navbar-nav right>
       <span class="fl_navbar_item">
         <agent-state-control></agent-state-control>
       </span>

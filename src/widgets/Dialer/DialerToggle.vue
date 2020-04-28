@@ -23,7 +23,7 @@
 
     <!-- <transition name="fade" mode="out-in"> -->
     <scale-transition origin="top right">
-      <div class=" fl_dropdown" v-if="showOutboundDialerDropdown">
+      <div class=" fl_dropdown" v-if="showOutboundDialerDropdown && isOutCallingEnabled">
         <mdb-card class="roundedCard">
           <mdb-card-header color="cyan darken-1" class="pt-4 roundedCardHeader">
             <h4><strong> Make Outbound Call </strong></h4>
