@@ -165,50 +165,53 @@ export default {
       }
     },
     async agentLoginBtnClicked() {
-      this.showSpinner();
-      let sendAgentLoginRequest = () => {
-        this.$store.dispatch("sendAgentLoginRequest").then(resp => {
-          console.log(resp);
-          this.hideSpinner();
-          if (resp && resp.responseCode) {
-            if (resp.responseCode === "0") {
-              this.$store.dispatch("showErrorBanner", [
-                "Welcome",
-                "You are successfully logged in"
-              ]);
-            } else if (resp.responseCode === "35") {
-              this.showLogoutModal = true;
-            }
-          }
-        });
-      };
-
       this.$store.dispatch("setAgentLoginCredentials", this.credentials);
       console.log("agentLoginBtnClicked(): login button clicked");
+      this.$store.dispatch("processAgentLogin")
+      // this.showSpinner();
+      // let sendAgentLoginRequest = () => {
+      //   this.$store.dispatch("sendAgentLoginRequest").then(resp => {
+      //     console.log(resp);
+      //     this.hideSpinner();
+      //     if (resp && resp.responseCode) {
+      //       if (resp.responseCode === "0") {
+      //         this.$store.dispatch("showErrorBanner", [
+      //           "Welcome",
+      //           "You are successfully logged in"
+      //         ]);
+      //       } else if (resp.responseCode === "35") {
+      //         this.showLogoutModal = true;
+      //       }
+      //     }
+      //   });
+      // };
 
-      let currentSessionId = this.$store.getters["session/getSessionId"];
+      // this.$store.dispatch("setAgentLoginCredentials", this.credentials);
+      // console.log("agentLoginBtnClicked(): login button clicked");
 
-      if (!currentSessionId) {
-        this.$store.dispatch("session/requestSessionFromServer").then(resp => {
-          if (resp.sessionId) {
-            sendAgentLoginRequest();
-          } else {
-            if (resp.responseCode === "05") {
-              this.$store.dispatch("showErrorBanner", [
-                "Agent Login Failed",
-                resp.responseMessage
-              ]);
-            } else {
-              this.$store.dispatch("showErrorBanner", [
-                "Agent Login Failed",
-                "COuld not retrieve session ID from the server"
-              ]);
-            }
-          }
-        });
-      } else {
-        sendAgentLoginRequest();
-      }
+      // let currentSessionId = this.$store.getters["session/getSessionId"];
+
+      // if (!currentSessionId) {
+      //   this.$store.dispatch("session/requestSessionFromServer").then(resp => {
+      //     if (resp.sessionId) {
+      //       sendAgentLoginRequest();
+      //     } else {
+      //       if (resp.responseCode === "05") {
+      //         this.$store.dispatch("showErrorBanner", [
+      //           "Agent Login Failed",
+      //           resp.responseMessage
+      //         ]);
+      //       } else {
+      //         this.$store.dispatch("showErrorBanner", [
+      //           "Agent Login Failed",
+      //           "COuld not retrieve session ID from the server"
+      //         ]);
+      //       }
+      //     }
+      //   });
+      // } else {
+      //   sendAgentLoginRequest();
+      // }
     },
 
     forceLogoutButtonClicked() {

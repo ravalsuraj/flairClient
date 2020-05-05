@@ -6,47 +6,40 @@
     navIconClass="white-text"
     :toggler="false"
   >
-    <mdb-navbar-nav>
-      <span class="fl_navbar_item">
-        <div class="light-color" style="opacity:1">
-          <img
-            src="@/assets/flair_logo_white.png"
-            class="mx-0"
-            alt="Responsive image"
-            style="width: 75px; opacity:1 !important"
-          />
-        </div>
-      </span>
-    </mdb-navbar-nav>
-    <mdb-navbar-nav right>
-      <span class="fl_navbar_item float-right">
-        <agent-state-control></agent-state-control>
-      </span>
+    <span class="fl_navbar_item mr-auto">
+      <div class="light-color" style="opacity:1">
+        <img
+          src="@/assets/flair_logo_white.png"
+          class="mx-0"
+          alt="Responsive image"
+          style="width: 75px; opacity:1 !important"
+        />
+      </div>
+    </span>
+    <span class="fl_navbar_item">
+      <agent-state-control></agent-state-control>
+    </span>
 
-      <span class="fl_navbar_item">
-        <agent-profile></agent-profile>
-      </span>
-      <span class="fl_navbar_item">
-        <side-navbar-toggle></side-navbar-toggle>
-      </span>
-    </mdb-navbar-nav>
+    <span class="fl_navbar_item">
+      <agent-profile></agent-profile>
+    </span>
+    <!-- <span class="fl_navbar_item">
+       
+    </span>-->
   </mdb-navbar>
 </template>
 
 <script>
 import AgentStateControl from "@/widgets/AgentControl/AgentStateControl.vue";
 import AgentProfile from "@/widgets/AgentControl/AgentProfile.vue";
-import sideNavbarToggle from "@/views/SideNavbarToggle";
-import { mdbNavbar, mdbNavbarNav } from "mdbvue";
+
+import { mdbNavbar } from "mdbvue";
 export default {
   name: "TopNavbar",
   components: {
     AgentProfile,
     AgentStateControl,
-    sideNavbarToggle,
-    mdbNavbar,
-
-    mdbNavbarNav
+    mdbNavbar
   },
 
   props: {},
@@ -67,13 +60,16 @@ export default {
   justify-content: center;
   padding-left: 10px;
   padding-right: 10px;
-  min-width: 140px;
+  min-width: 100px;
 }
 .divider-vertical {
   height: 50px;
   margin: 0 9px;
   border-left: 1px solid #f2f2f2;
   border-right: 1px solid #fff;
+}
+.fl_topNav{
+justify-content: unset;
 }
 .fl_topNav::after {
   content: "";

@@ -1,13 +1,19 @@
 <template>
   <mdb-container fluid class="mx-2 px-0 pt-2 d-flex flex-fill flex-column">
-    <mdb-row class="my-3 mx-0">
-      <mdb-col col="12">
-        <call-drawer class="mx-3"></call-drawer>
+    <mdb-row class="my-3 mx-0 call-drawer-container">
+      <mdb-col col="12" class="mx-0 px-0">
+        <call-drawer class="mx-0"></call-drawer>
       </mdb-col>
     </mdb-row>
     <hr />
     <mdb-row class="mx-0 d-flex flex-fill">
-      <mdb-col :lg="leftComponentWidth" :md="leftComponentWidth" class=" flex-fill">
+      <mdb-col
+        :lg="leftComponentWidth"
+        md="12"
+        sm="12"
+        class="mb-1 px-0 mx-0"
+        v-if="leftComponentWidgets.length>0"
+      >
         <draggable
           :list="leftComponentWidgets"
           class="dragArea flex-fill"
@@ -29,7 +35,13 @@
         </draggable>
       </mdb-col>
 
-      <mdb-col :lg="middleComponentWidth" :md="middleComponentWidth" class="mb-1 px-0 mx-0 h-100">
+      <mdb-col
+        :lg="middleComponentWidth"
+        md="12"
+        sm="12"
+        class="mb-1 px-0 mx-0 h-100"
+        v-if="middleComponentWidgets.length>0"
+      >
         <!-- <draggable
           :list="middleComponentWidgets"
           class="dragArea h-100"
@@ -41,7 +53,7 @@
           :preventOnFilter="false"
         >
 
-        </draggable> -->
+        </draggable>-->
         <transition-group name>
           <component
             v-for="component in middleComponentWidgets"
@@ -52,7 +64,13 @@
         </transition-group>
       </mdb-col>
 
-      <mdb-col :lg="rightComponentWidth" :md="rightComponentWidth" class="mb-1 px-0 mx-0">
+      <mdb-col
+        :lg="rightComponentWidth"
+        md="12"
+        sm="12"
+        class="mb-1 px-0 mx-0"
+        v-if="rightComponentWidgets.length>0"
+      >
         <draggable
           :list="rightComponentWidgets"
           class="dragArea"
@@ -201,7 +219,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
+<style scoped>
 .ghost-component {
   opacity: 0;
   cursor: move;
@@ -211,5 +229,8 @@ export default {
 
 .dragged-component {
   opacity: 1 !important;
+}
+.call-drawer-container {
+  flex: unset;
 }
 </style>

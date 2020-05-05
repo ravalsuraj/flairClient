@@ -8,7 +8,7 @@
 
     <mdb-dropdown-menu left color="primary">
       <!--List of all possible agent states-->
-      <mdb-dropdown-item class="p-0 fl_dropdown_item" :key="auxCode.id" v-for="auxCode in auxCodes">
+      <mdb-dropdown-item class="pa-0 fl_dropdown_item" :key="auxCode.id" v-for="auxCode in auxCodes">
         <div @click="onAgentStateDropDownChanged(auxCode)" class="p-2" v-if="auxCode.userSelectable === true">
           <!-- Round Icon to indicate the color of the agent's state-->
           <mdb-icon icon="circle" class="mr-1" :class="agentStateIndicatorColor(auxCode.state)" />

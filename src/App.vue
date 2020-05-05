@@ -6,7 +6,6 @@
     <main class="d-flex flex-fill main-body pt-5 mt-4">
       <router-view v-if="isAgentLoggedIn" class="flex-fill"></router-view>
       <login-page v-else class="flex-fill pt-4"></login-page>
-      <side-navbar></side-navbar>
     </main>
     <bottom-footer></bottom-footer>
 
@@ -19,6 +18,7 @@
       :ignoreDuplicates="true"
       classes="vue-notification "
     />
+    <chat-drawer></chat-drawer>
   </div>
 </template>
 
@@ -29,9 +29,9 @@
 // } from 'mdbvue'
 
 import TopNavbar from "@/views/TopNavbar";
-import SideNavbar from "@/views/SideNavbar";
 import LoginPage from "@/views/Login";
 import BottomFooter from "@/views/BottomFooter.vue";
+import ChatDrawer from "@/components/chat/ChatDrawer";
 import { AGENT_STATES, SOCKET_STATES } from "@/defines";
 
 export default {
@@ -39,7 +39,7 @@ export default {
   components: {
     LoginPage,
     TopNavbar,
-    SideNavbar,
+    ChatDrawer,
     BottomFooter
   },
   data() {
@@ -126,7 +126,7 @@ body > div > div:nth-child(1) > nav > ul > span > div > ul {
 }
 html {
   font-size: 50%;
-  font-size: 0.75em;
+  font-size: 0.75em !important;
   color: rgba(0, 0, 0, 0.45);
 }
 @media (min-width: 600px) {

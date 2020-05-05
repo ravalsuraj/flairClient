@@ -1,8 +1,24 @@
 <template>
   <section>
-    <mdb-container fluid v-if="myCalls && myCalls.length > 0">
-      <mdb-row>
-        <mdb-col :col="cardWidth" v-for="call in myCalls" :key="call.callId">
+    <mdb-container fluid v-if="myCalls && myCalls.length > 0" class="mx-0 w-100">
+      <carousel perPage="1">
+        <slide v-for="call in myCalls" :key="call.callId" >
+          <call-card-inbound
+            v-if="!isCallDropped(call) && isCallTypeInbound(call)"
+            :ucid="call.ucid"
+            :callId="call.callId" class="py-4"
+          ></call-card-inbound>
+          <call-card-outbound
+            v-if="!isCallDropped(call) && isCallTypeOutbound(call)"
+            :ucid="call.ucid"
+            :callId="call.callId"
+          ></call-card-outbound>
+          <quess-disposition v-if="isCallDropped(call)" :ucid="call.ucid" :callId="call.callId"></quess-disposition>
+        </slide>
+        
+      </carousel>
+      <!-- <mdb-row>
+        <mdb-col :col="cardWidth" v-for="call in myCalls" :key="call.callId" class="px-0">
           <call-card-inbound
             v-if="!isCallDropped(call) && isCallTypeInbound(call)"
             :ucid="call.ucid"
@@ -15,7 +31,7 @@
           ></call-card-outbound>
           <quess-disposition v-if="isCallDropped(call)" :ucid="call.ucid" :callId="call.callId"></quess-disposition>
         </mdb-col>
-      </mdb-row>
+      </mdb-row>-->
     </mdb-container>
     <div class="float-right" end v-else>
       <dialer-toggle></dialer-toggle>
@@ -32,9 +48,10 @@ import CallCardInbound from "@/widgets/CallControl/CallCardInbound.vue";
 import CallCardOutbound from "@/widgets/CallControl/CallCardOutbound.vue";
 import DialerToggle from "@/widgets/Dialer/DialerToggle.vue";
 import QuessDisposition from "@/widgets/Quess/QuessDisposition.vue";
+import { Carousel, Slide } from "vue-carousel";
 
 import { CALL_STATES, CALL_TYPES } from "@/defines.js";
-import { mdbRow, mdbCol, mdbContainer } from "mdbvue";
+import { mdbContainer } from "mdbvue";
 export default {
   name: "CallDrawer",
   components: {
@@ -42,9 +59,12 @@ export default {
     CallCardOutbound,
     QuessDisposition,
     DialerToggle,
-    mdbRow,
-    mdbCol,
-    mdbContainer
+    // mdbRow,
+    // mdbCol,
+    mdbContainer,
+
+    Carousel,
+    Slide
   },
 
   props: {},
@@ -88,7 +108,10 @@ export default {
   },
   watch: {
     myCalls(newState) {
-      console.log("CallDrawer()/watch(myCalls): call state changed to:", newState);
+      console.log(
+        "CallDrawer()/watch(myCalls): call state changed to:",
+        newState
+      );
     }
   }
 };

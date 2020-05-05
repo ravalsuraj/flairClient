@@ -3,15 +3,27 @@ import Utils from "@/services/Utils";
 import { MULTI_CALL_STATES } from "../../defines";
 function initialState() {
   return {
-    calls: [],
-    call_list_ucids: [],
-    call_list_callIds: [],
-    inboundCallList: [],
+    calls: [{
+      "callId": "281",
+      "ucid": "00001002811579679692",
+      "callingAddress": "918879708222",
+      "calledAddress": "3009",
+      "callType": "1",
+      "callDirection": "1",
+      "callState": "98",
+      "status": "98",
+      "type": "1",
+      "multiCallState": "1",
+      "callStartTime": "1234"
+    }],
+    call_list_ucids: ['00001002811579679692'],
+    call_list_callIds: ['281'],
+    inboundCallList: ['281'],
     outboundCallList: [],
     consultedCallList: [],
     activeCall: {
-      ucid: "",
-      callId: ""
+      ucid: "00001002811579679692",
+      callId: "281"
     }
   };
 }
@@ -167,7 +179,7 @@ const actions = {
     commit("SET_ACTIVE_CALL", [payload.ucid, payload.callId]);
   },
 
-  setCallStateDialing() {},
+  setCallStateDialing() { },
 
   setCallStateTalking({ commit, getters }, payload) {
     commit("SET_CALL_STATE_TALKING", getters.getCallIndexByCallId(payload.callId));
@@ -280,7 +292,7 @@ const actions = {
     }
   },
 
-  removeConferenceCallFromPrimary() {},
+  removeConferenceCallFromPrimary() { },
 
   setMultiCallStateConferenced({ commit, getters }, payload) {
     console.log("setMultiCallStateConferenced(): action entered: payload" + JSON.stringify(payload));
@@ -442,7 +454,7 @@ const actions = {
       console.error("requestHoldCall(): ", err);
     });
   },
-  requestUnholdCall({}, request) {
+  requestUnholdCall({ }, request) {
     console.log("requestUnholdCall():  request=" + JSON.stringify(request));
 
     this._vm.$socket.emit(SOCKET_EVENTS.RETRIEVE_CALL, request, response => {
@@ -542,21 +554,21 @@ const mutations = {
     if (linkedCall.callDirection == CALL_TYPES.INBOUND) {
       console.log(
         "ADD_LINKED_ADDRESS_TO_CALL(): condition for call direction inbound. callDirection=" +
-          linkedCall.callDirection +
-          ", index=" +
-          index +
-          ", payload=" +
-          JSON.stringify(payload)
+        linkedCall.callDirection +
+        ", index=" +
+        index +
+        ", payload=" +
+        JSON.stringify(payload)
       );
       state.calls[index].thirdAddress = linkedCall.callingAddress;
     } else {
       console.log(
         "ADD_LINKED_ADDRESS_TO_CALL(): condition for call direction outbound. callDirection=" +
-          linkedCall.callDirection +
-          ", index=" +
-          index +
-          ", payload=" +
-          JSON.stringify(payload)
+        linkedCall.callDirection +
+        ", index=" +
+        index +
+        ", payload=" +
+        JSON.stringify(payload)
       );
       state.calls[index].thirdAddress = linkedCall.calledAddress;
     }

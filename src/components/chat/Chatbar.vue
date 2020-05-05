@@ -6,17 +6,14 @@
       </header>-->
       <main class="sidebar-body">
         <ul>
-          <li class="chat-item">
-            <span class="md-avatar rounded-circle chat-avatar white">SR</span>
-            <span class="chat-link">Suraj Raval</span>
-          </li>
-          <li class="chat-item">
-            <span class="md-avatar rounded-circle chat-avatar white">SR</span>
-            <span class="chat-link">Suraj Raval</span>
-          </li>
-          <li class="chat-item">
-            <span class="md-avatar rounded-circle chat-avatar white">SR</span>
-            <span class="chat-link">Suraj Raval</span>
+          <li
+            class="chat-item"
+            v-for="chat in chatSessions"
+            :key="chat.id"
+            @click="toggleChatWindow(chat.chatId)"
+          >
+            <span class="md-avatar rounded-circle chat-avatar white">{{chat.participant.initials}}</span>
+            <span class="chat-link">{{chat.participant.firstName+' '+chat.participant.lastName}}</span>
           </li>
         </ul>
       </main>
@@ -28,7 +25,7 @@
 import {} from "mdbvue";
 import { ScaleTransition } from "vue2-transitions";
 export default {
-  name: "SideNavbar",
+  name: "Chatbar",
   components: { ScaleTransition },
 
   props: {},
@@ -38,19 +35,30 @@ export default {
       slimCollapsed: true
     };
   },
+  methods: {
+    toggleChatWindow(chatId) {
+      this.$store.dispatch("toggleChatWindow", chatId);
+    }
+  },
   computed: {
     showChatSideBar() {
       return this.$store.getters.getChatSidebarState;
+    },
+    chatSessions() {
+      return this.$store.getters.getChatSessions;
     }
-  }
+  },
+  
 };
 </script>
 
 <style>
 #sidebar {
   padding: 10px 0;
+  user-select: none;
   position: absolute;
-  right: 0;
+  right: 10px;
+  bottom: 30px;
   width: 200px;
   visibility: visible;
   opacity: 1;

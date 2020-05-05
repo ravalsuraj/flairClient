@@ -106,6 +106,7 @@ export default {
       commit("SET_AGENT_AUX_CODE", auxCodeObj);
     },
     sendAgentLoginRequest({ dispatch, getters }) {
+      
       return new Promise(resolve => {
         let agent = getters.getAgent;
         let sessionId = getters["session/getSessionId"];
@@ -129,7 +130,7 @@ export default {
               if (resp.responseCode !== "35") {
                 dispatch("showErrorBanner", ["Agent Login failed:", resp.responseMessage]);
               }
-
+              
               resolve(resp);
             }
           });
