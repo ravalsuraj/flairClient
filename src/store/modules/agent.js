@@ -4,7 +4,7 @@ function initialState() {
   return {
     agentState: AGENT_STATES.UNKNOWN,
     reasonCode: 0,
-    displayLabel: "--",
+    displayLabel: "-",
     agentId: null,
     deviceId: null,
     password: null,
