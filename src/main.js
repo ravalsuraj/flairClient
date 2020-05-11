@@ -45,7 +45,7 @@ api
       serverIp = resp.data.ip;
       logger.log("main.js execution complete. using server URL=" + serverIp);
     } else {
-      logger.error("could not fetch server ip");
+      logger.error("could not fetch server ip address");
     }
     initVue();
   })
