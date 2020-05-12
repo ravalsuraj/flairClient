@@ -47,7 +47,8 @@
     },
     "rules": {
       "no-empty-pattern": "off",
-      "no-unused-components": "off"
+      "no-unused-components": "off",
+      "no-unused-vars":"off"
     }
   },
   "browserslist": [

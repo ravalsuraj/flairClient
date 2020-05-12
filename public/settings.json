@@ -82,24 +82,26 @@
     ],
     "WIDGET_LAYOUT": {
         "LEFT": {
-            "WIDTH": "3",
+            "WIDTH": "0",
             "WIDGETS": []
         },
         "MIDDLE": {
-            "WIDTH": "10",
+            "WIDTH": "8",
             "WIDGETS": [
-                {
-                    "name": "dgft-crm-frame"
-                }
+                
             ]
         },
         "RIGHT": {
-            "WIDTH": "2",
+            "WIDTH": "4",
             "WIDGETS": [
                 {
                     "name": "dgft-helper"
+                },
+                {
+                    "name": "agent-call-statistics"
                 }
             ]
+
         }
     }
 }

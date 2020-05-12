@@ -2,8 +2,17 @@ import { TIMER_STATES, TIMER_DIRECTIONS } from "@/defines.js";
 import logger from "@/services/logger";
 function initialState() {
   return {
-    timers: [],
-    timerList: []
+    timers: [{
+      state: TIMER_STATES.START,
+      direction: TIMER_DIRECTIONS.UP,
+      refTime: 20201205184035
+    },
+    {
+      state: TIMER_STATES.START,
+      direction: TIMER_DIRECTIONS.UP,
+      refTime: 20201205184035
+    }],
+    timerList: ['ST_TIMER_420', 'LOG_1509']
   };
 }
 export default {

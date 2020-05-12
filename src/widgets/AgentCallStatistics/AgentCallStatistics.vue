@@ -9,7 +9,25 @@
         <dl class="row mb-0 no-gutters text-justify">
           <dd class="col">Time since Login</dd>
           <dd class="col">00:38:45</dd>
+         
         </dl>
+        <mdb-row>
+          <mdb-col col="lg-8 sm-12 md-6">Time since Login</mdb-col>
+          <mdb-col><persist-timer timer-name="login-timer"></persist-timer></mdb-col>
+        </mdb-row>
+        <mdb-row>
+          
+            <button class="mdb-color pl-5 pt-3 my-2" @click="startLoginTimer">
+              Start Timer
+            </button>
+
+            <button class="mdb-color pl-5 pt-3 my-2" @click="stopLoginTimer">
+              Stop Timer
+            </button>
+          
+
+        </mdb-row>
+
         <dl class="row mb-0 no-gutters text-justify">
           <dd class="col">Total Time On Calls</dd>
           <dd class="col">00:14:44</dd>
@@ -69,38 +87,53 @@
 </template>
 
 <script>
-import { AGENT_STATES, CALL_STATES } from '@/defines'
-import {
-  mdbContainer,
-} from 'mdbvue'
+import { AGENT_STATES, CALL_STATES } from "@/defines";
+import { mdbContainer , mdbRow , mdbCol } from "mdbvue";
 
-import Widget from '@/components/agc/Widget'
+import Widget from "@/components/agc/Widget";
+import PersistTimer from "@/components/agc/PersistTimer.vue";
 
 export default {
-  name: 'AgentCallStats',
+  name: "AgentCallStats",
   components: {
     Widget,
-    mdbContainer,
-
+    mdbContainer ,
+    mdbRow ,
+    mdbCol ,
+    PersistTimer
+    
   },
+
   props: {},
   data() {
-    return {}
+    return {};
   },
-  methods: {},
+  beforeMount(){
+    this.$store.dispatch('addUpTimer','login-timer')
+  },
+  methods: {
+     startLoginTimer(){
+         
+         this.$store.dispatch('startTimer','login-timer')
+    },
+
+    stopLoginTimer(){
+      this.$store.dispatch('stopTimer','login-timer')
+    }
+  },
   computed: {
     callerData() {
-      return this.$store.state.callerData
+      return this.$store.state.callerData;
     },
 
     currentAgentState() {
-      return AGENT_STATES.Text[this.$store.getters.getAgentState]
+      return AGENT_STATES.Text[this.$store.getters.getAgentState];
     },
     currentCallState() {
-      return CALL_STATES.Text[this.$store.getters.getCallStatus]
+      return CALL_STATES.Text[this.$store.getters.getCallStatus];
     }
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -123,5 +156,12 @@ export default {
   color: rgba(0, 0, 0, 0.45);
   font-weight: bold;
   text-align: center;
+}
+
+.dummy{
+  background : red;
+  height : 20px;
+  width:100px ;
+
 }
 </style>
