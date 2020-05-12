@@ -9,7 +9,7 @@
       <span class="white-text">SessionID: {{ sessionId }}</span>
       <span class="white-text pl-5 ml-5 float-right">ver: 1.0.0</span>
     </mdb-navbar-nav>
-    <chatbar-toggle></chatbar-toggle>
+    <!-- <chatbar-toggle></chatbar-toggle> -->
   </mdb-navbar>
 </template>
 <style></style>
@@ -17,12 +17,12 @@
 <script>
 import WebSocketIndicator from "@/components/agc/WebSocketIndicator";
 import { mdbNavbar, mdbNavbarNav } from "mdbvue";
-import ChatbarToggle from "@/components/chat/ChatbarToggle";
+// import ChatbarToggle from "@/components/chat/ChatbarToggle";
 export default {
   name: "UtilityBar",
   components: {
     WebSocketIndicator,
-    ChatbarToggle,
+    // ChatbarToggle,
     mdbNavbar,
     mdbNavbarNav
   },

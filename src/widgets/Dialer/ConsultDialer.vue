@@ -34,7 +34,7 @@
       </form>
       <mdb-row>
         <!--For Loop for cycling through array of digits to for a grid of dialpad digits-->
-        <mdb-col col="sm-4 px-0" v-for="digit in digits" :key="digit.id">
+        <mdb-col col="4" v-for="digit in digits" :key="digit.id">
           <div
             class="fl_button_dialerDigit btn-block transparent-color text-center fl_btn_btnIcon"
             @click="appendDigit(digit.text)"
