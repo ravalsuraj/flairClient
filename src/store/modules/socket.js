@@ -69,7 +69,7 @@ export default {
           }
         })
         .catch(() => {
-          dispatch("processAgentLogout");
+          //dispatch("processAgentLogout");
         });
     },
 
@@ -168,7 +168,8 @@ export default {
     },
     SOCKET_AGTUPDATED({ dispatch }, payload) {
       console.log("SOCKET_AGTUPDATED(): Received event: " + JSON.stringify(payload));
-      dispatch("setAgentState", payload.agentState);
+      dispatch("setAgentState", payload.state);
+      dispatch('setUpdatedAuxCode',payload)
     },
 
     SOCKET_AVAYACONNDISC({}, payload) {

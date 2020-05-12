@@ -27,11 +27,6 @@ Vue.use(Vuedraggable);
 import log4javascript from "log4javascript";
 var log = log4javascript.getLogger();
 
-// var inPageAppender = new log4javascript.InPageAppender();
-// var inPageLayout = new log4javascript.PatternLayout("%d{HH:mm:ss} %-5p - %m%n");
-// inPageAppender.setLayout(inPageLayout);
-// log.addAppender(inPageAppender);
-//var ajaxAppender = new log4javascript.AjaxAppender("/log");
 var ajaxAppender = new log4javascript.AjaxAppender("http://192.168.110.99:9093/log");
 var jsonLayout = new log4javascript.JsonLayout();
 ajaxAppender.setLayout(jsonLayout);
@@ -39,10 +34,6 @@ ajaxAppender.setLayout(jsonLayout);
 ajaxAppender.setThreshold(log4javascript.Level.INFO);
 log.addAppender(ajaxAppender);
 console.log("main.js initialized");
-
-// var console = {};
-// window.console = console;
-// console.log = function() {};
 
 import "mdbvue/lib/css/mdb.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -95,7 +86,7 @@ let initVue = () => {
   Vue.use(
     new VueSocketIO({
       debug: true,
-      connection: serverIp,
+      connection: "http://192.168.29.246:7071",
       vuex: {
         store,
         actionPrefix: "SOCKET_",

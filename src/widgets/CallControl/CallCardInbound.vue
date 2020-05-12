@@ -8,26 +8,30 @@
               <!-- First row of the call card -->
               <mdb-row>
                 <!-- Participant display -->
-                <mdb-col col="7" class="mb-3 d-flex">
+                <mdb-col col="12" class="mb-3 d-flex">
                   <span strong class="fl_well_text big mx-auto">{{ callingAddress }}</span>
-                  <span v-if="isCallConferenced" strong class="fl_well_text big mx-auto">{{ thirdAddress }}</span>
+                  <span
+                    v-if="isCallConferenced"
+                    strong
+                    class="fl_well_text big mx-auto"
+                  >{{ thirdAddress }}</span>
                 </mdb-col>
 
                 <!-- Total Call Timer -->
-                <mdb-col col="5" class="mb-3 text-center">
-                  <persist-timer :timerName="callTimerName" class="fl_well_text big"></persist-timer>
+                <mdb-col col="12" class="mb-3 text-center">
+                  <persist-timer :timerName="callTimerName" class="fl_well_text"></persist-timer>
                 </mdb-col>
               </mdb-row>
 
               <mdb-row>
                 <!-- Call Status Display -->
-                <mdb-col col="7" class="mb-3 d-flex">
-                  <span strong class="fl_well_text big mx-auto">{{ callStatusText }}</span>
+                <mdb-col col="6" class="mb-3 d-flex">
+                  <span strong class="fl_well_text mx-auto">{{ callStatusText }}</span>
                 </mdb-col>
 
                 <!-- Call State Timer -->
-                <mdb-col col="5" class="mb-3 text-center">
-                  <persist-timer :timerName="inStateTimerName" class="fl_well_text big"></persist-timer>
+                <mdb-col col="6" class="mb-3 text-center">
+                  <persist-timer :timerName="inStateTimerName" class="fl_well_text"></persist-timer>
                 </mdb-col>
               </mdb-row>
             </mdb-col>
@@ -41,7 +45,7 @@
                     <mdb-btn
                       v-if="!isCallHeld"
                       type="button"
-                      class="btn btn-circle"
+                      class="btn btn-circle btn-lg"
                       @click="answerDropCall"
                       :disabled="isCallIdle"
                       :class="[{ iconGlow: isCallRinging }]"
@@ -61,7 +65,7 @@
                   <transition name="fade">
                     <mdb-btn
                       type="checkbox"
-                      class="btn btn-circle"
+                      class="btn btn-circle btn-lg"
                       :disabled="!isCallActive"
                       @click="holdUnholdCall"
                       :outline="holdButtonOutline"
@@ -76,7 +80,7 @@
                 <mdb-col col="4">
                   <mdb-btn
                     type="checkbox"
-                    class="btn btn-circle"
+                    class="btn btn-circle btn-lg"
                     outline="deep-orange"
                     v-if="!isCallConferenced && !isCallHeld"
                     @click.native="showConferenceModal = true"
@@ -120,7 +124,12 @@ import ConsultDialer from "@/widgets/Dialer/ConsultDialer";
 
 import PersistTimer from "@/components/agc/PersistTimer.vue";
 import Widget from "@/components/agc/Widget";
-import { CALL_STATES, CALL_TYPES, TIMER_TYPES, MULTI_CALL_STATES } from "@/defines.js";
+import {
+  CALL_STATES,
+  CALL_TYPES,
+  TIMER_TYPES,
+  MULTI_CALL_STATES
+} from "@/defines.js";
 
 import {
   mdbContainer,
@@ -176,14 +185,20 @@ export default {
     },
 
     answerDropCall() {
-      this.$store.dispatch("requestAnswerDropCall", [this.call.callId, CALL_TYPES.INBOUND]);
+      this.$store.dispatch("requestAnswerDropCall", [
+        this.call.callId,
+        CALL_TYPES.INBOUND
+      ]);
     },
     holdUnholdCall() {
       this.$store.dispatch("requestHoldUnholdCall", this.call.callId);
     },
 
     disposeCall() {
-      this.$store.dispatch("removeCallFromActiveCalls", [this.call.ucid, this.call.callId]);
+      this.$store.dispatch("removeCallFromActiveCalls", [
+        this.call.ucid,
+        this.call.callId
+      ]);
     }
   },
   computed: {
@@ -215,16 +230,25 @@ export default {
     },
 
     isCallIdle() {
-      return this.callStatus === CALL_STATES.IDLE || this.callStatus === CALL_STATES.DROPPED;
+      return (
+        this.callStatus === CALL_STATES.IDLE ||
+        this.callStatus === CALL_STATES.DROPPED
+      );
     },
     isConfCallIdle() {
-      return this.conferenceCallStatus === CALL_STATES.IDLE || this.conferenceCallStatus === CALL_STATES.DROPPED;
+      return (
+        this.conferenceCallStatus === CALL_STATES.IDLE ||
+        this.conferenceCallStatus === CALL_STATES.DROPPED
+      );
     },
     isCallRinging() {
       return this.callStatus === CALL_STATES.RINGING;
     },
     isCallActive() {
-      return this.callStatus === CALL_STATES.TALKING || this.callStatus === CALL_STATES.HELD;
+      return (
+        this.callStatus === CALL_STATES.TALKING ||
+        this.callStatus === CALL_STATES.HELD
+      );
     },
 
     isCallHeld() {
@@ -375,7 +399,7 @@ export default {
   padding-right: 10px;
   padding-left: 10px;
   font-family: "Unica One", sans-serif;
-  font-size: 1.2em;
+  font-size: 1.5em;
 }
 
 .fl_well_text.sm {
@@ -383,8 +407,8 @@ export default {
 }
 
 .fl_well_text.big {
-  font-size: 1.3em;
-  font-weight: 300;
+  font-size: 2em;
+  font-weight: bolder;
   align-self: center;
 }
 

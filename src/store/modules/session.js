@@ -5,7 +5,7 @@ import axios from 'axios'
 function initialState() {
   return {
     ipAddress: '0.0.0.0',
-    sessionId: null,
+    sessionId: "812D8J3ND9D9333J3",
     config: null
   }
 }

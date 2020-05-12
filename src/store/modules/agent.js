@@ -2,7 +2,7 @@ import { AGENT_STATES, SOCKET_EVENTS } from "@/defines";
 
 function initialState() {
   return {
-    agentState: AGENT_STATES.LOG_IN,
+    agentState: AGENT_STATES.LOG_OUT,
     reasonCode: 0,
     displayLabel: "Ready",
     agentId: 1234,
@@ -106,7 +106,7 @@ export default {
       commit("SET_AGENT_AUX_CODE", auxCodeObj);
     },
     sendAgentLoginRequest({ dispatch, getters }) {
-      
+
       return new Promise(resolve => {
         let agent = getters.getAgent;
         let sessionId = getters["session/getSessionId"];
@@ -130,7 +130,7 @@ export default {
               if (resp.responseCode !== "35") {
                 dispatch("showErrorBanner", ["Agent Login failed:", resp.responseMessage]);
               }
-              
+
               resolve(resp);
             }
           });
@@ -141,6 +141,7 @@ export default {
     },
 
     async sendAgentLogoutRequest({ dispatch, getters }) {
+      dispatch("processAgentLogout");
       let agent = getters.getAgent;
       let sessionId = getters["session/getSessionId"];
       let request = {
@@ -160,6 +161,7 @@ export default {
           dispatch("session/resetSessionId");
         } else {
           dispatch("showErrorBanner", ["Agent Logout failed:", resp.responseMessage]);
+
         }
         return resp;
       });
@@ -243,7 +245,7 @@ export default {
       console.log("setUpdatedAuxCode(): payload=" + JSON.stringify(payload));
 
       let selectedAuxCode = {
-        agentState: payload.agentState,
+        state: payload.state,
         reasonCode: payload.reasonCode,
         label: "Not Set"
       };
@@ -294,6 +296,7 @@ export default {
     SET_DISPLAY_LABELS(state, [auxMap, reasonCodeMap]) {
       console.log("auxCodes" + JSON.stringify(auxMap));
       state.agentStateDisplayLabelMap = auxMap;
+      
       state.agentReasonCodeDisplayLabelMap = reasonCodeMap;
     },
     SET_AGENT_LOGIN_CREDENTIALS(state, credentials) {
@@ -321,6 +324,8 @@ export default {
       if (payload.state === AGENT_STATES.NOT_READY) {
         state.displayLabel = state.agentReasonCodeDisplayLabelMap[payload.reasonCode];
       } else {
+        console.log("payload.state=",payload.state)
+        console.log("display label is ==================" + state.agentStateDisplayLabelMap[payload.state]);
         state.displayLabel = state.agentStateDisplayLabelMap[payload.state];
       }
     },

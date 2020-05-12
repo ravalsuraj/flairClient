@@ -3,27 +3,15 @@ import Utils from "@/services/Utils";
 import { MULTI_CALL_STATES } from "../../defines";
 function initialState() {
   return {
-    calls: [{
-      "callId": "281",
-      "ucid": "00001002811579679692",
-      "callingAddress": "918879708222",
-      "calledAddress": "3009",
-      "callType": "1",
-      "callDirection": "1",
-      "callState": "98",
-      "status": "98",
-      "type": "1",
-      "multiCallState": "1",
-      "callStartTime": "1234"
-    }],
-    call_list_ucids: ['00001002811579679692'],
-    call_list_callIds: ['281'],
-    inboundCallList: ['281'],
+    calls: [],
+    call_list_ucids: [],
+    call_list_callIds: [],
+    inboundCallList: [],
     outboundCallList: [],
     consultedCallList: [],
     activeCall: {
-      ucid: "00001002811579679692",
-      callId: "281"
+      ucid: "",
+      callId: ""
     }
   };
 }
