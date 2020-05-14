@@ -1,28 +1,30 @@
 <template>
-  <v-card
-    :width="width"
-    class="agc-chat-window d-flex flex-column"
-    :class="{ rounded: $vuetify.breakpoint.smAndUp, minimized:minimized }"
-  >
-    <v-card-title class="agc-chat-header info-color py-3">
+  <mdb-card class="agc-chat-window d-flex flex-column z-depth-3 rounded" :style="style_width">
+    <div class="agc-chat-header cyan py-3">
       <chat-header
         @close="toggleChatWindow"
         @minimize="toggleChatMinimized"
         :minimized="minimized"
         :chatter-name="chatterName"
       ></chat-header>
-    </v-card-title>
+    </div>
     <zoom-y-transition>
-      <div v-if="!minimized" class="d-flex flex-column h-100">
+      <div v-if="isChatActive" class="d-flex flex-column h-100 flex-grow-1 p-3">
         <chat-body :chatId="chatId"></chat-body>
-        <hr class="agc-separator" />
+        <!-- <hr class="agc-separator" /> -->
         <div class="interactive-response" v-if="isLastMessageInteractive">
           <chip-response v-if="isLastMessageInteractive" :message="lastMessage"></chip-response>
         </div>
+
         <user-entry :chatId="chatId"></user-entry>
       </div>
+      <div v-if="isChatRequested" class="d-flex flex-column p-5 m-5 text-center">
+        <div class="h3 pb-5">Chat Requested from {{chatterName}}</div>
+        <mdb-btn color="success" @click.native="onAcceptChatButtonClicked">Accept</mdb-btn>
+        <mdb-btn color="danger" @click.native="onRejectChatButtonClicked">Reject</mdb-btn>
+      </div>
     </zoom-y-transition>
-  </v-card>
+  </mdb-card>
 </template>
 
 <script>
@@ -30,7 +32,9 @@ import { ZoomYTransition } from "vue2-transitions";
 import ChatHeader from "./ChatHeader.vue";
 import ChatBody from "./ChatBody.vue";
 import UserEntry from "./UserEntry.vue";
-import ChipResponse from "./Responses/ChipResponse";
+import ChipResponse from "./../Responses/ChipResponse";
+import { CHAT_STATES } from "@/defines";
+import { mdbCard, mdbCardHeader, mdbCardBody, mdbBtn, mdbIcon } from "mdbvue";
 
 export default {
   name: "ChatWindow",
@@ -49,7 +53,12 @@ export default {
     ChatBody,
     UserEntry,
     ChipResponse,
-    ZoomYTransition
+    ZoomYTransition,
+    mdbCard,
+    mdbCardHeader,
+    mdbCardBody,
+    mdbBtn,
+    mdbIcon
   },
   methods: {
     toggleChatWindow() {
@@ -58,11 +67,28 @@ export default {
     },
     toggleChatMinimized() {
       this.minimized = !this.minimized;
+    },
+    onAcceptChatButtonClicked() {
+      this.$store.dispatch("acceptChatRequest", this.chatId);
+    },
+    onRejectChatButtonClicked() {
+      this.$store.dispatch("rejectChatRequest", this.chatId);
     }
   },
   computed: {
+    style_width() {
+      return "width: " + this.width + "px";
+    },
     chatSession() {
       return this.$store.getters.getChatSessionById(this.chatId);
+    },
+    isChatActive() {
+      console.log("thischatstate=", this.chatSession.state);
+      console.log("CHAT_STATES>ACTIVE=", CHAT_STATES.ACTIVE);
+      return this.chatSession.state == CHAT_STATES.ACTIVE;
+    },
+    isChatRequested() {
+      return this.chatSession.state == CHAT_STATES.REQUESTED;
     },
     chatterName() {
       return (
@@ -96,8 +122,8 @@ export default {
 <style scoped>
 .agc-chat-window {
   margin: auto;
-  height: 400px;
-  margin-right: 40px;
+  min-height: 400px;
+  margin-right: 30px;
   margin-bottom: 30px;
   font-size: 1.3em;
   transition: height 5s;
@@ -107,7 +133,12 @@ export default {
 }
 
 .agc-chat-window.rounded {
-  border-radius: 5px !important;
+  border-radius: 10px !important;
+}
+
+.agc-chat-window.rounded .agc-chat-header {
+  border-top-left-radius: 10px !important;
+  border-top-right-radius: 10px !important;
 }
 
 .agc-chat-header {

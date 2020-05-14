@@ -7,9 +7,9 @@
 </template>
 
 <script>
-import TextResponse from "./Responses/TextResponse";
-import CardResponse from "./Responses/CardResponse";
-import ImageResponse from "./Responses/ImageResponse";
+import TextResponse from "./../Responses/TextResponse";
+import CardResponse from "./../Responses/CardResponse";
+import ImageResponse from "./../Responses/ImageResponse";
 export default {
   name: "Message",
   components: {
@@ -18,12 +18,8 @@ export default {
     ImageResponse
   },
   props: {
-    message: {
-      chatId: String,
-      type: String,
-      content: String,
-      self: Boolean
-    }
+    chatId: String,
+    message: {}
   },
   methods: {
     // getMessageAlignment(isSelf) {

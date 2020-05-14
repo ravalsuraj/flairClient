@@ -48,7 +48,7 @@ export default {
           },
           self: true
         };
-        this.$store.dispatch("addMessage", [this.chatId, newMessage]);
+        this.$store.dispatch("addLocalMessage", newMessage);
         this.typedMessage = "";
       }
     },

@@ -47,7 +47,7 @@ export default {
   },
   computed: {
     defaultUrl() {
-      return "http://192.168.29.246:4000"
+      return "http://192.168.29.247:4000"
     },
     autoShowWidget() {
       return (
@@ -79,7 +79,7 @@ export default {
     CRM_URL() {
       if (this.callingAddress) {
         return (
-          "http://192.168.29.246:4000/?cli=" +
+          "http://192.168.29.247:4000/?cli=" +
           this.callingAddress +
           "&dnis=" +
           this.calledAddress +
@@ -89,7 +89,7 @@ export default {
           this.agentCredentials.agentId
         );
       } else {
-        return "http://192.168.29.246:4000/";
+        return "http://192.168.29.247:4000/";
       }
       //   if (this.$store.getters.getBaseCrmUrl) {
       //     return this.$store.getters.getBaseCrmUrl;

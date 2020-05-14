@@ -2,7 +2,7 @@ import { AGENT_STATES, SOCKET_EVENTS } from "@/defines";
 
 function initialState() {
   return {
-    agentState: AGENT_STATES.LOG_OUT,
+    agentState: AGENT_STATES.LOG_IN,
     reasonCode: 0,
     displayLabel: "Ready",
     agentId: 1234,

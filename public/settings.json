@@ -1,6 +1,6 @@
 {
     "FLAIR_AWS_PORT": 8000,
-    "FLAIR_SERVER_URL": "http://192.168.29.246:7071",
+    "FLAIR_SERVER_URL": "http://192.168.29.246:9092",
     "SERVER_TIMEOUT_MS": 20000,
     "CRM_TIMEOUT_MS": 10000,
     "ALLOW_OUTBOUND_DIALING": true,
@@ -64,15 +64,18 @@
         "width": "3",
         "widgets": [
             {
-                "name":"quick-links"
+                "name": "quick-links"
             },
             {
-                "name":"sms-helper"
+                "name": "sms-helper"
+            },
+            {
+                "name": "agent-call-statistics"
             }
         ]
     },
     "middleComponents": {
-        "width": "10",
+        "width": "6",
         "widgets": [
             {
                 "name": "base-crm-frame"
@@ -80,7 +83,17 @@
         ]
     },
     "rightComponents": {
-        "width": "2",
-        "widgets": []
+        "width": "3",
+        "widgets": [
+            {
+                "name": "quick-links"
+            },
+            {
+                "name": "sms-helper"
+            },
+            {
+                "name": "agent-call-statistics"
+            }
+        ]
     }
 }

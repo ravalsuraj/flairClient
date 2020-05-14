@@ -86,7 +86,7 @@ let initVue = () => {
   Vue.use(
     new VueSocketIO({
       debug: true,
-      connection: "http://192.168.29.246:7071",
+      connection: "http://192.168.29.247:7071",
       vuex: {
         store,
         actionPrefix: "SOCKET_",

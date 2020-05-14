@@ -3,7 +3,7 @@
     <!-- <mdb-navbar-nav>
       <web-socket-indicator class="white-text mr-4 pr-4"></web-socket-indicator>
     </mdb-navbar-nav>-->
-    
+
     <mdb-navbar-nav left>
       <web-socket-indicator class="white-text mr-4 pr-4"></web-socket-indicator>
       <span class="white-text">SessionID: {{ sessionId }}</span>
@@ -17,12 +17,12 @@
 <script>
 import WebSocketIndicator from "@/components/agc/WebSocketIndicator";
 import { mdbNavbar, mdbNavbarNav } from "mdbvue";
-// import ChatbarToggle from "@/components/chat/ChatbarToggle";
+
 export default {
   name: "UtilityBar",
   components: {
     WebSocketIndicator,
-    // ChatbarToggle,
+
     mdbNavbar,
     mdbNavbarNav
   },

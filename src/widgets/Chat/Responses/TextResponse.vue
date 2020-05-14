@@ -1,15 +1,28 @@
 <template>
-  <v-sheet
+  <!-- <v-sheet
     class="py-2 px-4 agc-message-bubble"
     :dark="!message.self"
     :color="getMessageColor(message.self)"
+    
+  >{{ message.content.text }}</v-sheet>-->
+
+  <mdb-card
+    class="w-75 mx-2 agc-message-bubble"
+    :color="getMessageColor(message.self)"
     :class="{ 'left-aligned': !message.self, 'right-aligned': message.self }"
-  >{{ message.content.text }}</v-sheet>
+  >
+    <mdb-card-body>{{ message.content.text }}</mdb-card-body>
+  </mdb-card>
 </template>
 
 <script>
+import { mdbCard, mdbCardBody } from "mdbvue";
 export default {
   name: "TextResponse",
+  components: {
+    mdbCard,
+    mdbCardBody
+  },
   props: {
     message: {
       text: String,
@@ -26,9 +39,9 @@ export default {
     },
     getMessageColor(isSelf) {
       if (isSelf === false) {
-        return "special-color";
+        return "cyan lighten-5";
       } else {
-        return "#d3d3d3";
+        return "grey lighten-5";
       }
     }
   }
@@ -44,9 +57,12 @@ export default {
 }
 
 .agc-message-bubble {
-  border: 1px solid black;
+  border: 1px solid rgba(0, 0, 0, 0.1);
   max-width: 70%;
   margin-bottom: 10px;
+  box-shadow: none !important;
+  border-radius: 10px;
+  color: black !important;
 }
 .agc-user-img-container {
   display: inline-block;

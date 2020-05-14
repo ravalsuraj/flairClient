@@ -31,7 +31,7 @@
 import TopNavbar from "@/views/TopNavbar";
 import LoginPage from "@/views/Login";
 import BottomFooter from "@/views/BottomFooter.vue";
-import ChatDrawer from "@/components/chat/ChatDrawer";
+import ChatDrawer from "@/widgets/Chat/Layout/ChatDrawer.vue";
 import { AGENT_STATES, SOCKET_STATES } from "@/defines";
 
 export default {

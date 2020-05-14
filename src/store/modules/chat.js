@@ -1,10 +1,12 @@
 
-
+import { CHAT_STATES } from '@/defines'
+// import { Logger } from "log4javascript";
 function initialState() {
     return {
         showChatSidebar: false,
         chatSessions: [
             {
+                state: CHAT_STATES.ACTIVE,
                 show: false,
                 chatId: "1234",
                 participant: {
@@ -25,12 +27,13 @@ function initialState() {
                 ]
             },
             {
+                state: CHAT_STATES.ACTIVE,
                 show: false,
                 chatId: "4567",
                 participant: {
-                    initials: "JD",
-                    firstName: "John",
-                    lastName: "Doe"
+                    initials: "RP",
+                    firstName: "Rajneesh",
+                    lastName: "Patel"
                 },
                 messageList: [
                     {
@@ -43,7 +46,8 @@ function initialState() {
                         }
                     }
                 ]
-            }
+            },
+
         ],
         chatIds: ['1234', "4567"]
     }
@@ -62,10 +66,36 @@ export default {
             Object.assign(state, initialState());
         },
 
-        ADD_MESSAGE_TO_MESSAGE_LIST(state, [chatId, newMessage]) {
+        ADD_CHAT_SESSION(state, chat) {
+            console.log(chat);
+            //check if chat ID exists in the state. If it does not exist, only then add the new chat
+            if (chat.chatId) {
+                let newChat = chat
+                newChat.show = false;
+                newChat.state = CHAT_STATES.REQUESTED;
+                newChat.messageList = [];
+                newChat.participant.initials = chat.participant.firstName.substring(0, 1) + chat.participant.lastName.substring(0, 1)
+                state.chatSessions.push(newChat)
+
+            } else {//since chat ID already exists, cannot add the same chat twice
+                console.error("chat ID already exists as a session")
+            }
+
+
+        },
+
+        REMOVE_CHAT_SESSION(state, chatId) {
+            const index = state.chadIds.indexOf(chatId);
+            if (index > -1) {
+                state.chatSessions.splice(index, 1)
+            } else {
+                console.log("no chat session found for id=" + chatId)
+            }
+        },
+        ADD_MESSAGE_TO_MESSAGE_LIST(state, newMessage) {
 
             //find the position of the chat in the chatArray
-            const chatIndex = state.chatIds.indexOf(chatId);
+            const chatIndex = state.chatIds.indexOf(newMessage.chatId);
 
             //add an index field to add an ID to every message of the chat
             newMessage.index = state.chatSessions[chatIndex].messageList.length;
@@ -75,7 +105,16 @@ export default {
         },
         TOGGLE_CHAT_WINDOW(state, index) {
             state.chatSessions[index].show = !state.chatSessions[index].show
-        }
+        },
+        SET_CHAT_STATE_ACTIVE(state, chatId) {
+            const index = state.chatIds.indexOf(chatId);
+            state.chatSessions[index].state = CHAT_STATES.ACTITVE
+        },
+        SET_CHAT_STATE_CLOSED(state, chatId) {
+            const index = state.chatIds.indexOf(chatId);
+            state.chatSessions[index].state = CHAT_STATES.CLOSED
+        },
+
     },
     actions: {
         setChatSidebarState({ commit }, showChatSideBarFlag) {
@@ -89,14 +128,40 @@ export default {
                 console.log("chatId " + chatId + " not found in chats. chatIndex=" + chatIndex)
             }
         },
-        addMessage({ commit }, [chatId, newMessage]) {
-            commit("ADD_MESSAGE_TO_MESSAGE_LIST", [chatId, newMessage]);
+
+        addChatSession({ commit }, chat) {
+            commit('ADD_CHAT_SESSION', chat)
+        },
+        removeChatSession({ commit }, chatId) {
+            commit('REMOVE_CHAT_SESSION', chatId)
+        },
+        addLocalMessage({ commit }, newMessage) {
+            commit("ADD_MESSAGE_TO_MESSAGE_LIST", newMessage);
             console.log("newMessage=" + JSON.stringify(newMessage.content.text))
-            // const botResponse = getters.getMessageResponses.filter(item => item.query.toLowerCase() === newMessage.content.text.toLowerCase());
-            // console.log("botResponse=" + JSON.stringify(botResponse))
-            // if (botResponse && botResponse.length > 0) {
-            //     commit("ADD_MESSAGE_TO_MESSAGE_LIST", botResponse[0].response);
-            // }
+
+        },
+        addBotMessage({ commit, getters }, newMessage) {
+            const botResponse = getters.getMessageResponses.filter(item => item.query.toLowerCase() === newMessage.content.text.toLowerCase());
+            console.log("botResponse=" + JSON.stringify(botResponse))
+            if (botResponse && botResponse.length > 0) {
+                commit("ADD_MESSAGE_TO_MESSAGE_LIST", botResponse[0].response);
+            }
+        },
+        addNewRemoteChatMessage({ commit }, message) {
+            message.self = false
+            commit("ADD_MESSAGE_TO_MESSAGE_LIST", message);
+        },
+
+        acceptChatRequest({ commit }, chatId) {
+            this._vm.$socket.emit("CHAT_SESSION_ACCEPTED", { chatId: chatId }, (response) => {
+                console.log(response)
+            });
+
+            commit('SET_CHAT_STATE_ACCEPTED', chatId)
+        },
+        rejectChatRequest({ commit }, chatId) {
+            commit('SET_CHAT_STATE_CLOSED', chatId)
+            commit('REMOVE_CHAT_SESSION', chatId)
         }
     },
     getters: {
@@ -107,6 +172,9 @@ export default {
             return state.chatSessions
         },
 
+        getChatSessionCount(state) {
+            return state.chatSessions.length
+        },
         getChatSessionById: state => chatId => {
             const index = state.chatIds.indexOf(chatId);
             return state.chatSessions[index]

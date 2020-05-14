@@ -1,22 +1,29 @@
 <template>
-  <v-container fluid class="d-flex p-0 justify-content-between">
-    <span>{{chatterName}}</span>
+  <mdb-container fluid class="d-flex justify-content-between">
+    <span>
+      <strong>{{chatterName}}</strong>
+    </span>
     <a>
-      <v-icon dark small right class="float-right" @click.native="onCloseBtnClick">mdi-close</v-icon>
-      <v-icon
+      <mdb-icon
         dark
         small
         right
         class="float-right"
-        @click.native="onMinimizeBtnClick"
-      >{{minimized?'mdi-menu':'mdi-minus'}}</v-icon>
+        @click.native="onCloseBtnClick"
+        icon="window-minimize"
+      ></mdb-icon>
     </a>
-  </v-container>
+  </mdb-container>
 </template>
 
 <script>
+import { mdbIcon, mdbContainer } from "mdbvue";
 export default {
   name: "ChatHeader",
+  components: {
+    mdbIcon,
+    mdbContainer
+  },
   props: {
     minimized: Boolean,
     chatterName: String

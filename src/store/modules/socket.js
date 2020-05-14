@@ -52,13 +52,13 @@ export default {
         .then(resp => {
           console.log(
             "processSocketConnected(): response received from fetchExistingSessionFromServer: resp=" +
-              JSON.stringify(resp)
+            JSON.stringify(resp)
           );
           console.log(
             "responseCode " +
-              (resp.responseCode === 0 ? "Not " : "is ") +
-              "zero. sessionID not retreived. sessionId=" +
-              getters["session/getSessionId"]
+            (resp.responseCode === 0 ? "Not " : "is ") +
+            "zero. sessionID not retreived. sessionId=" +
+            getters["session/getSessionId"]
           );
           if (resp.responseCode === "0" && getters["session/getSessionId"].length) {
             console.log("processSocketConnected(): sending request for sendQueryAgentStateRequest");
@@ -109,6 +109,7 @@ export default {
       } else {
         console.log("SOCKET_ICALLDISC(): no calls found for UCID:" + payload.ucid);
       }
+
     },
 
     SOCKET_ICALLHLD({ dispatch, getters }, payload) {
@@ -169,14 +170,31 @@ export default {
     SOCKET_AGTUPDATED({ dispatch }, payload) {
       console.log("SOCKET_AGTUPDATED(): Received event: " + JSON.stringify(payload));
       dispatch("setAgentState", payload.state);
-      dispatch('setUpdatedAuxCode',payload)
+      dispatch('setUpdatedAuxCode', payload)
     },
 
-    SOCKET_AVAYACONNDISC({}, payload) {
+    SOCKET_AVAYACONNDISC({ }, payload) {
       console.log("SOCKET_AVAYACONNDISC(): Received event: " + JSON.stringify(payload));
     },
-    SOCKET_AVAYACONNRECONN({}, payload) {
+    SOCKET_AVAYACONNRECONN({ }, payload) {
       console.log("SOCKET_AVAYACONNRECONN(): Received event: " + JSON.stringify(payload));
+    },
+
+
+
+    /***************************************************************
+     * 
+     *  Chat related Socket messages
+     ***************************************************************/
+
+    SOCKET_NEW_CHAT_MESSAGE({ dispatch }, message) {
+      dispatch('addNewRemoteChatMessage', message)
+    },
+
+    SOCKET_NEW_CHAT_REQUEST({ dispatch }, chat) {
+      console.log("new chat received!!!")
+      dispatch('addChatSession', chat)
+      
     }
   },
   getters: {

@@ -1,9 +1,14 @@
 C<template>
-  <v-container fluid class="agc-chat-body pa- pb-4 d-flex flex-column" ref="agcChatBody">
+  <div fluid class="agc-chat-body d-flex flex-colum" ref="agcChatBody">
     <ul class="p-0 mb-4">
-      <message v-for="message in staticMessageList" :key="message.id" :message="message" :chat-id="chatId"></message>
+      <message
+        v-for="message in staticMessageList"
+        :key="message.id"
+        :message="message"
+        :chat-id="chatId"
+      ></message>
     </ul>
-  </v-container>
+  </div>
 </template>
 
 <script>
@@ -23,7 +28,7 @@ export default {
   methods: {},
   computed: {
     messageList() {
-      return this.$store.getters.getMessageList((this.chatId));
+      return this.$store.getters.getMessageList(this.chatId);
     },
     staticMessageList() {
       const tempArr = [];
@@ -64,7 +69,8 @@ export default {
 .agc-chat-body {
   flex: 1;
   overflow-y: auto;
-  max-height:300px;
+  min-height: 300px;
+  max-height: 300px;
 }
 .interactive-response {
   position: relative;

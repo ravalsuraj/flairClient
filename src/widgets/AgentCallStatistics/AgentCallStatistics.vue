@@ -24,9 +24,7 @@
         </dl>
         <dl class="row mb-0 no-gutters text-justify">
           <dd class="col">In-State Time</dd>
-          <dd class="col">
-            <agent-timer-instate></agent-timer-instate>
-          </dd>
+          <dd class="col"></dd>
         </dl>
 
         <dl class="row mb-0 no-gutters text-justify">
@@ -47,9 +45,7 @@
         </dl>
         <dl class="row mb-0 no-gutters text-justify">
           <dd class="col">In-State Time</dd>
-          <dd class="col">
-            <call-timer-instate></call-timer-instate>
-          </dd>
+          <dd class="col"></dd>
         </dl>
         <dl class="row mb-0 no-gutters text-justify">
           <dd class="col">Talk Time</dd>
@@ -69,38 +65,35 @@
 </template>
 
 <script>
-import { AGENT_STATES, CALL_STATES } from '@/defines'
-import {
-  mdbContainer,
-} from 'mdbvue'
+import { AGENT_STATES, CALL_STATES } from "@/defines";
+import { mdbContainer } from "mdbvue";
 
-import Widget from '@/components/agc/Widget'
+import Widget from "@/components/agc/Widget";
 
 export default {
-  name: 'AgentCallStats',
+  name: "AgentCallStats",
   components: {
     Widget,
-    mdbContainer,
-
+    mdbContainer
   },
   props: {},
   data() {
-    return {}
+    return {};
   },
   methods: {},
   computed: {
     callerData() {
-      return this.$store.state.callerData
+      return this.$store.state.callerData;
     },
 
     currentAgentState() {
-      return AGENT_STATES.Text[this.$store.getters.getAgentState]
+      return AGENT_STATES.Text[this.$store.getters.getAgentState];
     },
     currentCallState() {
-      return CALL_STATES.Text[this.$store.getters.getCallStatus]
+      return CALL_STATES.Text[this.$store.getters.getCallStatus];
     }
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

@@ -8,68 +8,7 @@
     </mdb-row>
     <hr />
     <mdb-row class="mx-0 d-flex flex-fill h-100">
-      <Carousel :perPage="1" class="agc-carousel" navigationEnabled :minSwipeDistance="1">
-        <slide v-if="leftComponentWidgets.length>0">
-          <mdb-col :lg="leftComponentWidth" md="12" sm="12" class="mb-1 px-0 mx-0">
-            <draggable
-              :list="leftComponentWidgets"
-              class="dragArea flex-fill"
-              ghostClass="ghost-component"
-              chosenClass="chosen-component"
-              animation="150"
-              dragClass="dragged-component"
-              filter=".card-body"
-              :preventOnFilter="false"
-            >
-              <transition-group name>
-                <component
-                  v-for="component in leftComponentWidgets"
-                  :is="component.name"
-                  :key="component.name"
-                  class="fl_widget"
-                ></component>
-              </transition-group>
-            </draggable>
-          </mdb-col>
-        </slide>
-        <slide v-if="middleComponentWidgets.length>0">
-          <mdb-col :lg="middleComponentWidth" md="12" sm="12" class="mb-1 px-0 mx-0 h-100">
-            <transition-group name>
-              <component
-                v-for="component in middleComponentWidgets"
-                :is="component.name"
-                :key="component.name"
-                class="fl_widget"
-              ></component>
-            </transition-group>
-          </mdb-col>
-        </slide>
-        <slide v-if="rightComponentWidgets.length>0">
-          <mdb-col :lg="rightComponentWidth" md="12" sm="12" class="mb-1 px-0 mx-0">
-            <draggable
-              :list="rightComponentWidgets"
-              class="dragArea"
-              ghostClass="ghost-component"
-              chosenClass="chosen-component"
-              animation="150"
-              dragClass="dragged-component"
-              filter=".card-body"
-              :preventOnFilter="false"
-            >
-              <transition-group name>
-                <component
-                  v-for="component in rightComponentWidgets"
-                  :is="component.name"
-                  :key="component.name"
-                  class="fl_widget"
-                ></component>
-              </transition-group>
-            </draggable>
-          </mdb-col>
-        </slide>
-      </Carousel>
-      <!-- 
-      <Carousel :perPage="1" class="agc-carousel">
+      <!-- <Carousel :perPage="1" class="agc-carousel" navigationEnabled :minSwipeDistance="1">
         <slide v-if="leftComponentWidgets.length>0">
           <mdb-col :lg="leftComponentWidth" md="12" sm="12" class="mb-1 px-0 mx-0">
             <draggable
@@ -129,7 +68,81 @@
           </mdb-col>
         </slide>
       </Carousel>-->
+
+      <mdb-col
+        :lg="leftComponentWidth"
+        md="12"
+        sm="12"
+        class="mb-1 px-0 mx-0"
+        v-if="leftComponentWidgets.length>0"
+      >
+        <draggable
+          :list="leftComponentWidgets"
+          class="dragArea flex-fill"
+          ghostClass="ghost-component"
+          chosenClass="chosen-component"
+          animation="150"
+          dragClass="dragged-component"
+          filter=".card-body"
+          :preventOnFilter="false"
+        >
+          <transition-group name>
+            <component
+              v-for="component in leftComponentWidgets"
+              :is="component.name"
+              :key="component.name"
+              class="fl_widget"
+            ></component>
+          </transition-group>
+        </draggable>
+      </mdb-col>
+
+      <mdb-col
+        :lg="middleComponentWidth"
+        md="12"
+        sm="12"
+        class="mb-1 px-0 mx-0 h-100"
+        v-if="middleComponentWidgets.length>0"
+      >
+        <transition-group name>
+          <component
+            v-for="component in middleComponentWidgets"
+            :is="component.name"
+            :key="component.name"
+            class="fl_widget"
+          ></component>
+        </transition-group>
+      </mdb-col>
+
+      <mdb-col
+        :lg="rightComponentWidth"
+        md="12"
+        sm="12"
+        class="mb-1 px-0 mx-0"
+        v-if="rightComponentWidgets.length>0"
+      >
+        <draggable
+          :list="rightComponentWidgets"
+          class="dragArea"
+          ghostClass="ghost-component"
+          chosenClass="chosen-component"
+          animation="150"
+          dragClass="dragged-component"
+          filter=".card-body"
+          :preventOnFilter="false"
+        >
+          <transition-group name>
+            <component
+              v-for="component in rightComponentWidgets"
+              :is="component.name"
+              :key="component.name"
+              class="fl_widget"
+            ></component>
+          </transition-group>
+        </draggable>
+      </mdb-col>
     </mdb-row>
+    <chat-toggle class="agc-floating-toggle"></chat-toggle>
   </mdb-container>
 </template>
 
@@ -167,8 +180,8 @@ import BaseCrmFrame from "@/widgets/BaseCrmFrame/BaseCrmFrame.vue";
 import QuickLinks from "@/widgets/QuickLinks/QuickLinks.vue";
 
 import SmsHelper from "@/widgets/SmsHelper/SmsHelper.vue";
-import QuessCrmFrame from "@/widgets/Quess/QuessCrmFrame.vue";
-import QuessHelper from "@/widgets/Quess/QuessHelper.vue";
+
+import ChatToggle from "@/widgets/Chat/Layout/ChatToggle.vue";
 
 export default {
   name: "Dashboard",
@@ -184,8 +197,8 @@ export default {
     CallDetails,
     CallHistory,
     SmsHelper,
-    QuessCrmFrame,
-    QuessHelper,
+    ChatToggle,
+
     CallDrawer,
     Carousel,
     Slide,
@@ -284,5 +297,10 @@ export default {
 }
 .call-drawer-container {
   flex: unset;
+}
+.agc-floating-toggle {
+  position: absolute;
+  bottom: 50px;
+  right:50px;
 }
 </style>
