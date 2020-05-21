@@ -1,8 +1,9 @@
 import { AGENT_STATES, SOCKET_EVENTS } from "@/defines";
 import logger from "@/services/logger";
+import api from "@/services/api"
 function initialState() {
   return {
-    agentState: AGENT_STATES.UNKNOWN,
+    agentState: AGENT_STATES.LOG_IN,
     reasonCode: 0,
     displayLabel: "-",
     agentId: null,
@@ -14,7 +15,8 @@ function initialState() {
 
     fullAuxCodeList: [],
     agentStateDisplayLabelMap: null,
-    agentReasonCodeDisplayLabelMap: null
+    agentReasonCodeDisplayLabelMap: null,
+    agentNotes: ""
   };
 }
 
@@ -64,13 +66,13 @@ export default {
        ***********************************************/
       let config = getters["session/getConfig"];
       let reasonCodeArray = config.AGENT_REASON_CODE_LIST;
-      var reasonCodeMap = reasonCodeArray.reduce(function(map, obj) {
+      var reasonCodeMap = reasonCodeArray.reduce(function (map, obj) {
         map[obj.reasonCode] = obj.reasonLabel;
         return map;
       }, {});
 
       let auxArray = config.AVAILABLE_AGENT_STATES;
-      var auxMap = auxArray.reduce(function(map, obj) {
+      var auxMap = auxArray.reduce(function (map, obj) {
         map[obj.state] = obj.label;
         return map;
       }, {});
@@ -102,6 +104,13 @@ export default {
       commit("SET_AGENT_LOGIN_CREDENTIALS", credentials);
     },
 
+
+    async updateAgentNotes({ commit, getters }, notes) {
+      commit("UPDATE_AGENT_NOTES", notes);
+      let req = { AgentNotes: notes, ucid: getters.getActiveCallUcid }
+      let resp = await api.insertCallDetail(req)
+      console.log("agent not update response " + JSON.stringify(resp.data))
+    },
     setAgentAuxCode({ commit }, auxCodeObj) {
       commit("SET_AGENT_AUX_CODE", auxCodeObj);
     },
@@ -222,7 +231,7 @@ export default {
         return resp;
       });
     },
-    queryAgentState() {},
+    queryAgentState() { },
 
     async processAgentLogin({ commit, dispatch }) {
       await dispatch("session/loadConfigurations");
@@ -327,6 +336,9 @@ export default {
     },
     RESET_MONITOR_AGENT_INTERVAL_HANDLE(state) {
       state.monitorAgentInterval = null;
+    },
+    UPDATE_AGENT_NOTES(state, notes) {
+      state.agentNotes = notes;
     }
   }
 };

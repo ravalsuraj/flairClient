@@ -91,7 +91,8 @@ import {
   mdbCardText,
   mdbIcon,
   mdbTbl,
-  mdbInput
+  mdbInput,
+  
 } from "mdbvue";
 import CallDrawer from "@/views/CallDrawer.vue";
 import ConsultDialer from "@/widgets/Dialer/ConsultDialer.vue";
@@ -104,6 +105,7 @@ import MenuTraversal from "@/widgets/MenuTraversal/MenuTraversal.vue";
 import AgentCallStatistics from "@/widgets/AgentCallStatistics/AgentCallStatistics.vue";
 
 import QuickLinks from "@/widgets/QuickLinks/QuickLinks.vue";
+import AgentNote from "@/widgets/AgentNote/AgentNote.vue";
 
 import SmsHelper from "@/widgets/SmsHelper/SmsHelper.vue";
 
@@ -137,7 +139,8 @@ export default {
     mdbCardText,
     mdbIcon,
     mdbTbl,
-    mdbInput
+    mdbInput,
+    AgentNote
   },
   data() {
     return {

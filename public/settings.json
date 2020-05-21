@@ -82,11 +82,15 @@
     ],
     "WIDGET_LAYOUT": {
         "LEFT": {
-            "WIDTH": "3",
-            "WIDGETS": []
+            "WIDTH": "2",
+            "WIDGETS": [
+                {
+                    "name": "agent-note"
+                }
+            ]
         },
         "MIDDLE": {
-            "WIDTH": "10",
+            "WIDTH": "8",
             "WIDGETS": [
                 {
                     "name": "dgft-crm-frame"
