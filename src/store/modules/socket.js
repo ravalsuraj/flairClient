@@ -47,7 +47,7 @@ export default {
       dispatch("setSocketStateConnected");
       dispatch("session/loadConfigurations");
       dispatch("startAgentStateMonitoring");
-
+      dispatch("rejoinChatRooms")
       dispatch("session/fetchExistingSessionFromServer", { root: true })
         .then(resp => {
           console.log(
@@ -187,15 +187,18 @@ export default {
      *  Chat related Socket messages
      ***************************************************************/
 
-    SOCKET_NEW_CHAT_MESSAGE({ dispatch }, message) {
-      dispatch('addNewRemoteChatMessage', message)
+    SOCKET_NEW_CHAT_MESSAGE({ dispatch }, chatMessage) {
+      console.log("new chat message received. chatMessage=" + JSON.stringify(chatMessage))
+      dispatch('addNewRemoteChatMessage', chatMessage)
     },
 
     SOCKET_NEW_CHAT_REQUEST({ dispatch }, chat) {
       console.log("new chat received!!!")
       dispatch('addChatSession', chat)
-      
-    }
+
+    },
+
+
   },
   getters: {
     getSocketStatus(state) {

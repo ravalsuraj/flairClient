@@ -15,14 +15,14 @@ C<template>
     ></v-textarea>-->
     <!-- <mdb-input outline type="textarea" @input="input" class="w-100 agc-user-entry-input" /> -->
     <textarea
-      class="w-100 agc-user-entry-input m-0 px-4 py-2"
+      class="w-100 agc-user-entry-input m-0 px-4 py-2 m-3"
       @keydown.enter="handleEnter"
       @keydown.enter.prevent
       v-model="typedMessage"
     ></textarea>
 
     <!-- <v-btn rounded class="white--text info-color">o</v-btn> -->
-    <mdb-btn class="btn-circle btn-lg" tile color="cyan" @click.native="sendMessage">
+    <mdb-btn class="btn-circle agc-chat-btn-send" tile color="cyan" @click.native="sendMessage">
       <mdb-icon @click.native="sendMessage" icon="paper-plane"></mdb-icon>
     </mdb-btn>
   </div>
@@ -88,5 +88,10 @@ export default {
 }
 .agc-user-entry-input:focus {
   outline: none;
+}
+.agc-chat-btn-send {
+  width: 50px;
+  height:40px;
+  font-size: 1em;
 }
 </style>

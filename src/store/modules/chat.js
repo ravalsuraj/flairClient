@@ -5,51 +5,51 @@ function initialState() {
     return {
         showChatSidebar: false,
         chatSessions: [
-            {
-                state: CHAT_STATES.ACTIVE,
-                show: false,
-                chatId: "1234",
-                participant: {
-                    initials: "SR",
-                    firstName: "Suraj",
-                    lastName: "Raval"
-                },
-                messageList: [
-                    {
-                        chatId: "1234",
-                        type: "text",
-                        self: false,
-                        isInteractive: false,
-                        content: {
-                            text: "Hi, Welcome to AGC's Assistant. You can type your query, or click on one of the following to get started"
-                        }
-                    }
-                ]
-            },
-            {
-                state: CHAT_STATES.ACTIVE,
-                show: false,
-                chatId: "4567",
-                participant: {
-                    initials: "RP",
-                    firstName: "Rajneesh",
-                    lastName: "Patel"
-                },
-                messageList: [
-                    {
-                        chatId: "4567",
-                        type: "text",
-                        self: false,
-                        isInteractive: false,
-                        content: {
-                            text: "Hi, Welcome to AGC's Assistant. You can type your query, or click on one of the following to get started"
-                        }
-                    }
-                ]
-            },
+            // {
+            //     state: CHAT_STATES.ACTIVE,
+            //     show: false,
+            //     chatId: "1234",
+            //     participant: {
+            //         initials: "SR",
+            //         firstName: "Suraj",
+            //         lastName: "Raval"
+            //     },
+            //     messageList: [
+            //         {
+            //             chatId: "1234",
+            //             type: "text",
+            //             self: false,
+            //             isInteractive: false,
+            //             content: {
+            //                 text: "Hi, Welcome to AGC's Assistant. You can type your query, or click on one of the following to get started"
+            //             }
+            //         }
+            //     ]
+            // },
+            // {
+            //     state: CHAT_STATES.ACTIVE,
+            //     show: false,
+            //     chatId: "4567",
+            //     participant: {
+            //         initials: "RP",
+            //         firstName: "Rajneesh",
+            //         lastName: "Patel"
+            //     },
+            //     messageList: [
+            //         {
+            //             chatId: "4567",
+            //             type: "text",
+            //             self: false,
+            //             isInteractive: false,
+            //             content: {
+            //                 text: "Hi, Welcome to AGC's Assistant. You can type your query, or click on one of the following to get started"
+            //             }
+            //         }
+            //     ]
+            // },
 
         ],
-        chatIds: ['1234', "4567"]
+        chatIds: []
     }
 }
 
@@ -67,6 +67,7 @@ export default {
         },
 
         ADD_CHAT_SESSION(state, chat) {
+
             console.log(chat);
             //check if chat ID exists in the state. If it does not exist, only then add the new chat
             if (chat.chatId) {
@@ -76,7 +77,7 @@ export default {
                 newChat.messageList = [];
                 newChat.participant.initials = chat.participant.firstName.substring(0, 1) + chat.participant.lastName.substring(0, 1)
                 state.chatSessions.push(newChat)
-
+                state.chatIds.push(newChat.chatId)
             } else {//since chat ID already exists, cannot add the same chat twice
                 console.error("chat ID already exists as a session")
             }
@@ -108,7 +109,7 @@ export default {
         },
         SET_CHAT_STATE_ACTIVE(state, chatId) {
             const index = state.chatIds.indexOf(chatId);
-            state.chatSessions[index].state = CHAT_STATES.ACTITVE
+            state.chatSessions[index].state = CHAT_STATES.ACTIVE
         },
         SET_CHAT_STATE_CLOSED(state, chatId) {
             const index = state.chatIds.indexOf(chatId);
@@ -117,6 +118,16 @@ export default {
 
     },
     actions: {
+        async rejoinChatRooms({ getters }) {
+            const currentSessions = getters.getChatSessions
+            for (let session of currentSessions) {
+                console.log("session for this chat is==========" + JSON.stringify(session))
+                await this._vm.$socket.emit("UPDATE_CHAT_ROOM_ID", { chatroom: session.chatId }, (response) => {
+                    console.log(response)
+                });
+            }
+
+        },
         setChatSidebarState({ commit }, showChatSideBarFlag) {
             commit('SET_CHAT_SIDEBAR', showChatSideBarFlag)
         },
@@ -135,9 +146,10 @@ export default {
         removeChatSession({ commit }, chatId) {
             commit('REMOVE_CHAT_SESSION', chatId)
         },
-        addLocalMessage({ commit }, newMessage) {
+        addLocalMessage({ commit, dispatch }, newMessage) {
             commit("ADD_MESSAGE_TO_MESSAGE_LIST", newMessage);
-            console.log("newMessage=" + JSON.stringify(newMessage.content.text))
+            console.log("newMessage=" + JSON.stringify(newMessage))
+            dispatch('emitNewMessageRequest', newMessage)
 
         },
         addBotMessage({ commit, getters }, newMessage) {
@@ -147,17 +159,27 @@ export default {
                 commit("ADD_MESSAGE_TO_MESSAGE_LIST", botResponse[0].response);
             }
         },
-        addNewRemoteChatMessage({ commit }, message) {
-            message.self = false
-            commit("ADD_MESSAGE_TO_MESSAGE_LIST", message);
+        addNewRemoteChatMessage({ commit }, payload) {
+            const content = payload.message
+            content.self = false
+            commit("ADD_MESSAGE_TO_MESSAGE_LIST", content);
         },
 
+        emitNewMessageRequest({ }, payload) {
+            const request = {
+                message: payload,
+                chatroom: payload.chatId
+            }
+            this._vm.$socket.emit("NEW_CHAT_MESSAGE", request, (response) => {
+                console.log(response)
+            });
+        },
         acceptChatRequest({ commit }, chatId) {
-            this._vm.$socket.emit("CHAT_SESSION_ACCEPTED", { chatId: chatId }, (response) => {
+            this._vm.$socket.emit("ACCEPT_CHAT_SESSION", { chatId: chatId }, (response) => {
                 console.log(response)
             });
 
-            commit('SET_CHAT_STATE_ACCEPTED', chatId)
+            commit('SET_CHAT_STATE_ACTIVE', chatId)
         },
         rejectChatRequest({ commit }, chatId) {
             commit('SET_CHAT_STATE_CLOSED', chatId)

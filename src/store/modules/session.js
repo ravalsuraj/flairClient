@@ -148,6 +148,7 @@ export default {
 
     addWindowRefreshReloadListener() {
       console.log('addWindowRefreshReloadListener(): entered action')
+      
       // window.addEventListener('beforeunload', function(e) {
       //   //dispatch('sendRemoveSessionRequest')
       // })

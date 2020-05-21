@@ -127,6 +127,7 @@ export default {
       //if the call list decreases, it means a call was dropped, so reset the screenpop URL
       else if (newInCallList.length < this.currentInboundCallList.length) {
         console.log("DgftHelper/watch(inboundCallList): call was removed");
+        
         let droppedCalls = this.currentInboundCallList.filter(function(el) {
           return newInCallList.indexOf(el) < 0;
         });

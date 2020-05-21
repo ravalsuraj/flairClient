@@ -1,6 +1,6 @@
 C<template>
   <div fluid class="agc-chat-body d-flex flex-colum" ref="agcChatBody">
-    <ul class="p-0 mb-4">
+    <ul class="p-0 mb-4 w-100">
       <message
         v-for="message in staticMessageList"
         :key="message.id"

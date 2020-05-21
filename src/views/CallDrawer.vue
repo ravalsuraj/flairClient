@@ -15,7 +15,12 @@
             :callId="call.callId"
             class="py-4"
           ></call-card-outbound>
-          <quess-disposition v-if="isCallDropped(call)" :ucid="call.ucid" :callId="call.callId" class="py-4"></quess-disposition>
+          <quess-disposition
+            v-if="isCallDropped(call)"
+            :ucid="call.ucid"
+            :callId="call.callId"
+            class="py-4"
+          ></quess-disposition>
         </slide>
       </carousel>
       <!-- <mdb-row>

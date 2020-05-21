@@ -6,11 +6,11 @@
         <chat-list></chat-list>
       </div>
     </scale-transition>
-    <div class="danger-color agc-badge">{{activeChatSessionCount}}</div>
+    <div class="mdb-color agc-badge">{{activeChatSessionCount}}</div>
     <!--Hardcoded to always allow. Add the conditions to v-if and :class to only enable in certain conditions-->
     <mdb-btn
       v-if="true"
-      class="btn-circle btn-lg z-depth-5"
+      class="btn-circle z-depth-5 btn-lg"
       :class="{ fl_disabledWidget: false }"
       :color="showChatList ? 'cyan' : 'mdb-color'"
       @click.native="showChatList = !showChatList"
@@ -90,4 +90,5 @@ export default {
   text-align: center;
   font-weight: bold;
 }
+
 </style>
