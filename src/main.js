@@ -38,10 +38,10 @@ console.log("main.js initialized");
 import "mdbvue/lib/css/mdb.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import api from "./services/api";
-import vuetify from './plugins/vuetify';
-import '@babel/polyfill'
-import 'roboto-fontface/css/roboto/roboto-fontface.css'
-import '@mdi/font/css/materialdesignicons.css'
+import vuetify from "./plugins/vuetify";
+import "@babel/polyfill";
+import "roboto-fontface/css/roboto/roboto-fontface.css";
+import "@mdi/font/css/materialdesignicons.css";
 
 //Used to detect long click. Used in the dialer to delete multiple digits upon long-click
 const longClickInstance = longClickDirective({ delay: 400, interval: 50 });
@@ -53,14 +53,14 @@ Vue.directive("longclick", longClickInstance);
 //get the IP address dynamically for the websocket server. This is saved in the config.js file for the FlairClientLauncher
 api
   .getServerIp()
-  .then(resp => {
+  .then((resp) => {
     console.log("resp=" + JSON.stringify(resp.data));
     if (resp.data.responseCode === "0") {
       serverIp = resp.data.ip;
       initVue();
       console.log("main.js execution complete. using server URL=" + serverIp);
 
-      api.getMiddlewareIp().then(fetchMiddlewareResponse => {
+      api.getMiddlewareIp().then((fetchMiddlewareResponse) => {
         var middlewareIp = fetchMiddlewareResponse.data.ip;
 
         var logUrl = middlewareIp + "/log";
@@ -86,12 +86,12 @@ let initVue = () => {
   Vue.use(
     new VueSocketIO({
       debug: true,
-      connection: "http://192.168.29.247:7071",
+      connection: serverIp,
       vuex: {
         store,
         actionPrefix: "SOCKET_",
-        mutationPrefix: "SOCKET_"
-      }
+        mutationPrefix: "SOCKET_",
+      },
     })
   );
   Vue.use(Vue2TouchEvents);
@@ -102,6 +102,6 @@ let initVue = () => {
     router,
     store,
     vuetify,
-    render: h => h(App)
+    render: (h) => h(App),
   }).$mount("#app");
 };

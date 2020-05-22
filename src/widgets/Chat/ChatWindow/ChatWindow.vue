@@ -6,6 +6,7 @@
         @minimize="toggleChatMinimized"
         :minimized="minimized"
         :chatter-name="chatterName"
+        :interaction-history="interactionHistory"
       ></chat-header>
     </div>
     <zoom-y-transition>
@@ -18,10 +19,43 @@
 
         <user-entry :chatId="chatId"></user-entry>
       </div>
-      <div v-if="isChatRequested" class="d-flex flex-column p-5 m-5 text-center">
+      <div v-if="isChatRequested" class="d-flex flex-column mt-3 text-center">
         <div class="h3 pb-5">Chat Requested from {{chatterName}}</div>
-        <mdb-btn color="success" @click.native="onAcceptChatButtonClicked">Accept</mdb-btn>
-        <mdb-btn color="danger" @click.native="onRejectChatButtonClicked">Reject</mdb-btn>
+
+        <!-- <mdb-breadcrumb>
+          <mdb-breadcrumb-item>
+            <a href="#">{{interaction}}</a>
+          </mdb-breadcrumb-item>
+        </mdb-breadcrumb>-->
+        <h3 class="pb-3">Interaction History</h3>
+        <div style="height:180px;overflow:auto">
+          <mdb-list-group class="pb-3">
+            <mdb-list-group-item
+              style="text-align: left !important;"
+              v-for="(interaction, i) in interactionHistory"
+              :key="i"
+            >{{i+'. '+ interaction}}</mdb-list-group-item>
+          </mdb-list-group>
+        </div>
+
+        <mdb-container style>
+          <mdb-row class="mx-3 my-4">
+            <mdb-col col="6">
+              <mdb-btn
+                class="btn-block"
+                color="success"
+                @click.native="onAcceptChatButtonClicked"
+              >Accept</mdb-btn>
+            </mdb-col>
+            <mdb-col col="6">
+              <mdb-btn
+                class="btn-block"
+                color="danger"
+                @click.native="onRejectChatButtonClicked"
+              >Reject</mdb-btn>
+            </mdb-col>
+          </mdb-row>
+        </mdb-container>
       </div>
     </zoom-y-transition>
   </mdb-card>
@@ -34,7 +68,18 @@ import ChatBody from "./ChatBody.vue";
 import UserEntry from "./UserEntry.vue";
 import ChipResponse from "./../Responses/ChipResponse";
 import { CHAT_STATES } from "@/defines";
-import { mdbCard, mdbCardHeader, mdbCardBody, mdbBtn, mdbIcon } from "mdbvue";
+import {
+  mdbCard,
+  mdbCardHeader,
+  mdbCardBody,
+  mdbBtn,
+  mdbIcon,
+  mdbListGroup,
+  mdbListGroupItem,
+  mdbContainer,
+  mdbRow,
+  mdbCol
+} from "mdbvue";
 
 export default {
   name: "ChatWindow",
@@ -58,7 +103,12 @@ export default {
     mdbCardHeader,
     mdbCardBody,
     mdbBtn,
-    mdbIcon
+    mdbIcon,
+    mdbListGroup,
+    mdbListGroupItem,
+    mdbContainer,
+    mdbRow,
+    mdbCol
   },
   methods: {
     toggleChatWindow() {
@@ -81,6 +131,9 @@ export default {
     },
     chatSession() {
       return this.$store.getters.getChatSessionById(this.chatId);
+    },
+    interactionHistory() {
+      return this.chatSession.interactionHistory;
     },
     isChatActive() {
       console.log("thischatstate=", this.chatSession.state);
