@@ -1,10 +1,14 @@
 <template>
   <mdb-container fluid :style="{ height: height }">
-    <mdb-card class="mb-0 fl_widget_card" :class="{ maximized: showWidget }" style="border-radius:10px">
+    <mdb-card
+      class="mb-0 fl_widget_card z-depth-1"
+      :class="{ maximized: showWidget }"
+      style="border-radius:10px"
+    >
       <mdb-card-header
         class="fl_widget_card_header"
-        :color="color"
-        :class="{ minimized: showWidget == false }"
+        
+        :class="{ minimized: showWidget == false, 'mdb-color white-text':showWidget==true }"
         style="border-radius:5px 5px 0 0"
       >
         <strong>{{ title }}</strong>
@@ -19,7 +23,11 @@
           <slot name="toolbar"></slot>
         </div>
       </mdb-card-header>
-      <mdb-card-body class="fl_widget_card_body" v-show-slide="showWidget" :class="{ maximized: showWidget }">
+      <mdb-card-body
+        class="fl_widget_card_body"
+        v-show-slide="showWidget"
+        :class="{ maximized: showWidget }"
+      >
         <slot name="body"></slot>
       </mdb-card-body>
     </mdb-card>
@@ -27,7 +35,13 @@
 </template>
 
 <script>
-import { mdbContainer, mdbCard, mdbCardBody, mdbCardHeader, mdbIcon } from "mdbvue";
+import {
+  mdbContainer,
+  mdbCard,
+  mdbCardBody,
+  mdbCardHeader,
+  mdbIcon
+} from "mdbvue";
 
 export default {
   name: "Widget",
@@ -45,7 +59,7 @@ export default {
     title: String,
     color: {
       type: String,
-      default: "mdb-color text-white"
+      default: "#7283a7 text-white"
     },
     height: {
       type: String,
@@ -78,7 +92,7 @@ export default {
 </script>
 <style scoped>
 .fl_widget_card {
-  height: 0;
+  height: 30px;
   transition: all 0.2s linear;
 }
 .fl_widget_card.maximized {
@@ -99,5 +113,9 @@ export default {
 .fl_widget_card_header.minimized {
   background-color: #7283a7 !important;
   /* color: black !important; */
+}
+.fl_widget_card_header.maximized {
+  background-color: #7283a7 !important;
+  color: white !important;
 }
 </style>

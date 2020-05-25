@@ -3,7 +3,7 @@
     <div ref="topNavBar">
       <top-navbar v-if="isAgentLoggedIn" class></top-navbar>
     </div>
-    <main class="d-flex flex-fill main-body pt-5 mt-5">
+    <main class="d-flex flex-fill main-body pt-5 mt-4">
       <router-view v-if="isAgentLoggedIn" class="flex-fill"></router-view>
       <login-page v-else class="flex-fill pt-4"></login-page>
     </main>
@@ -18,25 +18,24 @@
       :ignoreDuplicates="true"
       classes="vue-notification "
     />
+    <chat-drawer></chat-drawer>
   </div>
 </template>
 
 <script>
-// import {
-
-//   waves
-// } from 'mdbvue'
 
 import TopNavbar from "@/views/TopNavbar";
 import LoginPage from "@/views/Login";
 import BottomFooter from "@/views/BottomFooter.vue";
+import ChatDrawer from "@/widgets/Chat/Layout/ChatDrawer.vue";
 import { AGENT_STATES, SOCKET_STATES } from "@/defines";
-import logger from "@/services/logger";
+
 export default {
-  name: "App",
+  name: "AdminTemplate",
   components: {
     LoginPage,
     TopNavbar,
+    ChatDrawer,
     BottomFooter
   },
   data() {
@@ -47,11 +46,11 @@ export default {
   },
   sockets: {
     connect() {
-      this.serverLog("App/sockets/connect(): socket connected");
+      console.log("App/sockets/connect(): socket connected");
       this.$store.dispatch("processSocketConnected");
     },
     connect_error() {
-      this.serverLog("App/sockets/connect(): socket connect_error");
+      console.log("App/sockets/connect(): socket connect_error");
       if (this.$store.getters.getSocketStatus === SOCKET_STATES.CONNECTED) {
         this.$store.dispatch("showErrorBanner", [
           "Server Connection Lost!",
@@ -61,7 +60,7 @@ export default {
       }
     },
     connection_error() {
-      this.serverLog("App/sockets/connect(): socket connection_error");
+      console.log("App/sockets/connect(): socket connection_error");
       this.$store.dispatch("showErrorBanner", [
         "Server Connection Lost!",
         "WebSocket connection timed out. Please make sure the websocket server is running."
@@ -70,13 +69,6 @@ export default {
       this.$store.dispatch("setSocketStateDisconnected");
     }
   },
-  beforeMount() {
-    this.activeItem = this.$route.matched[0].props.default.page;
-
-    const agent = this.$store.getters.getAgentCredentials;
-    this.loggableSessionId = agent.agentId + "/" + agent.deviceId + "-" + this.$store.getters["session/getSessionId"];
-    logger.setSessionId(this.loggableSessionId);
-  },
   mounted() {
     this.$store.dispatch("session/addWindowRefreshReloadListener");
     // this.$store.dispatch('authenticateCrm').then(() => {
@@ -84,7 +76,10 @@ export default {
     // })
 
     if (this.$refs.topNavBar) {
-      this.serverLog("App/mounted(): navbar height is" + JSON.stringify(this.$refs.topNavBar.clientHeight));
+      console.log(
+        "App/mounted(): navbar height is" +
+          JSON.stringify(this.$refs.topNavBar.clientHeight)
+      );
     }
     this.$store.dispatch("session/loadConfigurations");
   },
@@ -100,7 +95,11 @@ export default {
         return true;
       }
     }
+  },
+  beforeMount() {
+    this.activeItem = this.$route.matched[0].props.default.page;
   }
+  // mixins: [waves]
 };
 </script>
 
@@ -123,7 +122,7 @@ body > div > div:nth-child(1) > nav > ul > span > div > ul {
 }
 html {
   font-size: 50%;
-  font-size: 0.75em;
+  font-size: 0.75em !important;
   color: rgba(0, 0, 0, 0.45);
 }
 @media (min-width: 600px) {
@@ -187,17 +186,37 @@ footer {
 }
 .fl-color-agc {
   background: rgba(204, 0, 0, 1);
-  background: -moz-linear-gradient(left, rgba(204, 0, 0, 1) 0%, rgba(255, 102, 0, 1) 100%);
+  background: -moz-linear-gradient(
+    left,
+    rgba(204, 0, 0, 1) 0%,
+    rgba(255, 102, 0, 1) 100%
+  );
   background: -webkit-gradient(
     left top,
     right top,
     color-stop(0%, rgba(204, 0, 0, 1)),
     color-stop(100%, rgba(255, 102, 0, 1))
   );
-  background: -webkit-linear-gradient(left, rgba(204, 0, 0, 1) 0%, rgba(255, 102, 0, 1) 100%);
-  background: -o-linear-gradient(left, rgba(204, 0, 0, 1) 0%, rgba(255, 102, 0, 1) 100%);
-  background: -ms-linear-gradient(left, rgba(204, 0, 0, 1) 0%, rgba(255, 102, 0, 1) 100%);
-  background: linear-gradient(to right, rgba(204, 0, 0, 1) 0%, rgba(255, 102, 0, 1) 100%);
+  background: -webkit-linear-gradient(
+    left,
+    rgba(204, 0, 0, 1) 0%,
+    rgba(255, 102, 0, 1) 100%
+  );
+  background: -o-linear-gradient(
+    left,
+    rgba(204, 0, 0, 1) 0%,
+    rgba(255, 102, 0, 1) 100%
+  );
+  background: -ms-linear-gradient(
+    left,
+    rgba(204, 0, 0, 1) 0%,
+    rgba(255, 102, 0, 1) 100%
+  );
+  background: linear-gradient(
+    to right,
+    rgba(204, 0, 0, 1) 0%,
+    rgba(255, 102, 0, 1) 100%
+  );
   filter: progid:DXImageTransform.Microsoft.gradient(
     startColorstr='#cc0000', endColorstr='#ff6600',
     GradientType=1 );
@@ -305,7 +324,8 @@ footer {
   opacity: 0;
 }
 .card {
-  box-shadow: 3px 2px 15px 2px rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 3px 2px 15px 2px rgba(0, 0, 0, 0.16),
+    0 2px 10px 0 rgba(0, 0, 0, 0.12) !important;
 }
 </style>
 <style scoped>

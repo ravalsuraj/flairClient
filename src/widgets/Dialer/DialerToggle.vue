@@ -23,7 +23,7 @@
 
     <!-- <transition name="fade" mode="out-in"> -->
     <scale-transition origin="top right">
-      <div class=" fl_dropdown" v-if="showOutboundDialerDropdown && isOutCallingEnabled">
+      <div class=" fl_dropdown" v-if="showOutboundDialerDropdown">
         <mdb-card class="roundedCard">
           <mdb-card-header color="cyan darken-1" class="pt-4 roundedCardHeader">
             <h4><strong> Make Outbound Call </strong></h4>
@@ -64,7 +64,7 @@ export default {
       return this.$store.getters["session/getConfig"].ALLOW_OUTBOUND_DIALING;
     },
     isAgentInOutboundAuxState() {
-      const outCallReasonCode = this.$store.getters["session/getConfig"].DGFT.OUTCALLING_REASON_CODE;
+      const outCallReasonCode = this.$store.getters["session/getConfig"].OUTCALLING_REASON_CODE;
       return (
         this.$store.getters["getAgentState"] === AGENT_STATES.NOT_READY &&
         this.$store.getters["getAgentAuxState"].reasonCode === outCallReasonCode

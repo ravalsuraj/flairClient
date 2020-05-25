@@ -1,41 +1,21 @@
 {
-    "DGFT": {
-        "OUTCALLING_REASON_CODE": 1,
-        "MIDDLEWARE_URL": "http://10.248.123.102:9093",
-        "CRM_URL": "http://192.168.147.150/sugarcrm",
-        "CSAT_VDN": "51118",
-        "UUI_KEYS": [
-            "UCID",
-            "uniqueID",
-            "lang",
-            "RMN",
-            "IEC",
-            "ConplaintNo",
-            "LastShortCode"
-        ],
-        "IVR_SHORT_CODES": {
-            "A0003": "Complaint Status Played",
-            "M0001-1": "Complaint Status",
-            "M0001-2": "Queries",
-            "M0002-1": "IEC related queries",
-            "M0002-2": "SIMS - steele import Monitoring system",
-            "M0002-3": "COO - Certificate of Origin ",
-            "M0002-4": "MEIS related Queries ",
-            "M0002-5": "License, Shipping Bill or IEC Transmission ",
-            "M0002-6": "other queries",
-            "M0001": "Main menu",
-            "M0002": "Queries menu​"
-        }
-    },
     "FLAIR_AWS_PORT": 8000,
-    "FLAIR_SERVER_URL": "http://10.248.123.102:9092",
+    "FLAIR_SERVER_URL": "https://agc-socket-server.herokuapp.com",
     "SERVER_TIMEOUT_MS": 20000,
     "CRM_TIMEOUT_MS": 10000,
-    "LOGGER_SERVER_URL": "http://10.248.123.102:9091/log",
-    "LOG_INTERVAL": 300000,
     "ALLOW_OUTBOUND_DIALING": true,
+    "AGENT_STATE_POLLING_INTERVAL_MS": 1000,
     "INTERNAL_NUMBERS_MAX_LENGTH": 6,
-    "AGENT_STATE_POLLING_INTERVAL_MS": 100000,
+    "OUTCALLING_REASON_CODE": 1,
+    "QUESS": {
+        "CRM": {
+            "URL": "http://192.168.230.75/QuessPop/Default.aspx"
+        },
+        "UUI_KEYS": [
+            "UCID",
+            "uniqueID"
+        ]
+    },
     "AVAILABLE_AGENT_STATES": [
         {
             "label": "Ready",
@@ -80,6 +60,7 @@
             "reasonLabel": "Dinner"
         }
     ],
+<<<<<<< HEAD
     "WIDGET_LAYOUT": {
         "LEFT": {
             "WIDTH": "2",
@@ -108,5 +89,42 @@
                 }
             ]
         }
+=======
+    "leftComponents": {
+        "width": "3",
+        "widgets": [
+            {
+                "name": "quick-links"
+            },
+            {
+                "name": "sms-helper"
+            },
+            {
+                "name": "agent-call-statistics"
+            }
+        ]
+    },
+    "middleComponents": {
+        "width": "6",
+        "widgets": [
+            {
+                "name": "base-crm-frame"
+            }
+        ]
+    },
+    "rightComponents": {
+        "width": "3",
+        "widgets": [
+            {
+                "name": "quick-links"
+            },
+            {
+                "name": "sms-helper"
+            },
+            {
+                "name": "agent-call-statistics"
+            }
+        ]
+>>>>>>> POC
     }
 }

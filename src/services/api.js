@@ -6,6 +6,9 @@ let instance = axios.create({
 });
 
 export default {
+  getServerIp() {
+    return axios.get("/flairserverip");
+  },
   getConfig() {
     return axios.get("/config");
   },

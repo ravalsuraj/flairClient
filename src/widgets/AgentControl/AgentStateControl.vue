@@ -2,14 +2,26 @@
   <mdb-dropdown tag="li" class="nav-item">
     <!--Selected State-->
     <mdb-dropdown-toggle tag="a" navLink color="special" slot="toggle">
-      <mdb-icon icon="circle" :class="agentStateIndicatorColor(currentAgentAuxState.state)" class="mr-2" />
+      <mdb-icon
+        icon="circle"
+        :class="agentStateIndicatorColor(currentAgentAuxState.state)"
+        class="mr-2"
+      />
       <strong class="h6">{{ currentAgentAuxState.label }}</strong>
     </mdb-dropdown-toggle>
 
     <mdb-dropdown-menu left color="primary">
       <!--List of all possible agent states-->
-      <mdb-dropdown-item class="p-0 fl_dropdown_item" :key="auxCode.id" v-for="auxCode in auxCodes">
-        <div @click="onAgentStateDropDownChanged(auxCode)" class="p-2" v-if="auxCode.userSelectable === true">
+      <mdb-dropdown-item
+        class="p-1 fl_dropdown_item"
+        :key="auxCode.id"
+        v-for="auxCode in filteredAuxCodes"
+      >
+        <div
+          @click="onAgentStateDropDownChanged(auxCode)"
+          class="p-2"
+          v-if="auxCode.userSelectable === true"
+        >
           <!-- Round Icon to indicate the color of the agent's state-->
           <mdb-icon icon="circle" class="mr-1" :class="agentStateIndicatorColor(auxCode.state)" />
           <!-- Actual Agent State-->
@@ -21,7 +33,13 @@
 </template>
 
 <script>
-import { mdbDropdown, mdbDropdownItem, mdbDropdownMenu, mdbIcon, mdbDropdownToggle } from "mdbvue";
+import {
+  mdbDropdown,
+  mdbDropdownItem,
+  mdbDropdownMenu,
+  mdbIcon,
+  mdbDropdownToggle
+} from "mdbvue";
 import { AGENT_STATES } from "@/defines";
 
 export default {
@@ -43,18 +61,24 @@ export default {
   methods: {
     //This Method is called whenever the Agent Dropdown option is changed
     onAgentStateDropDownChanged(selectedAuxCode) {
-      this.serverLog(
-        "onAgentStateDropDownChanged(): method entered. selectedAuxCode=" + JSON.stringify(selectedAuxCode)
+      console.log(
+        "onAgentStateDropDownChanged(): method entered. selectedAuxCode=" +
+          JSON.stringify(selectedAuxCode)
       );
+      this.$store.dispatch("setUpdatedAuxCode", selectedAuxCode);
+      this.$store.commit("SET_AGENT_AUX_CODE", selectedAuxCode);
+
       //Depending on the selected state, update the store with the new state
       switch (selectedAuxCode.state) {
         case AGENT_STATES.READY:
         case AGENT_STATES.NOT_READY:
-          this.$store.dispatch("sendAgentStateRequest", selectedAuxCode).then(resp => {
-            if (resp.responseCode === "0") {
-              this.$store.commit("SET_AGENT_AUX_CODE", selectedAuxCode);
-            }
-          });
+          this.$store
+            .dispatch("sendAgentStateRequest", selectedAuxCode)
+            .then(resp => {
+              if (resp.responseCode === "0") {
+                this.$store.commit("SET_AGENT_AUX_CODE", selectedAuxCode);
+              }
+            });
           break;
 
         default:
@@ -62,7 +86,7 @@ export default {
     },
     agentStateIndicatorColor(state) {
       if (state) {
-        //this.serverLog('agentStateIndicatorColor(): state='+JSON.stringify(state));
+        //console.log('agentStateIndicatorColor(): state=', state)
         switch (state) {
           case AGENT_STATES.READY:
             return "green-text";
@@ -81,6 +105,15 @@ export default {
   computed: {
     currentAgentAuxState() {
       return this.$store.getters.getAgentAuxState;
+    },
+    filteredAuxCodes() {
+      let filt = [];
+      for (let auxCode of this.auxCodes) {
+        if (auxCode.userSelectable) {
+          filt.push(auxCode);
+        }
+      }
+      return filt;
     }
   }
 };

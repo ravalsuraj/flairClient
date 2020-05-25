@@ -9,14 +9,15 @@ import dialer from "./modules/dialer";
 import session from "./modules/session";
 import socket from "./modules/socket";
 import timer from "./modules/timer";
-import dgft from "@/customer/store/modules/dgft";
+import quess from "./modules/quess";
+import chat from "./modules/chat";
 
 import { SOCKET_STATES } from "@/defines.js";
 
 const vuexPersist = new VuexPersist({
   key: "flair",
   storage: sessionStorage,
-  modules: ["agent", "call", "consultedCall", "dialer", "socket", "timer", "session", "dgft"]
+  modules: ["agent", "call", "consultedCall", "dialer", "socket", "timer", "session", "dgft", "chat"]
 });
 
 Vue.use(Vuex);
@@ -26,19 +27,19 @@ export default new Vuex.Store({
   modules: {
     agent,
     call,
+    chat,
     session,
     socket,
     timer,
     consultedCall,
     dialer,
-
-    dgft
+    quess
   },
   plugins: [vuexPersist.plugin],
 
   state: {
     sockets: {
-      connect() {},
+      connect() { },
       connection_error() {
         this.state.socket.status = SOCKET_STATES.DISCONNECTED;
       }
@@ -57,6 +58,7 @@ export default new Vuex.Store({
     resetAllModules({ commit }) {
       commit("RESET_AGENT_MODULE");
       commit("RESET_CALL_MODULE");
+      commit("RESET_CHAT_MODULE");
       commit("RESET_CONSULTED_CALL_MODULE");
       commit("RESET_DIALER_MODULE");
       commit("session/RESET_SESSION_MODULE");
@@ -64,7 +66,7 @@ export default new Vuex.Store({
 
       //PROJECT SPECIFIC MODULES GO HERE
 
-      commit("RESET_DGFT_MODULE");
+      commit("RESET_QUESS_MODULE");
     }
   }
 });

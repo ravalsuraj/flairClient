@@ -18,7 +18,6 @@
   font-weight: bolder;
 }
 main {
-  background-color: #ededee;
 }
 
 .flexible-content {
