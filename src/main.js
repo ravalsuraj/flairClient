@@ -38,7 +38,7 @@ console.log("main.js initialized");
 import "mdbvue/lib/css/mdb.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import api from "./services/api";
-import vuetify from "./plugins/vuetify";
+//import vuetify from "./plugins/vuetify";
 import "@babel/polyfill";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "@mdi/font/css/materialdesignicons.css";
@@ -101,7 +101,7 @@ let initVue = () => {
   new Vue({
     router,
     store,
-    vuetify,
+    // vuetify,
     render: (h) => h(App),
   }).$mount("#app");
 };

@@ -59,6 +59,7 @@
   <div>
         <a href="#" class="btn btn-danger btn-block" >Add Note</a>
       </div-->
+      <button @click="selectCallHistory">Select</button>
       </div>
     </template>
   </widget>
@@ -78,6 +79,13 @@ export default {
   },
   props: {
     msg: String
+  },
+  methods:{
+    async selectCallHistory(){
+      console.log('hi')
+      let resp = await this.$store.dispatch("selectCallRecord");
+      console.log(resp)
+    }
   }
 };
 </script>

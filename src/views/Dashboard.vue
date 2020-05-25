@@ -73,7 +73,7 @@
         :lg="leftComponentWidth"
         md="12"
         sm="12"
-        class="mb-1 px-0 mx-0"
+        class="px-0 mx-0 mb-4"
         v-if="leftComponentWidgets.length>0"
       >
         <draggable
@@ -101,7 +101,7 @@
         :lg="middleComponentWidth"
         md="12"
         sm="12"
-        class="mb-1 px-0 mx-0 h-100"
+        class="mb-4 px-0 mx-0 h-100"
         v-if="middleComponentWidgets.length>0"
       >
         <transition-group name>
@@ -118,7 +118,7 @@
         :lg="rightComponentWidth"
         md="12"
         sm="12"
-        class="mb-1 px-0 mx-0"
+        class="mb-4 px-0 mx-0"
         v-if="rightComponentWidgets.length>0"
       >
         <draggable

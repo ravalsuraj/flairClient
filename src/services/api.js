@@ -18,5 +18,11 @@ export default {
     let head = {};
     return instance.post('/Call', body, { headers: head })
     // return axios.post("/config");
+  },
+
+  selectCallDetail(req) {
+    let body = req;
+    return instance.get('/Calls', body)
+    // return axios.post("/config");
   }
 };

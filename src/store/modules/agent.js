@@ -1,10 +1,7 @@
 import { AGENT_STATES, SOCKET_EVENTS } from "@/defines";
-<<<<<<< HEAD
-import logger from "@/services/logger";
+// import logger from "@/services/logger";
 import api from "@/services/api"
-=======
 
->>>>>>> POC
 function initialState() {
   return {
     agentState: AGENT_STATES.LOG_IN,
@@ -20,10 +17,9 @@ function initialState() {
     fullAuxCodeList: [],
     agentStateDisplayLabelMap: null,
     agentReasonCodeDisplayLabelMap: null,
-<<<<<<< HEAD
+
     agentNotes: ""
-=======
->>>>>>> POC
+
   };
 }
 
@@ -354,12 +350,8 @@ export default {
     RESET_MONITOR_AGENT_INTERVAL_HANDLE(state) {
       state.monitorAgentInterval = null;
     },
-<<<<<<< HEAD
     UPDATE_AGENT_NOTES(state, notes) {
       state.agentNotes = notes;
     }
   }
-=======
-  },
->>>>>>> POC
 };

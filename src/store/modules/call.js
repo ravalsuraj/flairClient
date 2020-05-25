@@ -1,6 +1,8 @@
 import { CALL_STATES, CALL_TYPES, SOCKET_EVENTS, TIMER_TYPES } from "@/defines.js";
 import Utils from "@/services/Utils";
 import { MULTI_CALL_STATES } from "../../defines";
+
+import api from "@/services/api"
 function initialState() {
   return {
     calls: [],
@@ -453,6 +455,12 @@ const actions = {
         console.log("Call Unhold Failed" + JSON.stringify(response));
       }
     });
+  },
+  async selectCallRecord({ getters }) {
+    console.log('hi')
+    let req = {  cli: getters.cli }
+    let resp = await api.selectCallDetail(req)
+    console.log("agent not update response " + JSON.stringify(resp.data))
   }
 };
 

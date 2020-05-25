@@ -1,5 +1,5 @@
 <template>
-  <widget :title="'CRM Frame'" fillHeight height="100%">
+  <widget :title="'CRM Frame'" fillHeight height="75%">
     <template v-slot:toolbar>
       <!-- <mdb-btn size="sm" class="btn-circle" @click.native="loadDefaultCrmUrl"
         ><mdb-icon icon="home"> </mdb-icon
