@@ -1,8 +1,12 @@
 <template>
-  <mdb-card>
+ <widget title="Call History">
+    <template v-slot:body>
+      <div class="list-group px-3">
+  <!--mdb-card>
     <mdb-card-header>Call History</mdb-card-header>
     <mdb-card-body>
-      <mdb-tbl sm hover>
+      <mdb-tbl sm hover-->
+        <table>
         <thead class="blue-grey lighten-4">
           <tr>
             <th>Sr.</th>
@@ -43,20 +47,34 @@
             <td>Billing Issue</td>
           </tr>
         </tbody>
-      </mdb-tbl>
+        </table>
+      <!--/mdb-tbl>
     </mdb-card-body>
-  </mdb-card>
+  </mdb-card-->
+ <!--div class="form-group">
+          <label for="exampleFormControlTextarea2">Small textarea</label>
+          <textarea
+          ></textarea>
+  </div>
+  <div>
+        <a href="#" class="btn btn-danger btn-block" >Add Note</a>
+      </div-->
+      </div>
+    </template>
+  </widget>
 </template>
 
 <script>
-import { mdbCard, mdbCardBody, mdbCardHeader } from "mdbvue";
+import Widget from "@/components/agc/Widget";
+// import { mdbCard, mdbCardBody, mdbCardHeader } from "mdbvue";
 
 export default {
   name: "CallHistory",
   components: {
-    mdbCard,
-    mdbCardBody,
-    mdbCardHeader
+    // mdbCard,
+    // mdbCardBody,
+    // mdbCardHeader
+    Widget
   },
   props: {
     msg: String

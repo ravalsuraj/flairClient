@@ -94,6 +94,9 @@
             "WIDGETS": [
                 {
                     "name": "dgft-crm-frame"
+                },
+                {
+                    "name": "call-history"
                 }
             ]
         },
