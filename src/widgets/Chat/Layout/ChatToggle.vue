@@ -17,7 +17,7 @@
     >
       <mdb-icon
         icon="comments"
-        style="font-size:1.5em"
+        style="font-size:1em"
         class="white-text"
         :class="{ active: showChatList }"
       />
@@ -90,5 +90,4 @@ export default {
   text-align: center;
   font-weight: bold;
 }
-
 </style>
