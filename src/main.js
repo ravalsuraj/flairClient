@@ -52,11 +52,11 @@ Vue.directive("longclick", longClickInstance);
 
 //get the IP address dynamically for the websocket server. This is saved in the config.js file for the FlairClientLauncher
 api
-  .getServerIp()
+  .getConfig()
   .then((resp) => {
     console.log("resp=" + JSON.stringify(resp.data));
     if (resp.data.responseCode === "0") {
-      serverIp = resp.data.ip;
+      serverIp = resp.data.FLAIR_SERVER_URL;
       initVue();
       console.log("main.js execution complete. using server URL=" + serverIp);
 
