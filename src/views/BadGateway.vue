@@ -1,4 +1,4 @@
-<template>
+`<template>
   <section id="bad-gateway">
     <div class="full">
       <mdb-row class="bad-gateway-row">

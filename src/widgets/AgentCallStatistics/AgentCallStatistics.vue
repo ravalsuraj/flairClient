@@ -42,9 +42,7 @@
         </dl>
         <dl class="row mb-0 no-gutters text-justify">
           <dd class="col">In-State Time</dd>
-          <dd class="col">
-            <agent-timer-instate></agent-timer-instate>
-          </dd>
+          <dd class="col"></dd>
         </dl>
 
         <dl class="row mb-0 no-gutters text-justify">
@@ -65,9 +63,7 @@
         </dl>
         <dl class="row mb-0 no-gutters text-justify">
           <dd class="col">In-State Time</dd>
-          <dd class="col">
-            <call-timer-instate></call-timer-instate>
-          </dd>
+          <dd class="col"></dd>
         </dl>
         <dl class="row mb-0 no-gutters text-justify">
           <dd class="col">Talk Time</dd>
@@ -88,22 +84,16 @@
 
 <script>
 import { AGENT_STATES, CALL_STATES } from "@/defines";
-import { mdbContainer , mdbRow , mdbCol } from "mdbvue";
+import { mdbContainer } from "mdbvue";
 
 import Widget from "@/components/agc/Widget";
-import PersistTimer from "@/components/agc/PersistTimer.vue";
 
 export default {
   name: "AgentCallStats",
   components: {
     Widget,
-    mdbContainer ,
-    mdbRow ,
-    mdbCol ,
-    PersistTimer
-    
+    mdbContainer
   },
-
   props: {},
   data() {
     return {};

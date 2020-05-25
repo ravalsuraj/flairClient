@@ -1,20 +1,20 @@
 import { AGENT_STATES, SOCKET_EVENTS } from "@/defines";
-import logger from "@/services/logger";
+
 function initialState() {
   return {
     agentState: AGENT_STATES.LOG_IN,
     reasonCode: 0,
-    displayLabel: "---",
-    agentId: null,
-    deviceId: null,
-    password: null,
+    displayLabel: "Ready",
+    agentId: 1234,
+    deviceId: 1234,
+    password: 1234,
     workMode: "auto",
     rememberCredentials: true,
     monitorAgentInterval: null,
 
     fullAuxCodeList: [],
     agentStateDisplayLabelMap: null,
-    agentReasonCodeDisplayLabelMap: null
+    agentReasonCodeDisplayLabelMap: null,
   };
 }
 
@@ -35,7 +35,7 @@ export default {
       return {
         state: state.agentState,
         reasonCode: state.reasonCode,
-        label: state.displayLabel
+        label: state.displayLabel,
       };
     },
     getAgentCredentials(state) {
@@ -43,7 +43,7 @@ export default {
         agentId: state.agentId,
         deviceId: state.deviceId,
         password: state.password,
-        workMode: state.workMode
+        workMode: state.workMode,
       };
     },
     getFullAuxCodeList(state) {
@@ -51,7 +51,7 @@ export default {
     },
     getMonitorAgentHandle(state) {
       return state.monitorAgentInterval;
-    }
+    },
   },
 
   actions: {
@@ -82,10 +82,15 @@ export default {
       commit("SET_DISPLAY_LABELS", [auxMap, reasonCodeMap]);
     },
     startAgentStateMonitoring({ commit, dispatch, getters }) {
+      let monitorInterval = 1000;
+      if (getters["session/getConfig"].AGENT_STATE_POLLING_INTERVAL_MS) {
+        monitorInterval = getters["session/getConfig"].AGENT_STATE_POLLING_INTERVAL_MS;
+      }
+
       let monitorAgentInterval = setInterval(() => {
-        //logger.log("startAgentStateMonitoring(): querying agent state")
+        //console.log("startAgentStateMonitoring(): querying agent state")
         dispatch("sendQueryAgentStateRequest");
-      }, getters["session/getConfig"].AGENT_STATE_POLLING_INTERVAL_MS);
+      }, monitorInterval);
       commit("SET_MONITOR_AGENT_INTERVAL_HANDLE", monitorAgentInterval);
     },
 
@@ -106,21 +111,21 @@ export default {
       commit("SET_AGENT_AUX_CODE", auxCodeObj);
     },
     sendAgentLoginRequest({ dispatch, getters }) {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         let agent = getters.getAgent;
         let sessionId = getters["session/getSessionId"];
-        logger.log("sendAgentLoginRequest(): sessionId=", sessionId);
+        console.log("sendAgentLoginRequest(): sessionId=", sessionId);
         let request = {
           sessionId: sessionId,
           agentId: agent.agentId,
           deviceId: agent.deviceId,
           password: agent.password,
-          workMode: agent.workMode
+          workMode: agent.workMode,
         };
-        logger.log("sendAgentLoginRequest(): request: " + JSON.stringify(request));
+        console.log("sendAgentLoginRequest(): request: " + JSON.stringify(request));
         try {
-          this._vm.$socket.emit(SOCKET_EVENTS.AGENT_LOGIN, request, resp => {
-            logger.log("sendAgentLoginRequest(): response: " + JSON.stringify(resp));
+          this._vm.$socket.emit(SOCKET_EVENTS.AGENT_LOGIN, request, (resp) => {
+            console.log("sendAgentLoginRequest(): response: " + JSON.stringify(resp));
 
             if (resp.responseCode === "0") {
               dispatch("processAgentLogin");
@@ -140,6 +145,7 @@ export default {
     },
 
     async sendAgentLogoutRequest({ dispatch, getters }) {
+      dispatch("processAgentLogout");
       let agent = getters.getAgent;
       let sessionId = getters["session/getSessionId"];
       let request = {
@@ -147,12 +153,12 @@ export default {
         agentId: agent.agentId,
         deviceId: agent.deviceId,
         password: agent.password,
-        workMode: agent.workMode
+        workMode: agent.workMode,
       };
-      logger.log("sendAgentLogoutEvent(): request: " + JSON.stringify(request));
+      console.log("sendAgentLogoutEvent(): request: " + JSON.stringify(request));
 
-      this._vm.$socket.emit(SOCKET_EVENTS.AGENT_LOGOFF, request, resp => {
-        logger.log("sendAgentLogoutEvent(): response: " + JSON.stringify(resp));
+      this._vm.$socket.emit(SOCKET_EVENTS.AGENT_LOGOFF, request, (resp) => {
+        console.log("sendAgentLogoutEvent(): response: " + JSON.stringify(resp));
 
         if (resp.responseCode === "0") {
           dispatch("processAgentLogout");
@@ -171,13 +177,13 @@ export default {
           agentId: getters.getAgentCredentials.agentId,
           deviceId: getters.getAgentCredentials.deviceId,
           agentState: auxRequest.state,
-          reasonCode: auxRequest.reasonCode
+          reasonCode: auxRequest.reasonCode,
         };
 
-        logger.log("sendAgentStateRequest(): request= " + JSON.stringify(request));
+        console.log("sendAgentStateRequest(): request= " + JSON.stringify(request));
 
-        this._vm.$socket.emit("SETAGTSTATE", request, resp => {
-          logger.log("sendAgentStateRequest(): response= " + JSON.stringify(resp));
+        this._vm.$socket.emit("SETAGTSTATE", request, (resp) => {
+          console.log("sendAgentStateRequest(): response= " + JSON.stringify(resp));
           if (resp.responseCode === "0") {
             commit("SET_AGENT_STATE", resp.agentState);
 
@@ -194,21 +200,22 @@ export default {
     sendQueryAgentStateRequest({ getters, commit, dispatch }) {
       let agent = getters.getAgent;
       let sessionId = getters["session/getSessionId"];
-
+      //console.log("sendQueryAgentStateRequest(): sessionId=", sessionId)
       let request = {
         sessionId: sessionId,
         agentId: agent.agentId,
-        deviceId: agent.deviceId
+        deviceId: agent.deviceId,
       };
+      //console.log('sendQueryAgentStateRequest(): request: ' + JSON.stringify(request))
 
-      this._vm.$socket.emit(SOCKET_EVENTS.QUERY_AGENT_STATE, request, resp => {
+      this._vm.$socket.emit(SOCKET_EVENTS.QUERY_AGENT_STATE, request, (resp) => {
         if (resp.responseCode === "0") {
           if (resp.agentState && getters.getAgentAuxState.state !== resp.agentState) {
             commit("SET_AGENT_STATE", resp.agentState);
 
             dispatch("setAgentAuxCode", {
               state: resp.agentState,
-              reasonCode: resp.reasonCode
+              reasonCode: resp.reasonCode,
             });
           }
 
@@ -238,16 +245,16 @@ export default {
     },
     /********************************* */
     setUpdatedAuxCode({ commit }, payload) {
-      logger.log("setUpdatedAuxCode(): payload=" + JSON.stringify(payload));
+      console.log("setUpdatedAuxCode(): payload=" + JSON.stringify(payload));
 
       let selectedAuxCode = {
-        agentState: payload.agentState,
+        state: payload.state,
         reasonCode: payload.reasonCode,
-        label: "Not Set"
+        label: "Not Set",
       };
 
       commit("SET_AGENT_AUX_CODE", selectedAuxCode);
-    }
+    },
   },
 
   mutations: {
@@ -256,7 +263,7 @@ export default {
         agentId: state.agentId,
         deviceId: state.deviceId,
         password: state.password,
-        workMode: state.workMode
+        workMode: state.workMode,
       };
       Object.assign(state, initialState());
       if (state.rememberCredentials === true) {
@@ -285,13 +292,14 @@ export default {
           label: agentReasonCodeList[i].reasonLabel,
           state: AGENT_STATES.NOT_READY,
           reasonCode: agentReasonCodeList[i].reasonCode,
-          userSelectable: true
+          userSelectable: true,
         });
       }
     },
     SET_DISPLAY_LABELS(state, [auxMap, reasonCodeMap]) {
-      logger.log("auxCodes" + JSON.stringify(auxMap));
+      console.log("auxCodes" + JSON.stringify(auxMap));
       state.agentStateDisplayLabelMap = auxMap;
+
       state.agentReasonCodeDisplayLabelMap = reasonCodeMap;
     },
     SET_AGENT_LOGIN_CREDENTIALS(state, credentials) {
@@ -319,6 +327,8 @@ export default {
       if (payload.state === AGENT_STATES.NOT_READY) {
         state.displayLabel = state.agentReasonCodeDisplayLabelMap[payload.reasonCode];
       } else {
+        console.log("payload.state=", payload.state);
+        console.log("display label is ==================" + state.agentStateDisplayLabelMap[payload.state]);
         state.displayLabel = state.agentStateDisplayLabelMap[payload.state];
       }
     },
@@ -327,6 +337,6 @@ export default {
     },
     RESET_MONITOR_AGENT_INTERVAL_HANDLE(state) {
       state.monitorAgentInterval = null;
-    }
-  }
+    },
+  },
 };

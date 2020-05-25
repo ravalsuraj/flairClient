@@ -1,5 +1,4 @@
 import { SOCKET_EVENTS } from "@/defines.js";
-import logger from "@/services/logger";
 function initialState() {
   return {
     dialedDigits: null
@@ -39,10 +38,10 @@ export default {
             dialedDigits: getters.getDialedDigits
           };
 
-          logger.log("requestOutboundCall(): request=" + JSON.stringify(request));
+          console.log("requestOutboundCall(): request=" + JSON.stringify(request));
           try {
             this._vm.$socket.emit(SOCKET_EVENTS.MAKE_CALL, request, resp => {
-              logger.log("requestOutboundCall(): resp=" + JSON.stringify(resp));
+              console.log("requestOutboundCall(): resp=" + JSON.stringify(resp));
               resolve(resp);
             });
           } catch (err) {

@@ -106,7 +106,7 @@ export default {
         case CALL_STATES.TALKING:
         case CALL_STATES.HELD:
           if (newCallStatus === CALL_STATES.DROPPED) {
-            this.serverLog("timer changed from talking to dropped");
+            console.log("timer changed from talking to dropped");
             this.showWidget = true;
             this.showTimer = true;
             this.$store.dispatch("startTimer", "acwTimer");

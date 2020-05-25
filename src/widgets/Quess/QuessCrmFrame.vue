@@ -1,10 +1,6 @@
 <template>
   <widget :title="'CRM: ' + crmUrl" fillHeight height="100%">
-    <template v-slot:toolbar>
-      <!-- <mdb-btn size="sm" class="btn-circle" @click.native="loadDefaultCrmUrl"
-        ><mdb-icon icon="home"> </mdb-icon
-      ></mdb-btn> -->
-    </template>
+    <template v-slot:toolbar> </template>
     <template v-slot:body>
       <div class="wrapper ">
         <iframe :src="crmUrl" class="w-100 fl_crm_window"></iframe>
@@ -16,9 +12,9 @@
 <script>
 import { CALL_STATES } from "@/defines";
 import Widget from "@/components/agc/Widget";
-// import { mdbBtn, mdbIcon } from "mdbvue";
+
 export default {
-  name: "CrmFrame",
+  name: "QuessCrmFrame",
   components: {
     Widget
     // mdbBtn,
@@ -26,11 +22,7 @@ export default {
   },
   props: {},
   mounted() {
-    if (this.crmUrl == "") {
-      this.crmUrl = this.CRM_URL;
-    } else {
-      this.serverLog("crmURL is not blank so not setting anything. crmUrl=" + this.crmUrl);
-    }
+    this.crmUrl = this.defaultUrl;
   },
   data() {
     return {
@@ -51,7 +43,7 @@ export default {
   },
   computed: {
     defaultUrl() {
-      return this.$store.getters["session/getConfig"].DGFT.CRM_URL + "/";
+      return this.$store.getters["session/getConfig"].QUESS.CRM.URL;
     },
     autoShowWidget() {
       return (
@@ -80,13 +72,9 @@ export default {
     },
 
     CRM_URL() {
-      if (this.$store.getters.getSelectedDgftCrmUrl) {
-        return this.$store.getters.getSelectedDgftCrmUrl;
-      } else {
-        return this.defaultUrl;
-      }
+      // modify this computed property to pop the CRM URL as needed:
 
-      // }
+      return this.$store.getters.getSelectedQuessCrmUrl;
     }
   },
   watch: {

@@ -6,21 +6,21 @@
           <mdb-row class="no-gutters">
             <mdb-col :col="cardWidth">
               <mdb-row>
-                <mdb-col col="7" class="mb-3 d-flex">
+                <mdb-col col="12" class="mb-3 d-flex">
                   <span strong class="fl_well_text big mx-auto">{{ callingAddress }}</span>
-                  <span v-if="isCallConferenced" strong class="fl_well_text big mx-auto">{{ thirdAddress }}</span>
+                  <span v-if="isCallConferenced" strong class="fl_well_text mx-auto">{{ thirdAddress }}</span>
                 </mdb-col>
-                <mdb-col col="5" class="mb-3 text-center">
-                  <persist-timer :timerName="callTimerName" class="fl_well_text big"></persist-timer>
+                <mdb-col col="12" class="mb-3 text-center">
+                  <persist-timer :timerName="callTimerName" class="fl_well_text"></persist-timer>
                 </mdb-col>
               </mdb-row>
 
               <mdb-row>
                 <mdb-col col="7" class="mb-3 d-flex">
-                  <span strong class="fl_well_text big mx-auto">{{ callStatusText }}</span>
+                  <span strong class="fl_well_text mx-auto">{{ callStatusText }}</span>
                 </mdb-col>
                 <mdb-col col="5" class="mb-3 text-center">
-                  <persist-timer :timerName="inStateTimerName" class="fl_well_text big"></persist-timer>
+                  <persist-timer :timerName="inStateTimerName" class="fl_well_text"></persist-timer>
                 </mdb-col>
               </mdb-row>
             </mdb-col>
@@ -29,12 +29,12 @@
             <!-- START: Answer/Drop Button -->
             <mdb-col>
               <mdb-row>
-                <mdb-col col="3">
+                <mdb-col col="4">
                   <transition name="fade">
                     <mdb-btn
                       v-if="!isCallHeld"
                       type="button"
-                      class="btn btn-circle"
+                      class="btn btn-circle btn-lg"
                       outline="red"
                       @click="answerDropCall"
                       :disabled="isCallIdle"
@@ -49,11 +49,11 @@
                 <!-- END: Answer/Drop Button -->
 
                 <!-- START: Hold Button -->
-                <mdb-col col="3">
+                <mdb-col col="4">
                   <transition name="fade">
                     <mdb-btn
                       type="checkbox"
-                      class="btn btn-circle"
+                      class="btn btn-circle btn-lg"
                       :disabled="!isCallActive"
                       @click="holdUnholdCall"
                       :outline="holdButtonOutline"
@@ -65,10 +65,10 @@
                 <!--END: Hold Button-->
 
                 <!-- START: Conference Button -->
-                <mdb-col col="3">
+                <mdb-col col="4">
                   <mdb-btn
                     type="checkbox"
-                    class="btn btn-circle"
+                    class="btn btn-circle btn-lg"
                     outline="deep-orange"
                     @click="showConferenceModal = true"
                     v-if="!isCallHeld && !isCallRinging"
@@ -163,7 +163,7 @@ export default {
     if (this.otherCalls.length === 1) {
       this.callIdToBeConferenced = this.otherCalls[0].callId;
     } else {
-      this.serverLog("not setting callIdToBeConferenced");
+      console.log("not setting callIdToBeConferenced");
     }
   },
   props: {
@@ -208,8 +208,9 @@ export default {
         };
         this.$store.dispatch("requestTransferCall", transferRequest);
       } else {
-        this.serverLog(
-          "skipping transfer call. this.callId=" + this.callId + "callIdToBeConferenced=" + this.callIdToBeConferenced
+        console.log(
+          "skipping transfer call. this.callId=" + this.callId + "callIdToBeConferenced=",
+          this.callIdToBeConferenced
         );
       }
     },
@@ -221,8 +222,9 @@ export default {
         };
         this.$store.dispatch("requestConferenceCall", transferRequest);
       } else {
-        this.serverLog(
-          "skipping conference call. this.callId=" + this.callId + "callIdToBeConferenced=" + this.callIdToBeConferenced
+        console.log(
+          "skipping conference call. this.callId=" + this.callId + "callIdToBeConferenced=",
+          this.callIdToBeConferenced
         );
       }
     }
@@ -366,7 +368,7 @@ export default {
       immediate: true,
       deep: true,
       handler: function(newCallStatus, oldCallStatus) {
-        this.serverLog(
+        console.log(
           "CallCardOutbound(): watcher - callStatus: newCallStatus=" +
             newCallStatus +
             ", oldCallStatus=" +
@@ -382,7 +384,7 @@ export default {
             break;
           case CALL_STATES.TALKING:
           case CALL_STATES.HELD:
-            this.serverLog("CallCardOutbound(): watcher - callStatus:  calling stop and start timer for instateTimer");
+            console.log("CallCardOutbound(): watcher - callStatus:  calling stop and start timer for instateTimer");
 
             this.$store.dispatch("startTimer", this.inStateTimerName);
             break;
@@ -406,7 +408,7 @@ export default {
   padding-right: 10px;
   padding-left: 10px;
   font-family: "Unica One", sans-serif;
-  font-size: 1.2em;
+  font-size: 1.5em;
 }
 
 .fl_well_text.sm {
@@ -414,8 +416,8 @@ export default {
 }
 
 .fl_well_text.big {
-  font-size: 1.3em;
-  font-weight: 300;
+  font-size: 2em;
+  font-weight: bolder;
   align-self: center;
 }
 

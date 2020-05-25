@@ -1,10 +1,8 @@
 <template>
-  <widget title="DGFT Helper">
+  <widget title="Quess Helper">
     <template v-slot:body>
       <mdb-container fluid>
-        <h4
-          v-if="!inboundCallList || (inboundCallList && inboundCallList.length === 0)"
-        >Waiting for calls</h4>
+        <h4 v-if="!inboundCallList || (inboundCallList && inboundCallList.length === 0)">Waiting for calls</h4>
         <select
           class="browser-default custom-select mb-5"
           v-model="dropdownSelectedCallId"
@@ -18,34 +16,25 @@
           <h3 class="text-center">{{ inboundCallList[0] }}</h3>
         </div>
 
-        <dl class="row mb-1 no-gutters fl_dl" v-for="(value, name) in dgftUui" :key="value.id">
+        <dl class="row mb-1 no-gutters fl_dl" v-for="(value, name) in quessUui" :key="value.id">
           <dt class="col-sm-6 fl_dt">{{ name }}</dt>
           <dd class="col-sm-6 fl_dd">{{ value }}</dd>
         </dl>
-        <div class="w-100">
-          <mdb-btn
-            v-if="inboundCallList && inboundCallList.length > 0"
-            color="green"
-            class="mx-auto btn-block"
-            @click.native="onSurveyTransferBtnClicked"
-          >Transfer to Survey</mdb-btn>
-        </div>
       </mdb-container>
     </template>
   </widget>
 </template>
 
 <script>
-import { mdbContainer, mdbBtn } from "mdbvue";
-import { AGENT_STATES, CALL_STATES } from "@/defines.js";
+import { mdbContainer } from "mdbvue";
+import { AGENT_STATES } from "@/defines.js";
 import Widget from "@/components/agc/Widget";
 
 export default {
-  name: "DgftHelper",
+  name: "QuessHelper",
   components: {
     Widget,
-    mdbContainer,
-    mdbBtn
+    mdbContainer
   },
   mounted() {},
   props: {},
@@ -84,40 +73,24 @@ export default {
     agentState() {
       return this.$store.getters["getAgentState"];
     },
-    dgftUui() {
+    quessUui() {
       let callIndex = this.inboundCallList.indexOf(this.selectedCallId);
-      let dgftuui = {};
-      if (callIndex > -1) {
-        //   return {
-        //     UCID: this.selectedCall.ucid,
-        //     uniqueID: "1234",
-        //     lang: "en",
-        //     RMN: "YES",
-        //     IEC: "YES",
-        //     ConplaintNo: "1234",
-        //     LastShortCode: "A1001"
-        //   };
-        dgftuui = this.$store.getters.getDgftUuiByCallIndex(callIndex);
-        let readableShortCodes = this.$store.getters["session/getConfig"].DGFT
-          .IVR_SHORT_CODES;
-        if (readableShortCodes[dgftuui["LastShortCode"]]) {
-          dgftuui["LastShortCode"] =
-            readableShortCodes[dgftuui["LastShortCode"]];
-        }
-      }
-      return dgftuui;
+      // if (callIndex > -1) {
+      //   return {
+      //     UCID: this.selectedCall.ucid,
+      //     uniqueID: "1234"
+      //   };
+      // }
+      return this.$store.getters.getQuessUuiByCallIndex(callIndex);
     },
-    dgftUuiKeys() {
-      return this.$store.getters["session/getConfig"].DGFT.UUI_KEYS;
+    quessUuiKeys() {
+      return this.$store.getters["session/getConfig"].QUESS.UUI_KEYS;
     }
   },
 
   methods: {
     toggleShowWidget() {
       this.showWidget = !this.showWidget;
-    },
-    onSurveyTransferBtnClicked() {
-      this.$store.dispatch("requestDgftSurveyIvrTransfer", this.selectedCallId);
     }
   },
   watch: {
@@ -126,62 +99,39 @@ export default {
       if (newInCallList.length > this.currentInboundCallList.length) {
         this.currentInboundCallList.push(this.latestCallId);
         if (this.selectedCall.callingAddress.length > 5) {
-          this.$store.dispatch("processNewDgftCall", this.latestCallId);
+          this.$store.dispatch("processNewQuessCall", this.latestCallId);
         } else {
-          this.serverLog(
-            "caller length < 5, so this call was not processed. callId=" +
-              this.latestCallId
-          );
+          console.log("caller length < 5, so this call was not processed. callId=" + this.latestCallId);
         }
       }
 
       //if the call list decreases, it means a call was dropped, so reset the screenpop URL
       else if (newInCallList.length < this.currentInboundCallList.length) {
-        this.serverLog("DgftHelper/watch(inboundCallList): call was removed");
+        console.log("QuessHelper/watch(inboundCallList): call was removed");
         let droppedCalls = this.currentInboundCallList.filter(function(el) {
           return newInCallList.indexOf(el) < 0;
         });
-        this.serverLog(
-          "DgftHelper/watch(inboundCallList): droppedCalls=" + droppedCalls
-        );
+        console.log("QuessHelper/watch(inboundCallList): droppedCalls=" + droppedCalls);
         /*****************************************************************************************
          * Assumption: only one call will drop at a time. if multiple calls get dropped in a
          * single watch state, we will need to add the logic
          *****************************************************************************************/
-        const droppedCallIndex = this.currentInboundCallList.indexOf(
-          droppedCalls[0]
-        );
-        this.serverLog(
-          "DgftHelper/watch(inboundCallList): droppedCallIndex=" +
-            droppedCallIndex
-        );
+        const droppedCallIndex = this.currentInboundCallList.indexOf(droppedCalls[0]);
+        console.log("QuessHelper/watch(inboundCallList): droppedCallIndex=" + droppedCallIndex);
         if (droppedCalls.length === 1) {
           this.currentInboundCallList.splice(droppedCallIndex, 1);
-          this.$store.dispatch("processDgftCallCleared", droppedCallIndex);
+          this.$store.dispatch("processQuessCallCleared", droppedCallIndex);
         } else {
-          this.$store.dispatch("processDgftCallCleared", droppedCallIndex);
+          this.$store.dispatch("processQuessCallCleared", droppedCallIndex);
         }
       } else {
-        this.serverLog(
-          "Dgfthelper/watch(allCalls): call list remained the same. new length=" +
-            newInCallList.length
-        );
+        console.log("QuessHelper/watch(allCalls): call list remained the same. new length=" + newInCallList.length);
       }
     },
     agentState(newAgentState) {
       if (newAgentState === AGENT_STATES.READY) {
-        if (this.selectedCallId && this.selectedCall) {
-          if (this.selectedCall.status === CALL_STATES.DROPPED) {
-            this.$store.dispatch(
-              "processDgftCallCleared",
-              this.$store.getters.getCallIndexByCallId(this.selectedCallId)
-            );
-            this.$store.dispatch("disposeDgftCall", {
-              callId: this.selectedCallId,
-              ucid: this.selectedCall.ucid
-            });
-          }
-        }
+        if (this.selectedCallId && this.selectedCall)
+          this.$store.dispatch("disposeQuessCall", { callId: this.selectedCallId, ucid: this.selectedCall.ucid });
       }
     }
   }

@@ -18,7 +18,7 @@ import { CALL_STATES } from "@/defines";
 import Widget from "@/components/agc/Widget";
 // import { mdbBtn, mdbIcon } from "mdbvue";
 export default {
-  name: "CrmFrame",
+  name: "DgftCrmFrame",
   components: {
     Widget
     // mdbBtn,
@@ -47,7 +47,7 @@ export default {
   },
   computed: {
     defaultUrl() {
-      return this.$store.getters["session/getConfig"].DGFT.CRM_URL + "/";
+      return this.$store.getters["session/getConfig"].DGFT.CRM.URL + "/";
     },
     autoShowWidget() {
       return (
@@ -97,7 +97,6 @@ export default {
 <style scoped>
 .fl_crm_window {
   border: none;
-  /* height: 600px; */
 }
 
 .wrapper {

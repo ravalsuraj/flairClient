@@ -19,6 +19,14 @@ export const AGENT_STATES = Object.freeze({
   }
 });
 
+export const CHAT_STATES = Object.freeze({
+  UNKNWON: "0",
+  REQUESTED: "1",
+  ACTIVE: "2",
+  CLOSED: "3"
+});
+
+
 export const RESPONSE_CODES = Object.freeze({
   SUCCESS: "0"
 });

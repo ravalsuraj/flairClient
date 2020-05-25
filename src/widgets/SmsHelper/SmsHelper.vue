@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { mdbContainer } from "mdbvue";
+import { mdbContainer , mdbBtn} from "mdbvue";
 import { CALL_STATES } from "@/defines.js";
 import Widget from "@/components/agc/Widget";
 
@@ -30,7 +30,8 @@ export default {
   name: "SmsHelper",
   components: {
     Widget,
-    mdbContainer
+    mdbContainer,
+    mdbBtn
   },
   mounted() {},
   props: {},
