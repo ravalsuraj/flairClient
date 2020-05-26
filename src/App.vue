@@ -23,7 +23,6 @@
 </template>
 
 <script>
-
 import TopNavbar from "@/views/TopNavbar";
 import LoginPage from "@/views/Login";
 import BottomFooter from "@/views/BottomFooter.vue";
@@ -69,6 +68,7 @@ export default {
       this.$store.dispatch("setSocketStateDisconnected");
     }
   },
+
   mounted() {
     this.$store.dispatch("session/addWindowRefreshReloadListener");
     // this.$store.dispatch('authenticateCrm').then(() => {
@@ -81,7 +81,6 @@ export default {
           JSON.stringify(this.$refs.topNavBar.clientHeight)
       );
     }
-    this.$store.dispatch("session/loadConfigurations");
   },
   methods: {},
   computed: {
@@ -96,7 +95,12 @@ export default {
       }
     }
   },
+  beforeCreate() {
+    this.$store.dispatch("session/loadConfigurations");
+  },
   beforeMount() {
+    // this.$store.dispatch("session/loadConfigurations");
+
     this.activeItem = this.$route.matched[0].props.default.page;
   }
   // mixins: [waves]

@@ -10,13 +10,13 @@
       ></chat-header>
     </div>
     <zoom-y-transition>
-      <div v-if="isChatActive" class="d-flex flex-column h-100 flex-grow-1 p-3">
+      <div v-if="isChatActive" class="d-flex flex-column h-100 flex-grow-1 m-3">
         <chat-body :chatId="chatId"></chat-body>
         <!-- <hr class="agc-separator" /> -->
         <div class="interactive-response" v-if="isLastMessageInteractive">
           <chip-response v-if="isLastMessageInteractive" :message="lastMessage"></chip-response>
         </div>
-
+        <chat-settings></chat-settings>
         <user-entry :chatId="chatId"></user-entry>
       </div>
       <div v-if="isChatRequested" class="d-flex flex-column mt-3 text-center">
@@ -67,6 +67,7 @@ import ChatHeader from "./ChatHeader.vue";
 import ChatBody from "./ChatBody.vue";
 import UserEntry from "./UserEntry.vue";
 import ChipResponse from "./../Responses/ChipResponse";
+import ChatSettings from "./ChatSettings";
 import { CHAT_STATES } from "@/defines";
 import {
   mdbCard,
@@ -96,6 +97,7 @@ export default {
   components: {
     ChatHeader,
     ChatBody,
+    ChatSettings,
     UserEntry,
     ChipResponse,
     ZoomYTransition,
