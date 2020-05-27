@@ -21,7 +21,7 @@
         <ZoomYTransition origin="top right">
           <div
             class="agc-chat-history-container white p-3 black-text z-depth-2 mx-auto"
-            v-if="showChatHistory"
+            v-if="showHistory"
           >
             <p class="pb-3 h5">Interaction History</p>
             <mdb-list-group class="pb-3">
@@ -59,7 +59,8 @@ export default {
   props: {
     minimized: Boolean,
     chatterName: String,
-    interactionHistory: Array
+    interactionHistory: Array,
+    showHistory: Boolean
   },
   data() {
     return {

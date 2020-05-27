@@ -262,6 +262,14 @@ footer {
   line-height: 1.428571429;
   border-radius: 50% !important;
 }
+.btn-circle.btn-md {
+  width: 32px;
+  height: 32px;
+  padding: 10px 16px;
+  font-size: 14px;
+  line-height: 1.33;
+  border-radius: 25px;
+}
 .btn-circle.btn-lg {
   width: 40px;
   height: 40px;

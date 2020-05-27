@@ -1,6 +1,6 @@
 {
     "FLAIR_AWS_PORT": 8000,
-    "FLAIR_SERVER_URL": "https://agc-socket-server.herokuapp.com",
+    "FLAIR_SERVER_URL": "http://agc-socket-server.herokuapp.com",
     "SERVER_TIMEOUT_MS": 20000,
     "CRM_TIMEOUT_MS": 10000,
     "ALLOW_OUTBOUND_DIALING": true,
@@ -86,13 +86,7 @@
         "width": "3",
         "widgets": [
             {
-                "name": "quick-links"
-            },
-            {
-                "name": "sms-helper"
-            },
-            {
-                "name": "agent-call-statistics"
+                "name": "chat-disposition"
             }
         ]
     }
