@@ -86,13 +86,7 @@
         "width": "3",
         "widgets": [
             {
-                "name": "quick-links"
-            },
-            {
-                "name": "sms-helper"
-            },
-            {
-                "name": "agent-call-statistics"
+                "name": "chat-disposition"
             }
         ]
     }
