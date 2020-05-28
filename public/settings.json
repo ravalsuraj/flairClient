@@ -101,6 +101,12 @@
         "widgets": [
             {
                 "name": "chat-disposition"
+            },
+            {
+                "name": "call-details"
+            },
+            {
+                "name": "menu-traversal"
             }
         ]
     }
