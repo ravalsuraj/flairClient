@@ -116,6 +116,7 @@ export default {
     async updateAgentNotes({ commit, getters }, notes) {
       commit("UPDATE_AGENT_NOTES", notes);
       let req = { AgentNotes: notes, ucid: getters.getActiveCallUcid }
+      console.log(getters.getActiveCallUcid)
       let resp = await api.insertCallDetail(req)
       console.log("agent not update response " + JSON.stringify(resp.data))
     },

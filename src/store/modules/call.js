@@ -457,11 +457,37 @@ const actions = {
     });
   },
   async selectCallRecord({ getters }) {
-    console.log('hi')
+    console.log('selectCallRecord')
+    let ucid=getters.getActiveCallUcid;
+    getters.getCallByUcid(ucid);
+    console.log(getters.cli)
     let req = {  cli: getters.cli }
     let resp = await api.selectCallDetail(req)
     console.log("agent not update response " + JSON.stringify(resp.data))
-  }
+    return resp.data
+  },
+  async insertCallRecord({  getters }) {
+   // commit("UPDATE_AGENT_NOTES", notes);let ucid=getters.getActiveCallUcid;
+   console.log('insertCallRecord')
+    let ucid=getters.getActiveCallUcid;
+        console.log(ucid)
+        let callid=getters.getActiveCallCallId;
+        console.log(callid)
+    let call=getters.getCallByUcid(ucid);
+    console.log(call)
+    let cli=call.callingAddress;
+    // let callEndTime=call.callEndTime;
+    // let callStartTime=call.callStartTime;
+    // let cli="call.cli";
+    let callEndTime="call.callEndTime";
+    let callStartTime="call.callStartTime";
+    let agent=getters.getAgentCredentials.agentId;
+    console.log(cli)
+    getters.getCallByUcid(ucid);
+    let req = {  "cli": cli,"ucid":ucid,"starttime":callStartTime,"endtime":callEndTime,"agent":agent }
+    let resp = await api.insertCallDetail(req)
+    console.log("agent not update response " + JSON.stringify(resp.data))
+  },
 };
 
 const mutations = {

@@ -71,6 +71,9 @@
             },
             {
                 "name": "agent-call-statistics"
+            },
+            {
+                "name": "agent-note"
             }
         ]
     },
