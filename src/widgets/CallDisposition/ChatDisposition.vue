@@ -83,29 +83,29 @@ export default {
       dispositionCategories: [
         {
           label: "Promotional Offers",
-          value: "a"
+          value: "promo_offers"
         },
         {
           label: "Service Request",
-          value: "b"
+          value: "service_request"
         },
         {
           label: "Technical Support",
-          value: "c"
+          value: "tech_support"
         }
       ],
       dispositionSubCategories: {
-        a: [
+        promo_offers: [
           { label: "4G Pack Pack", value: "a" },
           { label: "Social Media Pack", value: "b" },
           { label: "Special offers", value: "c" }
         ],
-        b: [
+        service_request: [
           { label: "Balance Request", value: "a" },
           { label: "BCash Query", value: "b" },
           { label: "Mobile Financing", value: "b" }
         ],
-        c: [
+        tech_support: [
           { label: "APN Settings", value: "a" },
           { label: "My BL App", value: "b" },
           { label: "Other Tech Support", value: "c" }
