@@ -38,7 +38,7 @@ export default {
 
   data() {
     return {
-      smsContentType: "",
+      smsContentType: "0",
       message: [
         "Dear Customer, your feedback is valuable to us. Please visit https://tinyurl.com/y44tb3sm",
         "Dear customer, to reset your password, please visit http://dummyurl.com/resetPassword",
