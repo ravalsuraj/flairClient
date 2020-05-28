@@ -1,5 +1,5 @@
 <template>
-  <span id="time">{{time}}</span>
+  <persist-timer timer-name="loginTimer"></persist-timer>
 </template>
 
 <style>
@@ -9,58 +9,52 @@
 </style>
 
 <script>
-import { AGENT_STATES } from "@/defines.js";
+import { AGENT_STATES, TIMER_STATES } from "@/defines.js";
+import PersistTimer from "@/components/agc/PersistTimer.vue";
 
 export default {
   name: "LoginTimer",
+  components: {
+    PersistTimer
+  },
   data() {
-    return {
-      state: "started",
-      startTime: Date.now(),
-      currentTime: Date.now(),
-      interval: null
-    };
+    return {};
+  },
+  beforeMount() {
+    this.$store.dispatch("addUpTimer", "loginTimer");
   },
   mounted() {},
   destroyed() {},
   computed: {
-    time() {
-      return this.hours + ":" + this.minutes + ":" + this.seconds;
-    },
-    milliseconds() {
-      return this.currentTime - this.$data.startTime;
-    },
-    hours() {
-      var lapsed = this.milliseconds;
-      var hrs = Math.floor(lapsed / 1000 / 60 / 60);
-      return hrs >= 10 ? hrs : "0" + hrs;
-    },
-    minutes() {
-      var lapsed = this.milliseconds;
-      var min = Math.floor((lapsed / 1000 / 60) % 60);
-      return min >= 10 ? min : "0" + min;
-    },
-    seconds() {
-      var lapsed = this.milliseconds;
-      var sec = Math.ceil((lapsed / 1000) % 60);
-      return sec >= 10 ? sec : "0" + sec;
-    },
-
-    callStatus() {
-      return this.$store.getters.getAgent.status;
+    agentStatus() {
+      return this.$store.getters.getAgent.agentState;
     }
   },
   watch: {
-    agentStatus(newAgentStatus) {
-      console.log("Agent Status Changed to:" + newAgentStatus);
-      if (newAgentStatus === AGENT_STATES.LOG_IN) {
-        this.reset();
-        this.interval = setInterval(this.updateCurrentTime, 1000);
-      } else if (newAgentStatus === AGENT_STATES.LOG_OUT) {
-        this.reset();
-        clearInterval(this.interval);
-      } else {
-        // this.reset();
+    agentStatus: {
+      immediate: true,
+      handler: function(newAgentStatus) {
+        console.log("Agent Status Changed to:" + newAgentStatus);
+        if (newAgentStatus === AGENT_STATES.LOG_IN) {
+          console.log("-----------","1")
+          console.log("+++++++++++",this.$store.getters.getTimerStatus("loginTimer"))
+          if (
+            this.$store.getters.getTimerStatus("loginTimer") !==
+            TIMER_STATES.START
+          ) {
+            this.$store.dispatch("startTimer", "loginTimer");
+            console.log("Timer started");
+          } else {
+            console.log(
+              "skipping startTimer(login timer) since timer is already running "
+            );
+          }
+        } else if (newAgentStatus === AGENT_STATES.LOG_OUT) {
+          this.$store.dispatch("removeTimer", "loginTimer");
+          console.log("Timer stopped");
+        } else {
+          // this.reset();
+        }
       }
     }
   },

@@ -104,7 +104,7 @@ export default {
   opacity: 0.5;
 }
 .agc-chat-settings-btn {
-  font-size: 0.75em;
+  
   border-radius: 28px;
   font-weight: bold;
 }

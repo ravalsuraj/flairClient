@@ -8,25 +8,10 @@
 
         <dl class="row mb-0 no-gutters text-justify">
           <dd class="col">Time since Login</dd>
-          <dd class="col">00:38:45</dd>
-         
+          <dd class="col">
+            <login-timer></login-timer>
+          </dd>
         </dl>
-        <mdb-row>
-          <mdb-col col="lg-8 sm-12 md-6">Time since Login</mdb-col>
-          <mdb-col><persist-timer timer-name="login-timer"></persist-timer></mdb-col>
-        </mdb-row>
-        <mdb-row>
-          
-            <button class="mdb-color pl-5 pt-3 my-2" @click="startLoginTimer">
-              Start Timer
-            </button>
-
-            <button class="mdb-color pl-5 pt-3 my-2" @click="stopLoginTimer">
-              Stop Timer
-            </button>
-          
-
-        </mdb-row>
 
         <dl class="row mb-0 no-gutters text-justify">
           <dd class="col">Total Time On Calls</dd>
@@ -77,6 +62,8 @@
           <dd class="col">Hold Count</dd>
           <dd class="col">1</dd>
         </dl>
+        <button @click="pauseLoginTimer">Pause</button>
+        <button @click="resumeLoginTimer">Resume</button>
       </mdb-container>
     </template>
   </widget>
@@ -85,6 +72,7 @@
 <script>
 import { AGENT_STATES, CALL_STATES } from "@/defines";
 import { mdbContainer } from "mdbvue";
+import LoginTimer from "./LoginTimer.vue";
 
 import Widget from "@/components/agc/Widget";
 
@@ -92,23 +80,20 @@ export default {
   name: "AgentCallStats",
   components: {
     Widget,
-    mdbContainer
+    mdbContainer,
+    LoginTimer
   },
   props: {},
   data() {
     return {};
   },
-  beforeMount(){
-    this.$store.dispatch('addUpTimer','login-timer')
-  },
+  beforeMount() {},
   methods: {
-     startLoginTimer(){
-         
-         this.$store.dispatch('startTimer','login-timer')
+    pauseLoginTimer(){
+      this.$store.dispatch("pauseTimer", "loginTimer");
     },
-
-    stopLoginTimer(){
-      this.$store.dispatch('stopTimer','login-timer')
+    resumeLoginTimer(){
+      this.$store.dispatch("resumeTimer", "loginTimer");
     }
   },
   computed: {
@@ -148,10 +133,9 @@ export default {
   text-align: center;
 }
 
-.dummy{
-  background : red;
-  height : 20px;
-  width:100px ;
-
+.dummy {
+  background: red;
+  height: 20px;
+  width: 100px;
 }
 </style>

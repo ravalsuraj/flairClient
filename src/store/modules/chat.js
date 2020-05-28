@@ -218,10 +218,25 @@ export default {
     },
     getChatIndexById: (state) => (chatId) => {
       return state.chatIds.indexOf(chatId);
+// TODO: fix chat Index ID
+
     },
     getMessageList: (state) => (chatId) => {
       return state.chatSessions[state.chatIds.indexOf(chatId)].messageList;
     },
+
+
+    /*
+getMessageList: function(state){
+return  function(chatId) {
+      return state.chatSessions[state.chatIds.indexOf(chatId)].messageList;
+    },
+
+} 
+
+
+
+    */
     getMessageListLength: (state) => (chatId) => {
       return state.chatSessions[state.chatIds.indexOf(chatId)].messageList.length;
     },

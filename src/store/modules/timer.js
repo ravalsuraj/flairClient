@@ -22,13 +22,18 @@ export default {
 
         //Persist Timer Mutations:
         ADD_UP_TIMER(state, timerName) {
-            let newTimer = {
-                state: TIMER_STATES.STOP,
-                direction: TIMER_DIRECTIONS.UP,
-                refTime: new Date().getTime()
-            };
-            state.timerList.push(timerName)
-            state.timers.push(newTimer)
+
+            if (state.timerList.indexOf(timerName) < 0) {
+                let newTimer = {
+                    state: TIMER_STATES.STOP,
+                    direction: TIMER_DIRECTIONS.UP,
+                    refTime: new Date().getTime()
+                };
+                state.timerList.push(timerName)
+                state.timers.push(newTimer)
+                console.log("ADD_UP_TIMER: TIMER CREATED. timerName=" + timerName)
+            }
+
 
         },
 
@@ -70,6 +75,7 @@ export default {
                 state.timers[index].refTime = new Date().getTime();
                 state.timers[index].state = 1;
             } else {
+
                 console.log("START_TIMER(): skipping, since timer does not exist in state. timerName=" + timerName)
             }
 
@@ -77,8 +83,14 @@ export default {
 
         PAUSE_TIMER(state, timerName) {
             let index = state.timerList.indexOf(timerName)
-            state.timers[index].refTime = new Date().getTime();
-            state.timers[index].state = 2;
+            // state.timers[index].refTime = new Date().getTime();
+            state.timers[index].state = TIMER_STATES.PAUSE;
+        },
+
+        RESUME_TIMER(state, timerName) {
+            let index = state.timerList.indexOf(timerName)
+            state.timers[index].state = TIMER_STATES.START;
+
         },
         RESTART_TIMER(state, timerName) {
             let index = state.timerList.indexOf(timerName)
@@ -97,8 +109,20 @@ export default {
         removeTimer({ commit }, timerName) {
             commit('REMOVE_TIMER', timerName)
         },
-        startTimer({ commit }, timerName) {
-            commit("START_TIMER", timerName);
+        startTimer({ commit, getters }, timerName) {
+            if (getters.getTimer(timerName)) {
+                commit("START_TIMER", timerName);
+            } else {
+                commit("ADD_UP_TIMER", timerName);
+                commit("START_TIMER", timerName);
+            }
+
+        },
+        pauseTimer({ commit }, timerName) {
+            commit("PAUSE_TIMER", timerName);
+        },
+        resumeTimer({ commit }, timerName) {
+            commit("RESUME_TIMER", timerName);
         },
 
         stopTimer({ commit }, timerName) {
@@ -117,8 +141,14 @@ export default {
             return state.timerList.indexOf(timerName)
         },
         getTimerStatus: (state) => (timerName) => {
-            console.log("getters.getTimerStatus=" + state[timerName].status)
-            return state[timerName].status
+            const index = state.timerList.indexOf(timerName)
+            if (index > -1) {
+                console.log("getters.getTimerStatus=" + state.timers[index].state)
+                return state.timers[index].state
+            } else {
+                return null
+            }
+
         },
 
         getTimerExpiry: (state) => (timerName) => {

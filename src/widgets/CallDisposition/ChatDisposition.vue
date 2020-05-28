@@ -12,7 +12,7 @@
         >Dispose Chat for {{getChatterName(chatSessions[0]) }}</div>
         <div v-if="chatSessions.length>1">
           <select class="browser-default custom-select mb-3" v-model="selectedChatSession">
-            <option selected :value="null" disabled>Select Disposition Reason</option>
+            <option selected :value="null" disabled>Select Chat Session</option>
             <option
               selected
               :value="chat"
@@ -33,7 +33,7 @@
               :value="item.value"
               v-for="(item, i) in dispositionCategories"
               :key="i"
-              style="font-size:2em"
+              
             >{{item.label}}</option>
           </select>
           <!-- <label class>Outcome</label> -->
