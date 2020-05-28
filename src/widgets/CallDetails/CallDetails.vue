@@ -92,9 +92,9 @@ export default {
     uuiLabels() {
       return this.$store.state.uui.labels;
     },
-    callerData() {
-      return this.$store.getters.getCallerData;
-    },
+    // callerData() {
+    //   return this.$store.getters.getCallerData;
+    // },
     uuiElements() {
       return this.$store.getters.getUui;
     }

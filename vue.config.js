@@ -5,12 +5,15 @@ const env = "development"; // 'development' or 'production'
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 
 const development = {
+  publicPath: "http://localhost:9443/flair-client",
+
   devServer: {
-    //open: process.platform === 'darwin',
+    open: process.platform === "darwin",
     port: 9091, // CHANGE YOUR PORT HERE!
     https: false,
-    disableHostCheck: true
-  }
+    disableHostCheck: true,
+    proxy: "http://localhost:9443/flair-client",
+  },
 };
 
 const production = {
@@ -20,16 +23,16 @@ const production = {
     port: 9091, // CHANGE YOUR PORT HERE!
     https: false,
     disableHostCheck: true,
-    proxy: "https://localhost:9091"
+    proxy: "https://localhost:9091",
   },
   configureWebpack: {
-    plugins: [new BundleAnalyzerPlugin({ reportFilename: "FlairTreeMap" })]
-  }
+    plugins: [new BundleAnalyzerPlugin({ reportFilename: "FlairTreeMap" })],
+  },
 };
 
 const config = {
   development,
-  production
+  production,
 };
 
 module.exports = config[env];

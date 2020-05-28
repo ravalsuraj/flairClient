@@ -9,6 +9,6 @@ export default {
     return axios.get("/flairserverip");
   },
   getConfig() {
-    return axios.get("./settings.json");
+    return axios.get("./flair-client/settings.json");
   },
 };

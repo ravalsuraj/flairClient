@@ -1,9 +1,9 @@
 <template>
   <widget :title="'CRM Frame'" fillHeight height="100%">
     <template v-slot:toolbar>
-      <!-- <mdb-btn size="sm" class="btn-circle" @click.native="loadDefaultCrmUrl"
-        ><mdb-icon icon="home"> </mdb-icon
-      ></mdb-btn>-->
+      <!-- <mdb-btn size="sm" class="btn-circle" @click.native="loadDefaultCrmUrl">
+        <mdb-icon icon="home"></mdb-icon>
+      </mdb-btn>-->
     </template>
     <template v-slot:body>
       <div class="wrapper">
@@ -47,7 +47,7 @@ export default {
   },
   computed: {
     defaultUrl() {
-      return "http://192.168.29.247:4000"
+      return this.$store.getters["session/getConfig"].BASE_CRM_URL;
     },
     autoShowWidget() {
       return (
@@ -89,7 +89,7 @@ export default {
           this.agentCredentials.agentId
         );
       } else {
-        return "http://192.168.29.247:4000/";
+        return this.defaultUrl;
       }
       //   if (this.$store.getters.getBaseCrmUrl) {
       //     return this.$store.getters.getBaseCrmUrl;
