@@ -11,7 +11,7 @@
 
           <!-- <label>Call Reason</label> -->
           <select class="browser-default custom-select mb-3" v-model="disposition">
-            <option selected value="null"> Select Disposition Reason</option>
+            <option selected value="null">Select Disposition Reason</option>
             <option value="1">Account Inquiry</option>
             <option value="2">Product Information</option>
             <option value="3">Technical Support</option>
@@ -24,7 +24,7 @@
             <option value="2">Transfered to IVR</option>
             <option value="3">Disconnected</option>
           </select>
-          <mdb-btn block color="mdb-color" @click="disposeCall">Dispose</mdb-btn>
+          <mdb-btn block color="mdb-color" @click="onDisposeChatButtonClick">Dispose</mdb-btn>
         </div>
         <div v-else>
           <h4 class="grey-text">Available when call ends</h4>
@@ -50,7 +50,8 @@ export default {
   mounted() {},
   props: {
     ucid: null,
-    callId: null
+    callId: null,
+    chatId: String
   },
 
   data() {
@@ -84,16 +85,30 @@ export default {
 
       // }
       //this.$store.dispatch('requestCallDisposition')
-      this.$store.dispatch("removeCallFromActiveCalls", [this.ucid, this.callId]);
+      this.$store.dispatch("removeCallFromActiveCalls", [
+        this.ucid,
+        this.callId
+      ]);
     }
   },
 
   computed: {
     call() {
-      return this.$store.getters.getCallByCallId(this.callId);
+      if (this.callId) {
+        return this.$store.getters.getCallByCallId(this.callId);
+      } else {
+        return null;
+      }
+    },
+    activeChatSessions() {
+      return null;
     },
     callStatus() {
-      return this.call.status;
+      if (this.call) {
+        return this.call.status;
+      } else {
+        return null;
+      }
     },
     isAgentInAcw() {
       return this.callStatus === CALL_STATES.DROPPED;

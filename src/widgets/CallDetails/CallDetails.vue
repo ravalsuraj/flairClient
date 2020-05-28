@@ -39,7 +39,49 @@ export default {
   },
   props: {},
   data() {
-    return { showWidget: true };
+    return {
+      showWidget: true,
+      uui: [
+        {
+          key: "Current Call Time",
+          value: ""
+        },
+        {
+          key: "CLI",
+          value: ""
+        },
+        {
+          key: "UCID",
+          value: ""
+        },
+        {
+          key: "Collected Digits",
+          value: "-"
+        },
+        {
+          key: "Split/Skill",
+          value: ""
+        }
+      ],
+      callerData: [
+        {
+          key: "Name",
+          value: "Suraj Raval"
+        },
+        {
+          key: "RMN",
+          value: "8879708222"
+        },
+        {
+          key: "Account No.",
+          value: "987698769876"
+        },
+        {
+          key: "Account Type",
+          value: "Savings"
+        }
+      ]
+    };
   },
   methods: {
     toggleShowWidget() {
@@ -50,9 +92,9 @@ export default {
     uuiLabels() {
       return this.$store.state.uui.labels;
     },
-    callerData() {
-      return this.$store.getters.getCallerData;
-    },
+    // callerData() {
+    //   return this.$store.getters.getCallerData;
+    // },
     uuiElements() {
       return this.$store.getters.getUui;
     }

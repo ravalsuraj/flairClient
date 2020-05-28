@@ -8,7 +8,7 @@
               <!-- First row of the call card -->
               <mdb-row>
                 <!-- Participant display -->
-                <mdb-col col="12" class="mb-3 d-flex">
+                <mdb-col col="12" class="mb-1 d-flex">
                   <span strong class="fl_well_text big mx-auto">{{ callingAddress }}</span>
                   <span
                     v-if="isCallConferenced"
@@ -18,19 +18,19 @@
                 </mdb-col>
 
                 <!-- Total Call Timer -->
-                <mdb-col col="12" class="mb-3 text-center">
+                <mdb-col col="12" class="mb-1 text-center">
                   <persist-timer :timerName="callTimerName" class="fl_well_text"></persist-timer>
                 </mdb-col>
               </mdb-row>
 
               <mdb-row>
                 <!-- Call Status Display -->
-                <mdb-col col="6" class="mb-3 d-flex">
+                <mdb-col col="6" class="mb-1 d-flex">
                   <span strong class="fl_well_text mx-auto">{{ callStatusText }}</span>
                 </mdb-col>
 
                 <!-- Call State Timer -->
-                <mdb-col col="6" class="mb-3 text-center">
+                <mdb-col col="6" class="mb-1 text-center">
                   <persist-timer :timerName="inStateTimerName" class="fl_well_text"></persist-timer>
                 </mdb-col>
               </mdb-row>
@@ -38,79 +38,81 @@
 
             <!--START: Inbound Call Controls-->
             <mdb-col>
-              <mdb-row>
-                <!-- START: Answer/Drop Button -->
-                <mdb-col col="4">
-                  <transition name="fade">
-                    <mdb-btn
-                      v-if="!isCallHeld"
-                      type="button"
-                      class="btn btn-circle btn-lg"
-                      @click="answerDropCall"
-                      :disabled="isCallIdle"
-                      :class="[{ iconGlow: isCallRinging }]"
-                      :outline="answerButtonOutline"
-                    >
-                      <transition name="fade">
-                        <mdb-icon icon="phone" style="font-size:1em" v-if="isCallRinging" />
-                        <mdb-icon icon="phone-slash" style="font-size:1em" v-else />
-                      </transition>
-                    </mdb-btn>
-                  </transition>
-                </mdb-col>
-                <!-- END: Answer/Drop Button -->
+              <mdb-container>
+                <mdb-row>
+                  <!-- START: Answer/Drop Button -->
+                  <mdb-col col="4">
+                    <transition name="fade">
+                      <mdb-btn
+                        v-if="!isCallHeld"
+                        type="button"
+                        class="btn btn-circle btn-md"
+                        @click="answerDropCall"
+                        :disabled="isCallIdle"
+                        :class="[{ iconGlow: isCallRinging }]"
+                        :outline="answerButtonOutline"
+                      >
+                        <transition name="fade">
+                          <mdb-icon icon="phone" style="font-size:1em" v-if="isCallRinging" />
+                          <mdb-icon icon="phone-slash" style="font-size:1em" v-else />
+                        </transition>
+                      </mdb-btn>
+                    </transition>
+                  </mdb-col>
+                  <!-- END: Answer/Drop Button -->
 
-                <!-- START: Hold Button -->
-                <mdb-col col="4">
-                  <transition name="fade">
+                  <!-- START: Hold Button -->
+                  <mdb-col col="4">
+                    <transition name="fade">
+                      <mdb-btn
+                        type="checkbox"
+                        class="btn btn-circle btn-md"
+                        :disabled="!isCallActive"
+                        @click="holdUnholdCall"
+                        :outline="holdButtonOutline"
+                      >
+                        <mdb-icon :icon="isCallHeld ? 'play' : 'pause'" style="font-size:1em" />
+                      </mdb-btn>
+                    </transition>
+                  </mdb-col>
+                  <!--END: Hold Button-->
+
+                  <!--START: Consult Call Button-->
+                  <mdb-col col="4">
                     <mdb-btn
                       type="checkbox"
-                      class="btn btn-circle btn-lg"
-                      :disabled="!isCallActive"
-                      @click="holdUnholdCall"
-                      :outline="holdButtonOutline"
+                      class="btn btn-circle btn-md"
+                      outline="deep-orange"
+                      v-if="!isCallConferenced && !isCallHeld"
+                      @click.native="showConferenceModal = true"
+                      :class="{ fl_disabledWidget: !isCallActive }"
                     >
-                      <mdb-icon :icon="isCallHeld ? 'play' : 'pause'" style="font-size:1em" />
+                      <mdb-icon icon="users" style="font-size:1em" color="red" />
                     </mdb-btn>
-                  </transition>
-                </mdb-col>
-                <!--END: Hold Button-->
 
-                <!--START: Consult Call Button-->
-                <mdb-col col="4">
-                  <mdb-btn
-                    type="checkbox"
-                    class="btn btn-circle btn-lg"
-                    outline="deep-orange"
-                    v-if="!isCallConferenced && !isCallHeld"
-                    @click.native="showConferenceModal = true"
-                    :class="{ fl_disabledWidget: !isCallActive }"
-                  >
-                    <mdb-icon icon="users" style="font-size:1em" color="red" />
-                  </mdb-btn>
-
-                  <!--START: Consult Call Dialer Modal-->
-                  <mdb-modal
-                    style="{max-width:250px !important}"
-                    size="sm"
-                    v-if="showConferenceModal"
-                    @close="showConferenceModal = false"
-                  >
-                    <mdb-modal-header>
-                      <mdb-modal-title>Consult Call</mdb-modal-title>
-                    </mdb-modal-header>
-                    <mdb-modal-body>
-                      <consult-dialer
-                        :ucid="ucid"
-                        :callId="callId"
-                        @close-self="showConferenceModal = false"
-                      ></consult-dialer>
-                    </mdb-modal-body>
-                  </mdb-modal>
-                  <!--END: Consult Call Dialer Modal-->
-                </mdb-col>
-                <!--END: Consult Call Button-->
-              </mdb-row>
+                    <!--START: Consult Call Dialer Modal-->
+                    <mdb-modal
+                      style="{max-width:250px !important}"
+                      size="sm"
+                      v-if="showConferenceModal"
+                      @close="showConferenceModal = false"
+                    >
+                      <mdb-modal-header>
+                        <mdb-modal-title>Consult Call</mdb-modal-title>
+                      </mdb-modal-header>
+                      <mdb-modal-body>
+                        <consult-dialer
+                          :ucid="ucid"
+                          :callId="callId"
+                          @close-self="showConferenceModal = false"
+                        ></consult-dialer>
+                      </mdb-modal-body>
+                    </mdb-modal>
+                    <!--END: Consult Call Dialer Modal-->
+                  </mdb-col>
+                  <!--END: Consult Call Button-->
+                </mdb-row>
+              </mdb-container>
             </mdb-col>
           </mdb-row>
         </mdb-container>
@@ -209,7 +211,7 @@ export default {
       return TIMER_TYPES.IN_STATE_TIMER + "_" + this.callId;
     },
     cardWidth() {
-      return this.$store.getters.getCalls.length > 2 ? "md-12" : "md-8";
+      return this.$store.getters.getCalls.length > 2 ? "md-12" : "md-12";
     },
 
     allOngoingCalls() {

@@ -83,7 +83,7 @@ export default {
     },
 
     REMOVE_CHAT_SESSION(state, chatId) {
-      const index = state.chadIds.indexOf(chatId);
+      const index = state.chatIds.indexOf(chatId);
       if (index > -1) {
         state.chatSessions.splice(index, 1);
       } else {
@@ -103,6 +103,11 @@ export default {
     TOGGLE_CHAT_WINDOW(state, index) {
       state.chatSessions[index].show = !state.chatSessions[index].show;
     },
+    SET_CHAT_STATE_ENDED(state, chatId) {
+      const index = state.chatIds.indexOf(chatId);
+      state.chatSessions[index].state = CHAT_STATES.ENDED;
+    },
+
     SET_CHAT_STATE_ACTIVE(state, chatId) {
       const index = state.chatIds.indexOf(chatId);
       state.chatSessions[index].state = CHAT_STATES.ACTIVE;
@@ -176,9 +181,24 @@ export default {
 
       commit("SET_CHAT_STATE_ACTIVE", chatId);
     },
-    rejectChatRequest({ commit }, chatId) {
+    rejectChatRequest({ dispatch }, chatId) {
+      dispatch("destroyChatSession", chatId);
+    },
+    destoryChatSession({ commit }, chatId) {
       commit("SET_CHAT_STATE_CLOSED", chatId);
       commit("REMOVE_CHAT_SESSION", chatId);
+    },
+    setChatStateClosed({ commit }, chatId) {
+      commit("SET_CHAT_STATE_CLOSED", chatId);
+    },
+    emitEndChatRequest({ dispatch }, chatId) {
+      console.log("emitEndChatRequest(): dispatching action. chatId=" + chatId);
+      this._vm.$socket.emit("END_CHAT_SESSION", { chatId: chatId }, (response) => {
+        console.log("END_CHAT_SESSION() response=" + JSON.stringify(response));
+        if (response.responseCode === "0") {
+          dispatch("setChatStateClosed", chatId);
+        }
+      });
     },
   },
   getters: {

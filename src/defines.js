@@ -15,37 +15,36 @@ export const AGENT_STATES = Object.freeze({
     "4": "READY",
     "5": "WORK_NOT_READY",
     "6": "WORK_READY",
-    "7": "BUSY"
-  }
+    "7": "BUSY",
+  },
 });
 
 export const CHAT_STATES = Object.freeze({
   UNKNWON: "0",
   REQUESTED: "1",
   ACTIVE: "2",
-  CLOSED: "3"
+  ENDED: "3",
 });
 
-
 export const RESPONSE_CODES = Object.freeze({
-  SUCCESS: "0"
+  SUCCESS: "0",
 });
 
 export const TIMER_STATES = Object.freeze({
   STOP: 0,
   START: 1,
   PAUSE: 2,
-  RESET: 3
+  RESET: 3,
 });
 
 export const TIMER_DIRECTIONS = Object.freeze({
   UP: "UP",
-  DOWN: "DOWN"
+  DOWN: "DOWN",
 });
 
 export const TIMER_TYPES = Object.freeze({
   CALL_TIMER: "CT",
-  IN_STATE_TIMER: "ST"
+  IN_STATE_TIMER: "ST",
 });
 // States according to Avaya: [Login, Ready, Not Ready, Wrap-Up, Pending States]
 export const CALL_STATES = Object.freeze({
@@ -67,28 +66,28 @@ export const CALL_STATES = Object.freeze({
     "101": "INUSE",
     "102": "DROPPED",
     "103": "UNKNOWN",
-    "106": "CREATED"
-  }
+    "106": "CREATED",
+  },
 });
 
 export const CALL_TYPES = Object.freeze({
   INBOUND: "1",
   CONSULTED: "2",
   OUTBOUND: "3",
-  UNKNOWN: "99"
+  UNKNOWN: "99",
 });
 
 export const MULTI_CALL_STATES = Object.freeze({
   SINGLE: "1",
   CONSULTED: "2",
   TRANSFERED: "3",
-  CONFERENCED: "4"
+  CONFERENCED: "4",
 });
 
 export const SOCKET_STATES = Object.freeze({
   CONNECTED: "CONNECTED",
   CONNECTING: "CONNECTING",
-  DISCONNECTED: "DISCONNECTED"
+  DISCONNECTED: "DISCONNECTED",
 });
 
 export const MESSAGE_TYPES = Object.freeze({
@@ -99,7 +98,7 @@ export const MESSAGE_TYPES = Object.freeze({
   TELE_RES: "TR",
 
   EVNT_CMD: "EC",
-  EVNT_RES: "ER"
+  EVNT_RES: "ER",
 });
 
 export const SOCKET_EVENTS = Object.freeze({
@@ -141,9 +140,9 @@ export const SOCKET_EVENTS = Object.freeze({
 
   AGENT_STATE_UPDATED: "AGTUPDATED",
 
-  DGFT_IVR_TRANSFER: "DGFTIVRTRANSFER"
+  DGFT_IVR_TRANSFER: "DGFTIVRTRANSFER",
 });
 
 export default {
-  RESPONSE_CODES
+  RESPONSE_CODES,
 };

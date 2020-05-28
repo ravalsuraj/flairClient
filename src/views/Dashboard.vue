@@ -166,6 +166,7 @@ import {
 import CallDrawer from "@/views/CallDrawer.vue";
 import ConsultDialer from "@/widgets/Dialer/ConsultDialer.vue";
 import CallDisposition from "@/widgets/CallDisposition/CallDisposition.vue";
+import ChatDisposition from "@/widgets/CallDisposition/ChatDisposition.vue";
 
 import CallHistory from "@/widgets/CallHistory/CallHistory.vue";
 import CallDetails from "@/widgets/CallDetails/CallDetails.vue";
@@ -192,6 +193,7 @@ export default {
     DgftCrmFrame,
     QuickLinks,
     CallDisposition,
+    ChatDisposition,
     AgentCallStatistics,
     MenuTraversal,
     BaseCrmFrame,
@@ -303,6 +305,6 @@ export default {
 .agc-floating-toggle {
   position: absolute;
   bottom: 50px;
-  right:50px;
+  right: 50px;
 }
 </style>

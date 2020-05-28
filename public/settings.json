@@ -3,10 +3,25 @@
     "FLAIR_SERVER_URL": "http://localhost:7071",
     "SERVER_TIMEOUT_MS": 20000,
     "CRM_TIMEOUT_MS": 10000,
+    "BASE_CRM_URL": "http://localhost:4000",
     "ALLOW_OUTBOUND_DIALING": true,
     "AGENT_STATE_POLLING_INTERVAL_MS": 1000,
     "INTERNAL_NUMBERS_MAX_LENGTH": 6,
     "OUTCALLING_REASON_CODE": 1,
+    "QUICK_LINK_LIST": [
+        {
+            "label": "SFDC",
+            "href": "http://login.salesforce.com"
+        },
+        {
+            "label": "Finnacle",
+            "href": "http://login.salesforce.com"
+        },
+        {
+            "label": "Google",
+            "href": "http://google.com"
+        }
+    ],
     "QUESS": {
         "CRM": {
             "URL": "http://192.168.230.75/QuessPop/Default.aspx"
@@ -91,13 +106,7 @@
         "width": "3",
         "widgets": [
             {
-                "name": "quick-links"
-            },
-            {
-                "name": "sms-helper"
-            },
-            {
-                "name": "agent-call-statistics"
+                "name": "chat-disposition"
             }
         ]
     }

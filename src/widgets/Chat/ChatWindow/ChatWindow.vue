@@ -1,5 +1,5 @@
 <template>
-  <mdb-card class="agc-chat-window d-flex flex-column z-depth-3 rounded" :style="style_width">
+  <mdb-card class="agc-chat-window d-flex flex-column z-depth-3 rounded" :style="chatWidthStyle">
     <div class="agc-chat-header cyan py-3">
       <chat-header
         @close="toggleChatWindow"
@@ -7,55 +7,27 @@
         :minimized="minimized"
         :chatter-name="chatterName"
         :interaction-history="interactionHistory"
+        :show-history="showHistory"
       ></chat-header>
     </div>
     <zoom-y-transition>
-      <div v-if="isChatActive" class="d-flex flex-column h-100 flex-grow-1 p-3">
-        <chat-body :chatId="chatId"></chat-body>
-        <!-- <hr class="agc-separator" /> -->
-        <div class="interactive-response" v-if="isLastMessageInteractive">
-          <chip-response v-if="isLastMessageInteractive" :message="lastMessage"></chip-response>
-        </div>
-
-        <user-entry :chatId="chatId"></user-entry>
+      <div v-if="isChatActive" class="d-flex flex-column h-100 flex-grow-1 m-3">
+        <chat-active-view :chatId="chatId"></chat-active-view>
       </div>
+
       <div v-if="isChatRequested" class="d-flex flex-column mt-3 text-center">
-        <div class="h3 pb-5">Chat Requested from {{chatterName}}</div>
-
-        <!-- <mdb-breadcrumb>
-          <mdb-breadcrumb-item>
-            <a href="#">{{interaction}}</a>
-          </mdb-breadcrumb-item>
-        </mdb-breadcrumb>-->
-        <h3 class="pb-3">Interaction History</h3>
-        <div style="height:180px;overflow:auto">
-          <mdb-list-group class="pb-3">
-            <mdb-list-group-item
-              style="text-align: left !important;"
-              v-for="(interaction, i) in interactionHistory"
-              :key="i"
-            >{{i+'. '+ interaction}}</mdb-list-group-item>
-          </mdb-list-group>
-        </div>
-
-        <mdb-container style>
-          <mdb-row class="mx-3 my-4">
-            <mdb-col col="6">
-              <mdb-btn
-                class="btn-block"
-                color="success"
-                @click.native="onAcceptChatButtonClicked"
-              >Accept</mdb-btn>
-            </mdb-col>
-            <mdb-col col="6">
-              <mdb-btn
-                class="btn-block"
-                color="danger"
-                @click.native="onRejectChatButtonClicked"
-              >Reject</mdb-btn>
-            </mdb-col>
-          </mdb-row>
-        </mdb-container>
+        <chat-requested-view
+          :interaction-history="interactionHistory"
+          :chatter-name="chatterName"
+          :chatId="chatId"
+        ></chat-requested-view>
+      </div>
+      <div v-if="isChatClosed" class="d-flex flex-column mt-3 text-center">
+        <chat-ended-view
+          :interaction-history="interactionHistory"
+          :chatter-name="chatterName"
+          :chatId="chatId"
+        ></chat-ended-view>
       </div>
     </zoom-y-transition>
   </mdb-card>
@@ -64,9 +36,9 @@
 <script>
 import { ZoomYTransition } from "vue2-transitions";
 import ChatHeader from "./ChatHeader.vue";
-import ChatBody from "./ChatBody.vue";
-import UserEntry from "./UserEntry.vue";
-import ChipResponse from "./../Responses/ChipResponse";
+import ChatRequestedView from "./ChatRequestedView";
+import ChatActiveView from "./ChatActiveView";
+import ChatEndedView from "./ChatEndedView";
 import { CHAT_STATES } from "@/defines";
 import {
   mdbCard,
@@ -90,14 +62,17 @@ export default {
   },
   data() {
     return {
-      minimized: false
+      minimized: false,
+      showHistory: false
     };
   },
   components: {
     ChatHeader,
-    ChatBody,
-    UserEntry,
-    ChipResponse,
+
+    ChatRequestedView,
+    ChatActiveView,
+    ChatEndedView,
+
     ZoomYTransition,
     mdbCard,
     mdbCardHeader,
@@ -117,16 +92,10 @@ export default {
     },
     toggleChatMinimized() {
       this.minimized = !this.minimized;
-    },
-    onAcceptChatButtonClicked() {
-      this.$store.dispatch("acceptChatRequest", this.chatId);
-    },
-    onRejectChatButtonClicked() {
-      this.$store.dispatch("rejectChatRequest", this.chatId);
     }
   },
   computed: {
-    style_width() {
+    chatWidthStyle() {
       return "width: " + this.width + "px";
     },
     chatSession() {
@@ -137,11 +106,14 @@ export default {
     },
     isChatActive() {
       console.log("thischatstate=", this.chatSession.state);
-      console.log("CHAT_STATES>ACTIVE=", CHAT_STATES.ACTIVE);
+
       return this.chatSession.state == CHAT_STATES.ACTIVE;
     },
     isChatRequested() {
       return this.chatSession.state == CHAT_STATES.REQUESTED;
+    },
+    isChatClosed() {
+      return this.chatSession.state == CHAT_STATES.CLOSED;
     },
     chatterName() {
       return (
@@ -149,23 +121,6 @@ export default {
         " " +
         this.chatSession.participant.lastName
       );
-    },
-    messageList() {
-      return this.$store.getters.getMessageList(this.chatId);
-    },
-    lastMessage() {
-      if (this.messageList.length > 0) {
-        return this.messageList[this.messageList.length - 1];
-      } else {
-        return null;
-      }
-    },
-    isLastMessageInteractive() {
-      if (this.messageList.length > 0) {
-        return this.lastMessage.isInteractive;
-      } else {
-        return false;
-      }
     }
   }
 };

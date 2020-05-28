@@ -1,7 +1,7 @@
 <template>
   <section>
     <mdb-container fluid v-if="myCalls && myCalls.length > 0" class="mx-0 w-100">
-      <carousel :perPage="1">
+      <!-- <carousel :perPage="1">
         <slide v-for="call in myCalls" :key="call.callId">
           <call-card-inbound
             v-if="!isCallDropped(call) && isCallTypeInbound(call)"
@@ -21,9 +21,10 @@
             :callId="call.callId"
             class="py-4"
           ></quess-disposition>
+          
         </slide>
-      </carousel>
-      <!-- <mdb-row>
+      </carousel>-->
+      <mdb-row>
         <mdb-col :col="cardWidth" v-for="call in myCalls" :key="call.callId" class="px-0">
           <call-card-inbound
             v-if="!isCallDropped(call) && isCallTypeInbound(call)"
@@ -37,7 +38,7 @@
           ></call-card-outbound>
           <quess-disposition v-if="isCallDropped(call)" :ucid="call.ucid" :callId="call.callId"></quess-disposition>
         </mdb-col>
-      </mdb-row>-->
+      </mdb-row>
     </mdb-container>
     <div class="float-right" end v-else>
       <dialer-toggle></dialer-toggle>
@@ -57,7 +58,7 @@ import QuessDisposition from "@/widgets/Quess/QuessDisposition.vue";
 import { Carousel, Slide } from "vue-carousel";
 
 import { CALL_STATES, CALL_TYPES } from "@/defines.js";
-import { mdbContainer } from "mdbvue";
+import { mdbContainer, mdbCol, mdbRow } from "mdbvue";
 export default {
   name: "CallDrawer",
   components: {
@@ -65,8 +66,8 @@ export default {
     CallCardOutbound,
     QuessDisposition,
     DialerToggle,
-    // mdbRow,
-    // mdbCol,
+    mdbRow,
+    mdbCol,
     mdbContainer,
 
     Carousel,
@@ -109,7 +110,7 @@ export default {
       return this.$store.getters.getCalls;
     },
     cardWidth() {
-      return this.myCalls.length > 2 ? "lg-3" : "lg-5";
+      return this.myCalls.length > 2 ? "lg-3" : "lg-3";
     }
   },
   watch: {

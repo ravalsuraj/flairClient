@@ -1,5 +1,5 @@
 C<template>
-  <div class="p-1 d-flex align-items-center agc-user-entry-area">
+  <div class="m-1 d-flex align-items-center agc-user-entry-area">
     <!-- <v-textarea
       class="px-2"
       no-resize
@@ -14,6 +14,7 @@ C<template>
       @keydown.enter.prevent
     ></v-textarea>-->
     <!-- <mdb-input outline type="textarea" @input="input" class="w-100 agc-user-entry-input" /> -->
+
     <textarea
       class="w-100 agc-user-entry-input m-0 px-4 py-2 m-3"
       @keydown.enter="handleEnter"
@@ -91,7 +92,8 @@ export default {
 }
 .agc-chat-btn-send {
   width: 50px;
-  height:40px;
+  height: 40px;
   font-size: 1em;
 }
+
 </style>

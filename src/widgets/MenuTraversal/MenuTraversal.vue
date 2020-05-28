@@ -84,7 +84,7 @@ export default {
   },
   computed: {
     isCallActive() {
-      let callStatus = this.$store.getters.getCallStatus;
+      let callStatus = this.$store.getters.getCallByIndex(0).status;
       return (
         callStatus === CALL_STATES.TALKING ||
         callStatus === CALL_STATES.HELD ||
