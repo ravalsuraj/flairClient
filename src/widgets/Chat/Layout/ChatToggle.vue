@@ -28,13 +28,13 @@
 import ChatList from "@/widgets/Chat/Layout/ChatList.vue";
 import { ScaleTransition } from "vue2-transitions";
 import {
-  mdbCard,
-  mdbCardHeader,
-  mdbCardBody,
+  // mdbCard,
+  // mdbCardHeader,
+  // mdbCardBody,
   mdbBtn,
-  mdbIcon,
-  mdbTooltip,
-  mdbBadge
+  mdbIcon
+  // mdbTooltip,
+  // mdbBadge
 } from "mdbvue";
 
 export default {
@@ -42,13 +42,13 @@ export default {
   components: {
     ChatList,
     ScaleTransition,
-    mdbCard,
-    mdbCardHeader,
-    mdbCardBody,
+    // mdbCard,
+    // mdbCardHeader,
+    // mdbCardBody,
     mdbBtn,
-    mdbIcon,
-    mdbTooltip,
-    mdbBadge
+    mdbIcon
+    // mdbTooltip,
+    // mdbBadge
   },
   data() {
     return {
