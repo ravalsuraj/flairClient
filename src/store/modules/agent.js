@@ -1,4 +1,5 @@
 import { AGENT_STATES, SOCKET_EVENTS } from "@/defines";
+import api from "@/services/api"
 
 function initialState() {
   return {
@@ -15,6 +16,7 @@ function initialState() {
     fullAuxCodeList: [],
     agentStateDisplayLabelMap: null,
     agentReasonCodeDisplayLabelMap: null,
+    agentNotes: ""
   };
 }
 
@@ -98,7 +100,12 @@ export default {
       clearInterval(getters.getMonitorAgentHandle);
       commit("RESET_MONITOR_AGENT_INTERVAL_HANDLE");
     },
-
+    async updateAgentNotes({ commit, getters }, notes) {
+      commit("UPDATE_AGENT_NOTES", notes);
+      let req = { AgentNotes: notes, ucid: getters.getActiveCallUcid }
+      let resp = await api.insertCallDetail(req)
+      console.log("agent not update response " + JSON.stringify(resp.data))
+    },
     setAgentState({ commit }, agentState) {
       commit("SET_AGENT_STATE", agentState);
     },
@@ -338,5 +345,8 @@ export default {
     RESET_MONITOR_AGENT_INTERVAL_HANDLE(state) {
       state.monitorAgentInterval = null;
     },
+    UPDATE_AGENT_NOTES(state, notes) {
+      state.agentNotes = notes;
+    }
   },
 };

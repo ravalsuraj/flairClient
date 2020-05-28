@@ -183,6 +183,7 @@ import QuickLinks from "@/widgets/QuickLinks/QuickLinks.vue";
 import SmsHelper from "@/widgets/SmsHelper/SmsHelper.vue";
 
 import ChatToggle from "@/widgets/Chat/Layout/ChatToggle.vue";
+import AgentNote from "@/widgets/AgentNote/AgentNote.vue";
 
 export default {
   name: "Dashboard",
@@ -214,7 +215,8 @@ export default {
     mdbCardText,
     mdbIcon,
     mdbTbl,
-    mdbInput
+    mdbInput,
+    AgentNote
   },
   data() {
     return {
