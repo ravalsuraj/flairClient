@@ -3,7 +3,7 @@
     "FLAIR_SERVER_URL": "https://agc-socket-server.herokuapp.com",
     "SERVER_TIMEOUT_MS": 20000,
     "CRM_TIMEOUT_MS": 10000,
-    "BASE_CRM_URL": "http://localhost:4000",
+    "BASE_CRM_URL": "./crm.html",
     "ALLOW_OUTBOUND_DIALING": true,
     "AGENT_STATE_POLLING_INTERVAL_MS": 1000,
     "INTERNAL_NUMBERS_MAX_LENGTH": 6,
@@ -76,24 +76,11 @@
         }
     ],
     "leftComponents": {
-        "width": "3",
-        "widgets": [
-            {
-                "name": "quick-links"
-            },
-            {
-                "name": "sms-helper"
-            },
-            {
-                "name": "agent-call-statistics"
-            },
-            {
-                "name": "agent-note"
-            }
-        ]
+        "width": "0",
+        "widgets": []
     },
     "middleComponents": {
-        "width": "6",
+        "width": "10",
         "widgets": [
             {
                 "name": "base-crm-frame"
@@ -101,13 +88,10 @@
         ]
     },
     "rightComponents": {
-        "width": "3",
+        "width": "2",
         "widgets": [
             {
                 "name": "chat-disposition"
-            },
-            {
-                "name": "menu-traversal"
             }
         ]
     }
