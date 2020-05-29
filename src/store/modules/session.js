@@ -37,7 +37,7 @@ export default {
   },
   actions: {
     loadConfigurations({ commit }) {
-      return axios.get("./flair-client/settings.json").then((response) => {
+      return axios.get("./settings.json").then((response) => {
         console.log("settings loaded. settings=", response.data);
         commit("LOAD_CONFIG_FILE", response.data);
       });

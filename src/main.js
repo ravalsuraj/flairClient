@@ -55,7 +55,7 @@ api
   .getConfig()
   .then((resp) => {
     console.log("resp=" + JSON.stringify(resp.data));
-    if (resp.data.responseCode === "0") {
+    if (resp.data) {
       serverIp = resp.data.FLAIR_SERVER_URL;
       initVue();
       console.log("main.js execution complete. using server URL=" + serverIp);
