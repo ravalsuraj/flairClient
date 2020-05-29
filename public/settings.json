@@ -80,15 +80,13 @@
         "widgets": [
             {
                 "name": "quick-links"
-               
             },
             {
                 "name": "sms-helper"
             },
             {
                 "name": "agent-call-statistics"
-            }
-            ,
+            },
             {
                 "name": "agent-note"
             }
@@ -107,6 +105,9 @@
         "widgets": [
             {
                 "name": "chat-disposition"
+            },
+            {
+                "name": "menu-traversal"
             }
         ]
     }

@@ -55,7 +55,7 @@ import CallCardInbound from "@/widgets/CallControl/CallCardInbound.vue";
 import CallCardOutbound from "@/widgets/CallControl/CallCardOutbound.vue";
 import DialerToggle from "@/widgets/Dialer/DialerToggle.vue";
 import QuessDisposition from "@/widgets/Quess/QuessDisposition.vue";
-import { Carousel, Slide } from "vue-carousel";
+// import { Carousel, Slide } from "vue-carousel";
 
 import { CALL_STATES, CALL_TYPES } from "@/defines.js";
 import { mdbContainer, mdbCol, mdbRow } from "mdbvue";
@@ -68,10 +68,10 @@ export default {
     DialerToggle,
     mdbRow,
     mdbCol,
-    mdbContainer,
+    mdbContainer
 
-    Carousel,
-    Slide
+    // Carousel,
+    // Slide
   },
 
   props: {},

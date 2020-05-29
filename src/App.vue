@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column py-0 my-0">
+  <div class="d-flex flex-column py-0 my-0" id="app">
     <div ref="topNavBar">
       <top-navbar v-if="isAgentLoggedIn" class></top-navbar>
     </div>

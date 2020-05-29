@@ -1,6 +1,13 @@
 <template>
-  <widget title="Menu Traversal">
+  <widget title="IVR Traversal">
     <template v-slot:body>
+      <!--<mdb-list-group class="pb-3" v-if="isCallActive">
+        <mdb-list-group-item
+          v-for="(interaction, i) in ivrTraversal"
+          :key="i"
+        >{{i+'. '+interaction}}</mdb-list-group-item>
+      </mdb-list-group>-->
+
       <mdb-row class="no-gutters" v-if="isCallActive">
         <mdb-col>
           <mdb-tbl sm bordered scrollY maxHeight="150px">
@@ -49,7 +56,9 @@ import {
   mdbContainer,
   mdbTbl,
   mdbTblHead,
-  mdbTblBody
+  mdbTblBody,
+  mdbListGroup,
+  mdbListGroupItem
 } from "mdbvue";
 import Widget from "@/components/agc/Widget";
 import { CALL_STATES } from "@/defines.js";
@@ -64,7 +73,10 @@ export default {
 
     mdbTbl,
     mdbTblHead,
-    mdbTblBody
+    mdbTblBody,
+
+    mdbListGroup,
+    mdbListGroupItem
   },
   props: {},
   data() {
@@ -74,7 +86,15 @@ export default {
       callerRMN: "+919876512345",
       callerAccountNo: "1234512345",
       callerTransferReason: "TPIN Generate",
-      callerLanguage: "English"
+      callerLanguage: "English",
+      ivrTraversal: [
+        "Language Selection",
+        "Main Menu",
+        "Account Services",
+        "Savings Account Services",
+        "TPIN Validation",
+        "Account Balance"
+      ]
     };
   },
   methods: {
@@ -84,12 +104,16 @@ export default {
   },
   computed: {
     isCallActive() {
-      let callStatus = this.$store.getters.getCallByIndex(0).status;
-      return (
-        callStatus === CALL_STATES.TALKING ||
-        callStatus === CALL_STATES.HELD ||
-        callStatus === CALL_STATES.RINGING
-      );
+      if (this.$store.getters.getCallByIndex(0)) {
+        let callStatus = this.$store.getters.getCallByIndex(0).status;
+        return (
+          callStatus === CALL_STATES.TALKING ||
+          callStatus === CALL_STATES.HELD ||
+          callStatus === CALL_STATES.RINGING
+        );
+      } else {
+        return false;
+      }
     }
   }
 };
