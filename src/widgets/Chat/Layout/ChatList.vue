@@ -21,7 +21,7 @@
         <span class="chat-avatar mr-1">PR</span>
         <!-- <span class="chat-avatar mr-1">{{chat.participant.initials}}</span> -->
         <!-- <img></img> -->
-        <span class="h5">{{chat.participant.firstName+' '+chat.participant.lastName}}</span>
+        <span class="h5">{{chat.participant.firstName+''+chat.participant.lastName}}</span>
       </mdb-list-group-item>
     </mdb-list-group>
   </div>
