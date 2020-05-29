@@ -18,6 +18,7 @@
         class="my-2 pr-5 chat-list-item d-flex justify-content-start z-depth-5"
         @click.native="toggleChatWindow(chat.chatId)"
       >
+        <!--test-->
         <span class="chat-avatar mr-1">PR</span>
         <!-- <span class="chat-avatar mr-1">{{chat.participant.initials}}</span> -->
         <!-- <img></img> -->
