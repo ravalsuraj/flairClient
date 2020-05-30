@@ -73,7 +73,7 @@ api
         console.log("main.js initialized");
       });
     } else {
-      logger.error("could not fetch server ip address");
+      console.error("could not fetch server ip address");
     }
   })
   .catch(() => {

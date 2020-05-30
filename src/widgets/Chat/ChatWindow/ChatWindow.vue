@@ -8,6 +8,7 @@
         :chatter-name="chatterName"
         :interaction-history="interactionHistory"
         :show-history="showHistory"
+        :chat-id="chatId"
       ></chat-header>
     </div>
     <zoom-y-transition>
@@ -116,11 +117,15 @@ export default {
       return this.chatSession.state == CHAT_STATES.CLOSED;
     },
     chatterName() {
-      return (
-        this.chatSession.participant.firstName +
-        " " +
-        this.chatSession.participant.lastName
-      );
+      if (this.chatSession.participant.firstName) {
+        return (
+          this.chatSession.participant.firstName +
+          " " +
+          this.chatSession.participant.lastName
+        );
+      } else {
+        return this.chatSession.participant.phoneNumber;
+      }
     }
   }
 };

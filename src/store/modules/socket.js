@@ -2,7 +2,7 @@ import { SOCKET_EVENTS, SOCKET_STATES } from "@/defines.js";
 
 function initialState() {
   return {
-    status: SOCKET_STATES.CONNECTED
+    status: SOCKET_STATES.CONNECTED,
   };
 }
 export default {
@@ -18,7 +18,7 @@ export default {
     },
     SET_SOCKET_STATE_DISCONNECTED(state) {
       state.status = SOCKET_STATES.DISCONNECTED;
-    }
+    },
   },
   actions: {
     setSocketStateConnected({ commit, dispatch }) {
@@ -30,11 +30,11 @@ export default {
       let sessionId = getters["session/getSessionId"];
       if (sessionId) {
         let request = {
-          sessionId: sessionId
+          sessionId: sessionId,
         };
         console.log("sendSessionRejoinEvent(): request=" + JSON.stringify(request));
 
-        this._vm.$socket.emit(SOCKET_EVENTS.REJOIN_SESSION, request, response => {
+        this._vm.$socket.emit(SOCKET_EVENTS.REJOIN_SESSION, request, (response) => {
           console.log("sendSessionRejoinEvent(): response=" + JSON.stringify(response));
         });
       }
@@ -47,18 +47,18 @@ export default {
       dispatch("setSocketStateConnected");
       dispatch("session/loadConfigurations");
       dispatch("startAgentStateMonitoring");
-      dispatch("rejoinChatRooms")
+      dispatch("rejoinChatRooms");
       dispatch("session/fetchExistingSessionFromServer", { root: true })
-        .then(resp => {
+        .then((resp) => {
           console.log(
             "processSocketConnected(): response received from fetchExistingSessionFromServer: resp=" +
-            JSON.stringify(resp)
+              JSON.stringify(resp)
           );
           console.log(
             "responseCode " +
-            (resp.responseCode === 0 ? "Not " : "is ") +
-            "zero. sessionID not retreived. sessionId=" +
-            getters["session/getSessionId"]
+              (resp.responseCode === 0 ? "Not " : "is ") +
+              "zero. sessionID not retreived. sessionId=" +
+              getters["session/getSessionId"]
           );
           if (resp.responseCode === "0" && getters["session/getSessionId"].length) {
             console.log("processSocketConnected(): sending request for sendQueryAgentStateRequest");
@@ -109,7 +109,6 @@ export default {
       } else {
         console.log("SOCKET_ICALLDISC(): no calls found for UCID:" + payload.ucid);
       }
-
     },
 
     SOCKET_ICALLHLD({ dispatch, getters }, payload) {
@@ -170,39 +169,42 @@ export default {
     SOCKET_AGTUPDATED({ dispatch }, payload) {
       console.log("SOCKET_AGTUPDATED(): Received event: " + JSON.stringify(payload));
       dispatch("setAgentState", payload.state);
-      dispatch('setUpdatedAuxCode', payload)
+      dispatch("setUpdatedAuxCode", payload);
     },
 
-    SOCKET_AVAYACONNDISC({ }, payload) {
+    SOCKET_AVAYACONNDISC({}, payload) {
       console.log("SOCKET_AVAYACONNDISC(): Received event: " + JSON.stringify(payload));
     },
-    SOCKET_AVAYACONNRECONN({ }, payload) {
+    SOCKET_AVAYACONNRECONN({}, payload) {
       console.log("SOCKET_AVAYACONNRECONN(): Received event: " + JSON.stringify(payload));
     },
 
-
-
     /***************************************************************
-     * 
+     *
      *  Chat related Socket messages
      ***************************************************************/
 
     SOCKET_NEW_CHAT_MESSAGE({ dispatch }, chatMessage) {
-      console.log("new chat message received. chatMessage=" + JSON.stringify(chatMessage))
-      dispatch('addNewRemoteChatMessage', chatMessage)
+      console.log("new chat message received. chatMessage=" + JSON.stringify(chatMessage));
+      dispatch("addNewRemoteChatMessage", chatMessage);
     },
 
     SOCKET_NEW_CHAT_REQUEST({ dispatch }, chat) {
-      console.log("new chat received!!!")
-      dispatch('addChatSession', chat)
-
+      console.log("new chat received!!!");
+      dispatch("addChatSession", chat);
     },
-
-
+    SOCKET_USER_TYPING_STARTED({ dispatch }, chat) {
+      console.log("user typing started");
+      dispatch("setChatIsTyping", chat);
+    },
+    SOCKET_USER_TYPING_STOPPED({ dispatch }, chat) {
+      console.log("user typing stopped");
+      dispatch("resetChatIsTyping", chat);
+    },
   },
   getters: {
     getSocketStatus(state) {
       return state.status;
-    }
-  }
+    },
+  },
 };

@@ -5,6 +5,7 @@
     <div class="interactive-response" v-if="isLastMessageInteractive">
       <chip-response v-if="isLastMessageInteractive" :message="lastMessage"></chip-response>
     </div>
+    
     <chat-settings-drawer @toggleHistory="showHistory=!showHistory" :chatId="chatId"></chat-settings-drawer>
     <user-entry :chatId="chatId"></user-entry>
   </div>
@@ -28,6 +29,7 @@ export default {
     chatId: String
   },
   computed: {
+    
     lastMessage() {
       if (this.messageList.length > 0) {
         return this.messageList[this.messageList.length - 1];
@@ -48,3 +50,9 @@ export default {
   }
 };
 </script>
+<style scoped>
+.agc-chat-typing-message {
+  position: absolute;
+  bottom: 20px;
+}
+</style>
