@@ -73,8 +73,7 @@ api
         console.log("main.js initialized");
       });
     } else {
-      console.error("could not fetch server ip");
-      initVue();
+      console.error("could not fetch server ip address");
     }
   })
   .catch(() => {

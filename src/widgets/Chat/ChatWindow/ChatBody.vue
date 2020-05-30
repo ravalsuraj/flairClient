@@ -8,6 +8,7 @@ C<template>
         :chat-id="chatId"
       ></message>
     </ul>
+    
   </div>
 </template>
 
@@ -27,6 +28,7 @@ export default {
   },
   methods: {},
   computed: {
+    
     messageList() {
       return this.$store.getters.getMessageList(this.chatId);
     },

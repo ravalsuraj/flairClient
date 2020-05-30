@@ -18,8 +18,11 @@
         class="my-2 pr-5 chat-list-item d-flex justify-content-start z-depth-5"
         @click.native="toggleChatWindow(chat.chatId)"
       >
-        <span class="chat-avatar mr-1">{{chat.participant.initials}}</span>
-        <span class="h5">{{chat.participant.firstName+' '+chat.participant.lastName}}</span>
+        <!--test-->
+        <span class="chat-avatar mr-1">PR</span>
+        <!-- <span class="chat-avatar mr-1">{{chat.participant.initials}}</span> -->
+        <!-- <img></img> -->
+        <span class="h5">{{chat.participant.firstName+''+chat.participant.lastName}}</span>
       </mdb-list-group-item>
     </mdb-list-group>
   </div>

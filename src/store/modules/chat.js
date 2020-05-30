@@ -67,11 +67,12 @@ export default {
     ADD_CHAT_SESSION(state, chat) {
       console.log(chat);
       //check if chat ID exists in the state. If it does not exist, only then add the new chat
-      if (chat.chatId) {
+      if (chat.chatId && state.chatIds.indexOf(chat.chatId) < 0) {
         let newChat = chat;
         newChat.show = false;
         newChat.state = CHAT_STATES.REQUESTED;
         newChat.messageList = [];
+        newChat.isTyping = false;
         newChat.participant.initials =
           chat.participant.firstName.substring(0, 1) + chat.participant.lastName.substring(0, 1);
         state.chatSessions.push(newChat);
@@ -115,6 +116,14 @@ export default {
     SET_CHAT_STATE_CLOSED(state, chatId) {
       const index = state.chatIds.indexOf(chatId);
       state.chatSessions[index].state = CHAT_STATES.CLOSED;
+    },
+    SET_CHAT_IS_TYPING(state, chatId) {
+      const index = state.chatIds.indexOf(chatId);
+      state.chatSessions[index].isTyping = true;
+    },
+    RESET_CHAT_IS_TYPING(state, chatId) {
+      const index = state.chatIds.indexOf(chatId);
+      state.chatSessions[index].isTyping = false;
     },
   },
   actions: {
@@ -200,6 +209,12 @@ export default {
         }
       });
     },
+    setChatIsTyping({ commit }, payload) {
+      commit("SET_CHAT_IS_TYPING", payload.chatId);
+    },
+    resetChatIsTyping({ commit }, payload) {
+      commit("RESET_CHAT_IS_TYPING", payload.chatId);
+    },
   },
   getters: {
     getChatSidebarState(state) {
@@ -239,6 +254,9 @@ return  function(chatId) {
     */
     getMessageListLength: (state) => (chatId) => {
       return state.chatSessions[state.chatIds.indexOf(chatId)].messageList.length;
+    },
+    getIsTyping: (state) => (chatId) => {
+      return state.chatSessions[state.chatIds.indexOf(chatId)].isTyping;
     },
   },
 };

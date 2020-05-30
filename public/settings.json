@@ -3,7 +3,7 @@
     "FLAIR_SERVER_URL": "http://localhost:7071",
     "SERVER_TIMEOUT_MS": 20000,
     "CRM_TIMEOUT_MS": 10000,
-    "BASE_CRM_URL": "http://localhost:4000",
+    "BASE_CRM_URL": "./crm.html",
     "ALLOW_OUTBOUND_DIALING": true,
     "AGENT_STATE_POLLING_INTERVAL_MS": 1000,
     "INTERNAL_NUMBERS_MAX_LENGTH": 6,
@@ -76,7 +76,7 @@
         }
     ],
     "leftComponents": {
-        "width": "3",
+        "width": "2",
         "widgets": [
             {
                 "name": "quick-links"
@@ -93,7 +93,7 @@
         ]
     },
     "middleComponents": {
-        "width": "6",
+        "width": "8",
         "widgets": [
             {
                 "name": "base-crm-frame"
@@ -101,7 +101,7 @@
         ]
     },
     "rightComponents": {
-        "width": "3",
+        "width": "2",
         "widgets": [
             {
                 "name": "chat-disposition"

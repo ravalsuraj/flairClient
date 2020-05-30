@@ -2,6 +2,7 @@
   <mdb-container fluid class="d-flex justify-content-between">
     <span>
       <strong>{{chatterName}}</strong>
+      <span v-if="isUserTyping" class="agc-chat-typing-message ml-4">typing ....</span>
     </span>
     <span class="float-right">
       <a>
@@ -60,12 +61,18 @@ export default {
     minimized: Boolean,
     chatterName: String,
     interactionHistory: Array,
-    showHistory: Boolean
+    showHistory: Boolean,
+    chatId: String
   },
   data() {
     return {
       showChatHistory: false
     };
+  },
+  computed: {
+    isUserTyping() {
+      return this.$store.getters.getIsTyping(this.chatId);
+    }
   },
   methods: {
     onHeaderClick() {
