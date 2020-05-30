@@ -19,7 +19,8 @@ C<template>
       class="w-100 agc-user-entry-input m-0 px-4 py-2 m-3"
       @keydown.enter="handleEnter"
       @keydown.enter.prevent
-      v-model="typedMessage"
+      
+     v-model="typedMessage"
     ></textarea>
 
     <!-- <v-btn rounded class="white--text info-color">o</v-btn> -->
@@ -46,6 +47,11 @@ export default {
       typedMessage: null
     };
   },
+  computed:{
+     isUserTyping() {
+      return this.typedMessage && this.typedMessage.length > 0;
+    },
+  },
   methods: {
     input(e) {
       this.typedMessage = e;
@@ -69,6 +75,16 @@ export default {
         };
         this.$store.dispatch("addLocalMessage", newMessage);
         this.typedMessage = "";
+      }
+    },
+    
+  },
+  watch:{
+    isUserTyping(isTyping) {
+      if (isTyping) {
+        this.$store.dispatch("emitAgentTypingStarted",this.chatId);
+      } else {
+        this.$store.dispatch("emitAgentTypingStopped",this.chatId);
       }
     }
   }

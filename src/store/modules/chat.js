@@ -174,7 +174,7 @@ export default {
       commit("ADD_MESSAGE_TO_MESSAGE_LIST", content);
     },
 
-    emitNewMessageRequest({}, payload) {
+    emitNewMessageRequest({ }, payload) {
       const request = {
         message: payload,
         chatroom: payload.chatId,
@@ -209,6 +209,26 @@ export default {
         }
       });
     },
+
+    emitAgentTypingStarted({}, chatId) {
+      this._vm.$socket.emit(
+        "AGENT_TYPING_STARTED",
+        { chatId: chatId },
+        response => {
+          console.log("sent chat message=" + JSON.stringify(response));
+        }
+      );
+    },
+    emitAgentTypingStopped({}, chatId) {
+      this._vm.$socket.emit(
+        "AGENT_TYPING_STOPPED",
+        { chatId: chatId },
+        response => {
+          console.log("sent chat message=" + JSON.stringify(response));
+        }
+      );
+    },
+
     setChatIsTyping({ commit }, payload) {
       commit("SET_CHAT_IS_TYPING", payload.chatId);
     },
@@ -233,7 +253,7 @@ export default {
     },
     getChatIndexById: (state) => (chatId) => {
       return state.chatIds.indexOf(chatId);
-// TODO: fix chat Index ID
+      // TODO: fix chat Index ID
 
     },
     getMessageList: (state) => (chatId) => {
