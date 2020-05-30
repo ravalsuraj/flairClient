@@ -179,7 +179,7 @@ import DgftCrmFrame from "@/widgets/DGFT/DgftCrmFrame.vue";
 import BaseCrmFrame from "@/widgets/BaseCrmFrame/BaseCrmFrame.vue";
 
 import QuickLinks from "@/widgets/QuickLinks/QuickLinks.vue";
-
+ma
 import SmsHelper from "@/widgets/SmsHelper/SmsHelper.vue";
 
 import ChatToggle from "@/widgets/Chat/Layout/ChatToggle.vue";

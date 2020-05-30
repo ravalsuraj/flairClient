@@ -7,8 +7,8 @@
     </template>
     <template v-slot:body>
       <div class="wrapper">
-        <!-- <iframe :src="crmUrl" class="w-100 fl_crm_window"></iframe> -->
-        <img src="/crmex.png" style="clip: rect(0px,600x,1000px,0px);" />
+        <iframe :src="crmUrl" class="w-100 fl_crm_window"></iframe>
+        <!-- <img src="/crmex.png" style="clip: rect(0px,600x,1000px,0px);" /> -->
       </div>
     </template>
   </widget>
