@@ -9,18 +9,20 @@
             
               <tr>
                 <th width="20%">Call Start Time</th>
-                <th width="20%">Call End Time</th>
-                <th width="10%">DNIS</th>
-                <th width="10%">AgentId</th>
-                <th width="40%">Notes</th>
+                <th width="8%">Call duration</th>
+                <th width="8%">DNIS</th>
+                <th width="8%">AgentId</th>
+                <th width="26%">Disposition</th>
+                <th width="30%">Notes</th>
               </tr>
             </mdb-tbl-head>
             <mdb-tbl-body v-for="callDetail in callHistory" :key=callDetail.id>
               <tr>
                 <td>{{callDetail.startTime}}</td>
-                <td>{{callDetail.endTime}}</td>
+                <td>{{callDetail.callDuration}}</td>
                 <td>{{callDetail.dnis}}</td>
                 <td>{{callDetail.agentId}}</td>
+                <td>{{callDetail.disposition}}</td>
                 <td>{{callDetail.notes}}</td>
               </tr>
             </mdb-tbl-body>
