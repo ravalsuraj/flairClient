@@ -459,9 +459,9 @@ const actions = {
   async selectCallRecord({ getters }) {
     console.log('selectCallRecord')
     let ucid=getters.getActiveCallUcid;
-    getters.getCallByUcid(ucid);
-    console.log(getters.cli)
-    let req = {  cli: getters.cli }
+    var call =getters.getCallByUcid(ucid);
+    console.log(call)
+    let req = {  "cli": call.callingAddress }
     let resp = await api.selectCallDetail(req)
     console.log("agent not update response " + JSON.stringify(resp.data))
     return resp.data
@@ -469,18 +469,15 @@ const actions = {
   async insertCallRecord({  getters }) {
    // commit("UPDATE_AGENT_NOTES", notes);let ucid=getters.getActiveCallUcid;
    console.log('insertCallRecord')
-    let ucid=getters.getActiveCallUcid;
-        console.log(ucid)
-        let callid=getters.getActiveCallCallId;
-        console.log(callid)
-    let call=getters.getCallByUcid(ucid);
+    let call=getters.getCallByIndex(0);
     console.log(call)
     let cli=call.callingAddress;
     // let callEndTime=call.callEndTime;
     // let callStartTime=call.callStartTime;
     // let cli="call.cli";
-    let callEndTime="call.callEndTime";
-    let callStartTime="call.callStartTime";
+    let ucid=call.ucid;
+    let callEndTime=call.callEndTime;
+    let callStartTime=call.callStartTime;
     let agent=getters.getAgentCredentials.agentId;
     console.log(cli)
     getters.getCallByUcid(ucid);

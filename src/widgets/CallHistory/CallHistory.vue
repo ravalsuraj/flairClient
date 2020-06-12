@@ -1,66 +1,36 @@
 <template>
- <widget title="Call History">
+ <widget :title="'Call history: ' + cli">
     <template v-slot:body>
-      <div class="list-group px-3">
-  <!--mdb-card>
-    <mdb-card-header>Call History</mdb-card-header>
-    <mdb-card-body>
-      <mdb-tbl sm hover-->
-        <table>
-        <thead class="blue-grey lighten-4">
-          <tr>
-            <th>Sr.</th>
-            <th>Call Start Time</th>
-            <th>Call End Time</th>
-            <th>DNIS</th>
-            <th>CLI</th>
-            <th>AgentId</th>
-            <th>Notes</th>
-          </tr>
-        </thead>
-        <tbody v-for="callDetail in callHistory" :key=callDetail.id>
-          <tr>
-            <th scope="row">{{callHistory.id}}</th>
-            <td>{{callDetail.startTime}}</td>
-            <td>{{callDetail.endTime}}</td>
-            <td>{{callDetail.dnis}}</td>
-            <td>{{callDetail.cli}}</td>
-            <td>{{callDetail.agentId}}</td>
-            <td>{{callDetail.notes}}</td>
-          </tr>
-          <!--tr>
-            <th scope="row">2</th>
-            <td>24/06/18 05:00 pm</td>
-            <td>25/06/18 05:00 pm</td>
-            <td>1234</td>
-            <td>8879712345</td>
-            <td>8080</td>
-            <td>Billing Issue</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>24/06/18 05:00 pm</td>
-            <td>25/06/18 05:00 pm</td>
-            <td>1234</td>
-            <td>8879712345</td>
-            <td>8080</td>
-            <td>Billing Issue</td>
-          </tr-->
-        </tbody>
-        </table>
-      <!--/mdb-tbl>
-    </mdb-card-body>
-  </mdb-card-->
- <!--div class="form-group">
-          <label for="exampleFormControlTextarea2">Small textarea</label>
-          <textarea
-          ></textarea>
-  </div>
-  <div>
-        <a href="#" class="btn btn-danger btn-block" >Add Note</a>
-      </div-->
-      <button @click="selectCallHistory">Select</button>
-      </div>
+      
+      <mdb-row class="no-gutters" v-if="isCallActive">
+        <mdb-col>
+          <mdb-tbl sm bordered scrollY maxHeight="150px">
+            <mdb-tbl-head color="light-blue lighten-5">
+            
+              <tr>
+                <th width="20%">Call Start Time</th>
+                <th width="20%">Call End Time</th>
+                <th width="10%">DNIS</th>
+                <th width="10%">AgentId</th>
+                <th width="40%">Notes</th>
+              </tr>
+            </mdb-tbl-head>
+            <mdb-tbl-body v-for="callDetail in callHistory" :key=callDetail.id>
+              <tr>
+                <td>{{callDetail.startTime}}</td>
+                <td>{{callDetail.endTime}}</td>
+                <td>{{callDetail.dnis}}</td>
+                <td>{{callDetail.agentId}}</td>
+                <td>{{callDetail.notes}}</td>
+              </tr>
+            </mdb-tbl-body>
+          </mdb-tbl>
+        </mdb-col>
+      </mdb-row>
+      <mdb-container fluid v-else class="p-4">
+        <h4 class="grey-text">Waiting for call</h4>
+      </mdb-container>
+      <!-- <button @click="selectCallHistory">Select</button> -->
     </template>
   </widget>
 </template>
@@ -68,7 +38,16 @@
 <script>
 import Widget from "@/components/agc/Widget";
 import { CALL_STATES } from "@/defines.js";
+import {
+  mdbRow,
+  mdbCol,
+  // mdbContainer,
+  mdbTbl,
+  mdbTblHead,
+  mdbTblBody
+} from "mdbvue";
 // import { mdbCard, mdbCardBody, mdbCardHeader } from "mdbvue";
+import { mdbTable } from "mdbvue";
 
 export default {
   name: "CallHistory",
@@ -76,11 +55,18 @@ export default {
     // mdbCard,
     // mdbCardBody,
     // mdbCardHeader
+     mdbRow,
+    mdbCol,
+    mdbTable,
+    mdbTbl,
+    mdbTblHead,
+    mdbTblBody,
     Widget
   },
   props: {
     msg: String,
-    callHistory:JSON
+    callHistory:JSON,
+    cli:String
   },
   methods:{
     async selectCallHistory(){
@@ -113,6 +99,16 @@ export default {
       } else {
         return null;
       }
+    },
+    isCallActive() {
+      // let callStatus = this.$store.getters.getCallStatus;
+      // console.log("callStatus = "+callStatus)
+      // return (
+      //   callStatus === CALL_STATES.TALKING ||
+      //   callStatus === CALL_STATES.HELD ||
+      //   callStatus === CALL_STATES.RINGING
+      // );
+      return true;
     }
   },
   watch: {
@@ -124,6 +120,7 @@ export default {
             //  this.$store.dispatch("updateAgentNotes", this.Notevalue);
           }
           else if(newState===CALL_STATES.RINGING){
+              this.cli=this.myCall.callingAddress
               this.selectCallHistory()
           }
       }
