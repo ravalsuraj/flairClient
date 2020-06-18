@@ -184,7 +184,6 @@ import AgentNote from "@/widgets/AgentNote/AgentNote.vue";
 import SmsHelper from "@/widgets/SmsHelper/SmsHelper.vue";
 
 import ChatToggle from "@/widgets/Chat/Layout/ChatToggle.vue";
-import AgentNote from "@/widgets/AgentNote/AgentNote.vue";
 
 export default {
   name: "Dashboard",
