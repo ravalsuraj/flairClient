@@ -2,18 +2,20 @@
   <widget title="Agent Note">
     <template v-slot:body>
       <div class="list-group px-3">
-        <div class="form-group">
-          <label for="exampleFormControlTextarea2">Small textarea</label>
+        <div class="form-group" v-if="isCurrentCallActive">
+          <div style="text-align:right;">{{ calNotesLength }} / 250</div>
           <textarea
             v-model="Notevalue"
             class="form-control rounded-0"
             id="exampleFormControlTextarea2"
-            rows="3"
+            rows="5"
+            @keydown="onKeyDown"
           ></textarea>
+          
         </div>
-      </div>
-      <div>
-        <a href="#" class="btn btn-danger btn-block" @click="agentNoteUpdate">Add Note</a>
+        <div v-else>
+          <h4 class="grey-text">Waiting for call</h4>
+        </div>
       </div>
     </template>
   </widget>
@@ -35,7 +37,8 @@ export default {
   data() {
     return {
       showWidget: true,
-      Notevalue: ""
+      Notevalue: "",
+      notesLength: 0
     };
   },
 
@@ -43,13 +46,28 @@ export default {
     toggleShowWidget() {
       this.showWidget = !this.showWidget;
     },
-    async agentNoteUpdate() {
-      let resp = await this.$store.dispatch("updateAgentNotes", this.Notevalue);
+    onKeyDown(evt) {
+      if (this.Notevalue.length >= 250) {
+        if ((evt.keyCode >= 48 && evt.keyCode <= 90) || evt.keyCode == 32) {
+          evt.preventDefault();
+          return;
+        }
+      }
+    },
 
-      if (resp === "Success") {
-        this.empidvalid = "Congrats";
+    async agentNoteUpdate() {
+      let req = {
+        AgentNotes: this.Notevalue,
+        cli: this.currentCallCli,
+        ucid: this.currentCallUcid
+      };
+
+      let resp = await this.$store.dispatch("updateAgentNotes", req);
+
+      if (resp === "success") {
+        this.Notevalue = "";
       } else {
-        this.empidvalid = "Sorry";
+        console.error("resp was not successful. resp=" + JSON.stringify(resp));
       }
     }
   },
@@ -70,16 +88,48 @@ export default {
       } else {
         return null;
       }
+    },
+    isCurrentCallActive() {
+      return (
+        this.currentCallState === CALL_STATES.TALKING ||
+        this.currentCallState === CALL_STATES.RINGING ||
+        this.currentCallState === CALL_STATES.HELD)
+    },
+    currentCallUcid() {
+      if (this.myCall) {
+        return this.myCall.ucid;
+      } else {
+        return null;
+      }
+    },
+    currentCallCli() {
+      if (this.myCall) {
+        return this.myCall.callingAddress;
+      } else {
+        return null;
+      }
+    },
+    calNotesLength() {
+      //  if (this.Notevalue.length >= 250) {
+      //    this.Notevalue = this.Notevalue.substring(0, 250);
+      //  }
+      return this.Notevalue.length;
     }
   },
   watch: {
     currentCallState(newState, oldState) {
       console.log("call state changed from:" + oldState + " to " + newState);
-      if(newState !==null){
-          if(newState===CALL_STATES.DROPPED){
-              this.agentNoteUpdate()
-            //  this.$store.dispatch("updateAgentNotes", this.Notevalue);
-          }
+      if (newState !== null) {
+        if (newState === CALL_STATES.DROPPED) {
+          this.agentNoteUpdate();
+          //  this.$store.dispatch("updateAgentNotes", this.Notevalue);
+        }
+      }
+    },
+
+    calNotesLength() {
+      if (this.Notevalue.length >= 251) {
+        this.Notevalue = this.Notevalue.substring(0, 250);
       }
     }
   }

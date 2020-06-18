@@ -16,7 +16,9 @@ function initialState() {
     fullAuxCodeList: [],
     agentStateDisplayLabelMap: null,
     agentReasonCodeDisplayLabelMap: null,
-    agentNotes: ""
+    agentNotes: "",
+    disposition:"",
+    sub_disposition:""
   };
 }
 
@@ -100,11 +102,19 @@ export default {
       clearInterval(getters.getMonitorAgentHandle);
       commit("RESET_MONITOR_AGENT_INTERVAL_HANDLE");
     },
-    async updateAgentNotes({ commit, getters }, notes) {
-      commit("UPDATE_AGENT_NOTES", notes);
-      let req = { AgentNotes: notes, ucid: getters.getActiveCallUcid }
+    async updateAgentNotes({ commit }, req) {
+      commit("UPDATE_AGENT_NOTES", req.AgentNotes);
+     // let req = { AgentNotes: notes, ucid: getters.getActiveCallUcid }
       let resp = await api.insertCallDetail(req)
-      console.log("agent not update response " + JSON.stringify(resp.data))
+      console.log(" response " + JSON.stringify(resp.data))
+      return resp.data;
+    },
+    async updateDisposition({ commit }, req) {
+      commit("UPDATE_CALL_DISPOSITION", req.disposition);
+     // let req = { AgentNotes: notes, ucid: getters.getActiveCallUcid }
+      let resp = await api.insertcallDisposition(req)
+      console.log(" response " + JSON.stringify(resp.data))
+      return resp.data;
     },
     setAgentState({ commit }, agentState) {
       commit("SET_AGENT_STATE", agentState);
@@ -347,6 +357,9 @@ export default {
     },
     UPDATE_AGENT_NOTES(state, notes) {
       state.agentNotes = notes;
+    },
+    UPDATE_CALL_DISPOSITION(state, disposition) {
+      state.disposition = disposition;
     }
   },
 };

@@ -1,5 +1,5 @@
 <template>
-  <widget title="Call Disposition">
+  <widget :title=" 'Call Disposition(' + callId+')'">
     <template v-slot:body>
       <mdb-container fluid>
         <div v-if="isAgentInAcw">
@@ -11,7 +11,7 @@
 
           <!-- <label>Call Reason</label> -->
           <select class="browser-default custom-select mb-3" v-model="disposition">
-            <option selected value="null"> Select Disposition Reason</option>
+            <option selected value="null">Select Disposition Reason</option>
             <option value="1">Account Inquiry</option>
             <option value="2">Product Information</option>
             <option value="3">Technical Support</option>
@@ -84,19 +84,49 @@ export default {
 
       // }
       //this.$store.dispatch('requestCallDisposition')
-      this.$store.dispatch("removeCallFromActiveCalls", [this.ucid, this.callId]);
+      this.agentupdateDispositionUpdate();
+      
+      
+    },
+    async agentupdateDispositionUpdate() {
+      let req = {
+        disposition: this.disposition,
+        sub_disposition: this.sub_disposition,
+        cli: this.call.callingAddress,
+        ucid: this.call.ucid
+      };
+
+      let resp = await this.$store.dispatch("updateDisposition", req);
+
+      if (resp === "success") {
+        this.$store.dispatch("removeCallFromActiveCalls", [
+        this.ucid,
+        this.callId
+      ]);
+      }
     }
   },
 
   computed: {
     call() {
-      return this.$store.getters.getCallByCallId(this.callId);
+      if (this.$store.getters.getCallByCallId(this.callId)) {
+        return this.$store.getters.getCallByCallId(this.callId);
+      } else {
+        return null;
+      }
     },
     callStatus() {
       return this.call.status;
     },
     isAgentInAcw() {
       return this.callStatus === CALL_STATES.DROPPED;
+    },
+    currentCallUcid() {
+      if (this.myCall) {
+        return this.myCall.ucid;
+      } else {
+        return null;
+      }
     }
   },
 
@@ -110,6 +140,7 @@ export default {
             this.showWidget = true;
             this.showTimer = true;
             this.$store.dispatch("startTimer", "acwTimer");
+           // this.agentupdateDispositionUpdate();
           }
           break;
         default:

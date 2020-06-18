@@ -9,7 +9,8 @@ const development = {
     //open: process.platform === 'darwin',
     port: 9091, // CHANGE YOUR PORT HERE!
     https: false,
-    disableHostCheck: true
+    disableHostCheck: true,
+    proxy: "http://localhost:80"
   }
 };
 
