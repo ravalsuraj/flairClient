@@ -1,6 +1,8 @@
 import { CALL_STATES, CALL_TYPES, SOCKET_EVENTS, TIMER_TYPES } from "@/defines.js";
 import Utils from "@/services/Utils";
 import { MULTI_CALL_STATES } from "../../defines";
+
+import api from "@/services/api"
 function initialState() {
   return {
     calls: [],
@@ -453,7 +455,36 @@ const actions = {
         console.log("Call Unhold Failed" + JSON.stringify(response));
       }
     });
-  }
+  },
+  async selectCallRecord({ getters }) {
+    console.log('selectCallRecord')
+    let ucid=getters.getActiveCallUcid;
+    var call =getters.getCallByUcid(ucid);
+    console.log(call)
+    let req = {  "cli": call.callingAddress }
+    let resp = await api.selectCallDetail(req)
+    console.log("agent not update response " + JSON.stringify(resp.data))
+    return resp.data
+  },
+  async insertCallRecord({  getters }) {
+   // commit("UPDATE_AGENT_NOTES", notes);let ucid=getters.getActiveCallUcid;
+   console.log('insertCallRecord')
+    let call=getters.getCallByIndex(0);
+    console.log(call)
+    let cli=call.callingAddress;
+    // let callEndTime=call.callEndTime;
+    // let callStartTime=call.callStartTime;
+    // let cli="call.cli";
+    let ucid=call.ucid;
+    let callEndTime=call.callEndTime;
+    let callStartTime=call.callStartTime;
+    let agent=getters.getAgentCredentials.agentId;
+    console.log(cli)
+    getters.getCallByUcid(ucid);
+    let req = {  "cli": cli,"ucid":ucid,"starttime":callStartTime,"endtime":callEndTime,"agent":agent }
+    let resp = await api.insertCallDetail(req)
+    console.log("agent not update response " + JSON.stringify(resp.data))
+  },
 };
 
 const mutations = {

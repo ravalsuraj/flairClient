@@ -1,3 +1,4 @@
+      }
 <template>
   <widget title="Agent Note">
     <template v-slot:body>

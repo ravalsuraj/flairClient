@@ -72,6 +72,9 @@
             },
             {
                 "name": "agent-call-statistics"
+            },
+            {
+                "name": "agent-note"
             }
             ,
             {
@@ -87,6 +90,9 @@
         "widgets": [
             {
                 "name": "base-crm-frame"
+            },
+            {
+                "name": "call-history"
             }
         ]
     },
