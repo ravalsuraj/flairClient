@@ -1,7 +1,7 @@
 <template>
   <widget title="Menu Traversal">
     <template v-slot:body>
-      <mdb-row class="no-gutters" v-if="isCallActive">
+      <mdb-row class="no-gutters" v-if="isCurrentCallActive">
         <mdb-col>
           <mdb-tbl sm bordered scrollY maxHeight="150px">
             <mdb-tbl-head color="light-blue lighten-5">
@@ -10,27 +10,12 @@
                 <th>Menu</th>
               </tr>
             </mdb-tbl-head>
-            <mdb-tbl-body>
+            <mdb-tbl-body v-for="callDetail in callTraversal" :key=callDetail.Time>
               <tr>
-                <td>09/10/19 13:05:30</td>
-                <td>Lanaguage Selection</td>
+                <td>{{callDetail.Time}}</td>
+                <td>{{callDetail.MenuName}}</td>
               </tr>
-              <tr>
-                <td>09/10/19 13:05:30</td>
-                <td>Main Menu</td>
-              </tr>
-              <tr>
-                <td>09/10/19 13:05:38</td>
-                <td>Account Services</td>
-              </tr>
-              <tr>
-                <td>09/10/19 13:05:47</td>
-                <td>Balance Inquiry</td>
-              </tr>
-              <tr>
-                <td>09/10/19 10:06:05</td>
-                <td>Main Menu</td>
-              </tr>
+              
             </mdb-tbl-body>
           </mdb-tbl>
         </mdb-col>
@@ -66,7 +51,10 @@ export default {
     mdbTblHead,
     mdbTblBody
   },
-  props: {},
+  props: {
+    callTraversal:JSON,
+    cli:String
+  },
   data() {
     return {
       showWidget: true,
@@ -80,18 +68,54 @@ export default {
   methods: {
     toggleShowWidget() {
       this.showWidget = !this.showWidget;
-    }
+    },
+    async selectcallTraversal(){
+      console.log('hi traversal')
+      let resp = await this.$store.dispatch("selectcallTraversal");
+      console.log(resp)
+      this.callTraversal=resp
+      console.log(this.callTraversal)
+    },
   },
   computed: {
-    isCallActive() {
-      let callStatus = this.$store.getters.getCallStatus;
+     myCall() {
+      //let index = this.$store.getters.getCallIndex("1234");
+
+      let myCall = this.$store.getters.getCallByIndex(0);
+      if (myCall) {
+        return myCall;
+      } else {
+        return null;
+      }
+    },
+     isCurrentCallActive() {
       return (
-        callStatus === CALL_STATES.TALKING ||
-        callStatus === CALL_STATES.HELD ||
-        callStatus === CALL_STATES.RINGING
-      );
+        this.currentCallState === CALL_STATES.TALKING ||
+        this.currentCallState === CALL_STATES.RINGING ||
+        this.currentCallState === CALL_STATES.HELD)
+    },
+
+    currentCallState() {
+      if (this.myCall) {
+        return this.myCall.status;
+      } else {
+        return null;
+      }
+    }
+  },
+
+  watch: {
+    currentCallState(newState, oldState) {
+      console.log("call state travarsal changed from:" + oldState + " to " + newState);
+      if(newState !==null){
+           if(newState===CALL_STATES.RINGING){
+              this.cli=this.myCall.callingAddress
+              this.selectcallTraversal()
+          }
+      }
     }
   }
+
 };
 </script>
 

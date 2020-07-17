@@ -485,6 +485,16 @@ const actions = {
     let resp = await api.insertCallDetail(req)
     console.log("agent not update response " + JSON.stringify(resp.data))
   },
+  async selectcallTraversal({ getters }) {
+    console.log('selectcallTraversal')
+    let ucid=getters.getActiveCallUcid;
+    var call =getters.getCallByUcid(ucid);
+    console.log(call)
+    let req = {  "ucid": ucid }
+    let resp = await api.selectcallTraversal(req)
+    console.log("agent call traversal response " + JSON.stringify(resp.data))
+    return resp.data
+  },
 };
 
 const mutations = {
